@@ -81,6 +81,7 @@ class DeviceController extends Controller
      *
      * @body array{
      *     device_name: string,
+     *     user_id: int,
      *     device_id?: string,
      *     device_type?: "mobile"|"desktop"|"tablet",
      *     platform?: string,
@@ -91,7 +92,7 @@ class DeviceController extends Controller
      *     push_tokens?: string[]
      * }
      * 
-     * Lưu ý: user_id sẽ được tự động lấy từ người dùng đang đăng nhập (bỏ qua nếu client gửi)
+     * Lưu ý: user_id là bắt buộc và phải tồn tại trong bảng users
      *
      * @response 201 array{
      *   success: true,
@@ -111,14 +112,6 @@ class DeviceController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        // Debug: Kiểm tra thông tin request
-        \Log::info('Device registration request', [
-            'headers' => $request->headers->all(),
-            'user' => $request->user(),
-            'auth_check' => Auth::check(),
-            'bearer_token' => $request->bearerToken(),
-        ]);
-        
         $validator = Validator::make($request->all(), [
             'device_name'   => 'required|string|max:255',
             'device_id'     => 'nullable|string|max:255',
@@ -129,6 +122,7 @@ class DeviceController extends Controller
             'user_agent'    => 'nullable|string',
             'status'        => 'nullable|in:active,inactive,blocked',
             'push_tokens'   => 'nullable|array',
+            'user_id'       => 'required|integer|exists:users,id',
         ]);
 
         if ($validator->fails()) {
@@ -140,18 +134,6 @@ class DeviceController extends Controller
 
         try {
             $data = $validator->validated();
-            
-            // Kiểm tra xác thực user
-            if (!$request->user()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Token xác thực không hợp lệ hoặc đã hết hạn',
-                ], 401);
-            }
-            
-            // Tự động lấy user_id từ người dùng đang đăng nhập
-            // Bỏ qua user_id nếu client có gửi trong request để đảm bảo an toàn
-            $data['user_id'] = $request->user()->id;
 
             // Thực hiện cập nhật hoặc tạo mới dựa trên device_id
             $device = null;
