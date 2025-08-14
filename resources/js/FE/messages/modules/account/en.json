@@ -1,0 +1,267 @@
+{
+    "account": {
+        "activityLog": {
+            "title": "Activity Log",
+            "showMentionedOnly": "Show mentioned only",
+            "showAllActivity": "Show all activity",
+            "loadMore": "Load More",
+            "noMoreActivity": "No more activity to load",
+            "filter": {
+                "ticketStatus": "Ticket status",
+                "assignTicket": "Assign ticket",
+                "newTicket": "New ticket",
+                "addTags": "Add tags",
+                "addFiles": "Add files"
+            }
+        },
+        "pricing": {
+            "title": "Pricing",
+            "monthly": "Monthly",
+            "annually": "Annually",
+            "recommended": "Recommended",
+            "month": "month",
+            "year": "year",
+            "currentPlan": "Current plan",
+            "selectPlan": "Select plan",
+            "faq": "FAQ",
+            "payment": {
+                "title": "{planName} plan",
+                "successTitle": "Thank you for your purchase!",
+                "successMessage": "We've received your order and are processing it now. You'll get an email with your order details soon",
+                "manageSubscription": "Manage subscription",
+                "close": "Close",
+                "payMonthly": "Pay monthly",
+                "payAnnually": "Pay anually",
+                "billingEmail": "Billing email",
+                "enterEmail": "Enter email",
+                "creditCard": "Credit card",
+                "creditCardNumber": "Credit card number",
+                "cvc": "CVC",
+                "billNow": "Bill now:",
+                "disclaimer": "By clicking \"Pay\", you agree to be charged ${amount} every month, you can cancel this subscription any time.",
+                "pay": "Pay"
+            },
+            "features": {
+                "taskManagement": "Task management",
+                "basicManagementTools": "Basic management tools",
+                "advanceManagementTools": "Advance management tools",
+                "reportGenerator": "Report generator",
+                "detailedReportGenerator": "Detailed report generator",
+                "emailSupport": "Email support",
+                "chatEmailSupport": "Chat & email support",
+                "twentyFourSevenSupport": "24/7 chat & email support",
+                "fileSharing": "Files sharing",
+                "advancedSecurity": "Advanced security protocols",
+                "customIntegrations": "Third party service integration"
+            },
+            "faqCategory": {
+                "subscription": "Subscription details",
+                "billing": "Billing and payments",
+                "others": "Other"
+            },
+            "faqList": {
+                "subscription": [
+                    {
+                        "title": "How do I sign up for a subscription?",
+                        "content": "Select the plan above with your preferred subscription plan, and follow the on-screen instructions to create an account and enter your payment details."
+                    },
+                    {
+                        "title": "Can I cancel my subscription?",
+                        "content": "Yes, you have the flexibility to cancel your subscription at any time. To cancel, simply log in to your account, navigate to the \"Subscription\" section, and follow the instructions to cancel your plan. Your cancellation will take effect at the end of your current billing cycle."
+                    },
+                    {
+                        "title": "Can I switch my subscription plan?",
+                        "content": "Absolutely, you can switch between the monthly and annual plans at any time. To change your subscription plan, log in to your account, go to the \"Subscription\" section, select the plan you want to switch to, and follow the instructions. Your new plan will take effect immediately."
+                    },
+                    {
+                        "title": "Do you offer a free trial?",
+                        "content": "Yes, we provide a 14-day free trial for new users. During this period, you can access all the features of our subscription plan. If you continue after the trial, you will be charged based on the plan you selected."
+                    },
+                    {
+                        "title": "How do I know when my subscription is about to renew?",
+                        "content": "You will receive an email notification a few days before your subscription is set to renew, reminding you of the upcoming charge and providing an option to make any necessary changes."
+                    },
+                    {
+                        "title": "Are there any discounts for students or non-profits?",
+                        "content": "Yes, we offer special discounts for students and non-profits. Please contact our support team with the relevant documentation to apply for these discounts."
+                    }
+                ],
+                "billing": [
+                    {
+                        "title": "What payment methods do you accept?",
+                        "content": "We strive to make the payment process as convenient as possible by accepting a variety of payment methods. These include major credit and debit cards such as Visa, MasterCard, and American Express, as well as PayPal. Depending on your location, additional regional payment methods may also be available."
+                    },
+                    {
+                        "title": "What happens if my payment fails?",
+                        "content": "If your payment fails, we will notify you via email. You will then have a grace period of 7 days to update your payment information. If the payment issue is not resolved within this period, your subscription will be temporarily suspended until the payment is successfully processed."
+                    },
+                    {
+                        "title": "How do I update my payment information?",
+                        "content": "To update your payment information, log in to your account, go to the \"Billing\" section, and enter your new payment details. Make sure to save the changes to ensure continuous service."
+                    },
+                    {
+                        "title": "Will I get a refund if I cancel my subscription?",
+                        "content": "Refund policies vary depending on your subscription type. For our Monthly Plan, we do not offer refunds. However, for the Annual Plan, you may be eligible for a prorated refund if you cancel within the first 30 days of your subscription. Please contact our support team for assistance with this process."
+                    }
+                ],
+                "others": [
+                    {
+                        "title": "How do I contact customer support?",
+                        "content": "Our customer support team is here to help with any questions or issues you may have. You can reach us by emailing support@ecme.com, calling our support line at 1-800-123-4567, or using the live chat feature on our website. We are committed to providing you with prompt and effective assistance."
+                    },
+                    {
+                        "title": "How do I change my account details?",
+                        "content": "To update your account details, log in to your account, navigate to the \"Security\" section, and make the necessary changes. Be sure to save your updates."
+                    },
+                    {
+                        "title": "Is my personal information secure?",
+                        "content": "Yes, we prioritize the security of your personal information. Our site uses industry-standard encryption and security measures. Please refer to our Privacy Policy for more details on how we protect your data."
+                    }
+                ]
+            }
+        },
+        "rolesPermissions": {
+            "title": "Roles & Permissions",
+            "allAccounts": "All accounts",
+            "createRole": "Create role",
+            "editRole": "Edit role",
+            "roleName": "Role name",
+            "description": "Description",
+            "permission": "Permission",
+            "cancel": "Cancel",
+            "update": "Update",
+            "create": "Create",
+            "search": "Search...",
+            "status": "Status",
+            "role": "Role",
+            "all": "All",
+            "active": "Active",
+            "blocked": "Blocked",
+            "users": "Users",
+            "selected": "selected",
+            "delete": "Delete",
+            "removeUsers": "Remove users",
+            "removeUsersConfirmation": "Are you sure you want to remove these users? This action can't be undo.",
+            "name": "Name",
+            "lastOnline": "Last online",
+            "modules": {
+                "users": {
+                    "name": "User management",
+                    "description": "Access control for user management"
+                },
+                "products": {
+                    "name": "Products authority",
+                    "description": "Access control for product operations"
+                },
+                "configurations": {
+                    "name": "System configurations",
+                    "description": "Access control for system settings"
+                },
+                "files": {
+                    "name": "File management",
+                    "description": "Access control for file management"
+                },
+                "reports": {
+                    "name": "Reports",
+                    "description": "Access control for generating reports"
+                }
+            },
+            "accessor": {
+                "read": "Read",
+                "write": "Write",
+                "delete": "Delete"
+            }
+        },
+        "settings": {
+                        "menu": {
+                "profile": "Profile",
+                "security": "Security",
+                "notificationSettings": "Notification Settings",
+                "notificationList": "Notifications",
+                "billing": "Billing",
+                "integration": "Integration",
+                "navigation": "Navigation"
+            },
+            "profile": {
+                "title": "Personal information",
+                "uploadImage": "Upload Image",
+                "remove": "Remove",
+                "firstName": "First name",
+                "lastName": "Last name",
+                "email": "Email",
+                "phoneNumber": "Phone Number",
+                "save": "Save"
+            },
+            "security": {
+                "title": "Password",
+                "description": "Remember, your password is your digital key to your account. Keep it safe, keep it secure!",
+                "currentPassword": "Current password",
+                "newPassword": "New password",
+                "confirmNewPassword": "Confirm new password",
+                "update": "Update",
+                "updatePassword": "Update password",
+                "updatePasswordConfirmation": "Are you sure you want to change your password?"
+            },
+            "notification": {
+                "title": "Notification",
+                "enableDesktopNotification": "Enable desktop notification",
+                "desktopNotificationDescription": "Decide whether you want to be notified of new message & updates",
+                "enableUnreadNotificationBadge": "Enable unread notification badge",
+                "unreadNotificationBadgeDescription": "Display a red indicator on of the notification icon when you have unread message",
+                "notifyMeAbout": "Notify me about",
+                "allNewMessages": "All new messages",
+                "allNewMessagesDescription": "Broadcast notifications to the channel for each new message",
+                "mentionsOnly": "Mentions only",
+                "mentionsOnlyDescription": "Only alert me in the channel if someone mentions me in a message",
+                "nothing": "Nothing",
+                "nothingDescription": "Don't notify me anything",
+                "emailNotification": "Email notification",
+                "emailNotificationDescription": "Substance can send you email notification for any new direct message",
+                "newsAndUpdate": "News & updates",
+                "newsAndUpdateDescription": "New about product and features update",
+                "tipsAndTutorial": "Tips & tutorials",
+                "tipsAndTutorialDescription": "Tips & trick in order to increase your performance efficiency",
+                "offerAndPromotion": "Offer & promotions",
+                "offerAndPromotionDescription": "Promotion about product price & lastest discount",
+                "followUpReminder": "Follow up remider",
+                "followUpReminderDescription": "Receive notification all the reminder that have been made"
+            },
+            "billing": {
+                "title": "Billing",
+                "balance": "Balance",
+                "currentPlan": "Current plan",
+                "billing": "Billing",
+                "nextPaymentOn": "Next payment on",
+                "for": "for",
+                "changePlan": "Change plan",
+                "paymentMethod": "Payment method",
+                "expired": "Expired",
+                "primary": "Primary",
+                "edit": "Edit",
+                "addPaymentMethod": "Add payment method",
+                "transactionHistory": "Transaction history",
+                "addCreditCard": "Add credit card",
+                "editCreditCard": "Edit credit card",
+                "creditCardUpdated": "Credit card updated!",
+                "creditCardAdded": "Credit card added!",
+                "id": "ID",
+                "type": "Type",
+                "description": "Description",
+                "status": "Status",
+                "date": "Date",
+                "amount": "Amount",
+                "completed": "Completed",
+                "pending": "Pending",
+                "failed": "Failed"
+            },
+            "integration": {
+                "title": "Integration",
+                "description": "Supercharge your workflow using these integration",
+                "learnMore": "Learn more",
+                "overview": "Overview",
+                "keyFeatures": "Key Features:",
+                "acknowledge": "Acknowledge"
+            }
+        }
+    }
+}

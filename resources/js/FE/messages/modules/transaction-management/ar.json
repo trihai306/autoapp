@@ -1,0 +1,45 @@
+{
+    "transactionManagement": {
+        "title": "المعاملات",
+        "filter": "منقي",
+        "table": {
+            "transactionId": "رقم المعاملة",
+            "user": "المستخدم",
+            "type": "النوع",
+            "amount": "المبلغ",
+            "description": "الوصف",
+            "status": "الحالة",
+            "date": "التاريخ",
+            "actions": "الإجراءات"
+        },
+        "filterForm": {
+            "title": "منقي",
+            "transactionType": "نوع المعاملة",
+            "selectType": "اختر النوع",
+            "user": "المستخدم",
+            "searchUser": "البحث بالاسم أو البريد الإلكتروني",
+            "status": "الحالة",
+            "selectStatus": "اختر الحالة",
+            "cancel": "إلغاء",
+            "apply": "تطبيق"
+        },
+        "bulkAction": {
+            "selected": "تم تحديد {count} معاملة (معاملات)",
+            "delete": "حذف",
+            "clear": "مسح"
+        },
+        "deleteConfirm": {
+            "title": "تأكيد الحذف",
+            "content": "هل أنت متأكد أنك تريد حذف {count} معاملة (معاملات) محددة؟ لا يمكن التراجع عن هذا الإجراء.",
+            "delete": "حذف",
+            "cancel": "إلغاء"
+        },
+        "quickSearch": "بحث سريع...",
+        "actionConfirm": {
+            "title": "تأكيد الإجراء",
+            "content": "هل أنت متأكد أنك تريد {action} هذه المعاملة؟",
+            "confirm": "تأكيد",
+            "cancel": "إلغاء"
+        }
+    }
+}

@@ -1,0 +1,88 @@
+{
+    "userManagement": {
+        "title": "Users",
+        "addNew": "Add new user",
+        "editTitle": "Edit User",
+        "createTitle": "Create New User",
+        "form": {
+            "back": "Back",
+            "block": "Block",
+            "delete": "Delete",
+            "save": "Save",
+            "saving": "Saving...",
+            "basicInfo": "Basic Information",
+            "firstName": "First Name",
+            "lastName": "Last Name",
+            "contactInfo": "Contact Information",
+            "email": "Email",
+            "phoneNumber": "Phone Number",
+            "roles": "Roles",
+            "password": "Password",
+            "confirmPassword": "Confirm Password",
+            "passwordInfo": "Password can only be changed by the user."
+        },
+        "table": {
+            "name": "Name",
+            "email": "Email",
+            "phone": "Phone",
+            "roles": "Roles",
+            "balance": "Balance",
+            "createdDate": "Created Date",
+            "status": "Status",
+            "edit": "Edit",
+            "view": "View"
+        },
+        "deleteConfirm": {
+            "title": "Delete User",
+            "content": "Are you sure you want to delete this user?",
+            "confirmText": "Delete"
+        },
+        "blockConfirm": {
+            "title": "Block User",
+            "content": "Are you sure you want to block this user?",
+            "confirmText": "Block"
+        },
+        "bulkDeleteConfirm": {
+            "title": "Delete Confirmation",
+            "content": "Are you sure you want to delete {count} selected user(s)? This action cannot be undone.",
+            "delete": "Delete",
+            "cancel": "Cancel"
+        },
+        "bulkBlockConfirm": {
+            "title": "Block Confirmation",
+            "content": "Are you sure you want to block {count} selected user(s)?",
+            "block": "Block",
+            "cancel": "Cancel"
+        },
+        "bulkAction": {
+            "selected": "{count} user selected",
+            "delete": "Delete",
+            "block": "Block",
+            "clear": "Clear"
+        },
+        "searchPlaceholder": "Quick search...",
+        "columns": "Columns",
+        "filter": "Filter",
+        "filterForm": {
+            "email": "Email",
+            "firstName": "First Name",
+            "lastName": "Last Name",
+            "phoneNumber": "Phone Number",
+            "status": "Status",
+            "allStatus": "All Status",
+            "active": "Active",
+            "locked": "Locked",
+            "cancel": "Cancel",
+            "apply": "Apply"
+        },
+        "detail": {
+            "title": "User Details",
+            "status": "Status",
+            "phone": "Phone",
+            "balance": "Balance",
+            "roles": "Roles",
+            "createdDate": "Created Date",
+            "edit": "Edit"
+        }
+    }
+}

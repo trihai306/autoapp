@@ -1,0 +1,41 @@
+{
+    "roleManagement": {
+        "title": "Roles",
+        "addNew": "Add new role",
+        "form": {
+            "createTitle": "Create New Role",
+            "editTitle": "Edit Role",
+            "nameLabel": "Name",
+            "namePlaceholder": "Role Name",
+            "permissionsLabel": "Permissions",
+            "cancel": "Cancel",
+            "save": "Save",
+            "saving": "Saving..."
+        },
+        "table": {
+            "name": "Name",
+            "guardName": "Guard Name",
+            "createdDate": "Created Date",
+            "edit": "Edit",
+            "delete": "Delete"
+        },
+        "deleteConfirm": {
+            "title": "Delete Role",
+            "content": "Are you sure you want to delete this role?",
+            "confirmText": "Delete"
+        },
+        "bulkDeleteConfirm": {
+            "title": "Delete Confirmation",
+            "content": "Are you sure you want to delete {count} selected role(s)? This action cannot be undone.",
+            "delete": "Delete",
+            "cancel": "Cancel"
+        },
+        "bulkAction": {
+            "selected": "{count} role(s) selected",
+            "delete": "Delete",
+            "clear": "Clear"
+        },
+        "searchPlaceholder": "Search by name...",
+        "columns": "Columns"
+    }
+}

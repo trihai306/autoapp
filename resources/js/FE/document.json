@@ -1,0 +1,1590 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Laravel",
+    "version": "0.0.1",
+    "description": "This is my awesome API description. You can use markdown here."
+  },
+  "servers": [
+    {
+      "url": "http://agent-ai.test/api"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Authentication"
+    },
+    {
+      "name": "User Profile"
+    },
+    {
+      "name": "Notifications"
+    },
+    {
+      "name": "AI Spending"
+    },
+    {
+      "name": "Roles & Permissions"
+    },
+    {
+      "name": "User Management"
+    }
+  ],
+  "paths": {
+    "/ai-spending-history": {
+      "post": {
+        "operationId": "aISpendingHistory.recordUsage",
+        "summary": "Record AI usage\r\n\r\nRecords a new AI feature usage event for the authenticated user",
+        "tags": [
+          "AI Spending"
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          }
+        }
+      }
+    },
+    "/register": {
+      "post": {
+        "operationId": "auth.register",
+        "summary": "Register a new user\r\n\r\nCreates a new user account and returns user data along with an API token",
+        "tags": [
+          "Authentication"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "first_name": {
+                    "type": "string",
+                    "description": "The first name of the user.",
+                    "example": "John",
+                    "maxLength": 255
+                  },
+                  "last_name": {
+                    "type": "string",
+                    "description": "The last name of the user.",
+                    "example": "Doe",
+                    "maxLength": 255
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "The email of the user. Must be unique.",
+                    "example": "john@example.com",
+                    "maxLength": 255
+                  },
+                  "phone_number": {
+                    "type": "string",
+                    "description": "The phone number of the user. Must be unique.",
+                    "example": "0987654321",
+                    "maxLength": 255
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "The password for the user.",
+                    "example": "password"
+                  },
+                  "password_confirmation": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "first_name",
+                  "last_name",
+                  "email",
+                  "phone_number",
+                  "password",
+                  "password_confirmation"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "enum": [
+                        "User registered successfully."
+                      ]
+                    },
+                    "user": {
+                      "type": "string"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message",
+                    "user",
+                    "token"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/login": {
+      "post": {
+        "operationId": "auth.login",
+        "summary": "Log in a user\r\n\r\nAuthenticates a user and returns user data with an API token",
+        "tags": [
+          "Authentication"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "login": {
+                    "type": "string",
+                    "description": "The user's email or phone number.",
+                    "example": "john@example.com or 0987654321"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "The user's password.",
+                    "example": "password"
+                  }
+                },
+                "required": [
+                  "login",
+                  "password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User logged in successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "type": "string"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "user",
+                    "token"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/forgot-password": {
+      "post": {
+        "operationId": "auth.forgotPassword",
+        "summary": "Forgot password\r\n\r\nSends a password reset link to the user's email",
+        "tags": [
+          "Authentication"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "The user's email address.",
+                    "example": "john@example.com"
+                  }
+                },
+                "required": [
+                  "email"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A password reset link has been sent.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        },
+        "security": []
+      }
+    },
+    "/reset-password": {
+      "post": {
+        "operationId": "auth.resetPassword",
+        "summary": "Reset password\r\n\r\nResets the user's password using the provided token",
+        "tags": [
+          "Authentication"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string",
+                    "description": "The password reset token from the email."
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "The user's email address.",
+                    "example": "john@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "The new password."
+                  },
+                  "password_confirmation": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "token",
+                  "email",
+                  "password",
+                  "password_confirmation"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The password has been successfully reset.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        },
+        "security": []
+      }
+    },
+    "/logout": {
+      "post": {
+        "operationId": "auth.logout",
+        "summary": "Log out\r\n\r\nInvalidates the user's current API token",
+        "tags": [
+          "Authentication"
+        ],
+        "responses": {
+          "200": {
+            "description": "The user was successfully logged out.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "enum": [
+                        "Successfully logged out"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          }
+        }
+      }
+    },
+    "/profile": {
+      "get": {
+        "operationId": "auth.getProfile",
+        "summary": "Get user profile\r\n\r\nReturns the authenticated user's profile information",
+        "tags": [
+          "Authentication"
+        ],
+        "responses": {
+          "200": {
+            "description": "The authenticated user's profile data.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          }
+        }
+      }
+    },
+    "/notifications": {
+      "get": {
+        "operationId": "notification.index",
+        "summary": "Get all notifications\r\n\r\nRetrieve a paginated list of the authenticated user's notifications.\r\nSupports filtering and sorting",
+        "tags": [
+          "Notifications"
+        ],
+        "parameters": [
+          {
+            "name": "filter[type]",
+            "in": "query",
+            "description": "Filter notifications by type.",
+            "schema": {},
+            "example": "App\\Notifications\\NewDeposit"
+          },
+          {
+            "name": "filter[read_at]",
+            "in": "query",
+            "description": "Filter by read status. Use `null` for unread, and `not-null` for read.",
+            "schema": {},
+            "example": "null"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort notifications by `created_at`. Prefix with `-` for descending.",
+            "schema": {},
+            "example": "-created_at"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The page number for pagination.",
+            "schema": {},
+            "example": 1
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "The number of items per page.",
+            "schema": {},
+            "example": 15
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          }
+        }
+      }
+    },
+    "/notifications/{id}/read": {
+      "patch": {
+        "operationId": "notification.markAsRead",
+        "summary": "Mark a notification as read",
+        "tags": [
+          "Notifications"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the notification.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "enum": [
+                        "Notification marked as read."
+                      ]
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          }
+        }
+      }
+    },
+    "/notifications/mark-all-as-read": {
+      "post": {
+        "operationId": "notification.markAllAsRead",
+        "summary": "Mark all notifications as read",
+        "tags": [
+          "Notifications"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "enum": [
+                        "All notifications marked as read."
+                      ]
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          }
+        }
+      }
+    },
+    "/roles": {
+      "get": {
+        "operationId": "roles.index",
+        "summary": "List all roles\r\n\r\nRetrieve a paginated list of roles.\r\nSupports searching and sorting",
+        "tags": [
+          "Roles & Permissions"
+        ],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Search for roles by name.",
+            "schema": {},
+            "example": "admin"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort by `name` or `created_at`. Prefix with `-` for descending.",
+            "schema": {},
+            "example": "-name"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The page number for pagination.",
+            "schema": {},
+            "example": 1
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "The number of items per page.",
+            "schema": {},
+            "example": 15
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          }
+        }
+      },
+      "post": {
+        "operationId": "roles.store",
+        "summary": "Create a new role\r\n\r\nCreates a new role and optionally assigns permissions to it",
+        "tags": [
+          "Roles & Permissions"
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          }
+        }
+      }
+    },
+    "/roles/{role}": {
+      "get": {
+        "operationId": "roles.show",
+        "summary": "Get a specific role",
+        "tags": [
+          "Roles & Permissions"
+        ],
+        "parameters": [
+          {
+            "name": "role",
+            "in": "path",
+            "required": true,
+            "description": "The role model instance.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          }
+        }
+      },
+      "put": {
+        "operationId": "roles.update",
+        "summary": "Update a role",
+        "tags": [
+          "Roles & Permissions"
+        ],
+        "parameters": [
+          {
+            "name": "role",
+            "in": "path",
+            "required": true,
+            "description": "The role model instance.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "roles.destroy",
+        "summary": "Delete a role",
+        "tags": [
+          "Roles & Permissions"
+        ],
+        "parameters": [
+          {
+            "name": "role",
+            "in": "path",
+            "required": true,
+            "description": "The role model instance.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          }
+        }
+      }
+    },
+    "/permissions": {
+      "get": {
+        "operationId": "permissions.index",
+        "summary": "List all available permissions\r\n\r\nRetrieve a paginated list of permissions.\r\nSupports searching and sorting",
+        "tags": [
+          "Roles & Permissions"
+        ],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Search for permissions by name.",
+            "schema": {},
+            "example": "edit"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort by `name` or `created_at`. Prefix with `-` for descending.",
+            "schema": {},
+            "example": "-created_at"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The page number for pagination.",
+            "schema": {},
+            "example": 1
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "The number of items per page.",
+            "schema": {},
+            "example": 15
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          }
+        }
+      }
+    },
+    "/deposit": {
+      "post": {
+        "operationId": "transaction.deposit",
+        "summary": "Deposit funds\r\n\r\nAdds a specified amount to the authenticated user's balance",
+        "tags": [
+          "Transaction"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "number",
+                    "description": "The amount to deposit. Must be greater than 0.",
+                    "example": 50.25,
+                    "minimum": 0.01
+                  },
+                  "description": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "A description for the transaction.",
+                    "example": "Monthly deposit"
+                  }
+                },
+                "required": [
+                  "amount"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        }
+      }
+    },
+    "/withdrawal": {
+      "post": {
+        "operationId": "transaction.withdrawal",
+        "summary": "Withdraw funds\r\n\r\nSubtracts a specified amount from the authenticated user's balance",
+        "tags": [
+          "Transaction"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "number",
+                    "description": "The amount to withdraw. Must be greater than 0.",
+                    "example": 20,
+                    "minimum": 0.01
+                  },
+                  "description": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "A description for the transaction.",
+                    "example": "ATM withdrawal"
+                  }
+                },
+                "required": [
+                  "amount"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        }
+      }
+    },
+    "/transactions": {
+      "get": {
+        "operationId": "transaction.history",
+        "summary": "Get transaction history\r\n\r\nRetrieve a paginated list of the authenticated user's transactions.\r\nSupports filtering and sorting",
+        "tags": [
+          "Transaction"
+        ],
+        "parameters": [
+          {
+            "name": "filter[type]",
+            "in": "query",
+            "description": "Filter transactions by type (`deposit` or `withdrawal`).",
+            "schema": {},
+            "example": "deposit"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort by `amount` or `created_at`. Prefix with `-` for descending.",
+            "schema": {},
+            "example": "-amount"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The page number for pagination.",
+            "schema": {},
+            "example": 1
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "The number of items per page.",
+            "schema": {},
+            "example": 15
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "operationId": "users.index",
+        "summary": "List all users\r\n\r\nRetrieve a paginated list of all registered users.\r\nSupports searching, filtering, and sorting",
+        "tags": [
+          "User Management"
+        ],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "A search term to filter users by name or email.",
+            "schema": {},
+            "example": "john"
+          },
+          {
+            "name": "filter[email]",
+            "in": "query",
+            "description": "Filter users by a specific email address.",
+            "schema": {},
+            "example": "john.doe@example.com"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort users by `name`, `email`, `created_at`. Prefix with `-` for descending.",
+            "schema": {},
+            "example": "-created_at"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The page number for pagination.",
+            "schema": {},
+            "example": 2
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "The number of items per page.",
+            "schema": {},
+            "example": 25
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          }
+        }
+      },
+      "post": {
+        "operationId": "users.store",
+        "summary": "Create a new user\r\n\r\nCreates a new user with the given details.\r\nThe new user object is returned upon successful creation",
+        "tags": [
+          "User Management"
+        ],
+        "responses": {
+          "201": {
+            "description": "The newly created user resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          }
+        }
+      }
+    },
+    "/users/{user}": {
+      "get": {
+        "operationId": "users.show",
+        "summary": "Get a specific user\r\n\r\nRetrieves the details of a specific user by their ID",
+        "tags": [
+          "User Management"
+        ],
+        "parameters": [
+          {
+            "name": "user",
+            "in": "path",
+            "required": true,
+            "description": "The user model instance.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The requested user resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          }
+        }
+      },
+      "put": {
+        "operationId": "users.update",
+        "summary": "Update a user\r\n\r\nUpdates the details of a specific user",
+        "tags": [
+          "User Management"
+        ],
+        "parameters": [
+          {
+            "name": "user",
+            "in": "path",
+            "required": true,
+            "description": "The user to update.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The updated user resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "users.destroy",
+        "summary": "Delete a user\r\n\r\nDeletes a specific user",
+        "tags": [
+          "User Management"
+        ],
+        "parameters": [
+          {
+            "name": "user",
+            "in": "path",
+            "required": true,
+            "description": "The user to delete.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          }
+        }
+      }
+    },
+    "/users/{user}/assign-role": {
+      "post": {
+        "operationId": "user.assignRole",
+        "summary": "Assign a role to a user\r\n\r\nAssigns a specific role to a user. This action may require admin privileges",
+        "tags": [
+          "User Management"
+        ],
+        "parameters": [
+          {
+            "name": "user",
+            "in": "path",
+            "required": true,
+            "description": "The user to whom the role is assigned.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "enum": [
+                        "Role assigned successfully."
+                      ]
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "403": {
+            "$ref": "#/components/responses/AuthorizationException"
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          }
+        }
+      }
+    },
+    "/profile/settings": {
+      "post": {
+        "operationId": "profile.update",
+        "summary": "Update profile settings\r\n\r\nUpdate the authenticated user's profile information",
+        "tags": [
+          "User Profile"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "The user's name.",
+                    "maxLength": 255
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "The user's email. Must be unique.",
+                    "maxLength": 255
+                  },
+                  "phone_number": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "The user's phone number.",
+                    "maxLength": 20
+                  },
+                  "address": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "The user's address.",
+                    "maxLength": 255
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The updated user resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        }
+      }
+    },
+    "/profile/change-password": {
+      "post": {
+        "operationId": "profile.changePassword",
+        "summary": "Change password\r\n\r\nUpdate the authenticated user's password",
+        "tags": [
+          "User Profile"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "current_password": {
+                    "type": "string",
+                    "description": "The user's current password."
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "The new password."
+                  },
+                  "password_confirmation": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "current_password",
+                  "password",
+                  "password_confirmation"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The password was changed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "enum": [
+                        "Password changed successfully."
+                      ]
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        }
+      }
+    },
+    "/profile/avatar": {
+      "post": {
+        "operationId": "profile.updateAvatar",
+        "summary": "Update avatar\r\n\r\nUpdate the authenticated user's avatar. The request must be a `multipart/form-data` request",
+        "tags": [
+          "User Profile"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "avatar": {
+                    "type": "string",
+                    "format": "binary",
+                    "contentMediaType": "application/octet-stream",
+                    "description": "The image file to upload (max: 2MB).",
+                    "maxLength": 2048
+                  }
+                },
+                "required": [
+                  "avatar"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The avatar was updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "enum": [
+                        "Avatar updated successfully"
+                      ]
+                    },
+                    "avatar_url": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message",
+                    "avatar_url"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "first_name": {
+            "type": "string"
+          },
+          "last_name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phone_number": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "avatar": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "balance": {
+            "type": "string"
+          },
+          "email_verified_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "full_name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "first_name",
+          "last_name",
+          "email",
+          "phone_number",
+          "avatar",
+          "balance",
+          "email_verified_at",
+          "created_at",
+          "updated_at",
+          "full_name"
+        ],
+        "title": "User"
+      }
+    },
+    "responses": {
+      "ValidationException": {
+        "description": "Validation error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "Errors overview."
+                },
+                "errors": {
+                  "type": "object",
+                  "description": "A detailed description of each field that failed validation.",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "required": [
+                "message",
+                "errors"
+              ]
+            }
+          }
+        }
+      },
+      "AuthenticationException": {
+        "description": "Unauthenticated",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "Error overview."
+                }
+              },
+              "required": [
+                "message"
+              ]
+            }
+          }
+        }
+      },
+      "ModelNotFoundException": {
+        "description": "Not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "Error overview."
+                }
+              },
+              "required": [
+                "message"
+              ]
+            }
+          }
+        }
+      },
+      "AuthorizationException": {
+        "description": "Authorization error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "Error overview."
+                }
+              },
+              "required": [
+                "message"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

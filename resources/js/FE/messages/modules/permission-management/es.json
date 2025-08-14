@@ -1,0 +1,40 @@
+{
+    "permissionManagement": {
+        "title": "Permisos",
+        "addNew": "Agregar nuevo permiso",
+        "form": {
+            "createTitle": "Crear nuevo permiso",
+            "editTitle": "Editar permiso",
+            "nameLabel": "Nombre",
+            "namePlaceholder": "Nombre del permiso",
+            "cancel": "Cancelar",
+            "save": "Guardar",
+            "saving": "Guardando..."
+        },
+        "table": {
+            "name": "Nombre",
+            "guardName": "Nombre del guardia",
+            "createdDate": "Fecha de creación",
+            "edit": "Editar",
+            "delete": "Eliminar"
+        },
+        "deleteConfirm": {
+            "title": "Eliminar permiso",
+            "content": "¿Está seguro de que desea eliminar este permiso?",
+            "confirmText": "Eliminar"
+        },
+        "bulkDeleteConfirm": {
+            "title": "Confirmación de eliminación",
+            "content": "¿Está seguro de que desea eliminar {count} permiso(s) seleccionado(s)? Esta acción no se puede deshacer.",
+            "delete": "Eliminar",
+            "cancel": "Cancelar"
+        },
+        "bulkAction": {
+            "selected": "{count} permiso seleccionado",
+            "delete": "Eliminar",
+            "clear": "Limpiar"
+        },
+        "searchPlaceholder": "Buscar por nombre...",
+        "columns": "Columnas"
+    }
+}

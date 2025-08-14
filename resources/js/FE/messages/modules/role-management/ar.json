@@ -1,0 +1,41 @@
+{
+    "roleManagement": {
+        "title": "أدوار",
+        "addNew": "إضافة دور جديد",
+        "form": {
+            "createTitle": "إنشاء دور جديد",
+            "editTitle": "تعديل الدور",
+            "nameLabel": "اسم",
+            "namePlaceholder": "اسم الدور",
+            "permissionsLabel": "أذونات",
+            "cancel": "إلغاء",
+            "save": "حفظ",
+            "saving": "جارٍ الحفظ..."
+        },
+        "table": {
+            "name": "اسم",
+            "guardName": "اسم الحارس",
+            "createdDate": "تاريخ الإنشاء",
+            "edit": "تعديل",
+            "delete": "حذف"
+        },
+        "deleteConfirm": {
+            "title": "حذف الدور",
+            "content": "هل أنت متأكد أنك تريد حذف هذا الدور؟",
+            "confirmText": "حذف"
+        },
+        "bulkDeleteConfirm": {
+            "title": "تأكيد الحذف",
+            "content": "هل أنت متأكد أنك تريد حذف {count} دور (أدوار) محددة؟ لا يمكن التراجع عن هذا الإجراء.",
+            "delete": "حذف",
+            "cancel": "إلغاء"
+        },
+        "bulkAction": {
+            "selected": "تم تحديد {count} دور (أدوار)",
+            "delete": "حذف",
+            "clear": "مسح"
+        },
+        "searchPlaceholder": "البحث بالاسم...",
+        "columns": "أعمدة"
+    }
+}

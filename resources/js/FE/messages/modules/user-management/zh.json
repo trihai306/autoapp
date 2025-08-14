@@ -1,0 +1,88 @@
+{
+    "userManagement": {
+        "title": "用户",
+        "addNew": "添加新用户",
+        "editTitle": "编辑用户",
+        "createTitle": "创建新用户",
+        "form": {
+            "back": "返回",
+            "block": "阻止",
+            "delete": "删除",
+            "save": "保存",
+            "saving": "保存中...",
+            "basicInfo": "基本信息",
+            "firstName": "名字",
+            "lastName": "姓氏",
+            "contactInfo": "联系信息",
+            "email": "电子邮件",
+            "phoneNumber": "电话号码",
+            "roles": "角色",
+            "password": "密码",
+            "confirmPassword": "确认密码",
+            "passwordInfo": "密码只能由用户更改。"
+        },
+        "table": {
+            "name": "名称",
+            "email": "电子邮件",
+            "phone": "电话",
+            "roles": "角色",
+            "balance": "余额",
+            "createdDate": "创建日期",
+            "status": "状态",
+            "edit": "编辑",
+            "view": "查看"
+        },
+        "deleteConfirm": {
+            "title": "删除用户",
+            "content": "您确定要删除此用户吗？",
+            "confirmText": "删除"
+        },
+        "blockConfirm": {
+            "title": "阻止用户",
+            "content": "您确定要阻止此用户吗？",
+            "confirmText": "阻止"
+        },
+        "bulkDeleteConfirm": {
+            "title": "删除确认",
+            "content": "您确定要删除所选的 {count} 个用户吗？此操作无法撤消。",
+            "delete": "删除",
+            "cancel": "取消"
+        },
+        "bulkBlockConfirm": {
+            "title": "阻止确认",
+            "content": "您确定要阻止所选的 {count} 个用户吗？",
+            "block": "阻止",
+            "cancel": "取消"
+        },
+        "bulkAction": {
+            "selected": "已选择 {count} 个用户",
+            "delete": "删除",
+            "block": "阻止",
+            "clear": "清除"
+        },
+        "searchPlaceholder": "快速搜索...",
+        "columns": "列",
+        "filter": "筛选",
+        "filterForm": {
+            "email": "电子邮件",
+            "firstName": "名字",
+            "lastName": "姓氏",
+            "phoneNumber": "电话号码",
+            "status": "状态",
+            "allStatus": "所有状态",
+            "active": "活跃",
+            "locked": "已锁定",
+            "cancel": "取消",
+            "apply": "应用"
+        },
+        "detail": {
+            "title": "用户详细信息",
+            "status": "状态",
+            "phone": "电话",
+            "balance": "余额",
+            "roles": "角色",
+            "createdDate": "创建日期",
+            "edit": "编辑"
+        }
+    }
+}

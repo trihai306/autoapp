@@ -1,0 +1,88 @@
+{
+    "userManagement": {
+        "title": "Usuarios",
+        "addNew": "Agregar nuevo usuario",
+        "editTitle": "Editar usuario",
+        "createTitle": "Crear nuevo usuario",
+        "form": {
+            "back": "Atrás",
+            "block": "Bloquear",
+            "delete": "Eliminar",
+            "save": "Guardar",
+            "saving": "Guardando...",
+            "basicInfo": "Información básica",
+            "firstName": "Nombre",
+            "lastName": "Apellido",
+            "contactInfo": "Información de contacto",
+            "email": "Correo electrónico",
+            "phoneNumber": "Número de teléfono",
+            "roles": "Roles",
+            "password": "Contraseña",
+            "confirmPassword": "Confirmar contraseña",
+            "passwordInfo": "La contraseña solo puede ser cambiada por el usuario."
+        },
+        "table": {
+            "name": "Nombre",
+            "email": "Correo electrónico",
+            "phone": "Teléfono",
+            "roles": "Roles",
+            "balance": "Saldo",
+            "createdDate": "Fecha de creación",
+            "status": "Estado",
+            "edit": "Editar",
+            "view": "Ver"
+        },
+        "deleteConfirm": {
+            "title": "Eliminar usuario",
+            "content": "¿Está seguro de que desea eliminar este usuario?",
+            "confirmText": "Eliminar"
+        },
+        "blockConfirm": {
+            "title": "Bloquear usuario",
+            "content": "¿Está seguro de que desea bloquear a este usuario?",
+            "confirmText": "Bloquear"
+        },
+        "bulkDeleteConfirm": {
+            "title": "Confirmación de eliminación",
+            "content": "¿Está seguro de que desea eliminar {count} usuario(s) seleccionado(s)? Esta acción no se puede deshacer.",
+            "delete": "Eliminar",
+            "cancel": "Cancelar"
+        },
+        "bulkBlockConfirm": {
+            "title": "Confirmación de bloqueo",
+            "content": "¿Está seguro de que desea bloquear a {count} usuario(s) seleccionado(s)?",
+            "block": "Bloquear",
+            "cancel": "Cancelar"
+        },
+        "bulkAction": {
+            "selected": "{count} usuario seleccionado",
+            "delete": "Eliminar",
+            "block": "Bloquear",
+            "clear": "Limpiar"
+        },
+        "searchPlaceholder": "Búsqueda rápida...",
+        "columns": "Columnas",
+        "filter": "Filtrar",
+        "filterForm": {
+            "email": "Correo electrónico",
+            "firstName": "Nombre",
+            "lastName": "Apellido",
+            "phoneNumber": "Número de teléfono",
+            "status": "Estado",
+            "allStatus": "Todos los estados",
+            "active": "Activo",
+            "locked": "Bloqueado",
+            "cancel": "Cancelar",
+            "apply": "Aplicar"
+        },
+        "detail": {
+            "title": "Detalles del usuario",
+            "status": "Estado",
+            "phone": "Teléfono",
+            "balance": "Saldo",
+            "roles": "Roles",
+            "createdDate": "Fecha de creación",
+            "edit": "Editar"
+        }
+    }
+}

@@ -1,0 +1,88 @@
+{
+    "userManagement": {
+        "title": "المستخدمون",
+        "addNew": "إضافة مستخدم جديد",
+        "editTitle": "تعديل المستخدم",
+        "createTitle": "إنشاء مستخدم جديد",
+        "form": {
+            "back": "عودة",
+            "block": "حظر",
+            "delete": "حذف",
+            "save": "حفظ",
+            "saving": "جارٍ الحفظ...",
+            "basicInfo": "معلومات أساسية",
+            "firstName": "الاسم الأول",
+            "lastName": "اسم العائلة",
+            "contactInfo": "معلومات الاتصال",
+            "email": "البريد الإلكتروني",
+            "phoneNumber": "رقم الهاتف",
+            "roles": "الأدوار",
+            "password": "كلمة المرور",
+            "confirmPassword": "تأكيد كلمة المرور",
+            "passwordInfo": "لا يمكن تغيير كلمة المرور إلا من قبل المستخدم."
+        },
+        "table": {
+            "name": "الاسم",
+            "email": "البريد الإلكتروني",
+            "phone": "الهاتف",
+            "roles": "الأدوار",
+            "balance": "الرصيد",
+            "createdDate": "تاريخ الإنشاء",
+            "status": "الحالة",
+            "edit": "تعديل",
+            "view": "عرض"
+        },
+        "deleteConfirm": {
+            "title": "حذف المستخدم",
+            "content": "هل أنت متأكد أنك تريد حذف هذا المستخدم؟",
+            "confirmText": "حذف"
+        },
+        "blockConfirm": {
+            "title": "حظر المستخدم",
+            "content": "هل أنت متأكد أنك تريد حظر هذا المستخدم؟",
+            "confirmText": "حظر"
+        },
+        "bulkDeleteConfirm": {
+            "title": "تأكيد الحذف",
+            "content": "هل أنت متأكد أنك تريد حذف {count} مستخدم (مستخدمين) محدد؟ لا يمكن التراجع عن هذا الإجراء.",
+            "delete": "حذف",
+            "cancel": "إلغاء"
+        },
+        "bulkBlockConfirm": {
+            "title": "تأكيد الحظر",
+            "content": "هل أنت متأكد أنك تريد حظر {count} مستخدم (مستخدمين) محدد؟",
+            "block": "حظر",
+            "cancel": "إلغاء"
+        },
+        "bulkAction": {
+            "selected": "تم تحديد {count} مستخدم",
+            "delete": "حذف",
+            "block": "حظر",
+            "clear": "مسح"
+        },
+        "searchPlaceholder": "بحث سريع...",
+        "columns": "أعمدة",
+        "filter": "منقي",
+        "filterForm": {
+            "email": "البريد الإلكتروني",
+            "firstName": "الاسم الأول",
+            "lastName": "اسم العائلة",
+            "phoneNumber": "رقم الهاتف",
+            "status": "الحالة",
+            "allStatus": "جميع الحالات",
+            "active": "نشط",
+            "locked": "مقفل",
+            "cancel": "إلغاء",
+            "apply": "تطبيق"
+        },
+        "detail": {
+            "title": "تفاصيل المستخدم",
+            "status": "الحالة",
+            "phone": "الهاتف",
+            "balance": "الرصيد",
+            "roles": "الأدوار",
+            "createdDate": "تاريخ الإنشاء",
+            "edit": "تعديل"
+        }
+    }
+}

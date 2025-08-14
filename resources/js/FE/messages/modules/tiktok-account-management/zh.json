@@ -1,0 +1,294 @@
+{
+    "title": "TikTok 账户管理",
+    "addNew": "添加新账户",
+    "importAccounts": "导入账户",
+    "configureInteraction": "配置交互",
+    "searchPlaceholder": "搜索账户...",
+    "filter": "筛选",
+    "columns": "列",
+    "createTitle": "创建新的 TikTok 账户",
+    "editTitle": "编辑 TikTok 账户",
+    "table": {
+        "username": "用户名",
+        "email": "邮箱",
+        "phone": "电话",
+        "status": "状态",
+        "notes": "备注",
+        "createdDate": "创建日期",
+        "edit": "编辑",
+        "view": "查看"
+    },
+    "detail": {
+        "title": "TikTok 账户详情",
+        "status": "状态",
+        "phone": "电话号码",
+        "notes": "备注",
+        "createdDate": "创建日期",
+        "notProvided": "未提供",
+        "noNotes": "无备注",
+        "edit": "编辑"
+    },
+    "form": {
+        "basicInfo": "基本信息",
+        "contactInfo": "联系信息",
+        "additionalInfo": "附加信息",
+        "username": "用户名",
+        "email": "邮箱",
+        "phoneNumber": "电话号码",
+        "status": "状态",
+        "notes": "备注",
+        "notesPlaceholder": "输入关于此账户的附加备注...",
+        "password": "密码",
+        "confirmPassword": "确认密码",
+        "passwordInfo": "留空密码字段以保持当前密码",
+        "selectStatus": "选择状态",
+        "statusActive": "活跃",
+        "statusInactive": "非活跃",
+        "statusSuspended": "已暂停",
+        "back": "返回",
+        "save": "保存",
+        "saving": "保存中...",
+        "delete": "删除",
+        "suspend": "暂停"
+    },
+    "filterForm": {
+        "username": "用户名",
+        "email": "邮箱",
+        "phoneNumber": "电话号码",
+        "status": "状态",
+        "cancel": "取消",
+        "apply": "应用"
+    },
+    "bulkAction": {
+        "selected": "已选择 {{count}} 个账户",
+        "delete": "删除",
+        "suspend": "暂停",
+        "clear": "清除选择"
+    },
+    "bulkDeleteConfirm": {
+        "title": "删除选中的账户",
+        "content": "您确定要删除 {{count}} 个选中的 TikTok 账户吗？此操作无法撤销。",
+        "cancel": "取消",
+        "delete": "删除",
+        "confirmText": "是的，删除它们"
+    },
+    "bulkSuspendConfirm": {
+        "title": "暂停选中的账户",
+        "content": "您确定要暂停 {{count}} 个选中的 TikTok 账户吗？",
+        "cancel": "取消",
+        "suspend": "暂停",
+        "confirmText": "是的，暂停它们"
+    },
+    "bulkStartConfirm": {
+        "title": "启动选中的账户",
+        "content": "您确定要为 {{count}} 个选中的 TikTok 账户启动运行场景吗？",
+        "cancel": "取消",
+        "start": "启动",
+        "confirmText": "是的，启动它们"
+    },
+    "deleteConfirm": {
+        "title": "删除 TikTok 账户",
+        "content": "您确定要删除这个 TikTok 账户吗？此操作无法撤销。",
+        "cancel": "取消",
+        "delete": "删除",
+        "confirmText": "是的，删除它"
+    },
+    "suspendConfirm": {
+        "title": "暂停 TikTok 账户",
+        "content": "您确定要暂停这个 TikTok 账户吗？",
+        "cancel": "取消",
+        "suspend": "暂停",
+        "confirmText": "是的，暂停它"
+    },
+    "interactionConfig": {
+        "title": "TikTok 交互配置",
+        "back": "返回",
+        "autoReply": "自动回复",
+        "autoReplyDescription": "为 TikTok 交互配置自动回复消息",
+        "configureAutoReply": "配置自动回复",
+        "messageTemplates": "消息模板",
+        "messageTemplatesDescription": "管理预定义消息模板以便快速使用",
+        "manageTemplates": "管理模板",
+        "responseRules": "回复规则",
+        "responseRulesDescription": "基于关键词设置自动回复规则",
+        "setRules": "设置规则",
+        "analytics": "交互分析",
+        "analyticsDescription": "查看用户交互的统计和分析",
+        "viewAnalytics": "查看分析"
+    },
+    "importModal": {
+        "title": "导入账户",
+        "accountListLabel": "输入账户列表:",
+        "accountListPlaceholder": "UID1|PASS1|TWO-FA1|MAIL1|...\nUID2|PASS2|TWO-FA2|MAIL2|...",
+        "formatLabel": "导入格式:",
+        "formatValue": "UID|PASS|2FA|MAIL",
+        "enableRunningStatus": "启用运行状态",
+        "autoAssign": "自动分配",
+        "selectDevice": "选择设备",
+        "selectDevicePlaceholder": "选择设备",
+        "selectScenario": "选择场景",
+        "selectScenarioPlaceholder": "选择场景",
+        "redo": "重做",
+        "exit": "退出",
+        "save": "保存",
+        "saving": "保存中..."
+    },
+    "accountDetailModal": {
+        "title": "账户详情",
+        "loading": "加载中...",
+        "loadingHistory": "加载历史记录...",
+        "errorLoading": "无法加载账户信息",
+        "retry": "重试",
+        "refresh": "刷新",
+        "edit": "编辑",
+        "start": "开始",
+        "close": "关闭",
+        "tabs": {
+            "overview": "概览",
+            "stats": "统计",
+            "activity": "活动",
+            "security": "安全",
+            "settings": "设置"
+        },
+        "status": {
+            "active": "活跃",
+            "inactive": "非活跃",
+            "suspended": "已暂停",
+            "running": "运行中",
+            "error": "错误",
+            "unknown": "未知"
+        },
+        "overview": {
+            "noDisplayName": "无显示名称",
+            "joinDate": "加入时间：{date}",
+            "lastActivity": "活动：{date}",
+            "noActivity": "无活动",
+            "undetermined": "未确定",
+            "followers": "粉丝",
+            "likes": "点赞",
+            "videos": "视频",
+            "estimatedViews": "观看次数（估计）",
+            "currentTasks": "当前任务",
+            "runningTasks": "{count} 个运行中",
+            "pendingTasks": "{count} 个待处理",
+            "noTasks": "当前没有正在执行的任务",
+            "priority": "优先级：{priority}",
+            "startedAt": "开始时间：{time}",
+            "scheduledAt": "计划时间：{time}",
+            "immediately": "立即",
+            "pending": "待处理"
+        },
+        "stats": {
+            "placeholder": "详细统计信息将在此处显示",
+            "title": "详细统计",
+            "description": "账户性能分析和活动洞察",
+            "sections": {
+                "performance": "性能概览",
+                "taskAnalysis": "任务分析",
+                "engagement": "互动",
+                "timeline": "时间趋势"
+            },
+            "metrics": {
+                "totalTasks": "总任务数",
+                "completedTasks": "已完成",
+                "failedTasks": "失败",
+                "successRate": "成功率",
+                "averageTasksPerDay": "平均任务/天",
+                "totalFollowers": "总粉丝数",
+                "totalLikes": "总点赞数",
+                "totalVideos": "总视频数",
+                "totalViews": "总观看数",
+                "engagementRate": "互动率",
+                "averageViewsPerVideo": "平均观看/视频",
+                "accountAge": "账户年龄",
+                "lastActiveTime": "最后活跃时间"
+            },
+            "charts": {
+                "taskDistribution": "任务分布",
+                "taskStatusBreakdown": "任务状态分析",
+                "priorityDistribution": "优先级分布",
+                "performanceTrend": "性能趋势"
+            },
+            "periods": {
+                "today": "今天",
+                "thisWeek": "本周",
+                "thisMonth": "本月",
+                "allTime": "全部时间"
+            },
+            "noData": "无数据显示",
+            "calculating": "计算中..."
+        },
+        "activity": {
+            "summary": {
+                "completed": "已完成",
+                "running": "运行中",
+                "pending": "待处理",
+                "failed": "失败"
+            },
+            "timeline": {
+                "title": "最近活动历史",
+                "description": "跟踪所有账户互动任务",
+                "noActivity": "暂无活动",
+                "noActivityDescription": "此账户尚未执行任何互动任务。",
+                "viewMore": "查看更多 {count} 个活动"
+            },
+            "taskStatus": {
+                "completed": "已完成",
+                "failed": "失败",
+                "running": "运行中",
+                "pending": "待处理",
+                "unknown": "未知"
+            },
+            "taskTypes": {
+                "follow_user": "关注用户",
+                "unfollow_user": "取消关注用户",
+                "like_video": "点赞视频",
+                "unlike_video": "取消点赞视频",
+                "comment_video": "评论视频",
+                "share_video": "分享视频",
+                "view_video": "观看视频",
+                "create_post": "创建帖子",
+                "live_interaction": "直播互动",
+                "message_user": "私信用户",
+                "unknown": "未知任务"
+            },
+            "priority": {
+                "high": "高",
+                "medium": "中",
+                "low": "低",
+                "unknown": "未知"
+            },
+            "timeAgo": {
+                "justNow": "刚刚",
+                "minutesAgo": "{minutes} 分钟前",
+                "hoursAgo": "{hours} 小时前",
+                "daysAgo": "{days} 天前"
+            }
+        },
+        "security": {
+            "twoFactor": {
+                "title": "双因素认证 (2FA)",
+                "description": "通过额外的安全层保护您的账户",
+                "enabled": "已启用",
+                "disabled": "已禁用",
+                "enabledMessage": "此账户已启用 2FA",
+                "disabledMessage": "账户未受 2FA 保护",
+                "recommendation": "我们建议启用 2FA 以增强此 TikTok 账户的安全性。",
+                "backupCodes": "备用代码",
+                "backupCodesAvailable": "{count} 个备用代码可用",
+                "moreBackupCodes": "还有 {count} 个代码"
+            },
+            "securityInfo": {
+                "title": "安全信息",
+                "phoneNumber": "电话号码",
+                "email": "邮箱",
+                "lastLogin": "最后登录",
+                "notUpdated": "未更新",
+                "notLoggedIn": "未登录"
+            }
+        },
+        "settings": {
+            "placeholder": "账户设置将在此处显示"
+        }
+    }
+} 

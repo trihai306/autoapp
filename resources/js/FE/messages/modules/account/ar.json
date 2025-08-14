@@ -1,0 +1,61 @@
+{
+    "account": {
+        "settings": {
+            "menu": {
+                "navigation": "التنقل"
+            },
+            "notification": {
+                "title": "إشعار",
+                "enableDesktopNotification": "تمكين إعلام سطح المكتب",
+                "desktopNotificationDescription": "حدد ما إذا كنت تريد أن يتم إعلامك بالرسائل والتحديثات الجديدة",
+                "enableUnreadNotificationBadge": "تمكين شارة الإشعارات غير المقروءة",
+                "unreadNotificationBadgeDescription": "عرض مؤشر أحمر على أيقونة الإشعار عندما يكون لديك رسالة غير مقروءة",
+                "notifyMeAbout": "أعلمني عن",
+                "allNewMessages": "كل الرسائل الجديدة",
+                "allNewMessagesDescription": "بث الإخطارات إلى القناة لكل رسالة جديدة",
+                "mentionsOnly": "الإشارات فقط",
+                "mentionsOnlyDescription": "قم بتنبيهي في القناة فقط إذا ذكرني شخص ما في رسالة",
+                "nothing": "لا شيء",
+                "nothingDescription": "لا تخطرني بأي شيء",
+                "emailNotification": "إشعار البريد الإلكتروني",
+                "emailNotificationDescription": "يمكن أن يرسل لك Substance إشعارًا بالبريد الإلكتروني لأي رسالة مباشرة جديدة",
+                "newsAndUpdate": "الأخبار والتحديثات",
+                "newsAndUpdateDescription": "أخبار حول المنتج وتحديثات الميزات",
+                "tipsAndTutorial": "نصائح ودروس",
+                "tipsAndTutorialDescription": "نصائح وحيل لزيادة كفاءة أدائك",
+                "offerAndPromotion": "العروض والترقيات",
+                "offerAndPromotionDescription": "الترويج حول سعر المنتج وآخر الخصومات",
+                "followUpReminder": "تذكير المتابعة",
+                "followUpReminderDescription": "تلقي إشعار بجميع التذكيرات التي تم إجراؤها"
+            },
+            "billing": {
+                "title": "الفواتير",
+                "balance": "الرصيد",
+                "currentPlan": "الخطة الحالية",
+                "billing": "الفواتير",
+                "nextPaymentOn": "الدفع التالي في",
+                "for": "ل",
+                "changePlan": "تغيير الخطة",
+                "paymentMethod": "طريقة الدفع",
+                "expired": "منتهية الصلاحية",
+                "primary": "أساسي",
+                "edit": "تعديل",
+                "addPaymentMethod": "إضافة طريقة دفع",
+                "transactionHistory": "سجل المعاملات",
+                "addCreditCard": "إضافة بطاقة ائتمان",
+                "editCreditCard": "تعديل بطاقة الائتمان",
+                "creditCardUpdated": "تم تحديث بطاقة الائتمان!",
+                "creditCardAdded": "تمت إضافة بطاقة الائتمان!",
+                "id": "معرف",
+                "type": "نوع",
+                "description": "وصف",
+                "status": "الحالة",
+                "date": "تاريخ",
+                "amount": "المبلغ",
+                "completed": "مكتمل",
+                "pending": "قيد الانتظار",
+                "failed": "فشل"
+            }
+        }
+    }
+}

@@ -1,0 +1,41 @@
+{
+    "roleManagement": {
+        "title": "Vai trò",
+        "addNew": "Thêm vai trò mới",
+        "form": {
+            "createTitle": "Tạo vai trò mới",
+            "editTitle": "Chỉnh sửa vai trò",
+            "nameLabel": "Tên",
+            "namePlaceholder": "Tên vai trò",
+            "permissionsLabel": "Quyền",
+            "cancel": "Hủy",
+            "save": "Lưu",
+            "saving": "Đang lưu..."
+        },
+        "table": {
+            "name": "Tên",
+            "guardName": "Tên bảo vệ",
+            "createdDate": "Ngày tạo",
+            "edit": "Chỉnh sửa",
+            "delete": "Xóa"
+        },
+        "deleteConfirm": {
+            "title": "Xóa vai trò",
+            "content": "Bạn có chắc chắn muốn xóa vai trò này không?",
+            "confirmText": "Xóa"
+        },
+        "bulkDeleteConfirm": {
+            "title": "Xác nhận xóa",
+            "content": "Bạn có chắc chắn muốn xóa {count} vai trò đã chọn không? Hành động này không thể hoàn tác.",
+            "delete": "Xóa",
+            "cancel": "Hủy"
+        },
+        "bulkAction": {
+            "selected": "{count} vai trò đã được chọn",
+            "delete": "Xóa",
+            "clear": "Xóa"
+        },
+        "searchPlaceholder": "Tìm kiếm theo tên...",
+        "columns": "Cột"
+    }
+}

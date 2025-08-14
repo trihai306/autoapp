@@ -1,0 +1,58 @@
+{
+    "signIn": {
+        "welcome": "Welcome back!",
+        "subtitle": "Please enter your credentials to sign in!",
+        "emailOrPhone": "Email or Phone Number",
+        "password": "Password",
+        "forgotPassword": "Forgot password",
+        "orContinueWith": "or countinue with",
+        "dontHaveAccount": "Don't have an account yet?",
+        "signUp": "Sign up",
+        "signingIn": "Signing in...",
+        "signIn": "Sign In"
+    },
+    "signUp": {
+        "title": "Sign Up",
+        "subtitle": "And lets get started with your free trial",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "phoneNumber": "Phone Number",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "creatingAccount": "Creating Account...",
+        "signUp": "Sign Up",
+        "alreadyHaveAccount": "Already have an account?"
+    },
+    "forgotPassword": {
+        "checkEmailTitle": "Check your email",
+        "checkEmailSubtitle": "We have sent a password recovery to your email",
+        "title": "Forgot Password",
+        "subtitle": "Please enter your email to receive a verification code",
+        "email": "Email",
+        "submit": "Submit",
+        "submitting": "Submiting...",
+        "continue": "Continue",
+        "backToSignIn": "Back to",
+        "signIn": "Sign in"
+    },
+    "resetPassword": {
+        "resetDoneTitle": "Reset done",
+        "resetDoneSubtitle": "Your password has been successfully reset",
+        "title": "Set new password",
+        "subtitle": "Your new password must different to previos password",
+        "newPassword": "Password",
+        "confirmPassword": "Confirm Password",
+        "submit": "Submit",
+        "submitting": "Submiting...",
+        "continue": "Continue"
+    },
+    "otpVerification": {
+        "title": "OTP Verification",
+        "subtitle": "We have sent you One Time Password to your email.",
+        "didntReceive": "Din't receive OTP?",
+        "resend": "Resend OTP",
+        "verifying": "Verifying...",
+        "verify": "Verify OTP"
+    }
+}

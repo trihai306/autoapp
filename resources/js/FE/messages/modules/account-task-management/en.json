@@ -1,0 +1,53 @@
+{
+    "accountTaskManagement": {
+        "title": "Account Task Management",
+        "quickSearch": "Quick search for tasks...",
+        "filter": "Filter",
+        "table": {
+            "taskId": "Task ID",
+            "tiktokAccount": "Tiktok Account",
+            "type": "Type",
+            "status": "Status",
+            "priority": "Priority",
+            "scheduledAt": "Scheduled At",
+            "actions": "Actions"
+        },
+        "bulkAction": {
+            "selected": "{count} selected",
+            "delete": "Delete",
+            "clear": "Clear Selection"
+        },
+        "deleteConfirm": {
+            "title": "Delete Confirmation",
+            "content": "Are you sure you want to delete {count} task(s)? This action cannot be undone.",
+            "cancel": "Cancel",
+            "delete": "Delete"
+        },
+        "filterForm": {
+            "title": "Filter Tasks",
+            "taskType": "Task Type",
+            "selectTaskType": "Select task type",
+            "status": "Status",
+            "selectStatus": "Select status",
+            "priority": "Priority",
+            "selectPriority": "Select priority",
+            "tiktokAccount": "Tiktok Account",
+            "searchAccount": "Search for an account",
+            "cancel": "Cancel",
+            "apply": "Apply"
+        }
+    },
+    "enums": {
+        "status": {
+            "pending": "Pending",
+            "running": "Running",
+            "completed": "Completed",
+            "failed": "Failed"
+        },
+        "priority": {
+            "low": "Low",
+            "medium": "Medium",
+            "high": "High"
+        }
+    }
+}

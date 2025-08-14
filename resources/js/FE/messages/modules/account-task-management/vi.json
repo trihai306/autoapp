@@ -1,0 +1,53 @@
+{
+    "accountTaskManagement": {
+        "title": "Quản lý Tác vụ Tài khoản",
+        "quickSearch": "Tìm kiếm nhanh tác vụ...",
+        "filter": "Bộ lọc",
+        "table": {
+            "taskId": "Mã Tác vụ",
+            "tiktokAccount": "Tài khoản Tiktok",
+            "type": "Loại",
+            "status": "Trạng thái",
+            "priority": "Ưu tiên",
+            "scheduledAt": "Lịch chạy",
+            "actions": "Hành động"
+        },
+        "bulkAction": {
+            "selected": "Đã chọn {count}",
+            "delete": "Xóa",
+            "clear": "Bỏ chọn"
+        },
+        "deleteConfirm": {
+            "title": "Xác nhận Xóa",
+            "content": "Bạn có chắc chắn muốn xóa {count} tác vụ không? Hành động này không thể hoàn tác.",
+            "cancel": "Hủy",
+            "delete": "Xóa"
+        },
+        "filterForm": {
+            "title": "Lọc Tác vụ",
+            "taskType": "Loại tác vụ",
+            "selectTaskType": "Chọn loại tác vụ",
+            "status": "Trạng thái",
+            "selectStatus": "Chọn trạng thái",
+            "priority": "Ưu tiên",
+            "selectPriority": "Chọn độ ưu tiên",
+            "tiktokAccount": "Tài khoản Tiktok",
+            "searchAccount": "Tìm kiếm tài khoản",
+            "cancel": "Hủy",
+            "apply": "Áp dụng"
+        }
+    },
+    "enums": {
+        "status": {
+            "pending": "Đang chờ",
+            "running": "Đang chạy",
+            "completed": "Hoàn thành",
+            "failed": "Thất bại"
+        },
+        "priority": {
+            "low": "Thấp",
+            "medium": "Trung bình",
+            "high": "Cao"
+        }
+    }
+}

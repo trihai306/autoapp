@@ -1,0 +1,45 @@
+{
+    "transactionManagement": {
+        "title": "Transactions",
+        "filter": "Filter",
+        "table": {
+            "transactionId": "Transaction ID",
+            "user": "User",
+            "type": "Type",
+            "amount": "Amount",
+            "description": "Description",
+            "status": "Status",
+            "date": "Date",
+            "actions": "Actions"
+        },
+        "filterForm": {
+            "title": "Filter",
+            "transactionType": "Transaction Type",
+            "selectType": "Select type",
+            "user": "User",
+            "searchUser": "Search by name or email",
+            "status": "Status",
+            "selectStatus": "Select status",
+            "cancel": "Cancel",
+            "apply": "Apply"
+        },
+        "bulkAction": {
+            "selected": "{count} transaction(s) selected",
+            "delete": "Delete",
+            "clear": "Clear"
+        },
+        "deleteConfirm": {
+            "title": "Delete Confirmation",
+            "content": "Are you sure you want to delete {count} selected transaction(s)? This action cannot be undone.",
+            "delete": "Delete",
+            "cancel": "Cancel"
+        },
+        "quickSearch": "Quick search...",
+        "actionConfirm": {
+            "title": "Confirm Action",
+            "content": "Are you sure you want to {action} this transaction?",
+            "confirm": "Confirm",
+            "cancel": "Cancel"
+        }
+    }
+}

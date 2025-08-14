@@ -1,0 +1,294 @@
+{
+    "title": "إدارة حسابات تيك توك",
+    "addNew": "إضافة حساب جديد",
+    "importAccounts": "استيراد الحسابات",
+    "configureInteraction": "تكوين التفاعل",
+    "searchPlaceholder": "البحث في الحسابات...",
+    "filter": "تصفية",
+    "columns": "الأعمدة",
+    "createTitle": "إنشاء حساب تيك توك جديد",
+    "editTitle": "تعديل حساب تيك توك",
+    "table": {
+        "username": "اسم المستخدم",
+        "email": "البريد الإلكتروني",
+        "phone": "الهاتف",
+        "status": "الحالة",
+        "notes": "ملاحظات",
+        "createdDate": "تاريخ الإنشاء",
+        "edit": "تعديل",
+        "view": "عرض"
+    },
+    "detail": {
+        "title": "تفاصيل حساب تيك توك",
+        "status": "الحالة",
+        "phone": "رقم الهاتف",
+        "notes": "ملاحظات",
+        "createdDate": "تاريخ الإنشاء",
+        "notProvided": "غير مقدم",
+        "noNotes": "لا توجد ملاحظات",
+        "edit": "تعديل"
+    },
+    "form": {
+        "basicInfo": "المعلومات الأساسية",
+        "contactInfo": "معلومات الاتصال",
+        "additionalInfo": "معلومات إضافية",
+        "username": "اسم المستخدم",
+        "email": "البريد الإلكتروني",
+        "phoneNumber": "رقم الهاتف",
+        "status": "الحالة",
+        "notes": "ملاحظات",
+        "notesPlaceholder": "أدخل ملاحظات إضافية حول هذا الحساب...",
+        "password": "كلمة المرور",
+        "confirmPassword": "تأكيد كلمة المرور",
+        "passwordInfo": "اترك حقول كلمة المرور فارغة للاحتفاظ بكلمة المرور الحالية",
+        "selectStatus": "اختر الحالة",
+        "statusActive": "نشط",
+        "statusInactive": "غير نشط",
+        "statusSuspended": "معلق",
+        "back": "رجوع",
+        "save": "حفظ",
+        "saving": "جاري الحفظ...",
+        "delete": "حذف",
+        "suspend": "تعليق"
+    },
+    "filterForm": {
+        "username": "اسم المستخدم",
+        "email": "البريد الإلكتروني",
+        "phoneNumber": "رقم الهاتف",
+        "status": "الحالة",
+        "cancel": "إلغاء",
+        "apply": "تطبيق"
+    },
+    "bulkAction": {
+        "selected": "تم اختيار {{count}} حساب(ات)",
+        "delete": "حذف",
+        "suspend": "تعليق",
+        "clear": "مسح الاختيار"
+    },
+    "bulkDeleteConfirm": {
+        "title": "حذف الحسابات المحددة",
+        "content": "هل أنت متأكد من أنك تريد حذف {{count}} حساب تيك توك محدد؟ لا يمكن التراجع عن هذا الإجراء.",
+        "cancel": "إلغاء",
+        "delete": "حذف",
+        "confirmText": "نعم، احذفهم"
+    },
+    "bulkSuspendConfirm": {
+        "title": "تعليق الحسابات المحددة",
+        "content": "هل أنت متأكد من أنك تريد تعليق {{count}} حساب تيك توك محدد؟",
+        "cancel": "إلغاء",
+        "suspend": "تعليق",
+        "confirmText": "نعم، علقهم"
+    },
+    "bulkStartConfirm": {
+        "title": "بدء الحسابات المحددة",
+        "content": "هل أنت متأكد من أنك تريد بدء تشغيل السيناريوهات لـ {{count}} حساب تيك توك محدد؟",
+        "cancel": "إلغاء",
+        "start": "بدء",
+        "confirmText": "نعم، ابدأهم"
+    },
+    "deleteConfirm": {
+        "title": "حذف حساب تيك توك",
+        "content": "هل أنت متأكد من أنك تريد حذف حساب تيك توك هذا؟ لا يمكن التراجع عن هذا الإجراء.",
+        "cancel": "إلغاء",
+        "delete": "حذف",
+        "confirmText": "نعم، احذفه"
+    },
+    "suspendConfirm": {
+        "title": "تعليق حساب تيك توك",
+        "content": "هل أنت متأكد من أنك تريد تعليق حساب تيك توك هذا؟",
+        "cancel": "إلغاء",
+        "suspend": "تعليق",
+        "confirmText": "نعم، علقه"
+    },
+    "interactionConfig": {
+        "title": "تكوين تفاعل تيك توك",
+        "back": "رجوع",
+        "autoReply": "الرد التلقائي",
+        "autoReplyDescription": "تكوين رسائل الرد التلقائي لتفاعلات تيك توك",
+        "configureAutoReply": "تكوين الرد التلقائي",
+        "messageTemplates": "قوالب الرسائل",
+        "messageTemplatesDescription": "إدارة قوالب الرسائل المحددة مسبقاً للاستخدام السريع",
+        "manageTemplates": "إدارة القوالب",
+        "responseRules": "قواعد الاستجابة",
+        "responseRulesDescription": "إعداد قواعد الاستجابة التلقائية بناءً على الكلمات المفتاحية",
+        "setRules": "إعداد القواعد",
+        "analytics": "تحليلات التفاعل",
+        "analyticsDescription": "عرض الإحصائيات وتحليل تفاعلات المستخدمين",
+        "viewAnalytics": "عرض التحليلات"
+    },
+    "importModal": {
+        "title": "استيراد الحسابات",
+        "accountListLabel": "أدخل قائمة الحسابات:",
+        "accountListPlaceholder": "UID1|PASS1|TWO-FA1|MAIL1|...\nUID2|PASS2|TWO-FA2|MAIL2|...",
+        "formatLabel": "تنسيق الاستيراد:",
+        "formatValue": "UID|PASS|2FA|MAIL",
+        "enableRunningStatus": "تمكين حالة التشغيل",
+        "autoAssign": "التعيين التلقائي",
+        "selectDevice": "اختر الجهاز",
+        "selectDevicePlaceholder": "اختر الجهاز",
+        "selectScenario": "اختر السيناريو",
+        "selectScenarioPlaceholder": "اختر السيناريو",
+        "redo": "إعادة",
+        "exit": "خروج",
+        "save": "حفظ",
+        "saving": "جاري الحفظ..."
+    },
+    "accountDetailModal": {
+        "title": "تفاصيل الحساب",
+        "loading": "جاري التحميل...",
+        "loadingHistory": "جاري تحميل السجل...",
+        "errorLoading": "تعذر تحميل معلومات الحساب",
+        "retry": "إعادة المحاولة",
+        "refresh": "تحديث",
+        "edit": "تعديل",
+        "start": "بدء",
+        "close": "إغلاق",
+        "tabs": {
+            "overview": "نظرة عامة",
+            "stats": "إحصائيات",
+            "activity": "النشاط",
+            "security": "الأمان",
+            "settings": "الإعدادات"
+        },
+        "status": {
+            "active": "نشط",
+            "inactive": "غير نشط",
+            "suspended": "معلق",
+            "running": "قيد التشغيل",
+            "error": "خطأ",
+            "unknown": "غير معروف"
+        },
+        "overview": {
+            "noDisplayName": "لا يوجد اسم عرض",
+            "joinDate": "تاريخ الانضمام: {date}",
+            "lastActivity": "النشاط: {date}",
+            "noActivity": "لا يوجد نشاط",
+            "undetermined": "غير محدد",
+            "followers": "المتابعون",
+            "likes": "الإعجابات",
+            "videos": "الفيديوهات",
+            "estimatedViews": "المشاهدات (تقديرية)",
+            "currentTasks": "المهام الحالية",
+            "runningTasks": "{count} قيد التشغيل",
+            "pendingTasks": "{count} في الانتظار",
+            "noTasks": "لا توجد مهام قيد التشغيل حالياً",
+            "priority": "الأولوية: {priority}",
+            "startedAt": "بدأ في: {time}",
+            "scheduledAt": "مجدول في: {time}",
+            "immediately": "فوراً",
+            "pending": "في الانتظار"
+        },
+        "stats": {
+            "placeholder": "ستظهر الإحصائيات التفصيلية هنا",
+            "title": "إحصائيات مفصلة",
+            "description": "تحليل الأداء ورؤى نشاط الحساب",
+            "sections": {
+                "performance": "نظرة عامة على الأداء",
+                "taskAnalysis": "تحليل المهام",
+                "engagement": "التفاعل",
+                "timeline": "اتجاهات الوقت"
+            },
+            "metrics": {
+                "totalTasks": "إجمالي المهام",
+                "completedTasks": "مكتملة",
+                "failedTasks": "فاشلة",
+                "successRate": "معدل النجاح",
+                "averageTasksPerDay": "متوسط المهام/يوم",
+                "totalFollowers": "إجمالي المتابعين",
+                "totalLikes": "إجمالي الإعجابات",
+                "totalVideos": "إجمالي الفيديوهات",
+                "totalViews": "إجمالي المشاهدات",
+                "engagementRate": "معدل التفاعل",
+                "averageViewsPerVideo": "متوسط المشاهدات/فيديو",
+                "accountAge": "عمر الحساب",
+                "lastActiveTime": "آخر نشاط"
+            },
+            "charts": {
+                "taskDistribution": "توزيع المهام",
+                "taskStatusBreakdown": "تحليل حالة المهام",
+                "priorityDistribution": "توزيع الأولوية",
+                "performanceTrend": "اتجاه الأداء"
+            },
+            "periods": {
+                "today": "اليوم",
+                "thisWeek": "هذا الأسبوع",
+                "thisMonth": "هذا الشهر",
+                "allTime": "كل الوقت"
+            },
+            "noData": "لا توجد بيانات للعرض",
+            "calculating": "جاري الحساب..."
+        },
+        "activity": {
+            "summary": {
+                "completed": "مكتمل",
+                "running": "قيد التشغيل",
+                "pending": "في الانتظار",
+                "failed": "فشل"
+            },
+            "timeline": {
+                "title": "سجل النشاط الأخير",
+                "description": "تتبع جميع مهام التفاعل للحساب",
+                "noActivity": "لا يوجد نشاط بعد",
+                "noActivityDescription": "لم يقم هذا الحساب بتنفيذ أي مهام تفاعل بعد.",
+                "viewMore": "عرض {count} أنشطة أخرى"
+            },
+            "taskStatus": {
+                "completed": "مكتمل",
+                "failed": "فشل",
+                "running": "قيد التشغيل",
+                "pending": "في الانتظار",
+                "unknown": "غير معروف"
+            },
+            "taskTypes": {
+                "follow_user": "متابعة المستخدم",
+                "unfollow_user": "إلغاء متابعة المستخدم",
+                "like_video": "إعجاب بالفيديو",
+                "unlike_video": "إلغاء الإعجاب بالفيديو",
+                "comment_video": "التعليق على الفيديو",
+                "share_video": "مشاركة الفيديو",
+                "view_video": "مشاهدة الفيديو",
+                "create_post": "إنشاء منشور",
+                "live_interaction": "تفاعل مباشر",
+                "message_user": "مراسلة المستخدم",
+                "unknown": "مهمة غير معروفة"
+            },
+            "priority": {
+                "high": "عالية",
+                "medium": "متوسطة",
+                "low": "منخفضة",
+                "unknown": "غير معروفة"
+            },
+            "timeAgo": {
+                "justNow": "الآن",
+                "minutesAgo": "منذ {minutes} دقيقة",
+                "hoursAgo": "منذ {hours} ساعة",
+                "daysAgo": "منذ {days} يوم"
+            }
+        },
+        "security": {
+            "twoFactor": {
+                "title": "المصادقة الثنائية (2FA)",
+                "description": "احم حسابك بطبقة أمان إضافية",
+                "enabled": "مفعل",
+                "disabled": "معطل",
+                "enabledMessage": "تم تفعيل المصادقة الثنائية لهذا الحساب",
+                "disabledMessage": "الحساب غير محمي بالمصادقة الثنائية",
+                "recommendation": "نوصي بتفعيل المصادقة الثنائية لتعزيز أمان حساب TikTok هذا.",
+                "backupCodes": "رموز النسخ الاحتياطي",
+                "backupCodesAvailable": "{count} رمز احتياطي متاح",
+                "moreBackupCodes": "+{count} رمز آخر"
+            },
+            "securityInfo": {
+                "title": "معلومات الأمان",
+                "phoneNumber": "رقم الهاتف",
+                "email": "البريد الإلكتروني",
+                "lastLogin": "آخر تسجيل دخول",
+                "notUpdated": "غير محدث",
+                "notLoggedIn": "لم يسجل الدخول"
+            }
+        },
+        "settings": {
+            "placeholder": "ستظهر إعدادات الحساب هنا"
+        }
+    }
+} 

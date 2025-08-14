@@ -1,0 +1,40 @@
+{
+    "permissionManagement": {
+        "title": "Quyền",
+        "addNew": "Thêm quyền mới",
+        "form": {
+            "createTitle": "Tạo quyền mới",
+            "editTitle": "Chỉnh sửa quyền",
+            "nameLabel": "Tên",
+            "namePlaceholder": "Tên quyền",
+            "cancel": "Hủy",
+            "save": "Lưu",
+            "saving": "Đang lưu..."
+        },
+        "table": {
+            "name": "Tên",
+            "guardName": "Tên bảo vệ",
+            "createdDate": "Ngày tạo",
+            "edit": "Chỉnh sửa",
+            "delete": "Xóa"
+        },
+        "deleteConfirm": {
+            "title": "Xóa quyền",
+            "content": "Bạn có chắc chắn muốn xóa quyền này không?",
+            "confirmText": "Xóa"
+        },
+        "bulkDeleteConfirm": {
+            "title": "Xác nhận xóa",
+            "content": "Bạn có chắc chắn muốn xóa {count} quyền đã chọn không? Hành động này không thể hoàn tác.",
+            "delete": "Xóa",
+            "cancel": "Hủy"
+        },
+        "bulkAction": {
+            "selected": "{count} quyền đã được chọn",
+            "delete": "Xóa",
+            "clear": "Bỏ chọn"
+        },
+        "searchPlaceholder": "Tìm kiếm theo tên...",
+        "columns": "Cột"
+    }
+}

@@ -1,0 +1,267 @@
+{
+    "account": {
+        "activityLog": {
+            "title": "Nhật ký hoạt động",
+            "showMentionedOnly": "Chỉ hiển thị các lượt nhắc đến",
+            "showAllActivity": "Hiển thị tất cả hoạt động",
+            "loadMore": "Tải thêm",
+            "noMoreActivity": "Không còn hoạt động nào để tải",
+            "filter": {
+                "ticketStatus": "Trạng thái phiếu",
+                "assignTicket": "Gán phiếu",
+                "newTicket": "Phiếu mới",
+                "addTags": "Thêm thẻ",
+                "addFiles": "Thêm tệp"
+            }
+        },
+        "pricing": {
+            "title": "Giá",
+            "monthly": "Hàng tháng",
+            "annually": "Hàng năm",
+            "recommended": "Đề xuất",
+            "month": "tháng",
+            "year": "năm",
+            "currentPlan": "Gói hiện tại",
+            "selectPlan": "Chọn gói",
+            "faq": "Câu hỏi thường gặp",
+            "payment": {
+                "title": "Gói {planName}",
+                "successTitle": "Cảm ơn bạn đã mua hàng!",
+                "successMessage": "Chúng tôi đã nhận được đơn đặt hàng của bạn và đang xử lý. Bạn sẽ sớm nhận được email với thông tin chi tiết về đơn đặt hàng của mình",
+                "manageSubscription": "Quản lý đăng ký",
+                "close": "Đóng",
+                "payMonthly": "Thanh toán hàng tháng",
+                "payAnnually": "Thanh toán hàng năm",
+                "billingEmail": "Email thanh toán",
+                "enterEmail": "Nhập email",
+                "creditCard": "Thẻ tín dụng",
+                "creditCardNumber": "Số thẻ tín dụng",
+                "cvc": "CVC",
+                "billNow": "Thanh toán ngay:",
+                "disclaimer": "Bằng cách nhấp vào \"Thanh toán\", bạn đồng ý bị tính phí ${amount} mỗi tháng, bạn có thể hủy đăng ký này bất kỳ lúc nào.",
+                "pay": "Thanh toán"
+            },
+            "features": {
+                "taskManagement": "Quản lý công việc",
+                "basicManagementTools": "Công cụ quản lý cơ bản",
+                "advanceManagementTools": "Công cụ quản lý nâng cao",
+                "reportGenerator": "Trình tạo báo cáo",
+                "detailedReportGenerator": "Trình tạo báo cáo chi tiết",
+                "emailSupport": "Hỗ trợ qua email",
+                "chatEmailSupport": "Hỗ trợ qua trò chuyện & email",
+                "twentyFourSevenSupport": "Hỗ trợ qua trò chuyện & email 24/7",
+                "fileSharing": "Chia sẻ tệp",
+                "advancedSecurity": "Giao thức bảo mật nâng cao",
+                "customIntegrations": "Tích hợp dịch vụ của bên thứ ba"
+            },
+            "faqCategory": {
+                "subscription": "Chi tiết đăng ký",
+                "billing": "Thanh toán và hóa đơn",
+                "others": "Khác"
+            },
+            "faqList": {
+                "subscription": [
+                    {
+                        "title": "Làm cách nào để đăng ký một gói?",
+                        "content": "Chọn gói ở trên với gói đăng ký ưa thích của bạn và làm theo hướng dẫn trên màn hình để tạo tài khoản và nhập chi tiết thanh toán của bạn."
+                    },
+                    {
+                        "title": "Tôi có thể hủy đăng ký của mình không?",
+                        "content": "Có, bạn có thể linh hoạt hủy đăng ký của mình bất kỳ lúc nào. Để hủy, chỉ cần đăng nhập vào tài khoản của bạn, điều hướng đến phần \"Đăng ký\" và làm theo hướng dẫn để hủy gói của bạn. Việc hủy của bạn sẽ có hiệu lực vào cuối chu kỳ thanh toán hiện tại của bạn."
+                    },
+                    {
+                        "title": "Tôi có thể chuyển đổi gói đăng ký của mình không?",
+                        "content": "Tất nhiên, bạn có thể chuyển đổi giữa các gói hàng tháng và hàng năm bất kỳ lúc nào. Để thay đổi gói đăng ký của bạn, hãy đăng nhập vào tài khoản của bạn, đi tới phần \"Đăng ký\", chọn gói bạn muốn chuyển sang và làm theo hướng dẫn. Gói mới của bạn sẽ có hiệu lực ngay lập tức."
+                    },
+                    {
+                        "title": "Bạn có cung cấp bản dùng thử miễn phí không?",
+                        "content": "Có, chúng tôi cung cấp bản dùng thử miễn phí 14 ngày cho người dùng mới. Trong thời gian này, bạn có thể truy cập tất cả các tính năng của gói đăng ký của chúng tôi. Nếu bạn tiếp tục sau thời gian dùng thử, bạn sẽ bị tính phí dựa trên gói bạn đã chọn."
+                    },
+                    {
+                        "title": "Làm cách nào để biết khi nào đăng ký của tôi sắp được gia hạn?",
+                        "content": "Bạn sẽ nhận được thông báo qua email vài ngày trước khi đăng ký của bạn được thiết lập để gia hạn, nhắc nhở bạn về khoản phí sắp tới và cung cấp tùy chọn để thực hiện bất kỳ thay đổi cần thiết nào."
+                    },
+                    {
+                        "title": "Có bất kỳ giảm giá nào cho sinh viên hoặc các tổ chức phi lợi nhuận không?",
+                        "content": "Có, chúng tôi cung cấp giảm giá đặc biệt cho sinh viên và các tổ chức phi lợi nhuận. Vui lòng liên hệ với nhóm hỗ trợ của chúng tôi với tài liệu liên quan để đăng ký các khoản giảm giá này."
+                    }
+                ],
+                "billing": [
+                    {
+                        "title": "Bạn chấp nhận những phương thức thanh toán nào?",
+                        "content": "Chúng tôi cố gắng làm cho quy trình thanh toán trở nên thuận tiện nhất có thể bằng cách chấp nhận nhiều phương thức thanh toán khác nhau. Chúng bao gồm các thẻ tín dụng và thẻ ghi nợ chính như Visa, MasterCard và American Express, cũng như PayPal. Tùy thuộc vào vị trí của bạn, các phương thức thanh toán khu vực bổ sung cũng có thể có sẵn."
+                    },
+                    {
+                        "title": "Điều gì sẽ xảy ra nếu thanh toán của tôi không thành công?",
+                        "content": "Nếu thanh toán của bạn không thành công, chúng tôi sẽ thông báo cho bạn qua email. Sau đó, bạn sẽ có thời gian ân hạn 7 ngày để cập nhật thông tin thanh toán của mình. Nếu vấn đề thanh toán không được giải quyết trong khoảng thời gian này, đăng ký của bạn sẽ tạm thời bị đình chỉ cho đến khi thanh toán được xử lý thành công."
+                    },
+                    {
+                        "title": "Làm cách nào để cập nhật thông tin thanh toán của tôi?",
+                        "content": "Để cập nhật thông tin thanh toán của bạn, hãy đăng nhập vào tài khoản của bạn, đi tới phần \"Thanh toán\" và nhập chi tiết thanh toán mới của bạn. Đảm bảo lưu các thay đổi để đảm bảo dịch vụ liên tục."
+                    },
+                    {
+                        "title": "Tôi có được hoàn lại tiền nếu tôi hủy đăng ký của mình không?",
+                        "content": "Chính sách hoàn tiền thay đổi tùy thuộc vào loại đăng ký của bạn. Đối với Gói hàng tháng của chúng tôi, chúng tôi không hoàn lại tiền. Tuy nhiên, đối với Gói hàng năm, bạn có thể đủ điều kiện được hoàn lại tiền theo tỷ lệ nếu bạn hủy trong vòng 30 ngày đầu tiên kể từ ngày đăng ký. Vui lòng liên hệ với nhóm hỗ trợ của chúng tôi để được hỗ trợ về quy trình này."
+                    }
+                ],
+                "others": [
+                    {
+                        "title": "Làm cách nào để liên hệ với bộ phận hỗ trợ khách hàng?",
+                        "content": "Nhóm hỗ trợ khách hàng của chúng tôi ở đây để giúp bạn giải đáp mọi thắc mắc hoặc vấn đề bạn có thể gặp phải. Bạn có thể liên hệ với chúng tôi bằng cách gửi email tới support@ecme.com, gọi đến đường dây hỗ trợ của chúng tôi theo số 1-800-123-4567 hoặc sử dụng tính năng trò chuyện trực tiếp trên trang web của chúng tôi. Chúng tôi cam kết cung cấp cho bạn sự hỗ trợ nhanh chóng và hiệu quả."
+                    },
+                    {
+                        "title": "Làm cách nào để thay đổi chi tiết tài khoản của tôi?",
+                        "content": "Để cập nhật chi tiết tài khoản của bạn, hãy đăng nhập vào tài khoản của bạn, điều hướng đến phần \"Bảo mật\" và thực hiện các thay đổi cần thiết. Hãy chắc chắn lưu các cập nhật của bạn."
+                    },
+                    {
+                        "title": "Thông tin cá nhân của tôi có an toàn không?",
+                        "content": "Có, chúng tôi ưu tiên bảo mật thông tin cá nhân của bạn. Trang web của chúng tôi sử dụng mã hóa và các biện pháp bảo mật tiêu chuẩn ngành. Vui lòng tham khảo Chính sách quyền riêng tư của chúng tôi để biết thêm chi tiết về cách chúng tôi bảo vệ dữ liệu của bạn."
+                    }
+                ]
+            }
+        },
+        "rolesPermissions": {
+            "title": "Vai trò & Quyền",
+            "allAccounts": "Tất cả tài khoản",
+            "createRole": "Tạo vai trò",
+            "editRole": "Chỉnh sửa vai trò",
+            "roleName": "Tên vai trò",
+            "description": "Mô tả",
+            "permission": "Quyền",
+            "cancel": "Hủy",
+            "update": "Cập nhật",
+            "create": "Tạo",
+            "search": "Tìm kiếm...",
+            "status": "Trạng thái",
+            "role": "Vai trò",
+            "all": "Tất cả",
+            "active": "Hoạt động",
+            "blocked": "Bị chặn",
+            "users": "Người dùng",
+            "selected": "đã chọn",
+            "delete": "Xóa",
+            "removeUsers": "Xóa người dùng",
+            "removeUsersConfirmation": "Bạn có chắc chắn muốn xóa những người dùng này không? Hành động này không thể hoàn tác.",
+            "name": "Tên",
+            "lastOnline": "Lần cuối trực tuyến",
+            "modules": {
+                "users": {
+                    "name": "Quản lý người dùng",
+                    "description": "Kiểm soát truy cập để quản lý người dùng"
+                },
+                "products": {
+                    "name": "Quyền sản phẩm",
+                    "description": "Kiểm soát truy cập cho các hoạt động sản phẩm"
+                },
+                "configurations": {
+                    "name": "Cấu hình hệ thống",
+                    "description": "Kiểm soát truy cập cho cài đặt hệ thống"
+                },
+                "files": {
+                    "name": "Quản lý tệp",
+                    "description": "Kiểm soát truy cập để quản lý tệp"
+                },
+                "reports": {
+                    "name": "Báo cáo",
+                    "description": "Kiểm soát truy cập để tạo báo cáo"
+                }
+            },
+            "accessor": {
+                "read": "Đọc",
+                "write": "Viết",
+                "delete": "Xóa"
+            }
+        },
+        "settings": {
+                        "menu": {
+                "profile": "Hồ sơ",
+                "security": "Bảo mật",
+                "notificationSettings": "Cấu hình thông báo",
+                "notificationList": "Danh sách thông báo",
+                "billing": "Thanh toán",
+                "integration": "Tích hợp",
+                "navigation": "Điều hướng"
+            },
+            "profile": {
+                "title": "Thông tin cá nhân",
+                "uploadImage": "Tải ảnh lên",
+                "remove": "Xóa",
+                "firstName": "Tên",
+                "lastName": "Họ",
+                "email": "Email",
+                "phoneNumber": "Số điện thoại",
+                "save": "Lưu"
+            },
+            "security": {
+                "title": "Mật khẩu",
+                "description": "Hãy nhớ rằng, mật khẩu là chìa khóa kỹ thuật số cho tài khoản của bạn. Giữ nó an toàn, giữ nó bảo mật!",
+                "currentPassword": "Mật khẩu hiện tại",
+                "newPassword": "Mật khẩu mới",
+                "confirmNewPassword": "Xác nhận mật khẩu mới",
+                "update": "Cập nhật",
+                "updatePassword": "Cập nhật mật khẩu",
+                "updatePasswordConfirmation": "Bạn có chắc chắn muốn đổi mật khẩu không?"
+            },
+            "notification": {
+                "title": "Thông báo",
+                "enableDesktopNotification": "Bật thông báo trên màn hình",
+                "desktopNotificationDescription": "Quyết định xem bạn có muốn được thông báo về tin nhắn và cập nhật mới không",
+                "enableUnreadNotificationBadge": "Bật huy hiệu thông báo chưa đọc",
+                "unreadNotificationBadgeDescription": "Hiển thị chỉ báo màu đỏ trên biểu tượng thông báo khi bạn có tin nhắn chưa đọc",
+                "notifyMeAbout": "Thông báo cho tôi về",
+                "allNewMessages": "Tất cả tin nhắn mới",
+                "allNewMessagesDescription": "Phát thông báo đến kênh cho mỗi tin nhắn mới",
+                "mentionsOnly": "Chỉ đề cập",
+                "mentionsOnlyDescription": "Chỉ thông báo cho tôi trong kênh nếu ai đó đề cập đến tôi trong tin nhắn",
+                "nothing": "Không có gì",
+                "nothingDescription": "Không thông báo cho tôi bất cứ điều gì",
+                "emailNotification": "Thông báo qua email",
+                "emailNotificationDescription": "Substance có thể gửi cho bạn thông báo qua email cho bất kỳ tin nhắn trực tiếp mới nào",
+                "newsAndUpdate": "Tin tức & cập nhật",
+                "newsAndUpdateDescription": "Tin tức về sản phẩm và cập nhật tính năng",
+                "tipsAndTutorial": "Mẹo & hướng dẫn",
+                "tipsAndTutorialDescription": "Mẹo và thủ thuật để tăng hiệu quả hoạt động của bạn",
+                "offerAndPromotion": "Ưu đãi & khuyến mãi",
+                "offerAndPromotionDescription": "Khuyến mãi về giá sản phẩm & giảm giá mới nhất",
+                "followUpReminder": "Nhắc nhở theo dõi",
+                "followUpReminderDescription": "Nhận thông báo tất cả các lời nhắc đã được thực hiện"
+            },
+            "billing": {
+                "title": "Thanh toán",
+                "balance": "Số dư",
+                "currentPlan": "Gói hiện tại",
+                "billing": "Thanh toán",
+                "nextPaymentOn": "Thanh toán tiếp theo vào",
+                "for": "cho",
+                "changePlan": "Nạp tiền",
+                "paymentMethod": "Phương thức thanh toán",
+                "expired": "Đã hết hạn",
+                "primary": "Chính",
+                "edit": "Chỉnh sửa",
+                "addPaymentMethod": "Thêm phương thức thanh toán",
+                "transactionHistory": "Lịch sử giao dịch",
+                "addCreditCard": "Thêm thẻ tín dụng",
+                "editCreditCard": "Chỉnh sửa thẻ tín dụng",
+                "creditCardUpdated": "Thẻ tín dụng đã được cập nhật!",
+                "creditCardAdded": "Đã thêm thẻ tín dụng!",
+                "id": "ID",
+                "type": "Loại",
+                "description": "Mô tả",
+                "status": "Trạng thái",
+                "date": "Ngày",
+                "amount": "Số tiền",
+                "completed": "Hoàn thành",
+                "pending": "Đang chờ xử lý",
+                "failed": "Thất bại"
+            },
+            "integration": {
+                "title": "Tích hợp",
+                "description": "Tăng cường quy trình làm việc của bạn bằng cách sử dụng các tích hợp này",
+                "learnMore": "Tìm hiểu thêm",
+                "overview": "Tổng quan",
+                "keyFeatures": "Các tính năng chính:",
+                "acknowledge": "Ghi nhận"
+            }
+        }
+    }
+}

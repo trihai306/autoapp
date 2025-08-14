@@ -1,0 +1,45 @@
+{
+    "transactionManagement": {
+        "title": "Giao dịch",
+        "filter": "Lọc",
+        "table": {
+            "transactionId": "Mã giao dịch",
+            "user": "Người dùng",
+            "type": "Loại",
+            "amount": "Số tiền",
+            "description": "Mô tả",
+            "status": "Trạng thái",
+            "date": "Ngày",
+            "actions": "Hành động"
+        },
+        "filterForm": {
+            "title": "Lọc",
+            "transactionType": "Loại giao dịch",
+            "selectType": "Chọn loại",
+            "user": "Người dùng",
+            "searchUser": "Tìm kiếm theo tên hoặc email",
+            "status": "Trạng thái",
+            "selectStatus": "Chọn trạng thái",
+            "cancel": "Hủy",
+            "apply": "Áp dụng"
+        },
+        "bulkAction": {
+            "selected": "{count} giao dịch đã được chọn",
+            "delete": "Xóa",
+            "clear": "Xóa"
+        },
+        "deleteConfirm": {
+            "title": "Xác nhận xóa",
+            "content": "Bạn có chắc chắn muốn xóa {count} giao dịch đã chọn không? Hành động này không thể hoàn tác.",
+            "delete": "Xóa",
+            "cancel": "Hủy"
+        },
+        "quickSearch": "Tìm kiếm nhanh...",
+        "actionConfirm": {
+            "title": "Xác nhận hành động",
+            "content": "Bạn có chắc chắn muốn {action} giao dịch này không?",
+            "confirm": "Xác nhận",
+            "cancel": "Hủy"
+        }
+    }
+}

@@ -1,0 +1,45 @@
+{
+    "transactionManagement": {
+        "title": "Transacciones",
+        "filter": "Filtrar",
+        "table": {
+            "transactionId": "ID de transacción",
+            "user": "Usuario",
+            "type": "Tipo",
+            "amount": "Monto",
+            "description": "Descripción",
+            "status": "Estado",
+            "date": "Fecha",
+            "actions": "Acciones"
+        },
+        "filterForm": {
+            "title": "Filtrar",
+            "transactionType": "Tipo de transacción",
+            "selectType": "Seleccionar tipo",
+            "user": "Usuario",
+            "searchUser": "Buscar por nombre o correo electrónico",
+            "status": "Estado",
+            "selectStatus": "Seleccionar estado",
+            "cancel": "Cancelar",
+            "apply": "Aplicar"
+        },
+        "bulkAction": {
+            "selected": "{count} transacción(es) seleccionada(s)",
+            "delete": "Eliminar",
+            "clear": "Limpiar"
+        },
+        "deleteConfirm": {
+            "title": "Confirmación de eliminación",
+            "content": "¿Está seguro de que desea eliminar {count} transacción(es) seleccionada(s)? Esta acción no se puede deshacer.",
+            "delete": "Eliminar",
+            "cancel": "Cancelar"
+        },
+        "quickSearch": "Búsqueda rápida...",
+        "actionConfirm": {
+            "title": "Confirmar acción",
+            "content": "¿Está seguro de que desea {action} esta transacción?",
+            "confirm": "Confirmar",
+            "cancel": "Cancelar"
+        }
+    }
+}

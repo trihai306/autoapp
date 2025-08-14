@@ -1,0 +1,87 @@
+{
+    "title": "إدارة مهام الحساب",
+    "addNew": "إضافة مهمة جديدة",
+    "searchPlaceholder": "البحث في المهام...",
+    "filter": "تصفية",
+    "columns": "الأعمدة",
+    "createTitle": "إنشاء مهمة حساب جديدة",
+    "editTitle": "تعديل مهمة الحساب",
+    "table": {
+        "title": "العنوان",
+        "description": "الوصف",
+        "status": "الحالة",
+        "priority": "الأولوية",
+        "assignedTo": "مُسند إلى",
+        "dueDate": "تاريخ الاستحقاق",
+        "createdDate": "تاريخ الإنشاء",
+        "edit": "تعديل",
+        "view": "عرض"
+    },
+    "detail": {
+        "title": "تفاصيل مهمة الحساب",
+        "status": "الحالة",
+        "priority": "الأولوية",
+        "assignedTo": "مُسند إلى",
+        "dueDate": "تاريخ الاستحقاق",
+        "description": "الوصف",
+        "createdDate": "تاريخ الإنشاء",
+        "notProvided": "غير مقدم",
+        "noDescription": "لا يوجد وصف",
+        "edit": "تعديل"
+    },
+    "form": {
+        "basicInfo": "المعلومات الأساسية",
+        "taskInfo": "معلومات المهمة",
+        "additionalInfo": "معلومات إضافية",
+        "title": "العنوان",
+        "description": "الوصف",
+        "descriptionPlaceholder": "أدخل وصف المهمة...",
+        "status": "الحالة",
+        "priority": "الأولوية",
+        "assignedTo": "مُسند إلى",
+        "dueDate": "تاريخ الاستحقاق",
+        "selectStatus": "اختر الحالة",
+        "statusPending": "في الانتظار",
+        "statusInProgress": "قيد التنفيذ",
+        "statusCompleted": "مكتمل",
+        "statusCancelled": "ملغي",
+        "selectPriority": "اختر الأولوية",
+        "priorityLow": "منخفض",
+        "priorityMedium": "متوسط",
+        "priorityHigh": "عالي",
+        "priorityUrgent": "عاجل",
+        "back": "رجوع",
+        "save": "حفظ",
+        "saving": "جاري الحفظ...",
+        "delete": "حذف"
+    },
+    "filterForm": {
+        "title": "العنوان",
+        "taskType": "نوع المهمة",
+        "selectTaskType": "اختر نوع المهمة",
+        "status": "الحالة",
+        "priority": "الأولوية",
+        "assignedTo": "مُسند إلى",
+        "cancel": "إلغاء",
+        "apply": "تطبيق"
+    },
+    "bulkAction": {
+        "selected": "تم اختيار {{count}} مهمة(ات)",
+        "delete": "حذف",
+        "clear": "مسح الاختيار"
+    },
+    "bulkDeleteConfirm": {
+        "title": "حذف المهام المحددة",
+        "content": "هل أنت متأكد من أنك تريد حذف {{count}} مهمة محددة؟ لا يمكن التراجع عن هذا الإجراء.",
+        "cancel": "إلغاء",
+        "delete": "حذف",
+        "confirmText": "نعم، احذفها"
+    },
+    "deleteConfirm": {
+        "title": "حذف مهمة الحساب",
+        "content": "هل أنت متأكد من أنك تريد حذف مهمة الحساب هذه؟ لا يمكن التراجع عن هذا الإجراء.",
+        "cancel": "إلغاء",
+        "delete": "حذف",
+        "confirmText": "نعم، احذفها"
+    }
+} 

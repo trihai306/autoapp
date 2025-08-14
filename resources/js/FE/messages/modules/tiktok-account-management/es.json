@@ -1,0 +1,422 @@
+{
+    "title": "Gestión de Cuentas de TikTok",
+    "addNew": "Agregar Nueva Cuenta",
+    "importAccounts": "Importar Cuentas",
+    "configureInteraction": "Configurar Interacción",
+    "searchPlaceholder": "Buscar cuentas...",
+    "filter": "Filtrar",
+    "columns": "Columnas",
+    "createTitle": "Crear Nueva Cuenta de TikTok",
+    "editTitle": "Editar Cuenta de TikTok",
+    "table": {
+        "username": "Nombre de Usuario",
+        "email": "Correo Electrónico",
+        "phone": "Teléfono",
+        "status": "Estado",
+        "notes": "Notas",
+        "createdDate": "Fecha de Creación",
+        "edit": "Editar",
+        "view": "Ver",
+        "stopRunning": "Detener Ejecución",
+        "tasks": "Tareas",
+        "delete": "Eliminar"
+    },
+    "detail": {
+        "title": "Detalles de Cuenta de TikTok",
+        "status": "Estado",
+        "phone": "Número de Teléfono",
+        "notes": "Notas",
+        "createdDate": "Fecha de Creación",
+        "notProvided": "No proporcionado",
+        "noNotes": "Sin notas",
+        "edit": "Editar"
+    },
+    "form": {
+        "basicInfo": "Información Básica",
+        "contactInfo": "Información de Contacto",
+        "additionalInfo": "Información Adicional",
+        "username": "Nombre de Usuario",
+        "email": "Correo Electrónico",
+        "phoneNumber": "Número de Teléfono",
+        "status": "Estado",
+        "notes": "Notas",
+        "notesPlaceholder": "Ingrese notas adicionales sobre esta cuenta...",
+        "password": "Contraseña",
+        "confirmPassword": "Confirmar Contraseña",
+        "passwordInfo": "Deje los campos de contraseña vacíos para mantener la contraseña actual",
+        "selectStatus": "Seleccionar Estado",
+        "statusActive": "Activo",
+        "statusInactive": "Inactivo",
+        "statusSuspended": "Suspendido",
+        "back": "Atrás",
+        "save": "Guardar",
+        "saving": "Guardando...",
+        "delete": "Eliminar",
+        "suspend": "Suspender"
+    },
+    "filterForm": {
+        "username": "Nombre de Usuario",
+        "email": "Correo Electrónico",
+        "phoneNumber": "Número de Teléfono",
+        "status": "Estado",
+        "cancel": "Cancelar",
+        "apply": "Aplicar"
+    },
+    "bulkAction": {
+        "selected": "{{count}} cuenta(s) seleccionada(s)",
+        "delete": "Eliminar",
+        "suspend": "Suspender",
+        "clear": "Limpiar Selección"
+    },
+    "bulkDeleteConfirm": {
+        "title": "Eliminar Cuentas Seleccionadas",
+        "content": "¿Está seguro de que desea eliminar {{count}} cuenta(s) de TikTok seleccionada(s)? Esta acción no se puede deshacer.",
+        "cancel": "Cancelar",
+        "delete": "Eliminar",
+        "confirmText": "Sí, eliminarlas"
+    },
+    "bulkSuspendConfirm": {
+        "title": "Suspender Cuentas Seleccionadas",
+        "content": "¿Está seguro de que desea suspender {{count}} cuenta(s) de TikTok seleccionada(s)?",
+        "cancel": "Cancelar",
+        "suspend": "Suspender",
+        "confirmText": "Sí, suspenderlas"
+    },
+    "bulkStartConfirm": {
+        "title": "Iniciar Cuentas Seleccionadas",
+        "content": "¿Está seguro de que desea iniciar la ejecución de escenarios para {{count}} cuenta(s) de TikTok seleccionada(s)?",
+        "cancel": "Cancelar",
+        "start": "Iniciar",
+        "confirmText": "Sí, iniciarlas"
+    },
+    "deleteConfirm": {
+        "title": "Eliminar Cuenta de TikTok",
+        "content": "¿Está seguro de que desea eliminar esta cuenta de TikTok? Esta acción no se puede deshacer.",
+        "cancel": "Cancelar",
+        "delete": "Eliminar",
+        "confirmText": "Sí, eliminarla"
+    },
+    "suspendConfirm": {
+        "title": "Suspender Cuenta de TikTok",
+        "content": "¿Está seguro de que desea suspender esta cuenta de TikTok?",
+        "cancel": "Cancelar",
+        "suspend": "Suspender",
+        "confirmText": "Sí, suspenderla"
+    },
+    "interactionConfig": {
+        "title": "Configuración de Interacción de TikTok",
+        "back": "Atrás",
+        "autoReply": "Respuesta Automática",
+        "autoReplyDescription": "Configurar mensajes de respuesta automática para interacciones de TikTok",
+        "configureAutoReply": "Configurar Respuesta Automática",
+        "messageTemplates": "Plantillas de Mensajes",
+        "messageTemplatesDescription": "Gestionar plantillas de mensajes predefinidas para uso rápido",
+        "manageTemplates": "Gestionar Plantillas",
+        "responseRules": "Reglas de Respuesta",
+        "responseRulesDescription": "Configurar reglas de respuesta automática basadas en palabras clave",
+        "setRules": "Establecer Reglas",
+        "analytics": "Análisis de Interacción",
+        "analyticsDescription": "Ver estadísticas y análisis de interacciones con usuarios",
+        "viewAnalytics": "Ver Análisis"
+    },
+    "interactionConfigModal": {
+        "title": "Configuración de Interacción de TikTok",
+        "createScenario": "Crear Nuevo Escenario",
+        "editScenario": "Editar Escenario",
+        "deleteDialog": {
+            "scenarioTitle": "Eliminar Escenario",
+            "scenarioContent": "¿Está seguro de que desea eliminar el escenario",
+            "scenarioWarning": "Esta acción no se puede deshacer.",
+            "actionTitle": "Eliminar Acción",
+            "actionContent": "¿Está seguro de que desea eliminar la acción",
+            "actionWarning": "Esta acción no se puede deshacer.",
+            "cancel": "Cancelar",
+            "confirm": "Eliminar"
+        },
+        "save": "Guardar",
+        "cancel": "Cancelar",
+        "close": "Cerrar"
+    },
+    "importModal": {
+        "title": "Importar Cuentas",
+        "accountListLabel": "Ingrese lista de cuentas:",
+        "accountListPlaceholder": "UID1|PASS1|TWO-FA1|MAIL1|...\nUID2|PASS2|TWO-FA2|MAIL2|...",
+        "formatLabel": "Formato de importación:",
+        "formatValue": "UID|PASS|2FA|MAIL",
+        "enableRunningStatus": "Habilitar estado de ejecución",
+        "autoAssign": "Asignación automática",
+        "selectDevice": "Seleccionar dispositivo",
+        "selectDevicePlaceholder": "Seleccionar dispositivo",
+        "selectScenario": "Seleccionar escenario",
+        "selectScenarioPlaceholder": "Seleccionar escenario",
+        "redo": "Rehacer",
+        "exit": "Salir",
+        "save": "Guardar",
+        "saving": "Guardando..."
+    },
+    "accountDetailModal": {
+        "title": "Detalles de la Cuenta",
+        "loading": "Cargando...",
+        "loadingHistory": "Cargando historial...",
+        "errorLoading": "No se pudo cargar la información de la cuenta",
+        "retry": "Reintentar",
+        "refresh": "Actualizar",
+        "edit": "Editar",
+        "start": "Iniciar",
+        "close": "Cerrar",
+        "tabs": {
+            "overview": "Resumen",
+            "stats": "Estadísticas",
+            "activity": "Actividad",
+            "security": "Seguridad",
+            "settings": "Configuración"
+        },
+        "status": {
+            "active": "Activo",
+            "inactive": "Inactivo",
+            "suspended": "Suspendido",
+            "running": "Ejecutándose",
+            "error": "Error",
+            "unknown": "Desconocido"
+        },
+        "overview": {
+            "noDisplayName": "Sin nombre para mostrar",
+            "joinDate": "Se unió: {date}",
+            "lastActivity": "Actividad: {date}",
+            "noActivity": "Sin actividad",
+            "undetermined": "Indeterminado",
+            "followers": "Seguidores",
+            "likes": "Me gusta",
+            "videos": "Videos",
+            "estimatedViews": "Vistas (estimadas)",
+            "currentTasks": "Tareas Actuales",
+            "runningTasks": "{count} ejecutándose",
+            "pendingTasks": "{count} pendientes",
+            "noTasks": "No hay tareas ejecutándose actualmente",
+            "priority": "Prioridad: {priority}",
+            "startedAt": "Iniciado: {time}",
+            "scheduledAt": "Programado: {time}",
+            "immediately": "Inmediatamente",
+            "pending": "Pendiente"
+        },
+        "stats": {
+            "placeholder": "Las estadísticas detalladas se mostrarán aquí",
+            "title": "Estadísticas Detalladas",
+            "description": "Análisis de rendimiento e información de actividad de la cuenta",
+            "sections": {
+                "performance": "Resumen de Rendimiento",
+                "taskAnalysis": "Análisis de Tareas",
+                "engagement": "Interacción",
+                "timeline": "Tendencias Temporales"
+            },
+            "metrics": {
+                "totalTasks": "Total de Tareas",
+                "completedTasks": "Completadas",
+                "failedTasks": "Fallidas",
+                "successRate": "Tasa de Éxito",
+                "averageTasksPerDay": "Promedio Tareas/Día",
+                "totalFollowers": "Total Seguidores",
+                "totalLikes": "Total Me Gusta",
+                "totalVideos": "Total Videos",
+                "totalViews": "Total Vistas",
+                "engagementRate": "Tasa de Interacción",
+                "averageViewsPerVideo": "Promedio Vistas/Video",
+                "accountAge": "Antigüedad de Cuenta",
+                "lastActiveTime": "Última Actividad"
+            },
+            "charts": {
+                "taskDistribution": "Distribución de Tareas",
+                "taskStatusBreakdown": "Desglose de Estado de Tareas",
+                "priorityDistribution": "Distribución de Prioridad",
+                "performanceTrend": "Tendencia de Rendimiento"
+            },
+            "periods": {
+                "today": "Hoy",
+                "thisWeek": "Esta Semana",
+                "thisMonth": "Este Mes",
+                "allTime": "Todo el Tiempo"
+            },
+            "noData": "No hay datos para mostrar",
+            "calculating": "Calculando..."
+        },
+        "activity": {
+            "summary": {
+                "completed": "Completado",
+                "running": "Ejecutándose",
+                "pending": "Pendiente",
+                "failed": "Fallido"
+            },
+            "timeline": {
+                "title": "Historial de Actividad Reciente",
+                "description": "Seguir todas las tareas de interacción de la cuenta",
+                "noActivity": "Aún no hay actividad",
+                "noActivityDescription": "Esta cuenta aún no ha realizado ninguna tarea de interacción.",
+                "viewMore": "Ver {count} actividades más"
+            },
+            "taskStatus": {
+                "completed": "Completado",
+                "failed": "Fallido",
+                "running": "Ejecutándose",
+                "pending": "Pendiente",
+                "unknown": "Desconocido"
+            },
+            "taskTypes": {
+                "follow_user": "Seguir Usuario",
+                "unfollow_user": "Dejar de Seguir Usuario",
+                "like_video": "Me Gusta Video",
+                "unlike_video": "Quitar Me Gusta Video",
+                "comment_video": "Comentar Video",
+                "share_video": "Compartir Video",
+                "view_video": "Ver Video",
+                "create_post": "Crear Publicación",
+                "live_interaction": "Interacción en Vivo",
+                "message_user": "Mensaje a Usuario",
+                "unknown": "Tarea Desconocida"
+            },
+            "priority": {
+                "high": "Alta",
+                "medium": "Media",
+                "low": "Baja",
+                "unknown": "Desconocida"
+            },
+            "timeAgo": {
+                "justNow": "Justo ahora",
+                "minutesAgo": "hace {minutes} minutos",
+                "hoursAgo": "hace {hours} horas",
+                "daysAgo": "hace {days} días"
+            }
+        },
+        "security": {
+            "twoFactor": {
+                "title": "Autenticación de Dos Factores (2FA)",
+                "description": "Protege tu cuenta con una capa adicional de seguridad",
+                "enabled": "Habilitado",
+                "disabled": "Deshabilitado",
+                "enabledMessage": "2FA ha sido activado para esta cuenta",
+                "disabledMessage": "La cuenta no está protegida por 2FA",
+                "recommendation": "Recomendamos habilitar 2FA para mejorar la seguridad de esta cuenta de TikTok.",
+                "backupCodes": "Códigos de Respaldo",
+                "backupCodesAvailable": "{count} códigos de respaldo disponibles",
+                "moreBackupCodes": "+{count} códigos más"
+            },
+            "securityInfo": {
+                "title": "Información de Seguridad",
+                "phoneNumber": "Número de Teléfono",
+                "email": "Correo Electrónico",
+                "lastLogin": "Último Inicio de Sesión",
+                "notUpdated": "No actualizado",
+                "notLoggedIn": "No ha iniciado sesión"
+            }
+        },
+        "settings": {
+            "placeholder": "La configuración de la cuenta se mostrará aquí",
+            "title": "Configuración de Cuenta",
+            "description": "Gestionar configuración y preferencias para tu cuenta de TikTok",
+            "sections": {
+                "profile": "Información de Perfil",
+                "privacy": "Privacidad",
+                "automation": "Automatización",
+                "notifications": "Notificaciones",
+                "security": "Seguridad",
+                "api": "Configuración API",
+                "advanced": "Avanzado"
+            },
+            "profile": {
+                "displayName": "Nombre de Visualización",
+                "bio": "Biografía",
+                "avatar": "Avatar",
+                "website": "Sitio Web",
+                "location": "Ubicación",
+                "birthday": "Cumpleaños",
+                "gender": "Género",
+                "language": "Idioma",
+                "timezone": "Zona Horaria",
+                "updateProfile": "Actualizar Perfil"
+            },
+            "privacy": {
+                "accountType": "Tipo de Cuenta",
+                "public": "Público",
+                "private": "Privado",
+                "allowComments": "Permitir Comentarios",
+                "allowDuets": "Permitir Duetos",
+                "allowStitch": "Permitir Stitch",
+                "allowDownloads": "Permitir Descargas",
+                "whoCanMessage": "Quién Puede Enviar Mensajes",
+                "everyone": "Todos",
+                "friends": "Amigos",
+                "nobody": "Nadie"
+            },
+            "automation": {
+                "enableAutomation": "Habilitar Automatización",
+                "autoFollow": "Seguir Automático",
+                "autoLike": "Me Gusta Automático",
+                "autoComment": "Comentario Automático",
+                "autoShare": "Compartir Automático",
+                "scheduleSettings": "Configuración de Horario",
+                "workingHours": "Horas de Trabajo",
+                "dailyLimits": "Límites Diarios",
+                "followLimit": "Límite de Seguir",
+                "likeLimit": "Límite de Me Gusta",
+                "commentLimit": "Límite de Comentarios",
+                "delayBetweenActions": "Retraso Entre Acciones",
+                "randomDelay": "Retraso Aleatorio"
+            },
+            "notifications": {
+                "emailNotifications": "Notificaciones por Email",
+                "pushNotifications": "Notificaciones Push",
+                "taskCompleted": "Tarea Completada",
+                "taskFailed": "Tarea Fallida",
+                "accountWarnings": "Advertencias de Cuenta",
+                "dailyReports": "Reportes Diarios",
+                "weeklyReports": "Reportes Semanales",
+                "systemUpdates": "Actualizaciones del Sistema",
+                "maintenanceAlerts": "Alertas de Mantenimiento"
+            },
+            "security": {
+                "changePassword": "Cambiar Contraseña",
+                "twoFactorAuth": "Autenticación de Dos Factores",
+                "loginAlerts": "Alertas de Inicio de Sesión",
+                "sessionTimeout": "Tiempo de Sesión",
+                "ipWhitelist": "Lista Blanca de IP",
+                "deviceManagement": "Gestión de Dispositivos",
+                "securityLogs": "Registros de Seguridad"
+            },
+            "api": {
+                "apiKey": "Clave API",
+                "rateLimit": "Límite de Velocidad",
+                "requestsPerMinute": "Solicitudes/Minuto",
+                "requestsPerHour": "Solicitudes/Hora",
+                "requestsPerDay": "Solicitudes/Día",
+                "webhookUrl": "URL Webhook",
+                "apiVersion": "Versión API",
+                "debugMode": "Modo Debug"
+            },
+            "advanced": {
+                "userAgent": "User Agent",
+                "customHeaders": "Headers Personalizados",
+                "cookieSettings": "Configuración de Cookies",
+                "proxyRotation": "Rotación de Proxy",
+                "captchaSolver": "Solucionador de Captcha",
+                "browserSettings": "Configuración del Navegador",
+                "scriptTimeout": "Timeout de Script"
+            },
+            "actions": {
+                "save": "Guardar Cambios",
+                "cancel": "Cancelar",
+                "reset": "Restablecer",
+                "export": "Exportar Configuración",
+                "import": "Importar Configuración",
+                "testConnection": "Probar Conexión",
+                "generateApiKey": "Generar Nueva Clave API"
+            },
+            "messages": {
+                "saveSuccess": "Configuración guardada exitosamente",
+                "saveError": "Error al guardar configuración",
+                "resetConfirm": "¿Estás seguro de que quieres restablecer toda la configuración?",
+                "testSuccess": "Conexión exitosa",
+                "testError": "Conexión fallida",
+                "invalidInput": "Datos de entrada inválidos"
+            }
+        }
+    }
+} 

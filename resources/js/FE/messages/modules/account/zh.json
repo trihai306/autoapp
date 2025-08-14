@@ -1,0 +1,60 @@
+{
+    "account": {
+        "settings": {
+            "menu": {
+                "navigation": "导航"
+            },
+            "notification": {
+                "title": "通知",
+                "enableDesktopNotification": "启用桌面通知",
+                "desktopNotificationDescription": "决定是否要接收新消息和更新的通知",
+                "enableUnreadNotificationBadge": "启用未读通知徽章",
+                "unreadNotificationBadgeDescription": "当您有未读消息时，在通知图标上显示红色指示灯",
+                "notifyMeAbout": "通知我关于",
+                "allNewMessages": "所有新消息",
+                "allNewMessagesDescription": "向频道广播每条新消息的通知",
+                "mentionsOnly": "仅提及",
+                "mentionsOnlyDescription": "仅当有人在消息中提及我时才在频道中提醒我",
+                "nothing": "没有任何",
+                "nothingDescription": "不要通知我任何事情",
+                "emailNotification": "电子邮件通知",
+                "emailNotificationDescription": "Substance 可以为您发送任何新的直接消息的电子邮件通知",
+                "newsAndUpdate": "新闻和更新",
+                "newsAndUpdateDescription": "关于产品和功能更新的新闻",
+                "tipsAndTutorial": "提示和教程",
+                "tipsAndTutorialDescription": "提高性能效率的提示和技巧",
+                "offerAndPromotion": "优惠和促销",
+                "offerAndPromotionDescription": "关于产品价格和最新折扣的促销",
+                "followUpReminder": "跟进提醒",
+                "followUpReminderDescription": "接收已发出的所有提醒的通知"
+            },
+            "billing": {
+                "title": "账单",
+                "currentPlan": "当前计划",
+                "billing": "账单",
+                "nextPaymentOn": "下一个付款日",
+                "for": "为",
+                "changePlan": "更改计划",
+                "paymentMethod": "付款方式",
+                "expired": "已过期",
+                "primary": "主要的",
+                "edit": "编辑",
+                "addPaymentMethod": "添加付款方式",
+                "transactionHistory": "交易记录",
+                "addCreditCard": "添加信用卡",
+                "editCreditCard": "编辑信用卡",
+                "creditCardUpdated": "信用卡已更新！",
+                "creditCardAdded": "已添加信用卡！",
+                "id": "ID",
+                "type": "类型",
+                "description": "描述",
+                "status": "状态",
+                "date": "日期",
+                "amount": "数量",
+                "completed": "已完成",
+                "pending": "待定",
+                "failed": "失败"
+            }
+        }
+    }
+}

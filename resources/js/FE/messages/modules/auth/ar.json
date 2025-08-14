@@ -1,0 +1,58 @@
+{
+    "signIn": {
+        "welcome": "مرحبًا بعودتك!",
+        "subtitle": "الرجاء إدخال بيانات الاعتماد الخاصة بك لتسجيل الدخول!",
+        "emailOrPhone": "البريد الإلكتروني أو رقم الهاتف",
+        "password": "كلمة المرور",
+        "forgotPassword": "هل نسيت كلمة المرور",
+        "orContinueWith": "أو الاستمرار مع",
+        "dontHaveAccount": "ليس لديك حساب بعد؟",
+        "signUp": "اشتراك",
+        "signingIn": "جارٍ تسجيل الدخول...",
+        "signIn": "تسجيل الدخول"
+    },
+    "signUp": {
+        "title": "اشتراك",
+        "subtitle": "ولنبدأ تجربتك المجانية",
+        "firstName": "الاسم الأول",
+        "lastName": "اسم العائلة",
+        "email": "البريد الإلكتروني",
+        "phoneNumber": "رقم الهاتف",
+        "password": "كلمة المرور",
+        "confirmPassword": "تأكيد كلمة المرور",
+        "creatingAccount": "جارٍ إنشاء الحساب...",
+        "signUp": "اشتراك",
+        "alreadyHaveAccount": "هل لديك حساب بالفعل؟"
+    },
+    "forgotPassword": {
+        "checkEmailTitle": "تحقق من بريدك الإلكتروني",
+        "checkEmailSubtitle": "لقد أرسلنا بريدًا إلكترونيًا لاستعادة كلمة المرور إلى بريدك الإلكتروني",
+        "title": "هل نسيت كلمة المرور",
+        "subtitle": "الرجاء إدخال بريدك الإلكتروني لتلقي رمز التحقق",
+        "email": "البريد الإلكتروني",
+        "submit": "إرسال",
+        "submitting": "جارٍ الإرسال...",
+        "continue": "استمر",
+        "backToSignIn": "العودة إلى",
+        "signIn": "تسجيل الدخول"
+    },
+    "resetPassword": {
+        "resetDoneTitle": "تمت إعادة التعيين",
+        "resetDoneSubtitle": "تمت إعادة تعيين كلمة المرور الخاصة بك بنجاح",
+        "title": "تعيين كلمة مرور جديدة",
+        "subtitle": "يجب أن تكون كلمة المرور الجديدة مختلفة عن كلمة المرور السابقة",
+        "newPassword": "كلمة المرور",
+        "confirmPassword": "تأكيد كلمة المرور",
+        "submit": "إرسال",
+        "submitting": "جارٍ الإرسال...",
+        "continue": "استمر"
+    },
+    "otpVerification": {
+        "title": "التحقق من OTP",
+        "subtitle": "لقد أرسلنا لك كلمة مرور لمرة واحدة إلى بريدك الإلكتروني.",
+        "didntReceive": "ألم تستلم OTP؟",
+        "resend": "إعادة إرسال OTP",
+        "verifying": "جارٍ التحقق...",
+        "verify": "التحقق من OTP"
+    }
+}

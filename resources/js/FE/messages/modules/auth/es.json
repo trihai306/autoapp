@@ -1,0 +1,58 @@
+{
+    "signIn": {
+        "welcome": "¡Bienvenido de nuevo!",
+        "subtitle": "¡Por favor, introduce tus credenciales para iniciar sesión!",
+        "emailOrPhone": "Correo electrónico o número de teléfono",
+        "password": "Contraseña",
+        "forgotPassword": "Has olvidado tu contraseña",
+        "orContinueWith": "o continuar con",
+        "dontHaveAccount": "¿Aún no tienes una cuenta?",
+        "signUp": "Regístrate",
+        "signingIn": "Iniciando sesión...",
+        "signIn": "Iniciar sesión"
+    },
+    "signUp": {
+        "title": "Regístrate",
+        "subtitle": "Y empecemos con tu prueba gratuita",
+        "firstName": "Nombre",
+        "lastName": "Apellido",
+        "email": "Correo electrónico",
+        "phoneNumber": "Número de teléfono",
+        "password": "Contraseña",
+        "confirmPassword": "Confirmar contraseña",
+        "creatingAccount": "Creando cuenta...",
+        "signUp": "Regístrate",
+        "alreadyHaveAccount": "¿Ya tienes una cuenta?"
+    },
+    "forgotPassword": {
+        "checkEmailTitle": "Revisa tu correo electrónico",
+        "checkEmailSubtitle": "Hemos enviado un correo de recuperación de contraseña a tu correo electrónico",
+        "title": "Has olvidado tu contraseña",
+        "subtitle": "Por favor, introduce tu correo electrónico para recibir un código de verificación",
+        "email": "Correo electrónico",
+        "submit": "Enviar",
+        "submitting": "Enviando...",
+        "continue": "Continuar",
+        "backToSignIn": "Volver a",
+        "signIn": "Iniciar sesión"
+    },
+    "resetPassword": {
+        "resetDoneTitle": "Restablecimiento completado",
+        "resetDoneSubtitle": "Tu contraseña ha sido restablecida con éxito",
+        "title": "Establecer nueva contraseña",
+        "subtitle": "Tu nueva contraseña debe ser diferente a la anterior",
+        "newPassword": "Contraseña",
+        "confirmPassword": "Confirmar contraseña",
+        "submit": "Enviar",
+        "submitting": "Enviando...",
+        "continue": "Continuar"
+    },
+    "otpVerification": {
+        "title": "Verificación OTP",
+        "subtitle": "Te hemos enviado una contraseña de un solo uso a tu correo electrónico.",
+        "didntReceive": "¿No has recibido el OTP?",
+        "resend": "Reenviar OTP",
+        "verifying": "Verificando...",
+        "verify": "Verificar OTP"
+    }
+}

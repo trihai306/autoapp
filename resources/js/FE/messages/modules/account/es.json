@@ -1,0 +1,60 @@
+{
+    "account": {
+        "settings": {
+            "menu": {
+                "navigation": "Navegación"
+            },
+            "notification": {
+                "title": "Notificación",
+                "enableDesktopNotification": "Habilitar notificación de escritorio",
+                "desktopNotificationDescription": "Decide si quieres que se te notifique de nuevos mensajes y actualizaciones",
+                "enableUnreadNotificationBadge": "Habilitar insignia de notificación no leída",
+                "unreadNotificationBadgeDescription": "Muestra un indicador rojo en el icono de notificación cuando tienes un mensaje no leído",
+                "notifyMeAbout": "Notificarme sobre",
+                "allNewMessages": "Todos los mensajes nuevos",
+                "allNewMessagesDescription": "Transmitir notificaciones al canal por cada nuevo mensaje",
+                "mentionsOnly": "Solo menciones",
+                "mentionsOnlyDescription": "Solo avisarme en el canal si alguien me menciona en un mensaje",
+                "nothing": "Nada",
+                "nothingDescription": "No notificarme nada",
+                "emailNotification": "Notificación por correo electrónico",
+                "emailNotificationDescription": "Substance puede enviarte notificaciones por correo electrónico para cualquier nuevo mensaje directo",
+                "newsAndUpdate": "Noticias y actualizaciones",
+                "newsAndUpdateDescription": "Noticias sobre el producto y actualizaciones de funciones",
+                "tipsAndTutorial": "Consejos y tutoriales",
+                "tipsAndTutorialDescription": "Consejos y trucos para aumentar la eficiencia de tu rendimiento",
+                "offerAndPromotion": "Ofertas y promociones",
+                "offerAndPromotionDescription": "Promoción sobre el precio del producto y los últimos descuentos",
+                "followUpReminder": "Recordatorio de seguimiento",
+                "followUpReminderDescription": "Recibir notificaciones de todos los recordatorios que se han realizado"
+            },
+            "billing": {
+                "title": "Facturación",
+                "currentPlan": "Plan actual",
+                "billing": "Facturación",
+                "nextPaymentOn": "Próximo pago el",
+                "for": "para",
+                "changePlan": "Cambiar de plan",
+                "paymentMethod": "Método de pago",
+                "expired": "Expirado",
+                "primary": "Primario",
+                "edit": "Editar",
+                "addPaymentMethod": "Agregar método de pago",
+                "transactionHistory": "Historial de transacciones",
+                "addCreditCard": "Agregar tarjeta de crédito",
+                "editCreditCard": "Editar tarjeta de crédito",
+                "creditCardUpdated": "¡Tarjeta de crédito actualizada!",
+                "creditCardAdded": "¡Tarjeta de crédito agregada!",
+                "id": "ID",
+                "type": "Tipo",
+                "description": "Descripción",
+                "status": "Estado",
+                "date": "Fecha",
+                "amount": "Monto",
+                "completed": "Completado",
+                "pending": "Pendiente",
+                "failed": "Fallido"
+            }
+        }
+    }
+}

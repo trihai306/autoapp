@@ -1,0 +1,58 @@
+{
+    "signIn": {
+        "welcome": "Chào mừng trở lại!",
+        "subtitle": "Vui lòng nhập thông tin đăng nhập của bạn!",
+        "emailOrPhone": "Email hoặc số điện thoại",
+        "password": "Mật khẩu",
+        "forgotPassword": "Quên mật khẩu",
+        "orContinueWith": "hoặc tiếp tục với",
+        "dontHaveAccount": "Chưa có tài khoản?",
+        "signUp": "Đăng ký",
+        "signingIn": "Đang đăng nhập...",
+        "signIn": "Đăng nhập"
+    },
+    "signUp": {
+        "title": "Đăng ký",
+        "subtitle": "Và hãy bắt đầu với bản dùng thử miễn phí của bạn",
+        "firstName": "Tên",
+        "lastName": "Họ",
+        "email": "Email",
+        "phoneNumber": "Số điện thoại",
+        "password": "Mật khẩu",
+        "confirmPassword": "Xác nhận mật khẩu",
+        "creatingAccount": "Đang tạo tài khoản...",
+        "signUp": "Đăng ký",
+        "alreadyHaveAccount": "Đã có tài khoản?"
+    },
+    "forgotPassword": {
+        "checkEmailTitle": "Kiểm tra email của bạn",
+        "checkEmailSubtitle": "Chúng tôi đã gửi một email khôi phục mật khẩu đến email của bạn",
+        "title": "Quên mật khẩu",
+        "subtitle": "Vui lòng nhập email của bạn để nhận mã xác minh",
+        "email": "Email",
+        "submit": "Gửi đi",
+        "submitting": "Đang gửi...",
+        "continue": "Tiếp tục",
+        "backToSignIn": "Quay lại",
+        "signIn": "Đăng nhập"
+    },
+    "resetPassword": {
+        "resetDoneTitle": "Đặt lại hoàn tất",
+        "resetDoneSubtitle": "Mật khẩu của bạn đã được đặt lại thành công",
+        "title": "Đặt mật khẩu mới",
+        "subtitle": "Mật khẩu mới của bạn phải khác với mật khẩu trước đó",
+        "newPassword": "Mật khẩu",
+        "confirmPassword": "Xác nhận mật khẩu",
+        "submit": "Gửi đi",
+        "submitting": "Đang gửi...",
+        "continue": "Tiếp tục"
+    },
+    "otpVerification": {
+        "title": "Xác minh OTP",
+        "subtitle": "Chúng tôi đã gửi cho bạn một mật khẩu một lần vào email của bạn.",
+        "didntReceive": "Không nhận được OTP?",
+        "resend": "Gửi lại OTP",
+        "verifying": "Đang xác minh...",
+        "verify": "Xác minh OTP"
+    }
+}

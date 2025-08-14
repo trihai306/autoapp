@@ -1,0 +1,490 @@
+{
+    "title": "TikTok Account Management",
+    "addNew": "Add New Account",
+    "importAccounts": "Import Accounts",
+    "configureInteraction": "Configure Interaction",
+    "searchPlaceholder": "Search accounts...",
+    "filter": "Filter",
+    "columns": "Columns",
+    "createTitle": "Create New TikTok Account",
+    "editTitle": "Edit TikTok Account",
+    "table": {
+        "username": "Username",
+        "email": "Email",
+        "phone": "Phone",
+        "status": "Status",
+        "notes": "Notes",
+        "createdDate": "Created Date",
+        "edit": "Edit",
+        "view": "View",
+        "stopRunning": "Stop Running",
+        "tasks": "Tasks",
+        "delete": "Delete"
+    },
+    "detail": {
+        "title": "TikTok Account Details",
+        "status": "Status",
+        "phone": "Phone Number",
+        "notes": "Notes",
+        "createdDate": "Created Date",
+        "notProvided": "Not provided",
+        "noNotes": "No notes",
+        "edit": "Edit"
+    },
+    "editAccountModal": {
+        "title": "Edit TikTok Account",
+        "sections": {
+            "accountInfo": "Account Information",
+            "contactInfo": "Contact Information",
+            "proxySettings": "Proxy Settings",
+            "deviceScenarioSettings": "Device & Scenario Settings",
+            "securitySettings": "Security & Additional Settings"
+        },
+        "fields": {
+            "username": "Username",
+            "displayName": "Display Name",
+            "nickname": "Nickname",
+            "email": "Email",
+            "phoneNumber": "Phone Number",
+            "password": "Password",
+            "status": "Status",
+            "twoFactorEnabled": "Enable Two-Factor Authentication",
+            "notes": "Notes",
+            "proxyIp": "Proxy IP",
+            "proxyPort": "Proxy Port",
+            "proxyUsername": "Proxy Username",
+            "proxyPassword": "Proxy Password",
+            "deviceInfo": "Device Information",
+            "device": "Device",
+            "scenario": "Scenario"
+        },
+        "placeholders": {
+            "username": "Enter username",
+            "displayName": "Enter display name",
+            "nickname": "Enter nickname",
+            "email": "Enter email address",
+            "phoneNumber": "Enter phone number",
+            "password": "Enter new password",
+            "notes": "Enter notes about this account...",
+            "proxyIp": "192.168.1.1",
+            "proxyPort": "8080",
+            "proxyUsername": "Enter proxy username",
+            "proxyPassword": "Enter proxy password",
+            "deviceInfo": "Enter device information",
+            "selectDevice": "Select a device",
+            "selectScenario": "Select a scenario"
+        },
+        "status": {
+            "active": "Active",
+            "inactive": "Inactive",
+            "suspended": "Suspended",
+            "running": "Running",
+            "error": "Error"
+        },
+        "validation": {
+            "usernameRequired": "Username is required",
+            "usernameInvalid": "Username can only contain letters, numbers, dots and underscores",
+            "emailInvalid": "Please enter a valid email address",
+            "phoneInvalid": "Please enter a valid phone number",
+            "portInvalid": "Port must be between 1 and 65535"
+        },
+        "hints": {
+            "passwordHint": "Leave empty to keep current password",
+            "twoFactorHint": "Enable two-factor authentication for better security",
+            "deviceHint": "Select the device this account will use",
+            "scenarioHint": "Choose the interaction scenario for this account"
+        },
+        "buttons": {
+            "cancel": "Cancel",
+            "save": "Save Changes"
+        }
+    },
+    "form": {
+        "basicInfo": "Basic Information",
+        "contactInfo": "Contact Information",
+        "additionalInfo": "Additional Information",
+        "username": "Username",
+        "email": "Email",
+        "phoneNumber": "Phone Number",
+        "status": "Status",
+        "notes": "Notes",
+        "notesPlaceholder": "Enter additional notes about this account...",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "passwordInfo": "Leave password fields empty to keep current password",
+        "selectStatus": "Select Status",
+        "statusActive": "Active",
+        "statusInactive": "Inactive",
+        "statusSuspended": "Suspended",
+        "back": "Back",
+        "save": "Save",
+        "saving": "Saving...",
+        "delete": "Delete",
+        "suspend": "Suspend"
+    },
+    "filterForm": {
+        "username": "Username",
+        "email": "Email",
+        "phoneNumber": "Phone Number",
+        "status": "Status",
+        "cancel": "Cancel",
+        "apply": "Apply"
+    },
+    "bulkAction": {
+        "selected": "{{count}} account(s) selected",
+        "delete": "Delete",
+        "suspend": "Suspend",
+        "clear": "Clear Selection"
+    },
+    "bulkDeleteConfirm": {
+        "title": "Delete Selected Accounts",
+        "content": "Are you sure you want to delete {{count}} selected TikTok account(s)? This action cannot be undone.",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "confirmText": "Yes, delete them"
+    },
+    "bulkSuspendConfirm": {
+        "title": "Suspend Selected Accounts",
+        "content": "Are you sure you want to suspend {{count}} selected TikTok account(s)?",
+        "cancel": "Cancel",
+        "suspend": "Suspend",
+        "confirmText": "Yes, suspend them"
+    },
+    "bulkStartConfirm": {
+        "title": "Start Selected Accounts",
+        "content": "Are you sure you want to start running scenarios for {{count}} selected TikTok account(s)?",
+        "cancel": "Cancel",
+        "start": "Start",
+        "confirmText": "Yes, start them"
+    },
+    "deleteConfirm": {
+        "title": "Delete TikTok Account",
+        "content": "Are you sure you want to delete this TikTok account? This action cannot be undone.",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "confirmText": "Yes, delete it"
+    },
+    "suspendConfirm": {
+        "title": "Suspend TikTok Account",
+        "content": "Are you sure you want to suspend this TikTok account?",
+        "cancel": "Cancel",
+        "suspend": "Suspend",
+        "confirmText": "Yes, suspend it"
+    },
+    "interactionConfig": {
+        "title": "TikTok Interaction Configuration",
+        "back": "Back",
+        "autoReply": "Auto Reply",
+        "autoReplyDescription": "Configure automatic reply messages for TikTok interactions",
+        "configureAutoReply": "Configure Auto Reply",
+        "messageTemplates": "Message Templates",
+        "messageTemplatesDescription": "Manage predefined message templates for quick use",
+        "manageTemplates": "Manage Templates",
+        "responseRules": "Response Rules",
+        "responseRulesDescription": "Set up automatic response rules based on keywords",
+        "setRules": "Set Rules",
+        "analytics": "Interaction Analytics",
+        "analyticsDescription": "View statistics and analysis of user interactions",
+        "viewAnalytics": "View Analytics"
+    },
+    "interactionConfigModal": {
+        "title": "TikTok Interaction Configuration",
+        "createScenario": "Create New Scenario",
+        "editScenario": "Edit Scenario",
+        "deleteDialog": {
+            "scenarioTitle": "Delete Scenario",
+            "scenarioContent": "Are you sure you want to delete scenario",
+            "scenarioWarning": "This action cannot be undone.",
+            "actionTitle": "Delete Action",
+            "actionContent": "Are you sure you want to delete action",
+            "actionWarning": "This action cannot be undone.",
+            "cancel": "Cancel",
+            "confirm": "Delete"
+        },
+        "save": "Save",
+        "cancel": "Cancel",
+        "close": "Close"
+    },
+    "importModal": {
+        "title": "Import Accounts",
+        "accountListLabel": "Enter account list:",
+        "accountListPlaceholder": "user123|password123|2fa_code|email@example.com\nuser456|password456\nuser789|password789|2fa_code",
+        "formatLabel": "Import format:",
+        "formatValue": "UID|PASS|2FA(optional)|EMAIL(optional)",
+        "enableRunningStatus": "Enable running status",
+        "autoAssign": "Auto assign",
+        "selectDevice": "Select device",
+        "selectDevicePlaceholder": "Select device",
+        "selectScenario": "Select scenario",
+        "selectScenarioPlaceholder": "Select scenario",
+        "redo": "Redo",
+        "exit": "Exit",
+        "save": "Save",
+        "saving": "Saving..."
+    },
+    "accountDetailModal": {
+        "title": "Account Details",
+        "loading": "Loading...",
+        "loadingHistory": "Loading history...",
+        "errorLoading": "Unable to load account information",
+        "retry": "Retry",
+        "refresh": "Refresh",
+        "edit": "Edit",
+        "start": "Start",
+        "close": "Close",
+        "tabs": {
+            "overview": "Overview",
+            "stats": "Statistics",
+            "activity": "Activity",
+            "security": "Security",
+            "settings": "Settings"
+        },
+        "status": {
+            "active": "Active",
+            "inactive": "Inactive",
+            "suspended": "Suspended",
+            "running": "Running",
+            "error": "Error",
+            "unknown": "Unknown"
+        },
+        "overview": {
+            "noDisplayName": "No display name",
+            "joinDate": "Joined: {date}",
+            "lastActivity": "Activity: {date}",
+            "noActivity": "No activity",
+            "undetermined": "Undetermined",
+            "followers": "Followers",
+            "likes": "Likes",
+            "videos": "Videos",
+            "estimatedViews": "Views (estimated)",
+            "currentTasks": "Current Tasks",
+            "runningTasks": "{count} running",
+            "pendingTasks": "{count} pending",
+            "noTasks": "No tasks are currently running",
+            "priority": "Priority: {priority}",
+            "startedAt": "Started: {time}",
+            "scheduledAt": "Scheduled: {time}",
+            "immediately": "Immediately",
+            "pending": "Pending"
+        },
+        "stats": {
+            "placeholder": "Detailed statistics will be displayed here",
+            "title": "Detailed Statistics",
+            "description": "Performance analysis and account activity insights",
+            "sections": {
+                "performance": "Performance Overview",
+                "taskAnalysis": "Task Analysis",
+                "engagement": "Engagement",
+                "timeline": "Timeline Trends"
+            },
+            "metrics": {
+                "totalTasks": "Total Tasks",
+                "completedTasks": "Completed",
+                "failedTasks": "Failed",
+                "successRate": "Success Rate",
+                "averageTasksPerDay": "Avg Tasks/Day",
+                "totalFollowers": "Total Followers",
+                "totalLikes": "Total Likes",
+                "totalVideos": "Total Videos",
+                "totalViews": "Total Views",
+                "engagementRate": "Engagement Rate",
+                "averageViewsPerVideo": "Avg Views/Video",
+                "accountAge": "Account Age",
+                "lastActiveTime": "Last Active"
+            },
+            "charts": {
+                "taskDistribution": "Task Distribution",
+                "taskStatusBreakdown": "Task Status Breakdown",
+                "priorityDistribution": "Priority Distribution",
+                "performanceTrend": "Performance Trend"
+            },
+            "periods": {
+                "today": "Today",
+                "thisWeek": "This Week",
+                "thisMonth": "This Month",
+                "allTime": "All Time"
+            },
+            "noData": "No data to display",
+            "calculating": "Calculating..."
+        },
+        "activity": {
+            "summary": {
+                "completed": "Completed",
+                "running": "Running",
+                "pending": "Pending",
+                "failed": "Failed"
+            },
+            "timeline": {
+                "title": "Recent Activity History",
+                "description": "Track all account interaction tasks",
+                "noActivity": "No activity yet",
+                "noActivityDescription": "This account has not performed any interaction tasks yet.",
+                "viewMore": "View {count} more activities"
+            },
+            "taskStatus": {
+                "completed": "Completed",
+                "failed": "Failed",
+                "running": "Running",
+                "pending": "Pending",
+                "unknown": "Unknown"
+            },
+            "taskTypes": {
+                "follow_user": "Follow User",
+                "unfollow_user": "Unfollow User",
+                "like_video": "Like Video",
+                "unlike_video": "Unlike Video",
+                "comment_video": "Comment Video",
+                "share_video": "Share Video",
+                "view_video": "View Video",
+                "create_post": "Create Post",
+                "live_interaction": "Live Interaction",
+                "message_user": "Message User",
+                "unknown": "Unknown Task"
+            },
+            "priority": {
+                "high": "High",
+                "medium": "Medium",
+                "low": "Low",
+                "unknown": "Unknown"
+            },
+            "timeAgo": {
+                "justNow": "Just now",
+                "minutesAgo": "{minutes} minutes ago",
+                "hoursAgo": "{hours} hours ago",
+                "daysAgo": "{days} days ago"
+            }
+        },
+        "security": {
+            "twoFactor": {
+                "title": "Two-Factor Authentication (2FA)",
+                "description": "Protect your account with an additional security layer",
+                "enabled": "Enabled",
+                "disabled": "Disabled",
+                "enabledMessage": "2FA has been activated for this account",
+                "disabledMessage": "Account is not protected by 2FA",
+                "recommendation": "We recommend enabling 2FA to enhance security for this TikTok account.",
+                "backupCodes": "Backup Codes",
+                "backupCodesAvailable": "{count} backup codes available",
+                "moreBackupCodes": "+{count} more codes"
+            },
+            "securityInfo": {
+                "title": "Security Information",
+                "phoneNumber": "Phone Number",
+                "email": "Email",
+                "lastLogin": "Last Login",
+                "notUpdated": "Not updated",
+                "notLoggedIn": "Not logged in"
+            }
+        },
+        "settings": {
+            "placeholder": "Account settings will be displayed here",
+            "title": "Account Settings",
+            "description": "Manage settings and preferences for your TikTok account",
+            "sections": {
+                "profile": "Profile Information",
+                "privacy": "Privacy",
+                "automation": "Automation",
+                "notifications": "Notifications",
+                "security": "Security",
+                "api": "API Configuration",
+                "advanced": "Advanced"
+            },
+            "profile": {
+                "displayName": "Display Name",
+                "bio": "Bio",
+                "avatar": "Avatar",
+                "website": "Website",
+                "location": "Location",
+                "birthday": "Birthday",
+                "gender": "Gender",
+                "language": "Language",
+                "timezone": "Timezone",
+                "updateProfile": "Update Profile"
+            },
+            "privacy": {
+                "accountType": "Account Type",
+                "public": "Public",
+                "private": "Private",
+                "allowComments": "Allow Comments",
+                "allowDuets": "Allow Duets",
+                "allowStitch": "Allow Stitch",
+                "allowDownloads": "Allow Downloads",
+                "whoCanMessage": "Who Can Message",
+                "everyone": "Everyone",
+                "friends": "Friends",
+                "nobody": "Nobody"
+            },
+            "automation": {
+                "enableAutomation": "Enable Automation",
+                "autoFollow": "Auto Follow",
+                "autoLike": "Auto Like",
+                "autoComment": "Auto Comment",
+                "autoShare": "Auto Share",
+                "scheduleSettings": "Schedule Settings",
+                "workingHours": "Working Hours",
+                "dailyLimits": "Daily Limits",
+                "followLimit": "Follow Limit",
+                "likeLimit": "Like Limit",
+                "commentLimit": "Comment Limit",
+                "delayBetweenActions": "Delay Between Actions",
+                "randomDelay": "Random Delay"
+            },
+            "notifications": {
+                "emailNotifications": "Email Notifications",
+                "pushNotifications": "Push Notifications",
+                "taskCompleted": "Task Completed",
+                "taskFailed": "Task Failed",
+                "accountWarnings": "Account Warnings",
+                "dailyReports": "Daily Reports",
+                "weeklyReports": "Weekly Reports",
+                "systemUpdates": "System Updates",
+                "maintenanceAlerts": "Maintenance Alerts"
+            },
+            "security": {
+                "changePassword": "Change Password",
+                "twoFactorAuth": "Two-Factor Authentication",
+                "loginAlerts": "Login Alerts",
+                "sessionTimeout": "Session Timeout",
+                "ipWhitelist": "IP Whitelist",
+                "deviceManagement": "Device Management",
+                "securityLogs": "Security Logs"
+            },
+            "api": {
+                "apiKey": "API Key",
+                "rateLimit": "Rate Limit",
+                "requestsPerMinute": "Requests/Minute",
+                "requestsPerHour": "Requests/Hour",
+                "requestsPerDay": "Requests/Day",
+                "webhookUrl": "Webhook URL",
+                "apiVersion": "API Version",
+                "debugMode": "Debug Mode"
+            },
+            "advanced": {
+                "userAgent": "User Agent",
+                "customHeaders": "Custom Headers",
+                "cookieSettings": "Cookie Settings",
+                "proxyRotation": "Proxy Rotation",
+                "captchaSolver": "Captcha Solver",
+                "browserSettings": "Browser Settings",
+                "scriptTimeout": "Script Timeout"
+            },
+            "actions": {
+                "save": "Save Changes",
+                "cancel": "Cancel",
+                "reset": "Reset",
+                "export": "Export Settings",
+                "import": "Import Settings",
+                "testConnection": "Test Connection",
+                "generateApiKey": "Generate New API Key"
+            },
+            "messages": {
+                "saveSuccess": "Settings saved successfully",
+                "saveError": "Error saving settings",
+                "resetConfirm": "Are you sure you want to reset all settings?",
+                "testSuccess": "Connection successful",
+                "testError": "Connection failed",
+                "invalidInput": "Invalid input data"
+            }
+        }
+    }
+} 

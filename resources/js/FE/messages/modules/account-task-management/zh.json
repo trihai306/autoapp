@@ -1,0 +1,87 @@
+{
+    "title": "账户任务管理",
+    "addNew": "添加新任务",
+    "searchPlaceholder": "搜索任务...",
+    "filter": "筛选",
+    "columns": "列",
+    "createTitle": "创建新账户任务",
+    "editTitle": "编辑账户任务",
+    "table": {
+        "title": "标题",
+        "description": "描述",
+        "status": "状态",
+        "priority": "优先级",
+        "assignedTo": "分配给",
+        "dueDate": "到期日期",
+        "createdDate": "创建日期",
+        "edit": "编辑",
+        "view": "查看"
+    },
+    "detail": {
+        "title": "账户任务详情",
+        "status": "状态",
+        "priority": "优先级",
+        "assignedTo": "分配给",
+        "dueDate": "到期日期",
+        "description": "描述",
+        "createdDate": "创建日期",
+        "notProvided": "未提供",
+        "noDescription": "无描述",
+        "edit": "编辑"
+    },
+    "form": {
+        "basicInfo": "基本信息",
+        "taskInfo": "任务信息",
+        "additionalInfo": "附加信息",
+        "title": "标题",
+        "description": "描述",
+        "descriptionPlaceholder": "输入任务描述...",
+        "status": "状态",
+        "priority": "优先级",
+        "assignedTo": "分配给",
+        "dueDate": "到期日期",
+        "selectStatus": "选择状态",
+        "statusPending": "待处理",
+        "statusInProgress": "进行中",
+        "statusCompleted": "已完成",
+        "statusCancelled": "已取消",
+        "selectPriority": "选择优先级",
+        "priorityLow": "低",
+        "priorityMedium": "中",
+        "priorityHigh": "高",
+        "priorityUrgent": "紧急",
+        "back": "返回",
+        "save": "保存",
+        "saving": "保存中...",
+        "delete": "删除"
+    },
+    "filterForm": {
+        "title": "标题",
+        "taskType": "任务类型",
+        "selectTaskType": "选择任务类型",
+        "status": "状态",
+        "priority": "优先级",
+        "assignedTo": "分配给",
+        "cancel": "取消",
+        "apply": "应用"
+    },
+    "bulkAction": {
+        "selected": "已选择 {{count}} 个任务",
+        "delete": "删除",
+        "clear": "清除选择"
+    },
+    "bulkDeleteConfirm": {
+        "title": "删除选中的任务",
+        "content": "您确定要删除 {{count}} 个选中的任务吗？此操作无法撤销。",
+        "cancel": "取消",
+        "delete": "删除",
+        "confirmText": "是的，删除它们"
+    },
+    "deleteConfirm": {
+        "title": "删除账户任务",
+        "content": "您确定要删除这个账户任务吗？此操作无法撤销。",
+        "cancel": "取消",
+        "delete": "删除",
+        "confirmText": "是的，删除它"
+    }
+} 

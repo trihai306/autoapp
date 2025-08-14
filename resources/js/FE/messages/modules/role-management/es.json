@@ -1,0 +1,41 @@
+{
+    "roleManagement": {
+        "title": "Roles",
+        "addNew": "Agregar nuevo rol",
+        "form": {
+            "createTitle": "Crear nuevo rol",
+            "editTitle": "Editar rol",
+            "nameLabel": "Nombre",
+            "namePlaceholder": "Nombre del rol",
+            "permissionsLabel": "Permisos",
+            "cancel": "Cancelar",
+            "save": "Guardar",
+            "saving": "Guardando..."
+        },
+        "table": {
+            "name": "Nombre",
+            "guardName": "Nombre del guardia",
+            "createdDate": "Fecha de creación",
+            "edit": "Editar",
+            "delete": "Eliminar"
+        },
+        "deleteConfirm": {
+            "title": "Eliminar rol",
+            "content": "¿Está seguro de que desea eliminar este rol?",
+            "confirmText": "Eliminar"
+        },
+        "bulkDeleteConfirm": {
+            "title": "Confirmación de eliminación",
+            "content": "¿Está seguro de que desea eliminar {count} rol(es) seleccionado(s)? Esta acción no se puede deshacer.",
+            "delete": "Eliminar",
+            "cancel": "Cancelar"
+        },
+        "bulkAction": {
+            "selected": "{count} rol(es) seleccionado(s)",
+            "delete": "Eliminar",
+            "clear": "Limpiar"
+        },
+        "searchPlaceholder": "Buscar por nombre...",
+        "columns": "Columnas"
+    }
+}

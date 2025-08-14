@@ -1,0 +1,88 @@
+{
+    "userManagement": {
+        "title": "Người dùng",
+        "addNew": "Thêm người dùng mới",
+        "editTitle": "Chỉnh sửa người dùng",
+        "createTitle": "Tạo người dùng mới",
+        "form": {
+            "back": "Quay lại",
+            "block": "Chặn",
+            "delete": "Xóa",
+            "save": "Lưu",
+            "saving": "Đang lưu...",
+            "basicInfo": "Thông tin cơ bản",
+            "firstName": "Tên",
+            "lastName": "Họ",
+            "contactInfo": "Thông tin liên hệ",
+            "email": "Email",
+            "phoneNumber": "Số điện thoại",
+            "roles": "Vai trò",
+            "password": "Mật khẩu",
+            "confirmPassword": "Xác nhận mật khẩu",
+            "passwordInfo": "Mật khẩu chỉ có thể được thay đổi bởi người dùng."
+        },
+        "table": {
+            "name": "Tên",
+            "email": "Email",
+            "phone": "Điện thoại",
+            "roles": "Vai trò",
+            "balance": "Số dư",
+            "createdDate": "Ngày tạo",
+            "status": "Trạng thái",
+            "edit": "Chỉnh sửa",
+            "view": "Xem"
+        },
+        "deleteConfirm": {
+            "title": "Xóa người dùng",
+            "content": "Bạn có chắc chắn muốn xóa người dùng này không?",
+            "confirmText": "Xóa"
+        },
+        "blockConfirm": {
+            "title": "Chặn người dùng",
+            "content": "Bạn có chắc chắn muốn chặn người dùng này không?",
+            "confirmText": "Chặn"
+        },
+        "bulkDeleteConfirm": {
+            "title": "Xác nhận xóa",
+            "content": "Bạn có chắc chắn muốn xóa {count} người dùng đã chọn không? Hành động này không thể hoàn tác.",
+            "delete": "Xóa",
+            "cancel": "Hủy"
+        },
+        "bulkBlockConfirm": {
+            "title": "Xác nhận chặn",
+            "content": "Bạn có chắc chắn muốn chặn {count} người dùng đã chọn không?",
+            "block": "Chặn",
+            "cancel": "Hủy"
+        },
+        "bulkAction": {
+            "selected": "{count} người dùng đã được chọn",
+            "delete": "Xóa",
+            "block": "Chặn",
+            "clear": "Xóa"
+        },
+        "searchPlaceholder": "Tìm kiếm nhanh...",
+        "columns": "Cột",
+        "filter": "Lọc",
+        "filterForm": {
+            "email": "Email",
+            "firstName": "Tên",
+            "lastName": "Họ",
+            "phoneNumber": "Số điện thoại",
+            "status": "Trạng thái",
+            "allStatus": "Tất cả trạng thái",
+            "active": "Hoạt động",
+            "locked": "Bị khóa",
+            "cancel": "Hủy",
+            "apply": "Áp dụng"
+        },
+        "detail": {
+            "title": "Chi tiết người dùng",
+            "status": "Trạng thái",
+            "phone": "Điện thoại",
+            "balance": "Số dư",
+            "roles": "Vai trò",
+            "createdDate": "Ngày tạo",
+            "edit": "Chỉnh sửa"
+        }
+    }
+}

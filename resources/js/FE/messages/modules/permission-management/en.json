@@ -1,0 +1,40 @@
+{
+    "permissionManagement": {
+        "title": "Permissions",
+        "addNew": "Add new permission",
+        "form": {
+            "createTitle": "Create New Permission",
+            "editTitle": "Edit Permission",
+            "nameLabel": "Name",
+            "namePlaceholder": "Permission Name",
+            "cancel": "Cancel",
+            "save": "Save",
+            "saving": "Saving..."
+        },
+        "table": {
+            "name": "Name",
+            "guardName": "Guard Name",
+            "createdDate": "Created Date",
+            "edit": "Edit",
+            "delete": "Delete"
+        },
+        "deleteConfirm": {
+            "title": "Delete Permission",
+            "content": "Are you sure you want to delete this permission?",
+            "confirmText": "Delete"
+        },
+        "bulkDeleteConfirm": {
+            "title": "Delete Confirmation",
+            "content": "Are you sure you want to delete {count} selected permission(s)? This action cannot be undone.",
+            "delete": "Delete",
+            "cancel": "Cancel"
+        },
+        "bulkAction": {
+            "selected": "{count} permission selected",
+            "delete": "Delete",
+            "clear": "Clear"
+        },
+        "searchPlaceholder": "Search by name...",
+        "columns": "Columns"
+    }
+}

@@ -1,0 +1,40 @@
+{
+    "permissionManagement": {
+        "title": "تصاريح",
+        "addNew": "إضافة تصريح جديد",
+        "form": {
+            "createTitle": "إنشاء تصريح جديد",
+            "editTitle": "تعديل التصريح",
+            "nameLabel": "اسم",
+            "namePlaceholder": "اسم التصريح",
+            "cancel": "إلغاء",
+            "save": "حفظ",
+            "saving": "جارٍ الحفظ..."
+        },
+        "table": {
+            "name": "اسم",
+            "guardName": "اسم الحارس",
+            "createdDate": "تاريخ الإنشاء",
+            "edit": "تعديل",
+            "delete": "حذف"
+        },
+        "deleteConfirm": {
+            "title": "حذف التصريح",
+            "content": "هل أنت متأكد أنك تريد حذف هذا التصريح؟",
+            "confirmText": "حذف"
+        },
+        "bulkDeleteConfirm": {
+            "title": "تأكيد الحذف",
+            "content": "هل أنت متأكد أنك تريد حذف {count} تصريح (تصاريح) محددة؟ لا يمكن التراجع عن هذا الإجراء.",
+            "delete": "حذف",
+            "cancel": "إلغاء"
+        },
+        "bulkAction": {
+            "selected": "تم تحديد {count} تصريح",
+            "delete": "حذف",
+            "clear": "مسح"
+        },
+        "searchPlaceholder": "البحث بالاسم...",
+        "columns": "أعمدة"
+    }
+}

@@ -1,0 +1,45 @@
+{
+    "transactionManagement": {
+        "title": "交易",
+        "filter": "筛选",
+        "table": {
+            "transactionId": "交易ID",
+            "user": "用户",
+            "type": "类型",
+            "amount": "金额",
+            "description": "描述",
+            "status": "状态",
+            "date": "日期",
+            "actions": "操作"
+        },
+        "filterForm": {
+            "title": "筛选",
+            "transactionType": "交易类型",
+            "selectType": "选择类型",
+            "user": "用户",
+            "searchUser": "按姓名或电子邮件搜索",
+            "status": "状态",
+            "selectStatus": "选择状态",
+            "cancel": "取消",
+            "apply": "应用"
+        },
+        "bulkAction": {
+            "selected": "已选择 {count} 个交易",
+            "delete": "删除",
+            "clear": "清除"
+        },
+        "deleteConfirm": {
+            "title": "删除确认",
+            "content": "您确定要删除所选的 {count} 个交易吗？此操作无法撤消。",
+            "delete": "删除",
+            "cancel": "取消"
+        },
+        "quickSearch": "快速搜索...",
+        "actionConfirm": {
+            "title": "确认操作",
+            "content": "您确定要 {action} 此交易吗？",
+            "confirm": "确认",
+            "cancel": "取消"
+        }
+    }
+}

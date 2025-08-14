@@ -1,0 +1,565 @@
+{
+    "title": "Quản lý tài khoản TikTok",
+    "addNew": "Thêm tài khoản mới",
+    "importAccounts": "Nhập tài khoản",
+    "configureInteraction": "Cấu hình Tương tác",
+    "searchPlaceholder": "Tìm kiếm tài khoản...",
+    "filter": "Lọc",
+    "columns": "Cột",
+    "createTitle": "Tạo tài khoản TikTok mới",
+    "editTitle": "Chỉnh sửa tài khoản TikTok",
+    "table": {
+        "username": "Tên đăng nhập",
+        "email": "Email",
+        "phone": "Số điện thoại",
+        "status": "Trạng thái",
+        "notes": "Ghi chú",
+        "createdDate": "Ngày tạo",
+        "edit": "Sửa",
+        "view": "Xem",
+        "stopRunning": "Dừng chạy",
+        "tasks": "Tasks",
+        "delete": "Xóa"
+    },
+    "detail": {
+        "title": "Chi tiết tài khoản TikTok",
+        "status": "Trạng thái",
+        "phone": "Số điện thoại",
+        "notes": "Ghi chú",
+        "createdDate": "Ngày tạo",
+        "notProvided": "Chưa cung cấp",
+        "noNotes": "Không có ghi chú",
+        "edit": "Chỉnh sửa"
+    },
+    "editAccountModal": {
+        "title": "Chỉnh sửa tài khoản TikTok",
+        "sections": {
+            "accountInfo": "Thông tin tài khoản",
+            "contactInfo": "Thông tin liên hệ",
+            "proxySettings": "Cài đặt Proxy",
+            "deviceScenarioSettings": "Cài đặt Thiết bị & Kịch bản",
+            "securitySettings": "Bảo mật & Cài đặt bổ sung"
+        },
+        "fields": {
+            "username": "Tên đăng nhập",
+            "displayName": "Tên hiển thị",
+            "nickname": "Biệt danh",
+            "email": "Email",
+            "phoneNumber": "Số điện thoại",
+            "password": "Mật khẩu",
+            "status": "Trạng thái",
+            "twoFactorEnabled": "Bật xác thực hai yếu tố",
+            "notes": "Ghi chú",
+            "proxyIp": "IP Proxy",
+            "proxyPort": "Port Proxy",
+            "proxyUsername": "Tên đăng nhập Proxy",
+            "proxyPassword": "Mật khẩu Proxy",
+            "deviceInfo": "Thông tin thiết bị",
+            "device": "Thiết bị",
+            "scenario": "Kịch bản"
+        },
+        "placeholders": {
+            "username": "Nhập tên đăng nhập",
+            "displayName": "Nhập tên hiển thị",
+            "nickname": "Nhập biệt danh",
+            "email": "Nhập địa chỉ email",
+            "phoneNumber": "Nhập số điện thoại",
+            "password": "Nhập mật khẩu mới",
+            "notes": "Nhập ghi chú về tài khoản này...",
+            "proxyIp": "192.168.1.1",
+            "proxyPort": "8080",
+            "proxyUsername": "Nhập tên đăng nhập proxy",
+            "proxyPassword": "Nhập mật khẩu proxy",
+            "deviceInfo": "Nhập thông tin thiết bị",
+            "selectDevice": "Chọn thiết bị",
+            "selectScenario": "Chọn kịch bản"
+        },
+        "status": {
+            "active": "Hoạt động",
+            "inactive": "Không hoạt động",
+            "suspended": "Tạm khóa",
+            "running": "Đang chạy",
+            "error": "Lỗi"
+        },
+        "validation": {
+            "usernameRequired": "Tên đăng nhập là bắt buộc",
+            "usernameInvalid": "Tên đăng nhập chỉ có thể chứa chữ cái, số, dấu chấm và gạch dưới",
+            "emailInvalid": "Vui lòng nhập địa chỉ email hợp lệ",
+            "phoneInvalid": "Vui lòng nhập số điện thoại hợp lệ",
+            "portInvalid": "Port phải từ 1 đến 65535"
+        },
+        "hints": {
+            "passwordHint": "Để trống để giữ mật khẩu hiện tại",
+            "twoFactorHint": "Bật xác thực hai yếu tố để bảo mật tốt hơn",
+            "deviceHint": "Chọn thiết bị mà tài khoản này sẽ sử dụng",
+            "scenarioHint": "Chọn kịch bản tương tác cho tài khoản này"
+        },
+        "buttons": {
+            "cancel": "Hủy",
+            "save": "Lưu thay đổi"
+        }
+    },
+    "form": {
+        "basicInfo": "Thông tin cơ bản",
+        "contactInfo": "Thông tin liên hệ",
+        "additionalInfo": "Thông tin bổ sung",
+        "username": "Tên đăng nhập",
+        "email": "Email",
+        "phoneNumber": "Số điện thoại",
+        "status": "Trạng thái",
+        "notes": "Ghi chú",
+        "notesPlaceholder": "Nhập ghi chú bổ sung về tài khoản này...",
+        "password": "Mật khẩu",
+        "confirmPassword": "Xác nhận mật khẩu",
+        "passwordInfo": "Để trống các trường mật khẩu để giữ mật khẩu hiện tại",
+        "selectStatus": "Chọn trạng thái",
+        "statusActive": "Hoạt động",
+        "statusInactive": "Không hoạt động",
+        "statusSuspended": "Tạm khóa",
+        "back": "Quay lại",
+        "save": "Lưu",
+        "saving": "Đang lưu...",
+        "delete": "Xóa",
+        "suspend": "Tạm khóa"
+    },
+    "filterForm": {
+        "username": "Tên đăng nhập",
+        "email": "Email",
+        "phoneNumber": "Số điện thoại",
+        "status": "Trạng thái",
+        "cancel": "Hủy",
+        "apply": "Áp dụng"
+    },
+    "bulkAction": {
+        "selected": "Đã chọn {{count}} tài khoản",
+        "activate": "Kích hoạt",
+        "pause": "Tạm dừng",
+        "suspend": "Tạm khóa",
+        "delete": "Xóa",
+        "clear": "Bỏ chọn",
+        "success": "Thành công",
+        "error": "Lỗi",
+        "activateSuccess": "Đã kích hoạt {{count}} tài khoản thành công",
+        "pauseSuccess": "Đã tạm dừng {{count}} tài khoản thành công"
+    },
+    "tableTools": {
+        "refresh": "Làm mới",
+        "quickFilters": "Lọc nhanh",
+        "status": {
+            "active": "Hoạt động",
+            "inactive": "Không hoạt động",
+            "suspended": "Tạm khóa"
+        },
+        "taskStatus": {
+            "hasPending": "Có task chờ",
+            "noPending": "Không có task"
+        },
+        "sortBy": "Sắp xếp theo",
+        "sort": {
+            "username": "Tên đăng nhập",
+            "createdAt": "Ngày tạo",
+            "tasks": "Số task"
+        },
+        "clearFilters": "Xóa bộ lọc"
+    },
+    "bulkDeleteConfirm": {
+        "title": "Xóa tài khoản đã chọn",
+        "content": "Bạn có chắc chắn muốn xóa {{count}} tài khoản TikTok đã chọn? Hành động này không thể hoàn tác.",
+        "cancel": "Hủy",
+        "delete": "Xóa",
+        "confirmText": "Có, xóa chúng"
+    },
+    "bulkSuspendConfirm": {
+        "title": "Tạm khóa tài khoản đã chọn",
+        "content": "Bạn có chắc chắn muốn tạm khóa {{count}} tài khoản TikTok đã chọn?",
+        "cancel": "Hủy",
+        "suspend": "Tạm khóa",
+        "confirmText": "Có, tạm khóa chúng"
+    },
+    "bulkStartConfirm": {
+        "title": "Bắt đầu tài khoản đã chọn",
+        "content": "Bạn có chắc chắn muốn bắt đầu chạy kịch bản cho {{count}} tài khoản TikTok đã chọn?",
+        "cancel": "Hủy",
+        "start": "Bắt đầu",
+        "confirmText": "Có, bắt đầu chúng"
+    },
+    "deleteConfirm": {
+        "title": "Xóa tài khoản TikTok",
+        "content": "Bạn có chắc chắn muốn xóa tài khoản TikTok này? Hành động này không thể hoàn tác.",
+        "cancel": "Hủy",
+        "delete": "Xóa",
+        "confirmText": "Có, xóa nó"
+    },
+    "suspendConfirm": {
+        "title": "Tạm khóa tài khoản TikTok",
+        "content": "Bạn có chắc chắn muốn tạm khóa tài khoản TikTok này?",
+        "cancel": "Hủy",
+        "suspend": "Tạm khóa",
+        "confirmText": "Có, tạm khóa nó"
+    },
+    "interactionConfig": {
+        "title": "Cấu hình Tương tác TikTok",
+        "back": "Quay lại",
+        "autoReply": "Tự động trả lời",
+        "autoReplyDescription": "Cấu hình tin nhắn tự động trả lời cho các tương tác trên TikTok",
+        "configureAutoReply": "Cấu hình Tự động trả lời",
+        "messageTemplates": "Mẫu tin nhắn",
+        "messageTemplatesDescription": "Quản lý các mẫu tin nhắn có sẵn để sử dụng nhanh",
+        "manageTemplates": "Quản lý Mẫu tin nhắn",
+        "responseRules": "Quy tắc phản hồi",
+        "responseRulesDescription": "Thiết lập các quy tắc tự động phản hồi dựa trên từ khóa",
+        "setRules": "Thiết lập Quy tắc",
+        "analytics": "Phân tích tương tác",
+        "analyticsDescription": "Xem thống kê và phân tích các tương tác với người dùng",
+        "viewAnalytics": "Xem Phân tích"
+    },
+    "interactionConfigModal": {
+        "title": "Cấu hình Tương tác TikTok",
+        "scenarios": "Kịch Bản",
+        "addScenario": "Thêm",
+        "searchPlaceholder": "Tìm kiếm ...",
+        "scenarioDetails": "Kịch bản: {name}",
+        "totalActions": "Tổng số hành động: {{count}}",
+        "runTimes": "Đã chạy: {{count}} lần",
+        "addAction": "Thêm Hành Động",
+        "actionTable": {
+            "id": "ID",
+            "name": "TÊN HÀNH ĐỘNG",
+            "options": "TÙY CHỌN"
+        },
+        "noActions": "Chưa có hành động nào",
+        "selectScenario": "Chọn một kịch bản để xem chi tiết",
+        "close": "Đóng",
+        "scenarioForm": {
+            "add": "Thêm Kịch Bản Mới",
+            "edit": "Sửa Kịch Bản",
+            "nameLabel": "Tên kịch bản",
+            "namePlaceholder": "Nhập tên kịch bản...",
+            "cancel": "Hủy",
+            "save": "Thêm",
+            "update": "Cập Nhật"
+        },
+        "actionForm": {
+            "add": "Thêm Hành Động Mới",
+            "edit": "Sửa Hành Động",
+            "nameLabel": "Tên hành động",
+            "namePlaceholder": "Nhập tên hành động...",
+            "cancel": "Hủy",
+            "save": "Thêm",
+            "update": "Cập Nhật"
+        },
+        "confirmDelete": {
+            "scenario": "Bạn có chắc chắn muốn xóa kịch bản này?",
+            "action": "Bạn có chắc chắn muốn xóa hành động này?"
+        },
+        "deleteDialog": {
+            "scenarioTitle": "Xác nhận xóa kịch bản",
+            "actionTitle": "Xác nhận xóa hành động",
+            "scenarioContent": "Bạn có chắc chắn muốn xóa kịch bản",
+            "actionContent": "Bạn có chắc chắn muốn xóa hành động",
+            "scenarioWarning": "Tất cả hành động trong kịch bản này cũng sẽ bị xóa. Hành động này không thể hoàn tác.",
+            "actionWarning": "Hành động này không thể hoàn tác.",
+            "cancel": "Hủy",
+            "deleteScenario": "Xóa kịch bản",
+            "deleteAction": "Xóa hành động"
+        },
+        "toast": {
+            "scenarioDeleted": "Đã xóa kịch bản thành công",
+            "actionDeleted": "Đã xóa hành động thành công",
+            "scenarioAdded": "Đã thêm kịch bản mới",
+            "scenarioUpdated": "Đã cập nhật kịch bản",
+            "actionAdded": "Đã thêm hành động mới",
+            "actionUpdated": "Đã cập nhật hành động",
+            "nameRequired": "Tên không được để trống",
+            "selectScenarioFirst": "Vui lòng chọn một kịch bản trước"
+        }
+    },
+    "importModal": {
+        "title": "Nhập tài khoản",
+        "accountListLabel": "Nhập danh sách tài khoản:",
+        "accountListPlaceholder": "UID1|PASS1|TWO-FA1|MAIL1|...\nUID2|PASS2|TWO-FA2|MAIL2|...",
+        "formatLabel": "Định dạng nhập:",
+        "formatValue": "UID|PASS|2FA|MAIL",
+        "enableRunningStatus": "Bật trạng thái chạy",
+        "autoAssign": "Tự động gán",
+        "selectDevice": "Chọn thiết bị",
+        "selectDevicePlaceholder": "Chọn thiết bị",
+        "selectScenario": "Chọn kịch bản",
+        "selectScenarioPlaceholder": "Chọn kịch bản",
+        "redo": "Làm lại",
+        "exit": "Thoát",
+        "save": "Lưu",
+        "saving": "Đang lưu..."
+    },
+    "accountDetailModal": {
+        "title": "Chi tiết tài khoản",
+        "loading": "Đang tải...",
+        "loadingHistory": "Đang tải lịch sử...",
+        "errorLoading": "Không thể tải thông tin tài khoản",
+        "retry": "Thử lại",
+        "refresh": "Làm mới",
+        "edit": "Chỉnh sửa",
+        "start": "Bắt đầu",
+        "close": "Đóng",
+        "tabs": {
+            "overview": "Tổng quan",
+            "stats": "Thống kê",
+            "activity": "Hoạt động",
+            "security": "Bảo mật",
+            "settings": "Cài đặt"
+        },
+        "status": {
+            "active": "Hoạt động",
+            "inactive": "Tạm dừng",
+            "suspended": "Bị khóa",
+            "running": "Đang chạy",
+            "error": "Lỗi",
+            "unknown": "Không xác định"
+        },
+        "overview": {
+            "noDisplayName": "Chưa có tên hiển thị",
+            "joinDate": "Tham gia: {date}",
+            "lastActivity": "Hoạt động: {date}",
+            "noActivity": "Chưa có hoạt động",
+            "undetermined": "Chưa xác định",
+            "followers": "Followers",
+            "likes": "Likes",
+            "videos": "Videos",
+            "estimatedViews": "Views (ước tính)",
+            "currentTasks": "Tác vụ hiện tại",
+            "runningTasks": "{{count}} đang chạy",
+            "pendingTasks": "{{count}} chờ xử lý",
+            "noTasks": "Không có tác vụ nào đang thực hiện",
+            "priority": "Ưu tiên: {priority}",
+            "startedAt": "Bắt đầu: {time}",
+            "scheduledAt": "Lên lịch: {time}",
+            "immediately": "Ngay lập tức",
+            "pending": "Chờ xử lý"
+        },
+        "stats": {
+            "placeholder": "Thống kê chi tiết sẽ được hiển thị ở đây",
+            "title": "Thống kê chi tiết",
+            "description": "Phân tích hiệu suất và hoạt động của tài khoản",
+            "sections": {
+                "performance": "Hiệu suất tổng quan",
+                "taskAnalysis": "Phân tích tác vụ",
+                "engagement": "Tương tác",
+                "timeline": "Xu hướng theo thời gian"
+            },
+            "metrics": {
+                "totalTasks": "Tổng tác vụ",
+                "completedTasks": "Đã hoàn thành",
+                "failedTasks": "Thất bại",
+                "successRate": "Tỷ lệ thành công",
+                "averageTasksPerDay": "Trung bình tác vụ/ngày",
+                "totalFollowers": "Tổng followers",
+                "totalLikes": "Tổng likes",
+                "totalVideos": "Tổng videos",
+                "totalViews": "Tổng views",
+                "engagementRate": "Tỷ lệ tương tác",
+                "averageViewsPerVideo": "Trung bình views/video",
+                "accountAge": "Tuổi tài khoản",
+                "lastActiveTime": "Hoạt động gần nhất"
+            },
+            "charts": {
+                "taskDistribution": "Phân bố tác vụ",
+                "taskStatusBreakdown": "Phân tích trạng thái tác vụ",
+                "priorityDistribution": "Phân bố ưu tiên",
+                "performanceTrend": "Xu hướng hiệu suất"
+            },
+            "periods": {
+                "today": "Hôm nay",
+                "thisWeek": "Tuần này",
+                "thisMonth": "Tháng này",
+                "allTime": "Tất cả"
+            },
+            "noData": "Không có dữ liệu để hiển thị",
+            "calculating": "Đang tính toán..."
+        },
+        "activity": {
+            "summary": {
+                "completed": "Hoàn thành",
+                "running": "Đang chạy",
+                "pending": "Chờ xử lý",
+                "failed": "Thất bại"
+            },
+            "timeline": {
+                "title": "Lịch sử hoạt động gần đây",
+                "description": "Theo dõi tất cả các tác vụ tương tác của tài khoản",
+                "noActivity": "Chưa có hoạt động nào",
+                "noActivityDescription": "Tài khoản này chưa thực hiện tác vụ tương tác nào.",
+                "viewMore": "Xem thêm {{count}} hoạt động",
+                "pagination": {
+                    "showing": "Hiển thị {from}-{to} trong tổng số {total} hoạt động",
+                    "page": "Trang {current} / {total}",
+                    "previous": "Trước",
+                    "next": "Sau"
+                }
+            },
+            "taskStatus": {
+                "completed": "Hoàn thành",
+                "failed": "Thất bại",
+                "running": "Đang chạy",
+                "pending": "Chờ xử lý",
+                "unknown": "Không xác định"
+            },
+            "taskTypes": {
+                "follow_user": "Theo dõi người dùng",
+                "unfollow_user": "Bỏ theo dõi người dùng",
+                "like_video": "Thích video",
+                "unlike_video": "Bỏ thích video",
+                "comment_video": "Bình luận video",
+                "share_video": "Chia sẻ video",
+                "view_video": "Xem video",
+                "create_post": "Tạo bài viết",
+                "live_interaction": "Tương tác livestream",
+                "message_user": "Nhắn tin người dùng",
+                "unknown": "Tác vụ không xác định"
+            },
+            "priority": {
+                "high": "Cao",
+                "medium": "Trung bình",
+                "low": "Thấp",
+                "unknown": "Không xác định"
+            },
+            "timeAgo": {
+                "justNow": "Vừa xong",
+                "minutesAgo": "{minutes} phút trước",
+                "hoursAgo": "{hours} giờ trước",
+                "daysAgo": "{days} ngày trước"
+            }
+        },
+        "security": {
+            "twoFactor": {
+                "title": "Xác thực hai yếu tố (2FA)",
+                "description": "Bảo vệ tài khoản với lớp bảo mật bổ sung",
+                "enabled": "Đã bật",
+                "disabled": "Chưa bật",
+                "enabledMessage": "2FA đã được kích hoạt cho tài khoản này",
+                "disabledMessage": "Tài khoản chưa được bảo vệ bởi 2FA",
+                "recommendation": "Khuyến nghị bật 2FA để tăng cường bảo mật cho tài khoản TikTok này.",
+                "backupCodes": "Mã dự phòng",
+                "backupCodesAvailable": "{{count}} mã dự phòng có sẵn",
+                "moreBackupCodes": "+{{count}} mã khác"
+            },
+            "securityInfo": {
+                "title": "Thông tin bảo mật",
+                "phoneNumber": "Số điện thoại",
+                "email": "Email",
+                "lastLogin": "Đăng nhập lần cuối",
+                "notUpdated": "Chưa cập nhật",
+                "notLoggedIn": "Chưa đăng nhập"
+            }
+        },
+        "settings": {
+            "placeholder": "Cài đặt tài khoản sẽ được hiển thị ở đây",
+            "title": "Cài đặt tài khoản",
+            "description": "Quản lý cài đặt và tùy chọn cho tài khoản TikTok",
+            "sections": {
+                "profile": "Thông tin hồ sơ",
+                "privacy": "Quyền riêng tư",
+                "automation": "Tự động hóa",
+                "notifications": "Thông báo",
+                "security": "Bảo mật",
+                "api": "Cấu hình API",
+                "advanced": "Nâng cao"
+            },
+            "profile": {
+                "displayName": "Tên hiển thị",
+                "bio": "Tiểu sử",
+                "avatar": "Ảnh đại diện",
+                "website": "Website",
+                "location": "Vị trí",
+                "birthday": "Ngày sinh",
+                "gender": "Giới tính",
+                "language": "Ngôn ngữ",
+                "timezone": "múi giờ",
+                "updateProfile": "Cập nhật hồ sơ"
+            },
+            "privacy": {
+                "accountType": "Loại tài khoản",
+                "public": "Công khai",
+                "private": "Riêng tư",
+                "allowComments": "Cho phép bình luận",
+                "allowDuets": "Cho phép duet",
+                "allowStitch": "Cho phép stitch",
+                "allowDownloads": "Cho phép tải xuống",
+                "whoCanMessage": "Ai có thể nhắn tin",
+                "everyone": "Mọi người",
+                "friends": "Bạn bè",
+                "nobody": "Không ai"
+            },
+            "automation": {
+                "enableAutomation": "Bật tự động hóa",
+                "autoFollow": "Tự động theo dõi",
+                "autoLike": "Tự động thích",
+                "autoComment": "Tự động bình luận",
+                "autoShare": "Tự động chia sẻ",
+                "scheduleSettings": "Cài đặt lịch trình",
+                "workingHours": "Giờ làm việc",
+                "dailyLimits": "Giới hạn hàng ngày",
+                "followLimit": "Giới hạn theo dõi",
+                "likeLimit": "Giới hạn thích",
+                "commentLimit": "Giới hạn bình luận",
+                "delayBetweenActions": "Độ trễ giữa các hành động",
+                "randomDelay": "Độ trễ ngẫu nhiên"
+            },
+            "notifications": {
+                "emailNotifications": "Thông báo email",
+                "pushNotifications": "Thông báo đẩy",
+                "taskCompleted": "Tác vụ hoàn thành",
+                "taskFailed": "Tác vụ thất bại",
+                "accountWarnings": "Cảnh báo tài khoản",
+                "dailyReports": "Báo cáo hàng ngày",
+                "weeklyReports": "Báo cáo hàng tuần",
+                "systemUpdates": "Cập nhật hệ thống",
+                "maintenanceAlerts": "Cảnh báo bảo trì"
+            },
+            "security": {
+                "changePassword": "Đổi mật khẩu",
+                "twoFactorAuth": "Xác thực 2 yếu tố",
+                "loginAlerts": "Cảnh báo đăng nhập",
+                "sessionTimeout": "Hết hạn phiên",
+                "ipWhitelist": "Danh sách IP cho phép",
+                "deviceManagement": "Quản lý thiết bị",
+                "securityLogs": "Nhật ký bảo mật"
+            },
+            "api": {
+                "apiKey": "API Key",
+                "rateLimit": "Giới hạn tốc độ",
+                "requestsPerMinute": "Yêu cầu/phút",
+                "requestsPerHour": "Yêu cầu/giờ",
+                "requestsPerDay": "Yêu cầu/ngày",
+                "webhookUrl": "URL Webhook",
+                "apiVersion": "Phiên bản API",
+                "debugMode": "Chế độ debug"
+            },
+            "advanced": {
+                "userAgent": "User Agent",
+                "customHeaders": "Headers tùy chỉnh",
+                "cookieSettings": "Cài đặt Cookie",
+                "proxyRotation": "Xoay Proxy",
+                "captchaSolver": "Giải Captcha",
+                "browserSettings": "Cài đặt trình duyệt",
+                "scriptTimeout": "Timeout script"
+            },
+            "actions": {
+                "save": "Lưu thay đổi",
+                "cancel": "Hủy",
+                "reset": "Đặt lại",
+                "export": "Xuất cài đặt",
+                "import": "Nhập cài đặt",
+                "testConnection": "Kiểm tra kết nối",
+                "generateApiKey": "Tạo API Key mới"
+            },
+            "messages": {
+                "saveSuccess": "Cài đặt đã được lưu thành công",
+                "saveError": "Lỗi khi lưu cài đặt",
+                "resetConfirm": "Bạn có chắc muốn đặt lại tất cả cài đặt?",
+                "testSuccess": "Kết nối thành công",
+                "testError": "Kết nối thất bại",
+                "invalidInput": "Dữ liệu nhập không hợp lệ"
+            }
+        }
+    }
+} 

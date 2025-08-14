@@ -1,0 +1,40 @@
+{
+    "permissionManagement": {
+        "title": "权限",
+        "addNew": "添加新权限",
+        "form": {
+            "createTitle": "创建新权限",
+            "editTitle": "编辑权限",
+            "nameLabel": "名称",
+            "namePlaceholder": "权限名称",
+            "cancel": "取消",
+            "save": "保存",
+            "saving": "保存中..."
+        },
+        "table": {
+            "name": "名称",
+            "guardName": "守卫名称",
+            "createdDate": "创建日期",
+            "edit": "编辑",
+            "delete": "删除"
+        },
+        "deleteConfirm": {
+            "title": "删除权限",
+            "content": "您确定要删除此权限吗？",
+            "confirmText": "删除"
+        },
+        "bulkDeleteConfirm": {
+            "title": "删除确认",
+            "content": "您确定要删除所选的 {count} 个权限吗？此操作无法撤消。",
+            "delete": "删除",
+            "cancel": "取消"
+        },
+        "bulkAction": {
+            "selected": "已选择 {count} 个权限",
+            "delete": "删除",
+            "clear": "清除"
+        },
+        "searchPlaceholder": "按名称搜索...",
+        "columns": "列"
+    }
+}
