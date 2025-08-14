@@ -92,7 +92,10 @@ class DeviceController extends Controller
      *     push_tokens?: string[]
      * }
      * 
-     * Lưu ý: user_id là bắt buộc và phải tồn tại trong bảng users
+     * Lưu ý: 
+     * - user_id là bắt buộc và phải tồn tại trong bảng users
+     * - Nếu thiết bị đã tồn tại (theo device_id hoặc device_name), sẽ cập nhật thông tin
+     * - Nếu thiết bị chưa tồn tại, sẽ tạo mới
      *
      * @response 201 array{
      *   success: true,
@@ -135,21 +138,38 @@ class DeviceController extends Controller
         try {
             $data = $validator->validated();
 
-            // Thực hiện cập nhật hoặc tạo mới dựa trên device_id
-            $device = null;
-            $statusCode = 201; // Mặc định: tạo mới
-
+            // Kiểm tra xem thiết bị đã tồn tại chưa (dựa trên device_id hoặc device_name)
+            $existingDevice = null;
+            
             if (!empty($data['device_id'])) {
-                $device = $this->service->updateOrCreate($data);
-                $statusCode = 200; // updateOrCreate luôn trả về 200
+                // Tìm theo device_id trước
+                $existingDevice = Device::where('device_id', $data['device_id'])->first();
+            }
+            
+            if (!$existingDevice && !empty($data['device_name'])) {
+                // Nếu không tìm thấy theo device_id, tìm theo device_name
+                $existingDevice = Device::where('device_name', $data['device_name'])
+                    ->where('user_id', $data['user_id'])
+                    ->first();
+            }
+            
+            if ($existingDevice) {
+                // Thiết bị đã tồn tại, cập nhật thông tin
+                $device = $this->service->update($existingDevice, $data);
+                $statusCode = 200; // Cập nhật
             } else {
-                // Không có device_id, buộc phải tạo mới
+                // Thiết bị chưa tồn tại, tạo mới
                 $device = $this->service->create($data);
+                $statusCode = 201; // Tạo mới
             }
 
+            $message = $statusCode === 201 ? 'Thiết bị đã được tạo thành công' : 'Thiết bị đã được cập nhật thành công';
+            
             return response()->json([
                 'success' => true,
+                'message' => $message,
                 'device'  => $device->fresh(),
+                'action'  => $statusCode === 201 ? 'created' : 'updated',
             ], $statusCode);
         } catch (Exception $e) {
             return response()->json([
