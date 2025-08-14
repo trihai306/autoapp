@@ -24,6 +24,59 @@ class DeviceController extends Controller
     }
 
     /**
+     * Lấy danh sách thiết bị với phân trang
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function index(Request $request): JsonResponse
+    {
+        try {
+            $devices = $this->service->getAll($request);
+            
+            return response()->json([
+                'success' => true,
+                'devices' => $devices,
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Lấy thông tin thiết bị theo ID
+     *
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function show(int $id): JsonResponse
+    {
+        try {
+            $device = $this->service->getById($id);
+            
+            if (!$device) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Thiết bị không tồn tại',
+                ], 404);
+            }
+            
+            return response()->json([
+                'success' => true,
+                'device' => $device,
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
      * Lưu thông tin thiết bị mới.
      *
      * @body array{
@@ -110,13 +163,8 @@ class DeviceController extends Controller
             $statusCode = 201; // Mặc định: tạo mới
 
             if (!empty($data['device_id'])) {
-                $device = Device::updateOrCreate(
-                    ['device_id' => $data['device_id']],
-                    $data
-                );
-
-                // updateOrCreate trả về model; thuộc tính wasRecentlyCreated cho biết thao tác nào
-                $statusCode = $device->wasRecentlyCreated ? 201 : 200;
+                $device = $this->service->updateOrCreate($data);
+                $statusCode = 200; // updateOrCreate luôn trả về 200
             } else {
                 // Không có device_id, buộc phải tạo mới
                 $device = $this->service->create($data);
@@ -126,6 +174,144 @@ class DeviceController extends Controller
                 'success' => true,
                 'device'  => $device->fresh(),
             ], $statusCode);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Cập nhật thông tin thiết bị
+     *
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function update(Request $request, int $id): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'device_name'   => 'sometimes|string|max:255',
+            'serial'        => 'nullable|string|max:255',
+            'plan'          => 'nullable|string|max:100',
+            'is_online'     => 'nullable|boolean',
+            'proxy_key_uuid'      => 'nullable|string|exists:proxy_keys,uuid',
+            'note'          => 'nullable|string',
+            'os_version'    => 'nullable|string|max:100',
+            'device_type'   => 'nullable|in:mobile,desktop',
+            'platform'      => 'nullable|string|max:100',
+            'app_version'   => 'nullable|string|max:50',
+            'ip_address'    => 'nullable|ip',
+            'user_agent'    => 'nullable|string',
+            'status'        => 'nullable|in:active,blocked',
+            'push_tokens'   => 'nullable|array',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors'  => $validator->errors(),
+            ], 422);
+        }
+
+        try {
+            $device = $this->service->getById($id);
+            
+            if (!$device) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Thiết bị không tồn tại',
+                ], 404);
+            }
+
+            $updatedDevice = $this->service->update($device, $validator->validated());
+
+            return response()->json([
+                'success' => true,
+                'device'  => $updatedDevice,
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Xóa thiết bị
+     *
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function destroy(int $id): JsonResponse
+    {
+        try {
+            $device = $this->service->getById($id);
+            
+            if (!$device) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Thiết bị không tồn tại',
+                ], 404);
+            }
+
+            $result = $this->service->delete($device);
+
+            if ($result) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Thiết bị đã được xóa thành công',
+                ]);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Không thể xóa thiết bị',
+            ], 500);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Cập nhật trạng thái online/offline
+     *
+     * @param Request $request
+     * @param string $deviceId
+     * @return JsonResponse
+     */
+    public function updateOnlineStatus(Request $request, string $deviceId): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'is_online' => 'required|boolean',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors'  => $validator->errors(),
+            ], 422);
+        }
+
+        try {
+            $device = $this->service->updateOnlineStatus($deviceId, $request->boolean('is_online'));
+            
+            if (!$device) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Thiết bị không tồn tại',
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'device'  => $device,
+            ]);
         } catch (Exception $e) {
             return response()->json([
                 'success' => false,
