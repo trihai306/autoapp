@@ -14,6 +14,10 @@ const SignInClient = () => {
     const handleSignIn = async ({ values, setSubmitting, setMessage }) => {
         try {
             setSubmitting(true)
+            console.log('[sign-in] Start sign in with credentials', {
+                login: values?.login,
+                callbackUrl,
+            })
             
             // Use NextAuth signIn with credentials provider
             // This will call validateCredential() which handles the API call
@@ -22,22 +26,27 @@ const SignInClient = () => {
                 password: values.password,
                 redirect: false,
             })
+            console.log('[sign-in] signIn("credentials") result:', result)
             
             if (result?.ok) {
                 // Redirect to callback URL or default authenticated path
+                console.log('[sign-in] Redirecting to:', callbackUrl || appConfig.authenticatedEntryPath)
                 router.push(callbackUrl || appConfig.authenticatedEntryPath)
             } else {
+                console.log('[sign-in] Sign in failed:', result)
                 setMessage(result?.error || 'Invalid credentials')
             }
         } catch (error) {
-            console.error('Login error:', error)
+            console.error('[sign-in] Login error:', error)
             setMessage('Login failed')
         } finally {
+            console.log('[sign-in] Sign in flow completed')
             setSubmitting(false)
         }
     }
 
     const handleOAuthSignIn = async ({ type }) => {
+        console.log('[sign-in] Start OAuth sign in', { type })
         if (type === 'google') {
             await handleOauthSignIn('google')
         }
