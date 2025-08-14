@@ -91,7 +91,7 @@ class DeviceController extends Controller
      *     push_tokens?: string[]
      * }
      * 
-     * Lưu ý: user_id sẽ được tự động lấy từ người dùng đang đăng nhập
+     * Lưu ý: user_id sẽ được tự động lấy từ người dùng đang đăng nhập (bỏ qua nếu client gửi)
      *
      * @response 201 array{
      *   success: true,
@@ -111,6 +111,14 @@ class DeviceController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+        // Debug: Kiểm tra thông tin request
+        \Log::info('Device registration request', [
+            'headers' => $request->headers->all(),
+            'user' => $request->user(),
+            'auth_check' => Auth::check(),
+            'bearer_token' => $request->bearerToken(),
+        ]);
+        
         $validator = Validator::make($request->all(), [
             'device_name'   => 'required|string|max:255',
             'device_id'     => 'nullable|string|max:255',
@@ -133,9 +141,16 @@ class DeviceController extends Controller
         try {
             $data = $validator->validated();
             
+            // Kiểm tra xác thực user
+            if (!$request->user()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Token xác thực không hợp lệ hoặc đã hết hạn',
+                ], 401);
+            }
+            
             // Tự động lấy user_id từ người dùng đang đăng nhập
-            // Không cần truyền user_id từ request vì sẽ lấy từ Auth
-            // Middleware 'auth:sanctum' đảm bảo $request->user() luôn có giá trị
+            // Bỏ qua user_id nếu client có gửi trong request để đảm bảo an toàn
             $data['user_id'] = $request->user()->id;
 
             // Thực hiện cập nhật hoặc tạo mới dựa trên device_id
