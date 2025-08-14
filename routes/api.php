@@ -182,4 +182,4 @@ Route::prefix('app')->group(function () {
     // Account tasks for devices
     Route::get('/devices/{device}/tasks', [\App\Http\Controllers\Api\Devices\AccountTaskController::class, 'pendingForDevice']);
     Route::post('/tasks/{task}/status', [\App\Http\Controllers\Api\Devices\AccountTaskController::class, 'updateStatus']);
-});
+})->middleware('auth:sanctum');

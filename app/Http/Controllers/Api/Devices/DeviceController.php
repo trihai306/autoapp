@@ -24,7 +24,7 @@ class DeviceController extends Controller
     }
 
     /**
-     * Lấy danh sách thiết bị với phân trang
+     * Lấy danh sách thiết bị của user hiện tại với phân trang
      *
      * @param Request $request
      * @return JsonResponse
@@ -47,7 +47,7 @@ class DeviceController extends Controller
     }
 
     /**
-     * Lấy thông tin thiết bị theo ID
+     * Lấy thông tin thiết bị theo ID (chỉ thiết bị của user hiện tại)
      *
      * @param int $id
      * @return JsonResponse
@@ -80,23 +80,18 @@ class DeviceController extends Controller
      * Lưu thông tin thiết bị mới.
      *
      * @body array{
-     *     user_id?: int,
      *     device_name: string,
-     *     serial?: string,
-     *     plan?: string,
-     *     is_online?: bool,
-     *     proxy_key_uuid?: string,
-     *     note?: string,
-     *     os_version?: string,
      *     device_id?: string,
-     *     device_type?: "mobile"|"desktop",
+     *     device_type?: "mobile"|"desktop"|"tablet",
      *     platform?: string,
      *     app_version?: string,
      *     ip_address?: string,
      *     user_agent?: string,
-     *     status?: "active"|"blocked",
+     *     status?: "active"|"inactive"|"blocked",
      *     push_tokens?: string[]
      * }
+     * 
+     * Lưu ý: user_id sẽ được tự động lấy từ người dùng đang đăng nhập
      *
      * @response 201 array{
      *   success: true,
@@ -117,21 +112,14 @@ class DeviceController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'user_id'       => 'nullable|integer|exists:users,id',
             'device_name'   => 'required|string|max:255',
-            'serial'        => 'nullable|string|max:255',
-            'plan'          => 'nullable|string|max:100',
-            'is_online'     => 'nullable|boolean',
-            'proxy_key_uuid'      => 'nullable|string|exists:proxy_keys,uuid',
-            'note'          => 'nullable|string',
-            'os_version'    => 'nullable|string|max:100',
             'device_id'     => 'nullable|string|max:255',
-            'device_type'   => 'nullable|in:mobile,desktop',
+            'device_type'   => 'nullable|in:mobile,desktop,tablet',
             'platform'      => 'nullable|string|max:100',
             'app_version'   => 'nullable|string|max:50',
             'ip_address'    => 'nullable|ip',
             'user_agent'    => 'nullable|string',
-            'status'        => 'nullable|in:active,blocked',
+            'status'        => 'nullable|in:active,inactive,blocked',
             'push_tokens'   => 'nullable|array',
         ]);
 
@@ -144,19 +132,11 @@ class DeviceController extends Controller
 
         try {
             $data = $validator->validated();
-
-            // Ưu tiên lấy user_id từ người dùng đang đăng nhập
-            if ($request->user()) {
-                $data['user_id'] = $request->user()->id;
-            }
-
-            // Trường hợp không có user_id sau khi kiểm tra => trả lỗi
-            if (empty($data['user_id'])) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Không xác định được user_id',
-                ], 422);
-            }
+            
+            // Tự động lấy user_id từ người dùng đang đăng nhập
+            // Không cần truyền user_id từ request vì sẽ lấy từ Auth
+            // Middleware 'auth:sanctum' đảm bảo $request->user() luôn có giá trị
+            $data['user_id'] = $request->user()->id;
 
             // Thực hiện cập nhật hoặc tạo mới dựa trên device_id
             $device = null;
@@ -193,18 +173,12 @@ class DeviceController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'device_name'   => 'sometimes|string|max:255',
-            'serial'        => 'nullable|string|max:255',
-            'plan'          => 'nullable|string|max:100',
-            'is_online'     => 'nullable|boolean',
-            'proxy_key_uuid'      => 'nullable|string|exists:proxy_keys,uuid',
-            'note'          => 'nullable|string',
-            'os_version'    => 'nullable|string|max:100',
-            'device_type'   => 'nullable|in:mobile,desktop',
+            'device_type'   => 'nullable|in:mobile,desktop,tablet',
             'platform'      => 'nullable|string|max:100',
             'app_version'   => 'nullable|string|max:50',
             'ip_address'    => 'nullable|ip',
             'user_agent'    => 'nullable|string',
-            'status'        => 'nullable|in:active,blocked',
+            'status'        => 'nullable|in:active,inactive,blocked',
             'push_tokens'   => 'nullable|array',
         ]);
 
@@ -279,16 +253,16 @@ class DeviceController extends Controller
     }
 
     /**
-     * Cập nhật trạng thái online/offline
+     * Cập nhật trạng thái hoạt động của thiết bị
      *
      * @param Request $request
      * @param string $deviceId
      * @return JsonResponse
      */
-    public function updateOnlineStatus(Request $request, string $deviceId): JsonResponse
+    public function updateStatus(Request $request, string $deviceId): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'is_online' => 'required|boolean',
+            'status' => 'required|in:active,inactive,blocked',
         ]);
 
         if ($validator->fails()) {
@@ -299,7 +273,38 @@ class DeviceController extends Controller
         }
 
         try {
-            $device = $this->service->updateOnlineStatus($deviceId, $request->boolean('is_online'));
+            $device = $this->service->updateStatus($deviceId, $request->input('status'));
+            
+            if (!$device) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Thiết bị không tồn tại',
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'device'  => $device,
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Cập nhật thời gian hoạt động cuối cùng
+     *
+     * @param Request $request
+     * @param string $deviceId
+     * @return JsonResponse
+     */
+    public function updateLastActive(Request $request, string $deviceId): JsonResponse
+    {
+        try {
+            $device = $this->service->updateLastActive($deviceId);
             
             if (!$device) {
                 return response()->json([

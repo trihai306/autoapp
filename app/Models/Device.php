@@ -15,12 +15,6 @@ class Device extends Model
         'user_id',
         'device_name',
         'device_id',
-        'serial',
-        'plan',
-        'is_online',
-        'proxy_id',
-        'note',
-        'os_version',
         'device_type',
         'platform',
         'app_version',
@@ -33,7 +27,6 @@ class Device extends Model
     ];
 
     protected $casts = [
-        'is_online' => 'boolean',
         'last_active_at' => 'datetime',
         'first_login_at' => 'datetime',
         'push_tokens' => 'json',
@@ -44,7 +37,6 @@ class Device extends Model
         'device_name',
         'device_id',
         'status',
-        'is_online',
         'device_type',
         'platform',
     ];
@@ -52,8 +44,6 @@ class Device extends Model
     public $searchable = [
         'device_name',
         'device_id',
-        'serial',
-        'note',
     ];
 
     public $sortable = [
@@ -61,7 +51,6 @@ class Device extends Model
         'device_name',
         'device_id',
         'status',
-        'is_online',
         'created_at',
         'updated_at',
     ];
