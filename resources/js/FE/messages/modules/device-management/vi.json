@@ -1,0 +1,99 @@
+{
+  "title": "Quản lý Thiết bị",
+  "description": "Quản lý và giám sát thiết bị của bạn",
+  "stats": {
+    "total": "Tổng Thiết bị",
+    "online": "Trực tuyến",
+    "offline": "Ngoại tuyến",
+    "active": "Hoạt động",
+    "inactive": "Không hoạt động",
+    "blocked": "Bị chặn"
+  },
+  "actions": {
+    "add": "Thêm Thiết bị",
+    "edit": "Sửa Thiết bị",
+    "delete": "Xóa Thiết bị",
+    "activate": "Kích hoạt",
+    "deactivate": "Vô hiệu hóa",
+    "block": "Chặn",
+    "unblock": "Bỏ chặn",
+    "refresh": "Làm mới",
+    "settings": "Cài đặt",
+    "import": "Nhập",
+    "export": "Xuất"
+  },
+  "table": {
+    "columns": {
+      "device_name": "Tên Thiết bị",
+      "device_id": "ID Thiết bị",
+      "user": "Người dùng",
+      "status": "Trạng thái",
+      "is_online": "Trạng thái Online",
+      "device_type": "Loại Thiết bị",
+      "platform": "Nền tảng",
+      "os_version": "Phiên bản OS",
+      "app_version": "Phiên bản App",
+      "ip_address": "Địa chỉ IP",
+      "last_seen": "Lần cuối",
+      "actions": "Thao tác"
+    },
+    "status": {
+      "active": "Hoạt động",
+      "inactive": "Không hoạt động",
+      "blocked": "Bị chặn"
+    },
+    "online_status": {
+      "online": "Trực tuyến",
+      "offline": "Ngoại tuyến"
+    },
+    "device_type": {
+      "mobile": "Di động",
+      "desktop": "Máy tính"
+    }
+  },
+  "form": {
+    "device_name": "Tên Thiết bị",
+    "device_id": "ID Thiết bị",
+    "serial": "Số Serial",
+    "plan": "Gói cước",
+    "note": "Ghi chú",
+    "os_version": "Phiên bản OS",
+    "device_type": "Loại Thiết bị",
+    "platform": "Nền tảng",
+    "app_version": "Phiên bản App",
+    "ip_address": "Địa chỉ IP",
+    "user_agent": "User Agent",
+    "status": "Trạng thái",
+    "push_tokens": "Push Tokens"
+  },
+  "messages": {
+    "device_created": "Thiết bị đã được tạo thành công",
+    "device_updated": "Thiết bị đã được cập nhật thành công",
+    "device_deleted": "Thiết bị đã được xóa thành công",
+    "device_activated": "Thiết bị đã được kích hoạt thành công",
+    "device_deactivated": "Thiết bị đã được vô hiệu hóa thành công",
+    "device_blocked": "Thiết bị đã được chặn thành công",
+    "device_unblocked": "Thiết bị đã được bỏ chặn thành công",
+    "bulk_operation_success": "Thao tác hàng loạt hoàn thành thành công",
+    "bulk_operation_error": "Lỗi trong quá trình thao tác hàng loạt",
+    "no_devices_selected": "Không có thiết bị nào được chọn",
+    "confirm_delete": "Bạn có chắc chắn muốn xóa thiết bị này?",
+    "confirm_bulk_delete": "Bạn có chắc chắn muốn xóa {count} thiết bị?",
+    "import_success": "Nhập thiết bị thành công",
+    "import_error": "Lỗi khi nhập thiết bị"
+  },
+  "filters": {
+    "status": "Lọc theo Trạng thái",
+    "device_type": "Lọc theo Loại Thiết bị",
+    "platform": "Lọc theo Nền tảng",
+    "user": "Lọc theo Người dùng",
+    "online_status": "Lọc theo Trạng thái Online"
+  },
+  "quick_actions": {
+    "activate_selected": "Kích hoạt Đã chọn",
+    "deactivate_selected": "Vô hiệu hóa Đã chọn",
+    "block_selected": "Chặn Đã chọn",
+    "unblock_selected": "Bỏ chặn Đã chọn",
+    "delete_selected": "Xóa Đã chọn"
+  }
+}

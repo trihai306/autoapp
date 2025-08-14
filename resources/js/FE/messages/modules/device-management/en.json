@@ -1,0 +1,99 @@
+{
+  "title": "Device Management",
+  "description": "Manage and monitor your devices",
+  "stats": {
+    "total": "Total Devices",
+    "online": "Online",
+    "offline": "Offline",
+    "active": "Active",
+    "inactive": "Inactive",
+    "blocked": "Blocked"
+  },
+  "actions": {
+    "add": "Add Device",
+    "edit": "Edit Device",
+    "delete": "Delete Device",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "block": "Block",
+    "unblock": "Unblock",
+    "refresh": "Refresh",
+    "settings": "Settings",
+    "import": "Import",
+    "export": "Export"
+  },
+  "table": {
+    "columns": {
+      "device_name": "Device Name",
+      "device_id": "Device ID",
+      "user": "User",
+      "status": "Status",
+      "is_online": "Online Status",
+      "device_type": "Device Type",
+      "platform": "Platform",
+      "os_version": "OS Version",
+      "app_version": "App Version",
+      "ip_address": "IP Address",
+      "last_seen": "Last Seen",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "blocked": "Blocked"
+    },
+    "online_status": {
+      "online": "Online",
+      "offline": "Offline"
+    },
+    "device_type": {
+      "mobile": "Mobile",
+      "desktop": "Desktop"
+    }
+  },
+  "form": {
+    "device_name": "Device Name",
+    "device_id": "Device ID",
+    "serial": "Serial Number",
+    "plan": "Plan",
+    "note": "Note",
+    "os_version": "OS Version",
+    "device_type": "Device Type",
+    "platform": "Platform",
+    "app_version": "App Version",
+    "ip_address": "IP Address",
+    "user_agent": "User Agent",
+    "status": "Status",
+    "push_tokens": "Push Tokens"
+  },
+  "messages": {
+    "device_created": "Device created successfully",
+    "device_updated": "Device updated successfully",
+    "device_deleted": "Device deleted successfully",
+    "device_activated": "Device activated successfully",
+    "device_deactivated": "Device deactivated successfully",
+    "device_blocked": "Device blocked successfully",
+    "device_unblocked": "Device unblocked successfully",
+    "bulk_operation_success": "Bulk operation completed successfully",
+    "bulk_operation_error": "Error during bulk operation",
+    "no_devices_selected": "No devices selected",
+    "confirm_delete": "Are you sure you want to delete this device?",
+    "confirm_bulk_delete": "Are you sure you want to delete {count} devices?",
+    "import_success": "Devices imported successfully",
+    "import_error": "Error importing devices"
+  },
+  "filters": {
+    "status": "Filter by Status",
+    "device_type": "Filter by Device Type",
+    "platform": "Filter by Platform",
+    "user": "Filter by User",
+    "online_status": "Filter by Online Status"
+  },
+  "quick_actions": {
+    "activate_selected": "Activate Selected",
+    "deactivate_selected": "Deactivate Selected",
+    "block_selected": "Block Selected",
+    "unblock_selected": "Unblock Selected",
+    "delete_selected": "Delete Selected"
+  }
+}
