@@ -36,8 +36,12 @@ export const useRealtime = () => {
 
         // Check if Echo is already initialized globally
         if (window.__ECHO_INITIALIZED__ && echoRef.current) {
-            console.log('🌐 [useRealtime] Echo already initialized globally, skipping');
             return;
+        }
+        
+        // Reset stuck initialization state
+        if (window.__ECHO_INITIALIZED__ && !echoRef.current) {
+            window.__ECHO_INITIALIZED__ = false;
         }
 
         const initEcho = async () => {
@@ -47,8 +51,6 @@ export const useRealtime = () => {
             
             // Kiểm tra token có thay đổi không
             if (lastTokenRef.current === currentToken && echoRef.current) {
-                console.log('🔄 [useRealtime] Token unchanged, skipping initialization');
-                console.groupEnd();
                 return;
             }
             
@@ -66,10 +68,9 @@ export const useRealtime = () => {
                 if (!echoRef.current) {
                     if (session?.accessToken) {
                         echoRef.current = await initializeEcho(session.accessToken);
-                    } else {
-                        console.log('🔓 [useRealtime] Initializing Echo without access token (public channels allowed)');
-                        echoRef.current = await initializeEcho();
-                    }
+                                    } else {
+                    echoRef.current = await initializeEcho();
+                }
                     setIsInitialized(true);
                     window.__ECHO_INITIALIZED__ = true;
                 }
@@ -340,27 +341,7 @@ export const useRealtime = () => {
      * Debug function to check Echo status
      */
     const debugEchoStatus = useCallback(() => {
-        console.group('🔍 [useRealtime] Debug Echo Status');
-        
         const connectionInfo = getConnectionInfo();
-        console.log('Connection Info:', connectionInfo);
-        
-        if (typeof window !== 'undefined') {
-            console.log('Window available:', true);
-            console.log('Session available:', !!session);
-            console.log('Session user ID:', session?.user?.id);
-            console.log('Access token available:', !!session?.accessToken);
-            
-            // Try to access Echo directly
-            if (window.Echo) {
-                console.log('Global Echo instance:', window.Echo);
-                console.log('Echo connector:', window.Echo.connector);
-                console.log('Echo pusher:', window.Echo.connector?.pusher);
-                console.log('Connection state:', window.Echo.connector?.pusher?.connection?.state);
-            }
-        }
-        
-        console.groupEnd();
         return connectionInfo;
     }, [getConnectionInfo, session]);
 
@@ -524,7 +505,6 @@ export const useTiktokAccountTableReload = (userId = null) => {
      */
     const listenToTableReload = useCallback(async (callback) => {
         if (typeof window === 'undefined') {
-            console.warn('🚫 [useTiktokAccountTableReload] Window is undefined, cannot listen to events');
             return null;
         }
         
@@ -534,12 +514,13 @@ export const useTiktokAccountTableReload = (userId = null) => {
         const connectionInfo = getConnectionInfo();
         
         if (!connectionInfo.available) {
-            console.error('❌ [useTiktokAccountTableReload] Echo not available:', connectionInfo.reason);
-            console.error('💡 [useTiktokAccountTableReload] Will retry when Echo becomes available...');
-            
-            // Return a retry function instead of null
+            // Return a retry function with timeout protection
             return {
-                retry: () => listenToTableReload(callback),
+                retry: async () => {
+                    // Wait a bit before retrying to avoid spam
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    return listenToTableReload(callback);
+                },
                 isRetry: true
             };
         }
@@ -556,8 +537,8 @@ export const useTiktokAccountTableReload = (userId = null) => {
             let listener;
             
             if (userId) {
-                // Sử dụng private channel cho user cụ thể
-                const privateChannelName = `user.${userId}.tiktok-accounts`;
+                // Sử dụng private channel theo định nghĩa trong routes/channels.php
+                const privateChannelName = `App.Models.User.${userId}`;
                 // silent
                 listener = await listenToPrivateChannel(privateChannelName, eventName, wrappedCallback);
             } else {
@@ -572,8 +553,6 @@ export const useTiktokAccountTableReload = (userId = null) => {
                 // silent
                 return listener;
             } else {
-                console.error('❌ [useTiktokAccountTableReload] listenToChannel returned null');
-                
                 // Im lặng, chỉ trả về retry helper
                 return {
                     retry: () => listenToTableReload(callback),
@@ -598,7 +577,7 @@ export const useTiktokAccountTableReload = (userId = null) => {
         }
         
         if (userId) {
-            stopListening(`user.${userId}.tiktok-accounts`);
+            stopListening(`App.Models.User.${userId}`);
         } else {
             stopListening('tiktok-accounts');
         }
@@ -608,12 +587,7 @@ export const useTiktokAccountTableReload = (userId = null) => {
      * Debug function to check Echo status
      */
     const debugEchoStatus = useCallback(() => {
-        
         const connectionInfo = getConnectionInfo();
-        
-        if (typeof window !== 'undefined') {
-        }
-        
         return connectionInfo;
     }, [getConnectionInfo, userId]);
 

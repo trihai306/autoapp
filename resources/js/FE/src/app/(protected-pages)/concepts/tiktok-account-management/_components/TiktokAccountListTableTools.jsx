@@ -34,6 +34,7 @@ const TiktokAccountListBulkActionTools = () => {
     const tDelete = useTranslations('tiktokAccountManagement.bulkDeleteConfirm')
     const tSuspend = useTranslations('tiktokAccountManagement.bulkSuspendConfirm')
     const tStart = useTranslations('tiktokAccountManagement.bulkStartConfirm')
+    const tTableTools = useTranslations('tiktokAccountManagement.tableTools')
 
     const selectedTiktokAccount = useTiktokAccountListStore((state) => state.selectedTiktokAccount)
     const setSelectAllTiktokAccount = useTiktokAccountListStore((state) => state.setSelectAllTiktokAccount)
@@ -75,7 +76,7 @@ const TiktokAccountListBulkActionTools = () => {
             if (successCount > 0) {
                 toast.push(
                     <Notification title={t('success')} type="success" closable>
-                        {t('activateSuccess', { count: successCount })} - Đã tạo tasks theo kịch bản
+                        {t('activateSuccess', { count: successCount })} - {t('activateSuccessDesc')}
                     </Notification>
                 )
                 setSelectAllTiktokAccount([])
@@ -85,14 +86,14 @@ const TiktokAccountListBulkActionTools = () => {
             if (errorMessages.length > 0) {
                 toast.push(
                     <Notification title={t('error')} type="danger" closable>
-                        Một số tài khoản thất bại: {errorMessages.join(', ')}
+                        {t('someAccountsFailed')}: {errorMessages.join(', ')}
                     </Notification>
                 )
             }
         } catch (error) {
             toast.push(
                 <Notification title={t('error')} type="danger" closable>
-                    Có lỗi xảy ra khi tạo tasks
+                    {t('errorCreatingTasks')}
                 </Notification>
             )
         }
@@ -112,7 +113,7 @@ const TiktokAccountListBulkActionTools = () => {
 
         if (result.success) {
             toast.push(
-                <Notification title="Success" type="success" closable>
+                <Notification title={t('successTitle')} type="success" closable>
                     {result.message}
                 </Notification>
             )
@@ -120,7 +121,7 @@ const TiktokAccountListBulkActionTools = () => {
             router.refresh()
         } else {
             toast.push(
-                <Notification title="Error" type="danger" closable>
+                <Notification title={t('errorTitle')} type="danger" closable>
                     {result.message}
                 </Notification>
             )
@@ -147,10 +148,10 @@ const TiktokAccountListBulkActionTools = () => {
                     statusUpdateSuccess = true
                     // // console.log(`Successfully updated ${selectedTiktokAccount.length} accounts to suspended status`)
                 } else {
-                    deleteErrorMessages.push(`Lỗi cập nhật trạng thái: ${result.message}`)
+                    deleteErrorMessages.push(`${t('statusUpdateError')}: ${result.message}`)
                 }
             } catch (error) {
-                deleteErrorMessages.push(`Lỗi cập nhật trạng thái: ${error.message}`)
+                deleteErrorMessages.push(`${t('statusUpdateError')}: ${error.message}`)
             }
             
             // Then, delete all pending tasks (secondary action)
@@ -161,21 +162,21 @@ const TiktokAccountListBulkActionTools = () => {
                     const devicesNotified = deleteResult.data?.devices_notified || 0
                     // // console.log(`Deleted ${deletedTasksCount} pending tasks and notified ${devicesNotified} devices`)
                 } else {
-                    deleteErrorMessages.push(`Lỗi xóa tasks: ${deleteResult.message}`)
+                    deleteErrorMessages.push(`${t('deleteTasksError')}: ${deleteResult.message}`)
                 }
             } catch (error) {
-                deleteErrorMessages.push(`Lỗi khi xóa tasks: ${error.message}`)
+                deleteErrorMessages.push(`${t('deleteTasksErrorDesc')}: ${error.message}`)
             }
             
             // Show results
             if (statusUpdateSuccess) {
-                let successMessage = `Đã dừng ${selectedTiktokAccount.length} tài khoản`
+                let successMessage = t('suspendSuccess', { count: selectedTiktokAccount.length })
                 if (deletedTasksCount > 0) {
-                    successMessage += ` và xóa ${deletedTasksCount} pending tasks`
+                    successMessage += ` ${t('deleteTasksSuccess', { count: deletedTasksCount })}`
                 }
                 
                 toast.push(
-                    <Notification title="Success" type="success" closable>
+                    <Notification title={t('successTitle')} type="success" closable>
                         {successMessage}
                     </Notification>
                 )
@@ -198,8 +199,8 @@ const TiktokAccountListBulkActionTools = () => {
             }
         } catch (error) {
             toast.push(
-                <Notification title="Error" type="danger" closable>
-                    Có lỗi xảy ra khi dừng tài khoản
+                <Notification title={t('errorTitle')} type="danger" closable>
+                    {t('errorStoppingAccounts')}
                 </Notification>
             )
         }
@@ -336,6 +337,7 @@ const TiktokAccountListTableTools = ({ columns, selectableColumns, onColumnToggl
     const [sortBy, setSortBy] = useState('')
     const [sortOrder, setSortOrder] = useState('asc')
     const t = useTranslations('tiktokAccountManagement.tableTools')
+    const tTableTools = useTranslations('tiktokAccountManagement.tableTools')
 
     const handleInputChange = (query) => {
         onAppendQueryParams({
@@ -395,14 +397,14 @@ const TiktokAccountListTableTools = ({ columns, selectableColumns, onColumnToggl
                         icon={<TbRefresh />}
                         onClick={onRefresh}
                     >
-                        {t('refresh')}
+                        {tTableTools('refresh')}
                     </Button>
                 </div>
             </div>
 
             {/* Quick Filters */}
             <div className="flex flex-wrap items-center gap-2">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('quickFilters')}:</span>
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{tTableTools('quickFilters')}:</span>
                 
                 {/* Status Filters */}
                 <Button
@@ -411,7 +413,7 @@ const TiktokAccountListTableTools = ({ columns, selectableColumns, onColumnToggl
                     className="bg-green-50 text-green-700 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400"
                     onClick={() => handleQuickFilter('status', 'active')}
                 >
-                    {t('status.active')}
+                    {tTableTools('status.active')}
                 </Button>
                 <Button
                     size="xs"
@@ -419,7 +421,7 @@ const TiktokAccountListTableTools = ({ columns, selectableColumns, onColumnToggl
                     className="bg-gray-50 text-gray-700 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-400"
                     onClick={() => handleQuickFilter('status', 'inactive')}
                 >
-                    {t('status.inactive')}
+                    {tTableTools('status.inactive')}
                 </Button>
                 <Button
                     size="xs"
@@ -427,7 +429,7 @@ const TiktokAccountListTableTools = ({ columns, selectableColumns, onColumnToggl
                     className="bg-red-50 text-red-700 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400"
                     onClick={() => handleQuickFilter('status', 'suspended')}
                 >
-                    {t('status.suspended')}
+                    {tTableTools('status.suspended')}
                 </Button>
 
                 {/* Task Status Filters */}
@@ -437,7 +439,7 @@ const TiktokAccountListTableTools = ({ columns, selectableColumns, onColumnToggl
                     className="bg-yellow-50 text-yellow-700 hover:bg-yellow-100 dark:bg-yellow-900/20 dark:text-yellow-400"
                     onClick={() => handleQuickFilter('has_pending_tasks', 'true')}
                 >
-                    {t('taskStatus.hasPending')}
+                    {tTableTools('taskStatus.hasPending')}
                 </Button>
                 <Button
                     size="xs"
@@ -445,12 +447,12 @@ const TiktokAccountListTableTools = ({ columns, selectableColumns, onColumnToggl
                     className="bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400"
                     onClick={() => handleQuickFilter('has_pending_tasks', 'false')}
                 >
-                    {t('taskStatus.noPending')}
+                    {tTableTools('taskStatus.noPending')}
                 </Button>
 
                 {/* Sort Options */}
                 <div className="flex items-center gap-1 ml-4">
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('sortBy')}:</span>
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{tTableTools('sortBy')}:</span>
                     <Button
                         size="xs"
                         variant="default"
@@ -458,7 +460,7 @@ const TiktokAccountListTableTools = ({ columns, selectableColumns, onColumnToggl
                         onClick={() => handleSort('username')}
                         className={sortBy === 'username' ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400' : ''}
                     >
-                        {t('sort.username')}
+                        {tTableTools('sort.username')}
                     </Button>
                     <Button
                         size="xs"
@@ -467,7 +469,7 @@ const TiktokAccountListTableTools = ({ columns, selectableColumns, onColumnToggl
                         onClick={() => handleSort('created_at')}
                         className={sortBy === 'created_at' ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400' : ''}
                     >
-                        {t('sort.createdAt')}
+                        {tTableTools('sort.createdAt')}
                     </Button>
                     <Button
                         size="xs"
@@ -476,7 +478,7 @@ const TiktokAccountListTableTools = ({ columns, selectableColumns, onColumnToggl
                         onClick={() => handleSort('pending_tasks_count')}
                         className={sortBy === 'pending_tasks_count' ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400' : ''}
                     >
-                        {t('sort.tasks')}
+                        {tTableTools('sort.tasks')}
                     </Button>
                 </div>
 
@@ -488,7 +490,7 @@ const TiktokAccountListTableTools = ({ columns, selectableColumns, onColumnToggl
                     onClick={clearFilters}
                     className="ml-2"
                 >
-                    {t('clearFilters')}
+                    {tTableTools('clearFilters')}
                 </Button>
             </div>
         </div>

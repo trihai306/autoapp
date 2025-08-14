@@ -1,5 +1,5 @@
 const pageMeta = {
-    title: 'Ecme - The Ultimate Next & TypeScript Web Template',
+    title: 'Lionsoftware - The Ultimate Next & TypeScript Web Template',
     description:
         'Admin Template and Starter Kit with React, Tailwind Components and Next.js',
     icons: {

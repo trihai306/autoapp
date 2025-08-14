@@ -57,7 +57,6 @@ const TiktokAccountManagementClient = ({ data, params }) => {
     useEffect(() => {
         // Chỉ setup khi có session
         if (!session?.user?.id) {
-            console.log('⏳ [TiktokAccountManagementClient] Waiting for session...');
             return;
         }
         
@@ -65,21 +64,31 @@ const TiktokAccountManagementClient = ({ data, params }) => {
         
         let cleanup = null
         let retryInterval = null
+        let retryCount = 0
+        const maxRetries = 10 // Tối đa 10 lần retry (20 giây)
+        
         const setup = async () => {
             const result = await listenToTableReload(() => {
-                console.log('🔄 Table reload triggered');
                 handleRefresh()
             })
             
             if (result && typeof result === 'object' && result.isRetry && typeof result.retry === 'function') {
                 // silent
                 retryInterval = setInterval(async () => {
+                    retryCount++
+                    if (retryCount > maxRetries) {
+                        clearInterval(retryInterval)
+                        retryInterval = null
+                        return
+                    }
+                    
                     const r = await result.retry()
                     if (r && typeof r === 'function') {
                         // Đã subscribe thành công, lưu cleanup và dừng retry
                         cleanup = r
                         clearInterval(retryInterval)
                         retryInterval = null
+                        retryCount = 0
                         // silent
                     }
                 }, 2000)

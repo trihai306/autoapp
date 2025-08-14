@@ -10,10 +10,10 @@ if (typeof window !== 'undefined') {
   window.Pusher = Pusher;
   
   // Bật log Pusher để debug (chỉ trong development)
-  if (process.env.NODE_ENV === 'development') {
-    // @ts-ignore
-    window.Pusher.logToConsole = true;
-  }
+  // if (process.env.NODE_ENV === 'development') {
+  //   // @ts-ignore
+  //   window.Pusher.logToConsole = false;
+  // }
 }
 
 let echoInstance = null;
@@ -55,16 +55,24 @@ export const initializeEcho = async (manualToken = null) => {
 
   // Tránh khởi tạo nhiều lần
   if (echoInstance) {
-    console.log('🔍 [Echo] Echo instance already exists, returning existing instance');
     return echoInstance;
   }
 
   if (isInitializing) {
-    console.log('⏳ [Echo] Echo is already initializing, waiting...');
-    // Đợi cho đến khi khởi tạo xong
-    while (isInitializing) {
+    // Đợi tối đa 10 giây để tránh deadlock
+    let waitCount = 0;
+    const maxWait = 100; // 10 giây (100 * 100ms)
+    
+    while (isInitializing && waitCount < maxWait) {
       await new Promise(resolve => setTimeout(resolve, 100));
+      waitCount++;
     }
+    
+    if (isInitializing) {
+      isInitializing = false;
+      return null;
+    }
+    
     return echoInstance;
   }
 
@@ -80,18 +88,15 @@ export const initializeEcho = async (manualToken = null) => {
   const useTLS = (process.env.NEXT_PUBLIC_REVERB_SCHEME ?? 'https') === 'https';
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? `${window.location.origin}`;
 
-  console.log('🔧 [Echo] Config for Laravel Broadcasting:', { key, wsHost, port, useTLS, apiBaseUrl });
+
 
   // Lấy token từ NextAuth session hoặc sử dụng token thủ công
   const authToken = manualToken || await getAuthToken();
-  console.log('🔑 [Echo] Auth token:', authToken ? 'Present' : 'Not available');
 
   // Đảm bảo có CSRF cookie và lấy XSRF token
   const xsrfToken = await ensureCsrfCookie(apiBaseUrl);
-  console.log('🛡️  [Echo] XSRF token:', xsrfToken ? 'Present' : 'Not available');
 
   try {
-    console.log('🚀 [Echo] Creating Echo instance...');
     
     // Cấu hình Echo theo mẫu Pusher authorizer
     const pusherKey = process.env.NEXT_PUBLIC_PUSHER_APP_KEY || import.meta?.env?.VITE_PUSHER_APP_KEY || key;
@@ -135,17 +140,12 @@ export const initializeEcho = async (manualToken = null) => {
       },
     };
     
-    console.log('🔧 [Echo] Echo options:', echoOptions);
-    
     // Tạo Echo instance
     echoInstance = new Echo(echoOptions);
-    
-    console.log('✅ [Echo] Echo instance created successfully');
     
     // Gắn vào window để debug
     try {
       window.Echo = echoInstance;
-      console.log('🔗 [Echo] Echo attached to window.Echo');
     } catch (_) { /* ignore */ }
 
     // Debug và monitoring (chỉ trong development)
@@ -174,19 +174,15 @@ const setupDebugListeners = () => {
 
   // Connection events
   connection.bind('connecting', () => {
-    console.log('🔄 [Echo] Connecting to WebSocket server...');
+    // Connecting to WebSocket server
   });
 
   connection.bind('connected', () => {
-    console.log('✅ [Echo] Successfully connected to WebSocket server');
-    console.log('🔍 [Echo] Connection details:', {
-      socketId: connection.socket_id,
-      state: connection.state
-    });
+    // Successfully connected to WebSocket server
   });
 
   connection.bind('disconnected', () => {
-    console.log('🔌 [Echo] Disconnected from WebSocket server');
+    // Disconnected from WebSocket server
   });
 
   connection.bind('error', (err) => {
@@ -203,33 +199,21 @@ const setupDebugListeners = () => {
     console.error('   - Connection URL:', connection?.url);
     
     // Retry logic
-    console.log('🔄 [Echo] Attempting to reconnect...');
     setTimeout(() => {
       if (echoInstance && connection.state === 'failed') {
-        console.log('🔄 [Echo] Manual reconnection attempt...');
         connection.connect();
       }
     }, 5000);
   });
 
   connection.bind('state_change', (states) => {
-    console.log('🔄 [Echo] Connection state changed:', {
-      previous: states.previous,
-      current: states.current
-    });
+    // Connection state changed
   });
 
   // Log connection details sau khi tạo
   setTimeout(() => {
-    console.log('🔍 [Echo] Connection details after creation:', {
-      state: connection?.state,
-      socketId: connection?.socket_id,
-      error: connection?.error
-    });
-    
     // Kiểm tra và retry nếu connection failed
     if (connection?.state === 'failed') {
-      console.log('🔄 [Echo] Connection failed, attempting retry...');
       connection.connect();
     }
   }, 2000);
@@ -278,7 +262,6 @@ export const disconnectEcho = () => {
   if (echoInstance) {
     try {
       echoInstance.disconnect();
-      console.log('🔌 [Echo] Disconnected successfully');
     } catch (error) {
       console.warn('[Echo] Error during disconnect:', error);
     }
@@ -353,7 +336,6 @@ export const whisperToChannel = (channelName, eventName, data) => {
     const channel = echoInstance.private(channelName);
     if (channel && channel.whisper) {
       channel.whisper(eventName, data);
-      console.log('📤 [Echo] Whisper sent:', { channelName, eventName, data });
     }
   } catch (error) {
     console.error('[Echo] Error sending whisper:', error);

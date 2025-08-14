@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 
 const BASE_PATH =
-    'https://storage.googleapis.com/www.themenate.net/markdown/ecme-next'
+    'https://storage.googleapis.com/www.themenate.net/markdown/lionsoftware'
 
 export async function GET(request) {
     const mdPath = request.nextUrl.searchParams.get('mdPath')

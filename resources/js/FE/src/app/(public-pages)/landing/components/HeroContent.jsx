@@ -14,7 +14,7 @@ const HeroContent = ({ mode }) => {
 
     const handleGetTemplate = () => {
         window.open(
-            'https://themeforest.net/item/ecme-nextjs-tailwind-admin-template-app-router/56475600',
+                            'https://themeforest.net/item/lionsoftware-nextjs-tailwind-admin-template-app-router/56475600',
             '_blank',
         )
     }
@@ -69,7 +69,7 @@ const HeroContent = ({ mode }) => {
                                 src="/img/landing/hero/hero.webp"
                                 width={1920}
                                 height={1040}
-                                alt="Ecme homepage"
+                                alt="Lionsoftware homepage"
                             />
                         )}
                         {mode === MODE_DARK && (
@@ -78,7 +78,7 @@ const HeroContent = ({ mode }) => {
                                 src="/img/landing/hero/hero-dark.webp"
                                 width={1920}
                                 height={1040}
-                                alt="Ecme homepage"
+                                alt="Lionsoftware homepage"
                             />
                         )}
                     </div>

@@ -1,4 +1,4 @@
-import { FaSort, FaSortUp, FaSortDown } from 'react-icons/fa'
+import { TbArrowsSort, TbSortAscending, TbSortDescending } from 'react-icons/tb'
 import classNames from '../utils/classNames'
 
 const Sorter = ({ sort, className }) => {
@@ -6,15 +6,15 @@ const Sorter = ({ sort, className }) => {
 
     const renderSort = () => {
         if (typeof sort === 'boolean') {
-            return <FaSort />
+            return <TbArrowsSort />
         }
 
         if (sort === 'asc') {
-            return <FaSortUp className={color} />
+            return <TbSortAscending className={color} />
         }
 
         if (sort === 'desc') {
-            return <FaSortDown className={color} />
+            return <TbSortDescending className={color} />
         }
 
         return null

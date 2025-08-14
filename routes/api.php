@@ -175,3 +175,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 });
+
+Route::prefix('app')->group(function () {
+    Route::post('/devices', [\App\Http\Controllers\Api\Devices\DeviceController::class, 'store']);
+
+    // Account tasks for devices
+    Route::get('/devices/{device}/tasks', [\App\Http\Controllers\Api\Devices\AccountTaskController::class, 'pendingForDevice']);
+    Route::post('/tasks/{task}/status', [\App\Http\Controllers\Api\Devices\AccountTaskController::class, 'updateStatus']);
+});

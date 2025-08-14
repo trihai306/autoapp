@@ -140,7 +140,18 @@
         "success": "Thành công",
         "error": "Lỗi",
         "activateSuccess": "Đã kích hoạt {{count}} tài khoản thành công",
-        "pauseSuccess": "Đã tạm dừng {{count}} tài khoản thành công"
+        "activateSuccessDesc": "Đã tạo tasks theo kịch bản",
+        "pauseSuccess": "Đã tạm dừng {{count}} tài khoản thành công",
+        "someAccountsFailed": "Một số tài khoản thất bại",
+        "errorCreatingTasks": "Có lỗi xảy ra khi tạo tasks",
+        "statusUpdateError": "Lỗi cập nhật trạng thái",
+        "deleteTasksError": "Lỗi xóa tasks",
+        "deleteTasksErrorDesc": "Lỗi khi xóa tasks",
+        "successTitle": "Thành công",
+        "errorTitle": "Lỗi",
+        "suspendSuccess": "Đã dừng {{count}} tài khoản",
+        "deleteTasksSuccess": "và xóa {{count}} pending tasks",
+        "errorStoppingAccounts": "Có lỗi xảy ra khi dừng tài khoản"
     },
     "tableTools": {
         "refresh": "Làm mới",
