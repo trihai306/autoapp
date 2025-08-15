@@ -6,6 +6,7 @@ use App\Models\AccountTask;
 use App\Queries\BaseQuery;
 use App\Repositories\AccountTaskRepositoryInterface;
 use App\Events\TaskDispatchedToDevice;
+use App\Events\DataTableRefreshRequested;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -134,7 +135,8 @@ class AccountTaskService
                 
                 // Dispatch event for real-time updates
                 if ($deviceId) {
-                    event(new TaskDispatchedToDevice((string) $deviceId));
+                    Log::info('Dispatching event for device: ' . $deviceId);
+                    event(new TaskDispatchedToDevice($deviceId));
                 }
             } catch (\Exception $e) {
                 throw $e;   
