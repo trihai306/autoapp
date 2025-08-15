@@ -4,7 +4,7 @@ import TiktokAccountListSearch from './TiktokAccountListSearch'
 import ColumnSelector from './ColumnSelector'
 import TiktokAccountTableFilter from './TiktokAccountTableFilter'
 import useAppendQueryParams from '@/utils/hooks/useAppendQueryParams'
-import { useTiktokAccountListStore } from '../_store/tiktokAccountListStore'
+import { useTiktokAccountListStore } from '../_store'
 import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
 import { 
@@ -30,10 +30,6 @@ const TiktokAccountListBulkActionTools = () => {
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
     const [showSuspendConfirmation, setShowSuspendConfirmation] = useState(false)
     const [showStartConfirmation, setShowStartConfirmation] = useState(false)
-    const t = useTranslations('tiktokAccountManagement.bulkAction')
-    const tDelete = useTranslations('tiktokAccountManagement.bulkDeleteConfirm')
-    const tSuspend = useTranslations('tiktokAccountManagement.bulkSuspendConfirm')
-    const tStart = useTranslations('tiktokAccountManagement.bulkStartConfirm')
     const tTableTools = useTranslations('tiktokAccountManagement.tableTools')
 
     const selectedTiktokAccount = useTiktokAccountListStore((state) => state.selectedTiktokAccount)
@@ -105,6 +101,23 @@ const TiktokAccountListBulkActionTools = () => {
 
     const onClearSelection = () => {
         setSelectAllTiktokAccount([])
+    }
+
+    const handleRefresh = async () => {
+        try {
+            router.refresh()
+            toast.push(
+                <Notification title="Thành công" type="success" closable>
+                    Đã làm mới dữ liệu
+                </Notification>
+            )
+        } catch (error) {
+            toast.push(
+                <Notification title="Lỗi" type="danger" closable>
+                    Không thể làm mới dữ liệu
+                </Notification>
+            )
+        }
     }
 
     const handleDeleteConfirm = async () => {
@@ -213,7 +226,7 @@ const TiktokAccountListBulkActionTools = () => {
             <div className="flex flex-col items-start md:flex-row md:items-center gap-3">
                 <div className="flex items-center gap-2">
                     <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
-                        {t('selected', { count: selectedTiktokAccount.length })}
+                        Đã chọn {selectedTiktokAccount.length} tài khoản
                     </Badge>
                 </div>
                 
@@ -226,7 +239,7 @@ const TiktokAccountListBulkActionTools = () => {
                         icon={<TbPlayerPlay />}
                         onClick={onBulkStart}
                     >
-                        {t('activate')}
+                        Bắt đầu
                     </Button>
                     <Button
                         size="sm"
@@ -235,7 +248,7 @@ const TiktokAccountListBulkActionTools = () => {
                         icon={<TbPlayerStop />}
                         onClick={onBulkSuspend}
                     >
-                        {t('suspend')}
+                        Dừng
                     </Button>
                 </div>
                 
@@ -244,11 +257,20 @@ const TiktokAccountListBulkActionTools = () => {
                     <Button
                         size="sm"
                         variant="solid"
+                        className="bg-blue-500 hover:bg-blue-400"
+                        icon={<TbRefresh />}
+                        onClick={handleRefresh}
+                    >
+                        Làm mới
+                    </Button>
+                    <Button
+                        size="sm"
+                        variant="solid"
                         className="bg-red-500 hover:bg-red-400"
                         icon={<TbTrash />}
                         onClick={onBulkDelete}
                     >
-                        {t('delete')}
+                        Xóa
                     </Button>
                     <Button
                         size="sm"
@@ -256,7 +278,7 @@ const TiktokAccountListBulkActionTools = () => {
                         icon={<TbX />}
                         onClick={onClearSelection}
                     >
-                        {t('clear')}
+                        Bỏ chọn
                     </Button>
                 </div>
             </div>
@@ -265,23 +287,23 @@ const TiktokAccountListBulkActionTools = () => {
                 onClose={() => setShowDeleteConfirmation(false)}
                 onRequestClose={() => setShowDeleteConfirmation(false)}
             >
-                <h5 className="mb-4">{tDelete('title')}</h5>
+                <h5 className="mb-4">Xóa tài khoản đã chọn</h5>
                 <p>
-                    {tDelete('content', { count: selectedTiktokAccount.length })}
+                    Bạn có chắc chắn muốn xóa {selectedTiktokAccount.length} tài khoản TikTok đã chọn? Hành động này không thể hoàn tác.
                 </p>
                 <div className="text-right mt-6">
                     <Button
                         className="ltr:mr-2 rtl:ml-2"
                         onClick={() => setShowDeleteConfirmation(false)}
                     >
-                        {tDelete('cancel')}
+                        Hủy
                     </Button>
                     <Button
                         variant="solid"
                         color="red-600"
                         onClick={handleDeleteConfirm}
                     >
-                        {tDelete('delete')}
+                        Xóa
                     </Button>
                 </div>
             </Dialog>
@@ -290,19 +312,19 @@ const TiktokAccountListBulkActionTools = () => {
                 onClose={() => setShowSuspendConfirmation(false)}
                 onRequestClose={() => setShowSuspendConfirmation(false)}
             >
-                <h5 className="mb-4">{tSuspend('title')}</h5>
+                <h5 className="mb-4">Tạm khóa tài khoản đã chọn</h5>
                 <p>
-                    {tSuspend('content', { count: selectedTiktokAccount.length })}
+                    Bạn có chắc chắn muốn tạm khóa {selectedTiktokAccount.length} tài khoản TikTok đã chọn?
                 </p>
                 <div className="text-right mt-6">
                     <Button
                         className="ltr:mr-2 rtl:ml-2"
                         onClick={() => setShowSuspendConfirmation(false)}
                     >
-                        {tSuspend('cancel')}
+                        Hủy
                     </Button>
                     <Button variant="solid" onClick={handleSuspendConfirm}>
-                        {tSuspend('suspend')}
+                        Tạm khóa
                     </Button>
                 </div>
             </Dialog>
@@ -311,19 +333,19 @@ const TiktokAccountListBulkActionTools = () => {
                 onClose={() => setShowStartConfirmation(false)}
                 onRequestClose={() => setShowStartConfirmation(false)}
             >
-                <h5 className="mb-4">{tStart('title')}</h5>
+                <h5 className="mb-4">Bắt đầu tài khoản đã chọn</h5>
                 <p>
-                    {tStart('content', { count: selectedTiktokAccount.length })}
+                    Bạn có chắc chắn muốn bắt đầu chạy kịch bản cho {selectedTiktokAccount.length} tài khoản TikTok đã chọn?
                 </p>
                 <div className="text-right mt-6">
                     <Button
                         className="ltr:mr-2 rtl:ml-2"
                         onClick={() => setShowStartConfirmation(false)}
                     >
-                        {tStart('cancel')}
+                        Hủy
                     </Button>
                     <Button variant="solid" onClick={handleStartConfirm}>
-                        {tStart('start')}
+                        Bắt đầu
                     </Button>
                 </div>
             </Dialog>

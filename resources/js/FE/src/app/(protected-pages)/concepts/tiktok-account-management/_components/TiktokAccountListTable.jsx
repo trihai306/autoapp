@@ -15,7 +15,7 @@ import {
     getExpandedRowModel,
     flexRender,
 } from '@tanstack/react-table'
-import { useTiktokAccountListStore } from '../_store/tiktokAccountListStore'
+import { useTiktokAccountListStore } from '../_store'
 import useAppendQueryParams from '@/utils/hooks/useAppendQueryParams'
 import { useRouter } from 'next/navigation'
 import Button from '@/components/ui/Button'
@@ -1025,6 +1025,8 @@ const TiktokAccountListTable = ({
     return (
         <div>
             <TiktokAccountListTableTools columns={columns} selectableColumns={allColumns} onColumnToggle={onColumnToggle} onRefresh={onRefresh} />
+            
+
             
             <div className="overflow-x-auto">
                 <Table>

@@ -3,19 +3,19 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Container from '@/components/shared/Container'
 import AdaptiveCard from '@/components/shared/AdaptiveCard'
-import TiktokAccountListProvider from './_components/TiktokAccountListProvider'
-import TiktokAccountListTable from './_components/TiktokAccountListTable'
-import TiktokAccountListActionTools from './_components/TiktokAccountListActionTools'
-import TiktokAccountListPagination from './_components/TiktokAccountListPagination'
-import DashboardHeader from './_components/DashboardHeader'
-import QuickActions from './_components/QuickActions'
-import InteractionConfigModal from './_components/InteractionConfigModal'
-import { DashboardStats } from './_components/stats'
-import { useTiktokAccountListStore } from './_store/tiktokAccountListStore'
-import updateTiktokAccountStatus from '@/server/actions/tiktok-account/updateTiktokAccountStatus'
+import {
+    TiktokAccountListProvider,
+    TiktokAccountListTable,
+    TiktokAccountListActionTools,
+    TiktokAccountListPagination,
+    DashboardHeader,
+    InteractionConfigModal
+} from './_components'
+import { DashboardStats } from './_components'
+import { useTiktokAccountListStore } from './_store'
+
 import { useTranslations } from 'next-intl'
-import Dialog from '@/components/ui/Dialog'
-import Button from '@/components/ui/Button'
+
 import { useTiktokAccountTableReload } from '@/utils/hooks/useRealtime'
 import { useSession } from 'next-auth/react'
 
@@ -26,9 +26,7 @@ const TiktokAccountManagementClient = ({ data, params }) => {
     const { data: session } = useSession()
     const [isLoading, setIsLoading] = useState(false)
     const [showInteractionConfigModal, setShowInteractionConfigModal] = useState(false)
-    const [showStartConfirmation, setShowStartConfirmation] = useState(false)
-    const [showStopConfirmation, setShowStopConfirmation] = useState(false)
-    const [pendingAction, setPendingAction] = useState(null)
+
     
     // Get selected accounts from store
     const selectedAccounts = useTiktokAccountListStore((state) => state.selectedTiktokAccount)
@@ -114,135 +112,7 @@ const TiktokAccountManagementClient = ({ data, params }) => {
         setShowInteractionConfigModal(true)
     }
 
-    const handleQuickAction = async (actionType) => {
-        if (selectedAccounts.length === 0) {
-            console.warn('No accounts selected')
-            return
-        }
 
-        // Show confirmation for start and stop actions
-        if (actionType === 'start') {
-            setPendingAction('start')
-            setShowStartConfirmation(true)
-            return
-        }
-        
-        if (actionType === 'stop') {
-            setPendingAction('stop')
-            setShowStopConfirmation(true)
-            return
-        }
-
-        // Execute other actions directly
-        await executeQuickAction(actionType)
-    }
-
-    const executeQuickAction = async (actionType) => {
-        // // console.log(`Performing ${actionType} on accounts:`, selectedAccounts)
-        setIsLoading(true)
-        
-        try {
-            const accountIds = selectedAccounts.map(account => account.id)
-            
-            switch (actionType) {
-                case 'start':
-                    // Bắt đầu - run scenario for each selected account
-                    const { default: runTiktokAccountScenario } = await import('@/server/actions/tiktok-account/runTiktokAccountScenario')
-                    
-                    let successCount = 0
-                    let errorMessages = []
-                    
-                    for (const account of selectedAccounts) {
-                        try {
-                            const result = await runTiktokAccountScenario(account.id)
-                            if (result.success) {
-                                successCount++
-                                // // console.log(`Created tasks for account ${account.username}`)
-                            } else {
-                                errorMessages.push(`${account.username}: ${result.message}`)
-                            }
-                        } catch (error) {
-                            errorMessages.push(`${account.username}: ${error.message}`)
-                        }
-                    }
-                    
-                    if (successCount > 0) {
-                        // // console.log(`Successfully created tasks for ${successCount} accounts`)
-                        handleRefresh()
-                    }
-                    
-                    if (errorMessages.length > 0) {
-                        console.error('Some accounts failed:', errorMessages)
-                    }
-                    break
-                    
-                case 'stop':
-                    // Dừng - update status to suspended and delete all pending tasks
-                    const { default: deletePendingTasks } = await import('@/server/actions/tiktok-account/deletePendingTasks')
-                    
-                    let deletedTasksCount = 0
-                    let deleteErrorMessages = []
-                    let statusUpdateSuccess = false
-                    
-                    // First, update account status to suspended (most important)
-                    try {
-                        const stopResult = await updateTiktokAccountStatus(accountIds, 'suspended')
-                        if (stopResult.success) {
-                            statusUpdateSuccess = true
-                            // // console.log(`Successfully updated ${selectedAccounts.length} accounts to suspended status`)
-                        } else {
-                            console.error('Failed to update account status:', stopResult.message)
-                            deleteErrorMessages.push(`Lỗi cập nhật trạng thái: ${stopResult.message}`)
-                        }
-                    } catch (error) {
-                        console.error('Error updating account status:', error)
-                        deleteErrorMessages.push(`Lỗi cập nhật trạng thái: ${error.message}`)
-                    }
-                    
-                    // Then, delete all pending tasks (secondary action)
-                    try {
-                        const deleteResult = await deletePendingTasks(accountIds)
-                        if (deleteResult.success) {
-                            deletedTasksCount = deleteResult.data?.deleted_count || 0
-                            const devicesNotified = deleteResult.data?.devices_notified || 0
-                            // // console.log(`Deleted ${deletedTasksCount} pending tasks and notified ${devicesNotified} devices`)
-                        } else {
-                            deleteErrorMessages.push(`Lỗi xóa tasks: ${deleteResult.message}`)
-                        }
-                    } catch (error) {
-                        deleteErrorMessages.push(`Lỗi khi xóa tasks: ${error.message}`)
-                    }
-                    
-                    // Show results
-                    if (statusUpdateSuccess) {
-                        // // console.log(`Đã dừng ${selectedAccounts.length} tài khoản${deletedTasksCount > 0 ? ` và xóa ${deletedTasksCount} pending tasks` : ''}`)
-                        handleRefresh()
-                    }
-                    
-                    if (deleteErrorMessages.length > 0) {
-                        console.error('Some operations failed:', deleteErrorMessages)
-                    }
-                    break
-                    
-                default:
-                    console.warn('Unknown action type:', actionType)
-            }
-        } catch (error) {
-            console.error('Error performing quick action:', error)
-        } finally {
-            setIsLoading(false)
-        }
-    }
-
-    const handleStartConfirm = async () => {
-        setShowStartConfirmation(false)
-        await executeQuickAction('start')
-    }
-
-    const handleStopConfirm = async () => {
-        setShowStopConfirmation(false)
-        await executeQuickAction('stop')
-    }
 
     return (
         <TiktokAccountListProvider tiktokAccountList={data?.list || []}>
@@ -260,14 +130,7 @@ const TiktokAccountManagementClient = ({ data, params }) => {
                         {/* Statistics Dashboard */}
                         <DashboardStats loading={isLoading} />
 
-                        {/* Quick Actions - Horizontal Layout */}
-                        <div className="mb-6">
-                            <QuickActions 
-                                selectedAccounts={selectedAccounts}
-                                onAction={handleQuickAction}
-                                loading={isLoading}
-                            />
-                        </div>
+
 
                         {/* Main Content - Full Width Table */}
                         <div className="w-full">
@@ -305,55 +168,7 @@ const TiktokAccountManagementClient = ({ data, params }) => {
                 </Container>
             </div>
 
-            {/* Start Confirmation Dialog */}
-            <Dialog
-                isOpen={showStartConfirmation}
-                onClose={() => setShowStartConfirmation(false)}
-                onRequestClose={() => setShowStartConfirmation(false)}
-            >
-                <h5 className="mb-4">Xác nhận bắt đầu</h5>
-                <p>
-                    Bạn có chắc chắn muốn bắt đầu chạy kịch bản cho {selectedAccounts.length} tài khoản đã chọn?
-                    <br />
-                    <small className="text-gray-500">Hệ thống sẽ tạo tasks theo kịch bản đã liên kết với từng tài khoản.</small>
-                </p>
-                <div className="text-right mt-6">
-                    <Button
-                        className="ltr:mr-2 rtl:ml-2"
-                        onClick={() => setShowStartConfirmation(false)}
-                    >
-                        Hủy
-                    </Button>
-                    <Button variant="solid" onClick={handleStartConfirm}>
-                        Bắt đầu
-                    </Button>
-                </div>
-            </Dialog>
 
-            {/* Stop Confirmation Dialog */}
-            <Dialog
-                isOpen={showStopConfirmation}
-                onClose={() => setShowStopConfirmation(false)}
-                onRequestClose={() => setShowStopConfirmation(false)}
-            >
-                <h5 className="mb-4">Xác nhận dừng</h5>
-                <p>
-                    Bạn có chắc chắn muốn dừng {selectedAccounts.length} tài khoản đã chọn?
-                    <br />
-                    <small className="text-red-500">Tất cả pending tasks sẽ bị xóa và tài khoản sẽ được suspend.</small>
-                </p>
-                <div className="text-right mt-6">
-                    <Button
-                        className="ltr:mr-2 rtl:ml-2"
-                        onClick={() => setShowStopConfirmation(false)}
-                    >
-                        Hủy
-                    </Button>
-                    <Button variant="solid" className="bg-red-600 hover:bg-red-700" onClick={handleStopConfirm}>
-                        Dừng
-                    </Button>
-                </div>
-            </Dialog>
 
             {/* Interaction Config Modal */}
             <InteractionConfigModal

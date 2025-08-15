@@ -1,6 +1,6 @@
 'use client'
 import { useEffect } from 'react'
-import { useTiktokAccountListStore } from '../_store/tiktokAccountListStore'
+import { useTiktokAccountListStore } from '../_store'
 
 const TiktokAccountListProvider = ({ tiktokAccountList, children }) => {
     const setTiktokAccountList = useTiktokAccountListStore(

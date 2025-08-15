@@ -18,8 +18,10 @@ const CreatePostModal = ({ isOpen, onClose, action, onSave }) => {
         delete_used_images: false,
         auto_cut: false,
         filter_type: "random",
-        custom_filters: "",
-        add_trending_music: false
+        custom_filters: "", // Bổ sung theo tài liệu
+        add_trending_music: false,
+        image_urls: [], // Bổ sung theo tài liệu
+        enable_tiktok_shop: false // Bổ sung theo tài liệu
     }
     
     const [config, setConfig] = useState(initialConfig)
@@ -107,8 +109,10 @@ const CreatePostModal = ({ isOpen, onClose, action, onSave }) => {
                         delete_used_images: config.delete_used_images,
                         auto_cut: config.auto_cut,
                         filter_type: config.filter_type,
-                        custom_filters: config.custom_filters,
-                        add_trending_music: config.add_trending_music
+                        custom_filters: config.custom_filters, // Bổ sung
+                        add_trending_music: config.add_trending_music,
+                        image_urls: config.image_urls, // Bổ sung
+                        enable_tiktok_shop: config.enable_tiktok_shop // Bổ sung
                     }
                 }
                 await onSave(action, saveData)
@@ -221,6 +225,38 @@ const CreatePostModal = ({ isOpen, onClose, action, onSave }) => {
                                     rows={4}
                                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                                 />
+                            </div>
+
+                            {/* Custom Filters - Bổ sung theo tài liệu */}
+                            {config.filter_type === 'custom' && (
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                        Danh sách bộ lọc tùy chỉnh
+                                    </label>
+                                    <textarea
+                                        value={config.custom_filters}
+                                        onChange={(e) => handleInputChange('custom_filters', e.target.value)}
+                                        placeholder="filter1&#10;filter2&#10;filter3..."
+                                        rows={3}
+                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                                    />
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                        Nhập mỗi dòng một bộ lọc tùy chỉnh.
+                                    </p>
+                                </div>
+                            )}
+
+                            {/* Enable TikTok Shop - Bổ sung theo tài liệu */}
+                            <div>
+                                <Checkbox
+                                    checked={config.enable_tiktok_shop}
+                                    onChange={(checked) => handleCheckboxChange('enable_tiktok_shop', checked)}
+                                >
+                                    Bật TikTok Shop
+                                </Checkbox>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                    Kích hoạt tính năng TikTok Shop cho bài viết.
+                                </p>
                             </div>
                         </div>
                         
