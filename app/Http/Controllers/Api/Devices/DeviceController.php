@@ -259,12 +259,7 @@ class DeviceController extends Controller
 
             if ($result) {
                 // Bắn event để refresh data table
-                event(new DataTableRefreshRequested(
-                    $device->user_id,
-                    'devices-table',
-                    'Thiết bị đã được xóa thành công',
-                    'success'
-                ));
+                event(new TiktokAccountTableReload('Thiết bị đã được xóa thành công', $device->user_id));
 
                 return response()->json([
                     'success' => true,
@@ -315,14 +310,7 @@ class DeviceController extends Controller
             }
 
             // Bắn event để refresh data table
-            event(new DataTableRefreshRequested(
-                $device->user_id,
-                'devices-table',
-                'Trạng thái thiết bị đã được cập nhật thành công',
-                'success'
-            ));
-
-        
+            event(new TiktokAccountTableReload('Trạng thái thiết bị đã được cập nhật thành công', $device->user_id));
 
             return response()->json([
                 'success' => true,
@@ -354,6 +342,9 @@ class DeviceController extends Controller
                     'message' => 'Thiết bị không tồn tại',
                 ], 404);
             }
+
+            // Bắn event để refresh data table
+            event(new TiktokAccountTableReload('Thời gian hoạt động cuối cùng đã được cập nhật', $device->user_id));
 
             return response()->json([
                 'success' => true,
