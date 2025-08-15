@@ -276,6 +276,7 @@ const KeywordVideoInteractionModal = ({
                         limit_video_to: config.limit_video_to,
                         view_from: config.view_from,
                         view_to: config.view_to,
+                        limit_time_to: config.limit_time_to || 300,
                         enable_follow: config.enable_follow,
                         follow_rate: config.follow_rate,
                         follow_gap_from: config.follow_gap_from,

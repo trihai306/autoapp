@@ -140,6 +140,14 @@ Route::middleware('auth:sanctum')->group(function () {
         ->middleware('permission:tiktok-accounts.edit');
     Route::post('tiktok-accounts/{tiktokAccount}/regenerate-backup-codes', [\App\Http\Controllers\Api\TiktokAccountController::class, 'regenerateBackupCodes'])
         ->middleware('permission:tiktok-accounts.edit');
+    
+    // File upload and post creation routes for TikTok accounts
+    Route::post('tiktok-accounts/{tiktokAccount}/upload-file', [\App\Http\Controllers\Api\TiktokAccountController::class, 'uploadFile'])
+        ->middleware('permission:tiktok-accounts.edit');
+    Route::post('tiktok-accounts/{tiktokAccount}/create-post', [\App\Http\Controllers\Api\TiktokAccountController::class, 'createPost'])
+        ->middleware('permission:tiktok-accounts.edit');
+    Route::post('tiktok-accounts/{tiktokAccount}/update-avatar', [\App\Http\Controllers\Api\TiktokAccountController::class, 'updateAvatar'])
+        ->middleware('permission:tiktok-accounts.edit');
     Route::apiResource('tiktok-accounts', \App\Http\Controllers\Api\TiktokAccountController::class)
         ->middleware('permission:tiktok-accounts.view');
     // Run linked scenario for a TikTok account -> create account tasks from scenario scripts

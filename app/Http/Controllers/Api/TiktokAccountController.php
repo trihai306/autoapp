@@ -939,4 +939,332 @@ class TiktokAccountController extends Controller
         }
         return $codes;
     }
+
+    /**
+     * Upload file for TikTok account (avatar, post content)
+     *
+     * Uploads a file (image/video) for use with TikTok account operations.
+     * Files are stored in the public storage disk.
+     * 
+     * @param Request $request
+     * @param TiktokAccount $tiktokAccount
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function uploadFile(Request $request, TiktokAccount $tiktokAccount)
+    {
+        $user = $request->user();
+        if (!$user->hasRole('admin') && $tiktokAccount->user_id !== $user->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $validated = $request->validate([
+            /**
+             * The file to upload (image or video).
+             * @example file
+             */
+            'file' => 'required|file|mimes:jpeg,png,jpg,gif,mp4,mov,avi,wmv,flv,webm|max:102400', // 100MB max
+            /**
+             * The type of file being uploaded.
+             * @example avatar
+             */
+            'type' => 'required|string|in:avatar,post_content,story',
+            /**
+             * Optional description for the file.
+             * @example Profile picture for TikTok account
+             */
+            'description' => 'sometimes|string|max:255',
+        ]);
+
+        try {
+            $file = $validated['file'];
+            $type = $validated['type'];
+            $description = $validated['description'] ?? '';
+
+            // Create directory structure: tiktok-accounts/{account_id}/{type}/
+            $directory = "tiktok-accounts/{$tiktokAccount->id}/{$type}";
+            
+            // Store file with unique name
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs($directory, $filename, 'public');
+
+            // Create file record in database (if you have a files table)
+            $fileData = [
+                'tiktok_account_id' => $tiktokAccount->id,
+                'user_id' => $user->id,
+                'filename' => $filename,
+                'original_name' => $file->getClientOriginalName(),
+                'path' => $path,
+                'type' => $type,
+                'mime_type' => $file->getMimeType(),
+                'size' => $file->getSize(),
+                'description' => $description,
+            ];
+
+            // You might want to save this to a files table
+            // $fileRecord = File::create($fileData);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'File uploaded successfully',
+                'data' => [
+                    'file_url' => asset('storage/' . $path),
+                    'filename' => $filename,
+                    'original_name' => $file->getClientOriginalName(),
+                    'size' => $file->getSize(),
+                    'mime_type' => $file->getMimeType(),
+                    'type' => $type,
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Error uploading file for TikTok account: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to upload file: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Create a post for TikTok account
+     *
+     * Creates a new post with uploaded content for the specified TikTok account.
+     * This endpoint handles the post creation process including file uploads.
+     * 
+     * @param Request $request
+     * @param TiktokAccount $tiktokAccount
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function createPost(Request $request, TiktokAccount $tiktokAccount)
+    {
+        $user = $request->user();
+        if (!$user->hasRole('admin') && $tiktokAccount->user_id !== $user->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $validated = $request->validate([
+            /**
+             * The title of the post.
+             * @example My amazing TikTok video
+             */
+            'title' => 'sometimes|string|max:255',
+            /**
+             * The content/description of the post.
+             * @example Check out this amazing content! #tiktok #viral
+             */
+            'content' => 'sometimes|string|max:2000',
+            /**
+             * Array of uploaded file IDs or file data.
+             * @example [1, 2, 3]
+             */
+            'file_ids' => 'sometimes|array',
+            'file_ids.*' => 'integer|exists:files,id',
+            /**
+             * Direct file uploads (alternative to file_ids).
+             * @example file
+             */
+            'files' => 'sometimes|array',
+            'files.*' => 'file|mimes:jpeg,png,jpg,gif,mp4,mov,avi,wmv,flv,webm|max:102400',
+            /**
+             * Post settings and configuration.
+             * @example {"privacy": "public", "allow_comments": true}
+             */
+            'settings' => 'sometimes|array',
+            /**
+             * Scheduled time for posting (optional).
+             * @example 2024-01-15T10:30:00Z
+             */
+            'scheduled_at' => 'sometimes|date|after:now',
+            /**
+             * Whether to auto-cut the video.
+             * @example true
+             */
+            'auto_cut' => 'sometimes|boolean',
+            /**
+             * Filter type for the post.
+             * @example random
+             */
+            'filter_type' => 'sometimes|string|in:random,custom,none',
+            /**
+             * Custom filters list.
+             * @example ["filter1", "filter2"]
+             */
+            'custom_filters' => 'sometimes|array',
+            'custom_filters.*' => 'string|max:100',
+            /**
+             * Whether to add trending music.
+             * @example true
+             */
+            'add_trending_music' => 'sometimes|boolean',
+            /**
+             * Whether to enable TikTok Shop.
+             * @example false
+             */
+            'enable_tiktok_shop' => 'sometimes|boolean',
+        ]);
+
+        try {
+            $uploadedFiles = [];
+            
+            // Handle direct file uploads
+            if (isset($validated['files']) && is_array($validated['files'])) {
+                foreach ($validated['files'] as $file) {
+                    $directory = "tiktok-accounts/{$tiktokAccount->id}/post_content";
+                    $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                    $path = $file->storeAs($directory, $filename, 'public');
+                    
+                    $uploadedFiles[] = [
+                        'filename' => $filename,
+                        'original_name' => $file->getClientOriginalName(),
+                        'path' => $path,
+                        'url' => asset('storage/' . $path),
+                        'size' => $file->getSize(),
+                        'mime_type' => $file->getMimeType(),
+                    ];
+                }
+            }
+
+            // Create post data
+            $postData = [
+                'tiktok_account_id' => $tiktokAccount->id,
+                'user_id' => $user->id,
+                'title' => $validated['title'] ?? '',
+                'content' => $validated['content'] ?? '',
+                'files' => $uploadedFiles,
+                'settings' => $validated['settings'] ?? [],
+                'scheduled_at' => $validated['scheduled_at'] ?? null,
+                'auto_cut' => $validated['auto_cut'] ?? false,
+                'filter_type' => $validated['filter_type'] ?? 'random',
+                'custom_filters' => $validated['custom_filters'] ?? [],
+                'add_trending_music' => $validated['add_trending_music'] ?? false,
+                'enable_tiktok_shop' => $validated['enable_tiktok_shop'] ?? false,
+                'status' => 'pending',
+            ];
+
+            // You might want to save this to a posts table
+            // $post = Post::create($postData);
+
+            // Create account task for posting
+            $taskData = [
+                'tiktok_account_id' => $tiktokAccount->id,
+                'task_type' => 'create_post',
+                'status' => 'pending',
+                'priority' => 'medium',
+                'parameters' => $postData,
+                'scheduled_at' => $validated['scheduled_at'] ?? now(),
+            ];
+
+            // Create the task
+            $task = app(\App\Services\AccountTaskService::class)
+                ->create($taskData);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Post created successfully and queued for publishing',
+                'data' => [
+                    'post_id' => $task->id, // or $post->id if you have a posts table
+                    'task_id' => $task->id,
+                    'status' => 'pending',
+                    'scheduled_at' => $task->scheduled_at,
+                    'files' => $uploadedFiles,
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Error creating post for TikTok account: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create post: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Update avatar for TikTok account
+     *
+     * Updates the avatar/profile picture for the specified TikTok account.
+     * 
+     * @param Request $request
+     * @param TiktokAccount $tiktokAccount
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateAvatar(Request $request, TiktokAccount $tiktokAccount)
+    {
+        $user = $request->user();
+        if (!$user->hasRole('admin') && $tiktokAccount->user_id !== $user->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $validated = $request->validate([
+            /**
+             * The avatar image file to upload.
+             * @example file
+             */
+            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:10240', // 10MB max
+            /**
+             * Optional description for the avatar.
+             * @example New profile picture
+             */
+            'description' => 'sometimes|string|max:255',
+        ]);
+
+        try {
+            $file = $validated['avatar'];
+            $description = $validated['description'] ?? '';
+
+            // Create directory for this account's avatars
+            $directory = "tiktok-accounts/{$tiktokAccount->id}/avatars";
+            
+            // Delete old avatar if exists
+            if ($tiktokAccount->avatar_url) {
+                $oldPath = str_replace(asset('storage/'), '', $tiktokAccount->avatar_url);
+                \Storage::disk('public')->delete($oldPath);
+            }
+
+            // Store new avatar
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs($directory, $filename, 'public');
+
+            // Update account with new avatar
+            $updatedAccount = $this->tiktokAccountService->updateTiktokAccount($tiktokAccount, [
+                'avatar_url' => asset('storage/' . $path),
+            ]);
+
+            // Create task to update avatar on TikTok
+            $taskData = [
+                'tiktok_account_id' => $tiktokAccount->id,
+                'task_type' => 'update_avatar',
+                'status' => 'pending',
+                'priority' => 'medium',
+                'parameters' => [
+                    'avatar_url' => asset('storage/' . $path),
+                    'description' => $description,
+                ],
+                'scheduled_at' => now(),
+            ];
+
+            $task = app(\App\Services\AccountTaskService::class)
+                ->create($taskData);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Avatar updated successfully and queued for TikTok update',
+                'data' => [
+                    'avatar_url' => asset('storage/' . $path),
+                    'task_id' => $task->id,
+                    'status' => 'pending',
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Error updating avatar for TikTok account: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update avatar: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

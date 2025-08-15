@@ -8,10 +8,9 @@ import DeviceListProvider from './_components/DeviceListProvider'
 import DeviceListTable from './_components/DeviceListTable'
 
 import DashboardHeader from './_components/DashboardHeader'
-import QuickActions from './_components/QuickActions'
 
 import { useDeviceListStore } from './_store/deviceListStore'
-import updateDeviceStatus from '@/server/actions/device/updateDeviceStatus'
+
 import { useTranslations } from 'next-intl'
 
 const DeviceManagementClient = ({ data, params }) => {
@@ -20,8 +19,7 @@ const DeviceManagementClient = ({ data, params }) => {
     
 
     
-    // Get selected devices from store
-    const selectedDevices = useDeviceListStore((state) => state.selectedDevice)
+
 
     const handleRefresh = async () => {
         setIsLoading(true)
@@ -36,121 +34,7 @@ const DeviceManagementClient = ({ data, params }) => {
         // TODO: Implement device settings functionality
     }
 
-    const handleQuickAction = async (actionType) => {
-        if (selectedDevices.length === 0) {
-            console.warn('No devices selected')
-            return
-        }
 
-
-        setIsLoading(true)
-        
-        try {
-            const deviceIds = selectedDevices.map(device => device.id)
-            
-            switch (actionType) {
-                case 'activate':
-                    // Kích hoạt - set status to active
-                    const activateResult = await updateDeviceStatus(deviceIds, 'active')
-                    if (activateResult.success) {
-                        toast.push(
-                            <Notification
-                                title="Kích hoạt thiết bị thành công"
-                                type="success"
-                                duration={4000}
-                            >
-                                Đã kích hoạt thành công {selectedDevices.length} thiết bị.
-                            </Notification>
-                        )
-                        handleRefresh()
-                    } else {
-                        console.error('Failed to activate devices:', activateResult.message)
-                        toast.push(
-                            <Notification
-                                title="Lỗi kích hoạt thiết bị"
-                                type="danger"
-                                duration={5000}
-                            >
-                                {activateResult.message || 'Không thể kích hoạt thiết bị. Vui lòng thử lại.'}
-                            </Notification>
-                        )
-                    }
-                    break
-                    
-                case 'pause':
-                    // Tạm dừng - set status to inactive
-                    const pauseResult = await updateDeviceStatus(deviceIds, 'inactive')
-                    if (pauseResult.success) {
-                        toast.push(
-                            <Notification
-                                title="Tạm dừng thiết bị thành công"
-                                type="success"
-                                duration={4000}
-                            >
-                                Đã tạm dừng thành công {selectedDevices.length} thiết bị.
-                            </Notification>
-                        )
-                        handleRefresh()
-                    } else {
-                        console.error('Failed to pause devices:', pauseResult.message)
-                        toast.push(
-                            <Notification
-                                title="Lỗi tạm dừng thiết bị"
-                                type="danger"
-                                duration={5000}
-                            >
-                                {pauseResult.message || 'Không thể tạm dừng thiết bị. Vui lòng thử lại.'}
-                            </Notification>
-                        )
-                    }
-                    break
-                    
-                case 'block':
-                    // Chặn - set status to blocked
-                    const blockResult = await updateDeviceStatus(deviceIds, 'blocked')
-                    if (blockResult.success) {
-                        toast.push(
-                            <Notification
-                                title="Chặn thiết bị thành công"
-                                type="success"
-                                duration={4000}
-                            >
-                                Đã chặn thành công {selectedDevices.length} thiết bị.
-                            </Notification>
-                        )
-                        handleRefresh()
-                    } else {
-                        console.error('Failed to block devices:', blockResult.message)
-                        toast.push(
-                            <Notification
-                                title="Lỗi chặn thiết bị"
-                                type="danger"
-                                duration={5000}
-                            >
-                                {blockResult.message || 'Không thể chặn thiết bị. Vui lòng thử lại.'}
-                            </Notification>
-                        )
-                    }
-                    break
-                    
-                default:
-                    console.warn('Unknown action type:', actionType)
-            }
-        } catch (error) {
-            console.error('Error performing quick action:', error)
-            toast.push(
-                <Notification
-                    title="Lỗi hệ thống"
-                    type="danger"
-                    duration={5000}
-                >
-                    Đã xảy ra lỗi khi thực hiện thao tác. Vui lòng thử lại sau.
-                </Notification>
-            )
-        } finally {
-            setIsLoading(false)
-        }
-    }
 
     return (
         <DeviceListProvider deviceList={data?.data || []}>
@@ -165,15 +49,6 @@ const DeviceManagementClient = ({ data, params }) => {
 
                 <Container className="py-6">
                     <div className="space-y-6">
-                        {/* Quick Actions - Horizontal Layout */}
-                        <div className="mb-6">
-                            <QuickActions 
-                                selectedDevices={selectedDevices}
-                                onAction={handleQuickAction}
-                                loading={isLoading}
-                            />
-                        </div>
-
                         {/* Main Content - Full Width Table */}
                         <div className="w-full">
                             <AdaptiveCard className="overflow-hidden">

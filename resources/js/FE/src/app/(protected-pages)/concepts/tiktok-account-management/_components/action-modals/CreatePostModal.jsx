@@ -4,8 +4,10 @@ import Dialog from '@/components/ui/Dialog'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import Checkbox from '@/components/ui/Checkbox'
+import { apiCreatePost } from '@/services/tiktok-account/TiktokAccountService'
+import { toast } from '@/components/ui/toast'
 
-const CreatePostModal = ({ isOpen, onClose, action, onSave }) => {
+const CreatePostModal = ({ isOpen, onClose, action, onSave, accountId }) => {
     // Initialize config based on JSON schema for Create Post Form
     const initialConfig = {
         name: "Tạo bài viết",
@@ -91,38 +93,98 @@ const CreatePostModal = ({ isOpen, onClose, action, onSave }) => {
     }
 
     const handleSave = async () => {
-        if (onSave && !isLoading) {
-            setIsLoading(true)
-            try {
-                const saveData = {
-                    name: config.name,
-                    type: action?.type || 'create_post',
-                    parameters: {
-                        name: config.name,
-                        description: config.name,
-                        load_time_from: config.load_time_from,
-                        load_time_to: config.load_time_to,
-                        post_by_filename: config.post_by_filename,
-                        title: config.title,
-                        content: config.content,
-                        uploaded_files: config.uploaded_files,
-                        delete_used_images: config.delete_used_images,
-                        auto_cut: config.auto_cut,
-                        filter_type: config.filter_type,
-                        custom_filters: config.custom_filters, // Bổ sung
-                        add_trending_music: config.add_trending_music,
-                        image_urls: config.image_urls, // Bổ sung
-                        enable_tiktok_shop: config.enable_tiktok_shop // Bổ sung
-                    }
-                }
-                await onSave(action, saveData)
-                // Reset form sau khi lưu thành công
-                resetForm()
-            } catch (error) {
-                console.error('Error saving create post config:', error)
-            } finally {
-                setIsLoading(false)
+        if (!accountId) {
+            toast.push(
+                <div className="text-red-600">Vui lòng chọn tài khoản TikTok</div>
+            )
+            return
+        }
+
+        if (config.uploaded_files.length === 0) {
+            toast.push(
+                <div className="text-red-600">Vui lòng chọn file để đăng</div>
+            )
+            return
+        }
+
+        setIsLoading(true)
+        try {
+            // Tạo FormData để upload files và data
+            const formData = new FormData()
+            
+            // Thêm files
+            config.uploaded_files.forEach((file, index) => {
+                formData.append(`files[${index}]`, file)
+            })
+            
+            // Thêm các thông tin khác
+            formData.append('title', config.title)
+            formData.append('content', config.content)
+            formData.append('auto_cut', config.auto_cut)
+            formData.append('filter_type', config.filter_type)
+            formData.append('add_trending_music', config.add_trending_music)
+            formData.append('enable_tiktok_shop', config.enable_tiktok_shop)
+            
+            if (config.custom_filters) {
+                formData.append('custom_filters', config.custom_filters)
             }
+
+            // Gọi API create post
+            const response = await apiCreatePost(accountId, formData)
+            
+            if (response.success) {
+                toast.push(
+                    <div className="text-green-600">Tạo bài viết thành công và đã đưa vào hàng đợi!</div>
+                )
+
+                // Nếu có onSave callback (cho scenario script), vẫn gọi nó
+                if (onSave) {
+                    const apiFiles = Array.isArray(response.data?.files) ? response.data.files : []
+                    const fileUrls = apiFiles.map(f => f.url).filter(Boolean)
+
+                    const saveData = {
+                        name: config.name,
+                        type: action?.type || 'create_post',
+                        parameters: {
+                            name: config.name,
+                            description: config.name,
+                            load_time_from: config.load_time_from,
+                            load_time_to: config.load_time_to,
+                            post_by_filename: config.post_by_filename,
+                            title: config.title,
+                            content: config.content,
+                            // Theo tài liệu: dùng image_urls thay vì files/file_urls
+                            image_urls: fileUrls.length ? fileUrls : config.image_urls,
+                            delete_used_images: config.delete_used_images,
+                            auto_cut: config.auto_cut,
+                            filter_type: config.filter_type,
+                            custom_filters: Array.isArray(config.custom_filters)
+                                ? config.custom_filters
+                                : (typeof config.custom_filters === 'string' && config.custom_filters.trim().length
+                                    ? config.custom_filters.split('\n').map(s => s.trim()).filter(Boolean)
+                                    : []),
+                            add_trending_music: config.add_trending_music,
+                            enable_tiktok_shop: config.enable_tiktok_shop,
+                            multiple_images: Array.isArray(config.uploaded_files) && config.uploaded_files.every(f => f.type?.startsWith('image/')) && config.uploaded_files.length > 1
+                        }
+                    }
+                    await onSave(action, saveData)
+                }
+
+                resetForm()
+                onClose()
+            } else {
+                toast.push(
+                    <div className="text-red-600">{response.message || 'Có lỗi xảy ra khi tạo bài viết'}</div>
+                )
+            }
+        } catch (error) {
+            console.error('Error creating post:', error)
+            toast.push(
+                <div className="text-red-600">Có lỗi xảy ra khi tạo bài viết</div>
+            )
+        } finally {
+            setIsLoading(false)
         }
     }
 

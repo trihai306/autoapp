@@ -10,6 +10,7 @@ use App\Services\Interfaces\DeviceServiceInterface;
 use Exception;
 use App\Models\Device;
 use Illuminate\Support\Facades\Auth;
+use App\Events\TiktokAccountTableReload;
 
 class DeviceController extends Controller
 {
@@ -165,6 +166,9 @@ class DeviceController extends Controller
 
             $message = $statusCode === 201 ? 'Thiết bị đã được tạo thành công' : 'Thiết bị đã được cập nhật thành công';
             
+            // Bắn event để refresh data table
+            event(new TiktokAccountTableReload($message, $data['user_id']));
+            
             return response()->json([
                 'success' => true,
                 'message' => $message,
@@ -218,6 +222,9 @@ class DeviceController extends Controller
 
             $updatedDevice = $this->service->update($device, $validator->validated());
 
+            // Bắn event để refresh data table
+            event(new TiktokAccountTableReload('Thiết bị đã được cập nhật thành công', $updatedDevice->user_id));
+
             return response()->json([
                 'success' => true,
                 'device'  => $updatedDevice,
@@ -251,6 +258,14 @@ class DeviceController extends Controller
             $result = $this->service->delete($device);
 
             if ($result) {
+                // Bắn event để refresh data table
+                event(new DataTableRefreshRequested(
+                    $device->user_id,
+                    'devices-table',
+                    'Thiết bị đã được xóa thành công',
+                    'success'
+                ));
+
                 return response()->json([
                     'success' => true,
                     'message' => 'Thiết bị đã được xóa thành công',
@@ -298,6 +313,16 @@ class DeviceController extends Controller
                     'message' => 'Thiết bị không tồn tại',
                 ], 404);
             }
+
+            // Bắn event để refresh data table
+            event(new DataTableRefreshRequested(
+                $device->user_id,
+                'devices-table',
+                'Trạng thái thiết bị đã được cập nhật thành công',
+                'success'
+            ));
+
+        
 
             return response()->json([
                 'success' => true,

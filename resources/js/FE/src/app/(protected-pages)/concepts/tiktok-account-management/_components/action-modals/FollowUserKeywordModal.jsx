@@ -45,16 +45,16 @@ const FollowUserKeywordModal = ({ isOpen, onClose, action, onSave }) => {
                     parameters: {
                         name: config.name,
                         description: config.name,
-                        follow_type: config.follow_type,
+                        follow_type: 'keyword',
                         user_list: null,
                         keyword_list: config.keyword_list,
                         count_from: config.count_from,
                         count_to: config.count_to,
                         gap_from: config.gap_from,
                         gap_to: config.gap_to,
-                        exit_on_fail: config.exit_on_fail,
-                        exit_fail_count: config.exit_fail_count,
-                        open_link_search: config.open_link_search
+                        exit_on_fail: false,
+                        exit_fail_count: 0,
+                        open_link_search: false
                     }
                 }
                 await onSave(action, saveData)

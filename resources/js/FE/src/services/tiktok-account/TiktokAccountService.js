@@ -78,4 +78,37 @@ export async function apiDeletePendingTasks(data) {
         method: 'post',
         data,
     })
+}
+
+export async function apiUploadFile(accountId, formData) {
+    return ApiService.fetchDataWithAxios({
+        url: `/tiktok-accounts/${accountId}/upload-file`,
+        method: 'post',
+        data: formData,
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    })
+}
+
+export async function apiCreatePost(accountId, formData) {
+    return ApiService.fetchDataWithAxios({
+        url: `/tiktok-accounts/${accountId}/create-post`,
+        method: 'post',
+        data: formData,
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    })
+}
+
+export async function apiUpdateAvatar(accountId, formData) {
+    return ApiService.fetchDataWithAxios({
+        url: `/tiktok-accounts/${accountId}/update-avatar`,
+        method: 'post',
+        data: formData,
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    })
 } 

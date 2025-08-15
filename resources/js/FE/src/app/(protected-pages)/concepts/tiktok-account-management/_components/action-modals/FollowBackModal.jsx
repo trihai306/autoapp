@@ -39,10 +39,9 @@ const FollowBackModal = ({ isOpen, onClose, action, onSave }) => {
                     parameters: {
                         name: config.name,
                         description: config.name,
-                        user_count_from: config.user_count_from,
-                        user_count_to: config.user_count_to,
-                        interval_from: config.interval_from,
-                        interval_to: config.interval_to
+                        count_from: config.user_count_from,
+                        gap_from: config.interval_from,
+                        gap_to: config.interval_to,
                     }
                 }
                 await onSave(action, saveData)

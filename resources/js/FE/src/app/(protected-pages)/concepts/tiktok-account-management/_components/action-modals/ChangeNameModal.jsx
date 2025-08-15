@@ -55,7 +55,7 @@ const ChangeNameModal = ({ isOpen, onClose, action, onSave }) => {
                         description: config.name,
                         selection_type: config.selection_type,
                         name_type: config.name_type,
-                        name_list: config.name_list // Bổ sung vào parameters
+                        name_list: config.selection_type === 'custom' ? config.name_list : []
                     }
                 }
                 await onSave(action, saveData)
@@ -117,8 +117,6 @@ const ChangeNameModal = ({ isOpen, onClose, action, onSave }) => {
                         >
                             <option value="random">Ngẫu nhiên</option>
                             <option value="custom">Tùy chỉnh</option>
-                            <option value="list">Từ danh sách</option>
-                            <option value="generator">Tự động tạo</option>
                         </select>
                     </div>
                     
@@ -160,8 +158,8 @@ const ChangeNameModal = ({ isOpen, onClose, action, onSave }) => {
                                 <input
                                     type="radio"
                                     name="nameType"
-                                    value="international"
-                                    checked={config.name_type === 'international'}
+                                    value="english"
+                                    checked={config.name_type === 'english'}
                                     onChange={(e) => handleRadioChange('name_type', e.target.value)}
                                     className="mr-3 text-blue-500"
                                 />

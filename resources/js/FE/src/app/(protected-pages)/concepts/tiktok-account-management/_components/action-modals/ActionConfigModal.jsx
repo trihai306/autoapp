@@ -8,19 +8,17 @@ import Switcher from '@/components/ui/Switcher'
 const ActionConfigModal = ({ isOpen, onClose, action, onSave }) => {
     // Initial config state
     const initialConfig = {
-        // Cấu hình chung - chuyển sang flat structure
-        notification_count_from: 1,
-        notification_count_to: 2,
-        time_interval_from: 1,
-        time_interval_to: 3,
-        
-        // Hành động phụ
-        follow_back_enabled: true,
-        follow_back_count_from: 1,
-        follow_back_count_to: 3,
-        say_hi_enabled: true,
-        say_hi_count_from: 1,
-        say_hi_count_to: 3
+        // Theo tài liệu notification
+        count_from: 1,
+        count_to: 2,
+        gap_from: 1,
+        gap_to: 3,
+        count_follow: false,
+        follow_from: 1,
+        follow_to: 3,
+        count_say_hi: false,
+        say_hi_from: 1,
+        say_hi_to: 3,
     }
     
     const [config, setConfig] = useState(initialConfig)
@@ -29,7 +27,7 @@ const ActionConfigModal = ({ isOpen, onClose, action, onSave }) => {
     const handleInputChange = (field, value) => {
         setConfig(prev => ({
             ...prev,
-            [field]: field.includes('_from') || field.includes('_to') || field.includes('_count')
+            [field]: field.includes('_from') || field.includes('_to')
                 ? parseInt(value) || 0 
                 : value
         }))
@@ -56,22 +54,20 @@ const ActionConfigModal = ({ isOpen, onClose, action, onSave }) => {
                     parameters: {
                         name: action?.name || 'Đọc thông báo',
                         description: action?.name || 'Đọc thông báo',
-                        notification_count_from: config.notification_count_from,
-                        notification_count_to: config.notification_count_to,
-                        time_interval_from: config.time_interval_from,
-                        time_interval_to: config.time_interval_to,
-                        follow_back_enabled: config.follow_back_enabled,
-                        follow_back_count_from: config.follow_back_count_from,
-                        follow_back_count_to: config.follow_back_count_to,
-                        say_hi_enabled: config.say_hi_enabled,
-                        say_hi_count_from: config.say_hi_count_from,
-                        say_hi_count_to: config.say_hi_count_to
+                        count_from: config.count_from,
+                        count_to: config.count_to,
+                        gap_from: config.gap_from,
+                        gap_to: config.gap_to,
+                        count_follow: config.count_follow,
+                        follow_from: config.follow_from,
+                        follow_to: config.follow_to,
+                        count_say_hi: config.count_say_hi,
+                        say_hi_from: config.say_hi_from,
+                        say_hi_to: config.say_hi_to,
                     }
                 }
                 await onSave(action, saveData)
-                // Reset form sau khi lưu thành công
                 resetForm()
-                // onClose() được gọi từ parent component sau khi save thành công
             } catch (error) {
                 console.error('Error saving action config:', error)
             } finally {
@@ -142,16 +138,16 @@ const ActionConfigModal = ({ isOpen, onClose, action, onSave }) => {
                                     <Input
                                         type="number"
                                         min="1"
-                                        value={config.notification_count_from}
-                                        onChange={(e) => handleInputChange('notification_count_from', e.target.value)}
+                                        value={config.count_from}
+                                        onChange={(e) => handleInputChange('count_from', e.target.value)}
                                         className="w-20 text-center border-gray-300 dark:border-gray-600"
                                     />
                                     <span className="text-gray-500 font-medium">-</span>
                                     <Input
                                         type="number"
                                         min="1"
-                                        value={config.notification_count_to}
-                                        onChange={(e) => handleInputChange('notification_count_to', e.target.value)}
+                                        value={config.count_to}
+                                        onChange={(e) => handleInputChange('count_to', e.target.value)}
                                         className="w-20 text-center border-gray-300 dark:border-gray-600"
                                     />
                                 </div>
@@ -165,16 +161,16 @@ const ActionConfigModal = ({ isOpen, onClose, action, onSave }) => {
                                     <Input
                                         type="number"
                                         min="1"
-                                        value={config.time_interval_from}
-                                        onChange={(e) => handleInputChange('time_interval_from', e.target.value)}
+                                        value={config.gap_from}
+                                        onChange={(e) => handleInputChange('gap_from', e.target.value)}
                                         className="w-20 text-center border-gray-300 dark:border-gray-600"
                                     />
                                     <span className="text-gray-500 font-medium">-</span>
                                     <Input
                                         type="number"
                                         min="1"
-                                        value={config.time_interval_to}
-                                        onChange={(e) => handleInputChange('time_interval_to', e.target.value)}
+                                        value={config.gap_to}
+                                        onChange={(e) => handleInputChange('gap_to', e.target.value)}
                                         className="w-20 text-center border-gray-300 dark:border-gray-600"
                                     />
                                 </div>
@@ -204,12 +200,12 @@ const ActionConfigModal = ({ isOpen, onClose, action, onSave }) => {
                                     </p>
                                 </div>
                                 <Switcher
-                                    checked={config.follow_back_enabled}
-                                    onChange={(checked) => handleSwitchChange('follow_back_enabled', checked)}
+                                    checked={config.count_follow}
+                                    onChange={(checked) => handleSwitchChange('count_follow', checked)}
                                 />
                             </div>
                             
-                            {config.follow_back_enabled && (
+                            {config.count_follow && (
                                 <div className="ml-3.5 border-t border-gray-100 dark:border-gray-700 pt-4">
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                                         Số lượng follow lại
@@ -218,16 +214,16 @@ const ActionConfigModal = ({ isOpen, onClose, action, onSave }) => {
                                         <Input
                                             type="number"
                                             min="1"
-                                            value={config.follow_back_count_from}
-                                            onChange={(e) => handleInputChange('follow_back_count_from', e.target.value)}
+                                            value={config.follow_from}
+                                            onChange={(e) => handleInputChange('follow_from', e.target.value)}
                                             className="w-20 text-center border-gray-300 dark:border-gray-600"
                                         />
                                         <span className="text-gray-500 font-medium">-</span>
                                         <Input
                                             type="number"
                                             min="1"
-                                            value={config.follow_back_count_to}
-                                            onChange={(e) => handleInputChange('follow_back_count_to', e.target.value)}
+                                            value={config.follow_to}
+                                            onChange={(e) => handleInputChange('follow_to', e.target.value)}
                                             className="w-20 text-center border-gray-300 dark:border-gray-600"
                                         />
                                     </div>
@@ -250,12 +246,12 @@ const ActionConfigModal = ({ isOpen, onClose, action, onSave }) => {
                                     </p>
                                 </div>
                                 <Switcher
-                                    checked={config.say_hi_enabled}
-                                    onChange={(checked) => handleSwitchChange('say_hi_enabled', checked)}
+                                    checked={config.count_say_hi}
+                                    onChange={(checked) => handleSwitchChange('count_say_hi', checked)}
                                 />
                             </div>
                             
-                            {config.say_hi_enabled && (
+                            {config.count_say_hi && (
                                 <div className="ml-3.5 border-t border-gray-100 dark:border-gray-700 pt-4">
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                                         Số lượng "Say Hi"
@@ -264,16 +260,16 @@ const ActionConfigModal = ({ isOpen, onClose, action, onSave }) => {
                                         <Input
                                             type="number"
                                             min="1"
-                                            value={config.say_hi_count_from}
-                                            onChange={(e) => handleInputChange('say_hi_count_from', e.target.value)}
+                                            value={config.say_hi_from}
+                                            onChange={(e) => handleInputChange('say_hi_from', e.target.value)}
                                             className="w-20 text-center border-gray-300 dark:border-gray-600"
                                         />
                                         <span className="text-gray-500 font-medium">-</span>
                                         <Input
                                             type="number"
                                             min="1"
-                                            value={config.say_hi_count_to}
-                                            onChange={(e) => handleInputChange('say_hi_count_to', e.target.value)}
+                                            value={config.say_hi_to}
+                                            onChange={(e) => handleInputChange('say_hi_to', e.target.value)}
                                             className="w-20 text-center border-gray-300 dark:border-gray-600"
                                         />
                                     </div>

@@ -4,11 +4,13 @@ import Dialog from '@/components/ui/Dialog'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import Checkbox from '@/components/ui/Checkbox'
+import { apiUpdateAvatar } from '@/services/tiktok-account/TiktokAccountService'
+import { toast } from '@/components/ui/toast'
 
-const UpdateAvatarModal = ({ isOpen, onClose, action, onSave }) => {
+const UpdateAvatarModal = ({ isOpen, onClose, action, onSave, accountId }) => {
     // Initialize config based on JSON schema for Update Avatar Form
     const initialConfig = {
-        name: "Cập nhật avatar",
+        name: "Cập nhật Ảnh đại diện",
         uploaded_files: [],
         delete_used_images: false
     }
@@ -44,7 +46,7 @@ const UpdateAvatarModal = ({ isOpen, onClose, action, onSave }) => {
     const handleFileUpload = (event) => {
         const files = Array.from(event.target.files)
         
-        // Phân loại file theo loại
+        // Chỉ chấp nhận file ảnh
         const imageFiles = files.filter(file => file.type.startsWith('image/'))
         
         if (imageFiles.length > 0) {
@@ -63,27 +65,64 @@ const UpdateAvatarModal = ({ isOpen, onClose, action, onSave }) => {
     }
 
     const handleSave = async () => {
-        if (onSave && !isLoading) {
-            setIsLoading(true)
-            try {
-                const saveData = {
-                    name: config.name,
-                    type: action?.type || 'update_avatar',
-                    parameters: {
+        if (!accountId) {
+            toast.push(
+                <div className="text-red-600">Vui lòng chọn tài khoản TikTok</div>
+            )
+            return
+        }
+
+        if (config.uploaded_files.length === 0) {
+            toast.push(
+                <div className="text-red-600">Vui lòng chọn ảnh đại diện</div>
+            )
+            return
+        }
+
+        setIsLoading(true)
+        try {
+            // Tạo FormData để upload file
+            const formData = new FormData()
+            formData.append('avatar', config.uploaded_files[0])
+            formData.append('description', config.name)
+
+            // Gọi API upload avatar
+            const response = await apiUpdateAvatar(accountId, formData)
+            
+            if (response.success) {
+                toast.push(
+                    <div className="text-green-600">Cập nhật ảnh đại diện thành công!</div>
+                )
+
+                // Nếu có onSave callback (cho scenario script), vẫn gọi nó
+                if (onSave) {
+                    const saveData = {
                         name: config.name,
-                        description: config.name,
-                        uploaded_files: config.uploaded_files,
-                        delete_used_images: config.delete_used_images
+                        type: action?.type || 'update_avatar',
+                        parameters: {
+                            name: config.name,
+                            description: config.name,
+                            image_urls: response.data?.avatar_url ? [response.data.avatar_url] : [],
+                            delete_used_images: config.delete_used_images
+                        }
                     }
+                    await onSave(action, saveData)
                 }
-                await onSave(action, saveData)
-                // Reset form sau khi lưu thành công
+
                 resetForm()
-            } catch (error) {
-                console.error('Error saving update avatar config:', error)
-            } finally {
-                setIsLoading(false)
+                onClose()
+            } else {
+                toast.push(
+                    <div className="text-red-600">{response.message || 'Có lỗi xảy ra khi cập nhật ảnh đại diện'}</div>
+                )
             }
+        } catch (error) {
+            console.error('Error updating avatar:', error)
+            toast.push(
+                <div className="text-red-600">Có lỗi xảy ra khi cập nhật ảnh đại diện</div>
+            )
+        } finally {
+            setIsLoading(false)
         }
     }
 

@@ -174,9 +174,10 @@ const TiktokAccountManagementClient = ({ data, params }) => {
             <InteractionConfigModal
                 isOpen={showInteractionConfigModal}
                 onClose={() => setShowInteractionConfigModal(false)}
+                accountId={data?.list?.[0]?.id} // Sử dụng account đầu tiên hoặc có thể để null
             />
         </TiktokAccountListProvider>
     )
 }
 
-export default TiktokAccountManagementClient 
+export default TiktokAccountManagementClient

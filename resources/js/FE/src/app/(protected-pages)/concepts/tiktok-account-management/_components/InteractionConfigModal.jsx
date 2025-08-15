@@ -35,7 +35,7 @@ import {
 
 import { useTranslations } from 'next-intl'
 
-const InteractionConfigModal = ({ isOpen, onClose }) => {
+const InteractionConfigModal = ({ isOpen, onClose, accountId }) => {
     const t = useTranslations('tiktokAccountManagement.interactionConfigModal')
     
     // State management
@@ -1205,6 +1205,7 @@ const InteractionConfigModal = ({ isOpen, onClose }) => {
                 }}
                 action={configuringAction}
                 onSave={handleCreatePostSave}
+                accountId={accountId}
             />
 
             {/* Update Avatar Modal */}
@@ -1216,6 +1217,7 @@ const InteractionConfigModal = ({ isOpen, onClose }) => {
                 }}
                 action={configuringAction}
                 onSave={handleUpdateAvatarSave}
+                accountId={accountId}
             />
 
             {/* Change Name Modal */}
