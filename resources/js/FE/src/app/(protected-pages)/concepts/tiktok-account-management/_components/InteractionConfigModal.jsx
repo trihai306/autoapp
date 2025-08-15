@@ -33,7 +33,8 @@ import {
     NotificationModal,
     ChangeBioModal,
     FollowUserListModal,
-    FollowBackModal
+    FollowBackModal,
+    FriendVideoInteractionModal
 } from './action-modals'
 
 import { useTranslations } from 'next-intl'
@@ -80,6 +81,7 @@ const InteractionConfigModal = ({ isOpen, onClose, accountId }) => {
     const [configuringAction, setConfiguringAction] = useState(null)
     const [deletingScenario, setDeletingScenario] = useState(null)
     const [deletingAction, setDeletingAction] = useState(null)
+    const [showFriendVideoInteractionModal, setShowFriendVideoInteractionModal] = useState(false)
     
     // Form states
     const [scenarioForm, setScenarioForm] = useState({ name: '', description: '', status: 'active' })
@@ -480,7 +482,8 @@ const InteractionConfigModal = ({ isOpen, onClose, accountId }) => {
         const changeNameActions = ['change_name']
         const changeBioActions = ['change_bio']
         const notificationActions = ['notification']
-        
+        const friendVideoActions = ['friend_video_interaction', 'friend_video']
+
         if (randomVideoActions.includes(actionData.id)) {
             setShowVideoInteractionModal(true)
         } else if (specificVideoActions.includes(actionData.id)) {
@@ -509,6 +512,8 @@ const InteractionConfigModal = ({ isOpen, onClose, accountId }) => {
             setShowChangeBioModal(true)
         } else if (notificationActions.includes(actionData.id)) {
             setShowNotificationModal(true)
+        } else if (friendVideoActions.includes(actionData.id)) {
+            setShowFriendVideoInteractionModal(true)
         } else {
             setShowActionConfigModal(true)
         }
@@ -712,7 +717,11 @@ const InteractionConfigModal = ({ isOpen, onClose, accountId }) => {
     const handleNotificationSave = async (action, config) => {
         await saveActionConfig(action, config, setShowNotificationModal)
     }
-    
+
+    const handleFriendVideoInteractionSave = async (action, config) => {
+        await saveActionConfig(action, config, setShowFriendVideoInteractionModal)
+    }
+
     const handleDeleteAction = (action) => {
         setDeletingAction(action)
         setShowDeleteActionDialog(true)
@@ -1160,6 +1169,18 @@ const InteractionConfigModal = ({ isOpen, onClose, accountId }) => {
                 }}
                 action={configuringAction}
                 onSave={handleActionConfigSave}
+            />
+
+            <FriendVideoInteractionModal
+                isOpen={showFriendVideoInteractionModal}
+                onClose={() => {
+                    setShowFriendVideoInteractionModal(false)
+                    setConfiguringAction(null)
+                }}
+                action={configuringAction}
+                onSave={handleFriendVideoInteractionSave}
+                onFetchContentGroups={handleFetchContentGroups}
+                onFetchContentsByGroup={handleFetchContentsByGroup}
             />
 
             {/* Video Interaction Modal */}

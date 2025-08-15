@@ -60,7 +60,7 @@ const ActionListModal = ({ isOpen, onClose, onSelectAction, selectedScenario }) 
                 { id: 'update_avatar', name: 'Cập nhật Ảnh đại diện', icon: <TbPhoto />, available: true, description: 'Thay đổi avatar tài khoản' },
                 { id: 'change_name', name: 'Đổi tên', icon: <TbEdit />, available: true, description: 'Cập nhật tên hiển thị' },
                 { id: 'change_bio', name: 'Đổi tiểu sử', icon: <TbFileText />, available: true, description: 'Chỉnh sửa bio cá nhân' },
-                { id: 'interact_friends', name: 'Tương tác bạn bè', icon: <TbUsers />, available: true, description: 'Tương tác với danh sách bạn bè' },
+                { id: 'friend_video', name: 'Tương tác bạn bè', icon: <TbUsers />, available: true, description: 'Tương tác với danh sách bạn bè' },
                 { id: 'auto_tools', name: 'Công khai lượt thích', icon: <TbThumbUp />, comingSoon: true, description: 'Tự động công khai lượt thích' },
                 { id: 'rest', name: 'Nghỉ', icon: <TbClock />, comingSoon: true, description: 'Tạm dừng hoạt động' },
                 { id: 'check_health', name: 'Kiểm tra sức khỏe', icon: <TbPhone />, comingSoon: true, description: 'Kiểm tra trạng thái tài khoản' }
