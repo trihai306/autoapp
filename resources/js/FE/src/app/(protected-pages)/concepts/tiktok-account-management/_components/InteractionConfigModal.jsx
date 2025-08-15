@@ -30,7 +30,10 @@ import {
     CreatePostModal,
     UpdateAvatarModal,
     ChangeNameModal,
-    NotificationModal
+    NotificationModal,
+    ChangeBioModal,
+    FollowUserListModal,
+    FollowBackModal
 } from './action-modals'
 
 import { useTranslations } from 'next-intl'
@@ -62,9 +65,12 @@ const InteractionConfigModal = ({ isOpen, onClose, accountId }) => {
     const [showRandomLiveInteractionModal, setShowRandomLiveInteractionModal] = useState(false)
     const [showSpecificLiveInteractionModal, setShowSpecificLiveInteractionModal] = useState(false)
     const [showFollowUserModal, setShowFollowUserModal] = useState(false)
+    const [showFollowUserListModal, setShowFollowUserListModal] = useState(false)
+    const [showFollowBackModal, setShowFollowBackModal] = useState(false)
     const [showCreatePostModal, setShowCreatePostModal] = useState(false)
     const [showUpdateAvatarModal, setShowUpdateAvatarModal] = useState(false)
     const [showChangeNameModal, setShowChangeNameModal] = useState(false)
+    const [showChangeBioModal, setShowChangeBioModal] = useState(false)
     const [showNotificationModal, setShowNotificationModal] = useState(false)
     const [showDeleteScenarioDialog, setShowDeleteScenarioDialog] = useState(false)
     const [showDeleteActionDialog, setShowDeleteActionDialog] = useState(false)
@@ -460,16 +466,19 @@ const InteractionConfigModal = ({ isOpen, onClose, accountId }) => {
         setConfiguringAction(newAction)
         
         // Kiểm tra loại hành động để mở modal phù hợp
-        const randomVideoActions = ['random_video_interaction']
-        const specificVideoActions = ['specific_video_interaction']
-        const keywordVideoActions = ['keyword_video_interaction']
-        const userVideoActions = ['user_video_interaction']
-        const randomLiveActions = ['random_live_interaction']
-        const specificLiveActions = ['specific_live_interaction']
+        const randomVideoActions = ['random_video_interaction', 'random_video']
+        const specificVideoActions = ['specific_video_interaction', 'specific_video']
+        const keywordVideoActions = ['keyword_video_interaction', 'keyword_video']
+        const userVideoActions = ['user_video_interaction', 'user_video']
+        const randomLiveActions = ['random_live_interaction', 'random_live']
+        const specificLiveActions = ['specific_live_interaction', 'specific_live']
         const followUserActions = ['follow_user']
+        const followUserListActions = ['follow_user_list']
+        const followBackActions = ['follow_back']
         const createPostActions = ['create_post']
         const updateAvatarActions = ['update_avatar']
         const changeNameActions = ['change_name']
+        const changeBioActions = ['change_bio']
         const notificationActions = ['notification']
         
         if (randomVideoActions.includes(actionData.id)) {
@@ -486,12 +495,18 @@ const InteractionConfigModal = ({ isOpen, onClose, accountId }) => {
             setShowSpecificLiveInteractionModal(true)
         } else if (followUserActions.includes(actionData.id)) {
             setShowFollowUserModal(true)
+        } else if (followUserListActions.includes(actionData.id)) {
+            setShowFollowUserListModal(true)
+        } else if (followBackActions.includes(actionData.id)) {
+            setShowFollowBackModal(true)
         } else if (createPostActions.includes(actionData.id)) {
             setShowCreatePostModal(true)
         } else if (updateAvatarActions.includes(actionData.id)) {
             setShowUpdateAvatarModal(true)
         } else if (changeNameActions.includes(actionData.id)) {
             setShowChangeNameModal(true)
+        } else if (changeBioActions.includes(actionData.id)) {
+            setShowChangeBioModal(true)
         } else if (notificationActions.includes(actionData.id)) {
             setShowNotificationModal(true)
         } else {
@@ -502,40 +517,60 @@ const InteractionConfigModal = ({ isOpen, onClose, accountId }) => {
     const handleEditAction = (action) => {
         setConfiguringAction(action)
         
+        // Parse script to get action type
+        let actionType = null
+        try {
+            if (action.script) {
+                const scriptData = JSON.parse(action.script)
+                actionType = scriptData.type
+            }
+        } catch (error) {
+            console.warn('Failed to parse script for action:', action.id, error)
+        }
+        
         // Kiểm tra loại hành động để mở modal phù hợp
-        const randomVideoActions = ['random_video_interaction']
-        const specificVideoActions = ['specific_video_interaction']
-        const keywordVideoActions = ['keyword_video_interaction']
-        const userVideoActions = ['user_video_interaction']
-        const randomLiveActions = ['random_live_interaction']
-        const specificLiveActions = ['specific_live_interaction']
+        const randomVideoActions = ['random_video_interaction', 'random_video']
+        const specificVideoActions = ['specific_video_interaction', 'specific_video']
+        const keywordVideoActions = ['keyword_video_interaction', 'keyword_video']
+        const userVideoActions = ['user_video_interaction', 'user_video']
+        const randomLiveActions = ['random_live_interaction', 'random_live']
+        const specificLiveActions = ['specific_live_interaction', 'specific_live']
         const followUserActions = ['follow_user']
+        const followUserListActions = ['follow_user_list']
+        const followBackActions = ['follow_back']
         const createPostActions = ['create_post']
         const updateAvatarActions = ['update_avatar']
         const changeNameActions = ['change_name']
+        const changeBioActions = ['change_bio']
         const notificationActions = ['notification']
         
-        if (randomVideoActions.includes(action.actionId)) {
+        if (randomVideoActions.includes(actionType)) {
             setShowVideoInteractionModal(true)
-        } else if (specificVideoActions.includes(action.actionId)) {
+        } else if (specificVideoActions.includes(actionType)) {
             setShowSpecificVideoInteractionModal(true)
-        } else if (keywordVideoActions.includes(action.actionId)) {
+        } else if (keywordVideoActions.includes(actionType)) {
             setShowKeywordVideoInteractionModal(true)
-        } else if (userVideoActions.includes(action.actionId)) {
+        } else if (userVideoActions.includes(actionType)) {
             setShowUserVideoInteractionModal(true)
-        } else if (randomLiveActions.includes(action.actionId)) {
+        } else if (randomLiveActions.includes(actionType)) {
             setShowRandomLiveInteractionModal(true)
-        } else if (specificLiveActions.includes(action.actionId)) {
+        } else if (specificLiveActions.includes(actionType)) {
             setShowSpecificLiveInteractionModal(true)
-        } else if (followUserActions.includes(action.actionId)) {
+        } else if (followUserActions.includes(actionType)) {
             setShowFollowUserModal(true)
-        } else if (createPostActions.includes(action.actionId)) {
+        } else if (followUserListActions.includes(actionType)) {
+            setShowFollowUserListModal(true)
+        } else if (followBackActions.includes(actionType)) {
+            setShowFollowBackModal(true)
+        } else if (createPostActions.includes(actionType)) {
             setShowCreatePostModal(true)
-        } else if (updateAvatarActions.includes(action.actionId)) {
+        } else if (updateAvatarActions.includes(actionType)) {
             setShowUpdateAvatarModal(true)
-        } else if (changeNameActions.includes(action.actionId)) {
+        } else if (changeNameActions.includes(actionType)) {
             setShowChangeNameModal(true)
-        } else if (notificationActions.includes(action.actionId)) {
+        } else if (changeBioActions.includes(actionType)) {
+            setShowChangeBioModal(true)
+        } else if (notificationActions.includes(actionType)) {
             setShowNotificationModal(true)
         } else {
             setShowActionConfigModal(true)
@@ -650,6 +685,14 @@ const InteractionConfigModal = ({ isOpen, onClose, accountId }) => {
         await saveActionConfig(action, config, setShowFollowUserModal)
     }
 
+    const handleFollowUserListSave = async (action, config) => {
+        await saveActionConfig(action, config, setShowFollowUserListModal)
+    }
+
+    const handleFollowBackSave = async (action, config) => {
+        await saveActionConfig(action, config, setShowFollowBackModal)
+    }
+
     const handleCreatePostSave = async (action, config) => {
         await saveActionConfig(action, config, setShowCreatePostModal)
     }
@@ -660,6 +703,10 @@ const InteractionConfigModal = ({ isOpen, onClose, accountId }) => {
 
     const handleChangeNameSave = async (action, config) => {
         await saveActionConfig(action, config, setShowChangeNameModal)
+    }
+
+    const handleChangeBioSave = async (action, config) => {
+        await saveActionConfig(action, config, setShowChangeBioModal)
     }
 
     const handleNotificationSave = async (action, config) => {
@@ -1137,6 +1184,8 @@ const InteractionConfigModal = ({ isOpen, onClose, accountId }) => {
                 }}
                 action={configuringAction}
                 onSave={handleSpecificVideoInteractionSave}
+                onFetchContentGroups={handleFetchContentGroups}
+                onFetchContentsByGroup={handleFetchContentsByGroup}
             />
 
             {/* Keyword Video Interaction Modal */}
@@ -1148,6 +1197,8 @@ const InteractionConfigModal = ({ isOpen, onClose, accountId }) => {
                 }}
                 action={configuringAction}
                 onSave={handleKeywordVideoInteractionSave}
+                onFetchContentGroups={handleFetchContentGroups}
+                onFetchContentsByGroup={handleFetchContentsByGroup}
             />
 
             {/* User Video Interaction Modal */}
@@ -1172,6 +1223,8 @@ const InteractionConfigModal = ({ isOpen, onClose, accountId }) => {
                 }}
                 action={configuringAction}
                 onSave={handleRandomLiveInteractionSave}
+                onFetchContentGroups={handleFetchContentGroups}
+                onFetchContentsByGroup={handleFetchContentsByGroup}
             />
 
             {/* Specific Live Interaction Modal */}
@@ -1183,6 +1236,8 @@ const InteractionConfigModal = ({ isOpen, onClose, accountId }) => {
                 }}
                 action={configuringAction}
                 onSave={handleSpecificLiveInteractionSave}
+                onFetchContentGroups={handleFetchContentGroups}
+                onFetchContentsByGroup={handleFetchContentsByGroup}
             />
 
             {/* Follow User Modal */}
@@ -1194,6 +1249,28 @@ const InteractionConfigModal = ({ isOpen, onClose, accountId }) => {
                 }}
                 action={configuringAction}
                 onSave={handleFollowUserSave}
+            />
+
+            {/* Follow User List Modal */}
+            <FollowUserListModal
+                isOpen={showFollowUserListModal}
+                onClose={() => {
+                    setShowFollowUserListModal(false)
+                    setConfiguringAction(null)
+                }}
+                action={configuringAction}
+                onSave={handleFollowUserListSave}
+            />
+
+            {/* Follow Back Modal */}
+            <FollowBackModal
+                isOpen={showFollowBackModal}
+                onClose={() => {
+                    setShowFollowBackModal(false)
+                    setConfiguringAction(null)
+                }}
+                action={configuringAction}
+                onSave={handleFollowBackSave}
             />
 
             {/* Create Post Modal */}
@@ -1229,6 +1306,17 @@ const InteractionConfigModal = ({ isOpen, onClose, accountId }) => {
                 }}
                 action={configuringAction}
                 onSave={handleChangeNameSave}
+            />
+
+            {/* Change Bio Modal */}
+            <ChangeBioModal
+                isOpen={showChangeBioModal}
+                onClose={() => {
+                    setShowChangeBioModal(false)
+                    setConfiguringAction(null)
+                }}
+                action={configuringAction}
+                onSave={handleChangeBioSave}
             />
 
             {/* Notification Modal */}

@@ -17,7 +17,7 @@ const UserVideoInteractionModal = ({
     // Initialize config based on JSON schema for User Video Form
     const initialConfig = {
         name: "Tương tác video theo User",
-        link_list: "",
+        user_list: "",
         limit_mode: "video",
         limit_video_from: 1,
         limit_video_to: 5,
@@ -46,8 +46,7 @@ const UserVideoInteractionModal = ({
         comment_gap_from: 1,
         comment_gap_to: 3,
         comment_contents: [],
-        content_group: "",
-        content_topic: ""
+        content_group: ""
     }
     
     const [config, setConfig] = useState(initialConfig)
@@ -197,6 +196,31 @@ const UserVideoInteractionModal = ({
         }
     }, [isOpen, fetchContentGroups])
 
+    // Load config from action when editing
+    useEffect(() => {
+        if (isOpen && action) {
+            try {
+                if (action.script) {
+                    const scriptData = JSON.parse(action.script)
+                    if (scriptData.parameters) {
+                        const p = scriptData.parameters
+                        setConfig(prev => ({
+                            ...prev,
+                            ...p,
+                            // Chuẩn hóa dữ liệu cũ: link_list -> user_list
+                            user_list: p.user_list ?? p.link_list ?? prev.user_list
+                        }))
+                        if (scriptData.parameters.content_group) {
+                            fetchContentsByGroup(scriptData.parameters.content_group)
+                        }
+                    }
+                }
+            } catch (error) {
+                console.warn('Failed to parse action script:', error)
+            }
+        }
+    }, [isOpen, action])
+
     const fetchContentsByGroup = async (groupId) => {
         if (!groupId) {
             setConfig(prev => ({ ...prev, comment_contents: [] }))
@@ -254,14 +278,7 @@ const UserVideoInteractionModal = ({
         }
     }
 
-    const contentTopicOptions = [
-        { value: '', label: '-- Chọn chủ đề --' },
-        { value: 'music', label: 'Âm nhạc' },
-        { value: 'dance', label: 'Nhảy múa' },
-        { value: 'comedy', label: 'Hài hước' },
-        { value: 'food', label: 'Ẩm thực' },
-        { value: 'travel', label: 'Du lịch' }
-    ]
+
 
     const handleInputChange = (field, value) => {
         setConfig(prev => ({
@@ -288,12 +305,7 @@ const UserVideoInteractionModal = ({
         }
     }
 
-    const handleCommentContentChange = (contents) => {
-        setConfig(prev => ({
-            ...prev,
-            comment_contents: contents
-        }))
-    }
+
 
     const resetForm = () => {
         setConfig(initialConfig)
@@ -312,15 +324,12 @@ const UserVideoInteractionModal = ({
             try {
                 const saveData = {
                     name: config.name,
-                    type: action?.type || 'user_video_interaction',
+                    type: 'user_video',
                     parameters: {
                         name: config.name,
-                        description: config.name,
                         user_list: config.user_list,
-                        limit_mode: config.limit_mode,
                         limit_video_from: config.limit_video_from,
                         limit_video_to: config.limit_video_to,
-                        limit_time_from: config.limit_time_from,
                         limit_time_to: config.limit_time_to,
                         view_from: config.view_from,
                         view_to: config.view_to,
@@ -347,10 +356,9 @@ const UserVideoInteractionModal = ({
                         comment_contents: Array.isArray(config.comment_contents) 
                             ? config.comment_contents.map(content => 
                                 typeof content === 'string' ? content : (content.text || content.content || content.value || '')
-                              ).filter(text => text.trim() !== '')
+                              ).filter(text => typeof text === 'string' && text.trim() !== '')
                             : [],
-                        content_group: config.content_group,
-                        content_topic: config.content_topic
+                        comment_tag_value: null
                     }
                 }
                 await onSave(action, saveData)
@@ -415,8 +423,8 @@ const UserVideoInteractionModal = ({
                                     Danh sách User
                                 </label>
                                 <textarea
-                                    value={config.link_list}
-                                    onChange={(e) => handleInputChange('link_list', e.target.value)}
+                                    value={config.user_list}
+                                    onChange={(e) => handleInputChange('user_list', e.target.value)}
                                     placeholder="username1&#10;username2&#10;username3..."
                                     className="w-full h-24 p-3 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 resize-none"
                                 />
@@ -847,7 +855,7 @@ const UserVideoInteractionModal = ({
                                         </div>
                                     </div>
                                     
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="mb-6">
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                 Nhóm nội dung ({config.comment_contents.length} bình luận)
@@ -879,23 +887,6 @@ const UserVideoInteractionModal = ({
                                                     Đang tải nội dung...
                                                 </p>
                                             )}
-                                        </div>
-                                        
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                Chủ đề nội dung (0 bình luận)
-                                            </label>
-                                            <select
-                                                value={config.content_topic}
-                                                onChange={(e) => handleSelectChange('content_topic', e.target.value)}
-                                                className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                                            >
-                                                {contentTopicOptions.map(option => (
-                                                    <option key={option.value} value={option.value}>
-                                                        {option.label}
-                                                    </option>
-                                                ))}
-                                            </select>
                                         </div>
                                     </div>
 

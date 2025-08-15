@@ -21,13 +21,13 @@ const ActionListModal = ({ isOpen, onClose, onSelectAction, selectedScenario }) 
             bgColor: 'bg-purple-50',
             description: 'Các hành động tương tác với nội dung',
             actions: [
-                { id: 'read_notification', name: 'Đọc thông báo', icon: <TbBell />, available: true, description: 'Đọc và xử lý thông báo từ TikTok' },
-                { id: 'random_video_interaction', name: 'Tương tác video ngẫu nhiên', icon: <TbVideo />, available: true, description: 'Tương tác với video ngẫu nhiên trên For You' },
-                { id: 'specific_video_interaction', name: 'Tương tác video chỉ định', icon: <TbEye />, available: true, description: 'Tương tác với video cụ thể theo URL' },
-                { id: 'keyword_video_interaction', name: 'Tương tác video theo từ khóa', icon: <TbSearch />, available: true, description: 'Tìm và tương tác video theo từ khóa' },
-                { id: 'user_video_interaction', name: 'Tương tác video theo User', icon: <TbUser />, available: true, description: 'Tương tác với video của user cụ thể' },
-                { id: 'random_live_interaction', name: 'Tương tác live ngẫu nhiên', icon: <TbEye />, available: true, description: 'Tham gia và tương tác live stream ngẫu nhiên' },
-                { id: 'specific_live_interaction', name: 'Tương tác live chỉ định', icon: <TbVideo />, available: true, description: 'Tham gia live stream cụ thể' }
+                { id: 'notification', name: 'Đọc thông báo', icon: <TbBell />, available: true, description: 'Đọc và xử lý thông báo từ TikTok' },
+                { id: 'random_video', name: 'Tương tác video ngẫu nhiên', icon: <TbVideo />, available: true, description: 'Tương tác với video ngẫu nhiên trên For You' },
+                { id: 'specific_video', name: 'Tương tác video chỉ định', icon: <TbEye />, available: true, description: 'Tương tác với video cụ thể theo URL' },
+                { id: 'keyword_video', name: 'Tương tác video theo từ khóa', icon: <TbSearch />, available: true, description: 'Tìm và tương tác video theo từ khóa' },
+                { id: 'user_video', name: 'Tương tác video theo User', icon: <TbUser />, available: true, description: 'Tương tác với video của user cụ thể' },
+                { id: 'random_live', name: 'Tương tác live ngẫu nhiên', icon: <TbEye />, available: true, description: 'Tham gia và tương tác live stream ngẫu nhiên' },
+                { id: 'specific_live', name: 'Tương tác live chỉ định', icon: <TbVideo />, available: true, description: 'Tham gia live stream cụ thể' }
             ]
         },
         {

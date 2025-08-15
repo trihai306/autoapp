@@ -194,6 +194,28 @@ const KeywordVideoInteractionModal = ({
         }
     }, [isOpen, fetchContentGroups])
 
+    // Load config from action when editing
+    useEffect(() => {
+        if (isOpen && action) {
+            try {
+                if (action.script) {
+                    const scriptData = JSON.parse(action.script)
+                    if (scriptData.parameters) {
+                        setConfig(prev => ({
+                            ...prev,
+                            ...scriptData.parameters
+                        }))
+                        if (scriptData.parameters.content_group) {
+                            fetchContentsByGroup(scriptData.parameters.content_group)
+                        }
+                    }
+                }
+            } catch (error) {
+                console.warn('Failed to parse action script:', error)
+            }
+        }
+    }, [isOpen, action])
+
     const fetchContentsByGroup = async (groupId) => {
         if (!groupId) {
             setConfig(prev => ({ ...prev, comment_contents: [] }))
@@ -212,8 +234,28 @@ const KeywordVideoInteractionModal = ({
                         return content
                     }
                     // If content is an object, extract the text value
-                    return content.content || content.text || content.value || content.name || ''
-                }).filter(text => text.trim() !== '') // Remove empty strings
+                    let extracted = ''
+                    if (content.content && content.content.text) {
+                        // Case: {content: {text: 'value'}}
+                        extracted = content.content.text
+                    } else if (content.content && typeof content.content === 'string') {
+                        // Case: {content: 'value'}
+                        extracted = content.content
+                    } else if (content.text) {
+                        // Case: {text: 'value'}
+                        extracted = content.text
+                    } else if (content.title) {
+                        // Case: {title: 'value'}
+                        extracted = content.title
+                    } else if (content.value) {
+                        // Case: {value: 'value'}
+                        extracted = content.value
+                    } else if (content.name) {
+                        // Case: {name: 'value'}
+                        extracted = content.name
+                    }
+                    return extracted
+                }).filter(text => typeof text === 'string' && text.trim() !== '') // Remove empty strings
                 setConfig(prev => ({ ...prev, comment_contents: commentContents }))
             } catch (error) {
                 console.error('Error fetching contents:', error)
@@ -300,7 +342,7 @@ const KeywordVideoInteractionModal = ({
                         comment_contents: Array.isArray(config.comment_contents) 
                             ? config.comment_contents.map(content => 
                                 typeof content === 'string' ? content : (content.text || content.content || content.value || '')
-                              ).filter(text => text.trim() !== '')
+                              ).filter(text => typeof text === 'string' && text.trim() !== '')
                             : [],
                         content_group: config.content_group
                     }

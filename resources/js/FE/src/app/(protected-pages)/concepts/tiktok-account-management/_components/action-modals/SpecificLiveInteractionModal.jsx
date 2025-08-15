@@ -196,6 +196,28 @@ const SpecificLiveInteractionModal = ({
         }
     }, [isOpen, fetchContentGroups])
 
+    // Load config from action when editing
+    useEffect(() => {
+        if (isOpen && action) {
+            try {
+                if (action.script) {
+                    const scriptData = JSON.parse(action.script)
+                    if (scriptData.parameters) {
+                        setConfig(prev => ({
+                            ...prev,
+                            ...scriptData.parameters
+                        }))
+                        if (scriptData.parameters.selectedContentGroupId) {
+                            fetchContentsByGroup(scriptData.parameters.selectedContentGroupId)
+                        }
+                    }
+                }
+            } catch (error) {
+                console.warn('Failed to parse action script:', error)
+            }
+        }
+    }, [isOpen, action])
+
     const fetchContentsByGroup = async (groupId) => {
         if (!groupId) {
             setConfig(prev => ({ ...prev, comment_contents: [] }))

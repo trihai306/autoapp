@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Dialog from '@/components/ui/Dialog'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
@@ -34,6 +34,25 @@ const FollowUserKeywordModal = ({ isOpen, onClose, action, onSave }) => {
     const resetForm = () => {
         setConfig(initialConfig)
     }
+
+    // Load config from action when editing
+    useEffect(() => {
+        if (isOpen && action) {
+            try {
+                if (action.script) {
+                    const scriptData = JSON.parse(action.script)
+                    if (scriptData.parameters) {
+                        setConfig(prev => ({
+                            ...prev,
+                            ...scriptData.parameters
+                        }))
+                    }
+                }
+            } catch (error) {
+                console.warn('Failed to parse action script:', error)
+            }
+        }
+    }, [isOpen, action])
 
     const handleSave = async () => {
         if (onSave && !isLoading) {

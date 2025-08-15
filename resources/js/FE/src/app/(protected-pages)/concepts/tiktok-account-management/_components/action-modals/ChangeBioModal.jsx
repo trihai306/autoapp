@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Dialog from '@/components/ui/Dialog'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
@@ -10,8 +10,7 @@ const ChangeBioModal = ({ isOpen, onClose, action, onSave }) => {
     const initialConfig = {
         name: "Đổi tiểu sử",
         new_bio: "",
-        add_emoji: false,
-        max_length: 80
+        add_emoji: false
     }
     
     const [config, setConfig] = useState(initialConfig)
@@ -20,7 +19,7 @@ const ChangeBioModal = ({ isOpen, onClose, action, onSave }) => {
     const handleInputChange = (field, value) => {
         setConfig(prev => ({
             ...prev,
-            [field]: field === 'max_length' ? parseInt(value) || 0 : value
+            [field]: value
         }))
     }
 
@@ -35,6 +34,25 @@ const ChangeBioModal = ({ isOpen, onClose, action, onSave }) => {
         setConfig(initialConfig)
     }
 
+    // Load config from action when editing
+    useEffect(() => {
+        if (isOpen && action) {
+            try {
+                if (action.script) {
+                    const scriptData = JSON.parse(action.script)
+                    if (scriptData.parameters) {
+                        setConfig(prev => ({
+                            ...prev,
+                            ...scriptData.parameters
+                        }))
+                    }
+                }
+            } catch (error) {
+                console.warn('Failed to parse action script:', error)
+            }
+        }
+    }, [isOpen, action])
+
     const handleSave = async () => {
         if (onSave && !isLoading) {
             setIsLoading(true)
@@ -46,8 +64,7 @@ const ChangeBioModal = ({ isOpen, onClose, action, onSave }) => {
                         name: config.name,
                         description: config.name,
                         new_bio: config.new_bio,
-                        add_emoji: config.add_emoji,
-                        max_length: config.max_length
+                        add_emoji: config.add_emoji
                     }
                 }
                 await onSave(action, saveData)
@@ -66,10 +83,6 @@ const ChangeBioModal = ({ isOpen, onClose, action, onSave }) => {
         resetForm()
         onClose()
     }
-
-    // Calculate current bio length
-    const currentLength = config.new_bio.length
-    const isOverLimit = currentLength > config.max_length
 
     if (!action) return null
 
@@ -112,53 +125,12 @@ const ChangeBioModal = ({ isOpen, onClose, action, onSave }) => {
                         <textarea
                             value={config.new_bio}
                             onChange={(e) => handleInputChange('new_bio', e.target.value)}
-                            placeholder="abc"
+                            placeholder="Nhập tiểu sử mới..."
                             rows={4}
-                            className={`w-full px-3 py-2 border rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm ${
-                                isOverLimit 
-                                    ? 'border-red-500 dark:border-red-400' 
-                                    : 'border-gray-300 dark:border-gray-600'
-                            }`}
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm"
                         />
-                        <div className="flex justify-between items-center mt-1">
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                                Nhập nội dung tiểu sử mới cho tài khoản.
-                            </p>
-                            <span className={`text-xs font-medium ${
-                                isOverLimit 
-                                    ? 'text-red-500 dark:text-red-400' 
-                                    : currentLength > config.max_length * 0.8 
-                                        ? 'text-yellow-500 dark:text-yellow-400'
-                                        : 'text-gray-500 dark:text-gray-400'
-                            }`}>
-                                {currentLength}/{config.max_length}
-                            </span>
-                        </div>
-                        {isOverLimit && (
-                            <p className="text-xs text-red-500 dark:text-red-400 mt-1">
-                                Tiểu sử vượt quá giới hạn cho phép!
-                            </p>
-                        )}
-                    </div>
-                    
-                    {/* Giới hạn độ dài */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Giới hạn độ dài
-                        </label>
-                        <div className="flex items-center gap-3">
-                            <Input
-                                type="number"
-                                min="1"
-                                max="200"
-                                value={config.max_length}
-                                onChange={(e) => handleInputChange('max_length', e.target.value)}
-                                className="w-24 text-center border-gray-300 dark:border-gray-600"
-                            />
-                            <span className="text-sm text-gray-500">ký tự</span>
-                        </div>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                            Số ký tự tối đa cho tiểu sử (TikTok thường giới hạn 80 ký tự).
+                            Nhập nội dung tiểu sử mới cho tài khoản.
                         </p>
                     </div>
                     
@@ -222,7 +194,7 @@ const ChangeBioModal = ({ isOpen, onClose, action, onSave }) => {
                             color="blue-500"
                             onClick={handleSave}
                             loading={isLoading}
-                            disabled={isLoading || !config.new_bio.trim() || isOverLimit}
+                            disabled={isLoading || !config.new_bio.trim()}
                         >
                             Lưu thay đổi
                         </Button>
