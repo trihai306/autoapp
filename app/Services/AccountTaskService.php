@@ -9,6 +9,7 @@ use App\Events\TaskDispatchedToDevice;
 use App\Events\DataTableRefreshRequested;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Log;
 
 class AccountTaskService
 {
