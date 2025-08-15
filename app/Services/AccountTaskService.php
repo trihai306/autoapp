@@ -136,8 +136,10 @@ class AccountTaskService
                 $createdTasks[] = $task;
                 
                 // Dispatch event for real-time updates
-                event(new TaskDispatchedToDevice($task));
-                \Log::info('TaskDispatchedToDevice event fired for task:', ['task_id' => $task->id, 'device_key' => $task->device_id]);
+                if ($deviceId) {
+                    event(new TaskDispatchedToDevice((string) $deviceId));
+                    \Log::info('TaskDispatchedToDevice event fired for device:', ['device_id' => $deviceId]);
+                }
             } catch (\Exception $e) {
                 \Log::error('Failed to create AccountTask:', ['error' => $e->getMessage(), 'data' => $taskData]);
                 throw $e;

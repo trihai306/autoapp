@@ -40,7 +40,7 @@ class TestBroadcastJob implements ShouldQueue
             ]);
 
             // Broadcast the event
-            event(new TaskDispatchedToDevice($this->task));
+            event(new TaskDispatchedToDevice((string) $this->task->device_id));
 
             Log::info('TestBroadcastJob: Broadcast completed successfully', [
                 'task_id' => $this->task->id,

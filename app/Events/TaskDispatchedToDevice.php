@@ -2,7 +2,6 @@
 
 namespace App\Events;
 
-use App\Models\AccountTask;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -15,11 +14,6 @@ class TaskDispatchedToDevice implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
-     * @var \App\Models\AccountTask
-     */
-    public AccountTask $task;
-
-    /**
      * Khóa kênh broadcast (device_id - chuỗi)
      */
     public string $deviceKey;
@@ -27,12 +21,9 @@ class TaskDispatchedToDevice implements ShouldBroadcast
     /**
      * Tạo một instance mới của sự kiện.
      */
-    public function __construct(AccountTask $task)
+    public function __construct(string $deviceId)
     {
-        $this->task = $task;
-        // Lấy device tương ứng – ưu tiên quan hệ đã nạp
-        $deviceModel = $task->relationLoaded('device') ? $task->device : \App\Models\Device::find($task->device_id);
-        $this->deviceKey = $deviceModel?->device_id ?? (string) $task->device_id;
+        $this->deviceKey = $deviceId;
     }
 
     /**
@@ -57,15 +48,9 @@ class TaskDispatchedToDevice implements ShouldBroadcast
     public function broadcastWith(): array
     {
         return [
-            'task_id'             => $this->task->id,
-            'tiktok_account_id'   => $this->task->tiktok_account_id,
-            'interaction_scenario_id' => $this->task->interaction_scenario_id,
-            'task_type'           => $this->task->task_type,
-            'parameters'          => $this->task->parameters,
-            'priority'            => $this->task->priority,
-            'status'              => $this->task->status,
-            'scheduled_at'        => $this->task->scheduled_at?->format('Y-m-d H:i:s'),
-            'created_at'          => $this->task->created_at?->format('Y-m-d H:i:s'),
+            'message' => 'New task has been dispatched to device',
+            'device_id' => $this->deviceKey,
+            'timestamp' => now()->format('Y-m-d H:i:s'),
         ];
     }
 } 
