@@ -6,7 +6,6 @@ use App\Models\AccountTask;
 use App\Queries\BaseQuery;
 use App\Repositories\AccountTaskRepositoryInterface;
 use App\Events\TaskDispatchedToDevice;
-use App\Events\DataTableRefreshRequested;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
@@ -139,6 +138,7 @@ class AccountTaskService
                     Log::info('Dispatching event for device: ' . $deviceId);
                     event(new TaskDispatchedToDevice($deviceId));
                 }
+                
             } catch (\Exception $e) {
                 throw $e;   
             }
