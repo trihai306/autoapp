@@ -64,7 +64,7 @@ class AccountTaskService
         if ($scripts->isEmpty()) {
             return [
                 'success' => false,
-                'message' => 'Scenario has no scripts.',
+                'message' => 'Kịch bản không có kịch bản.',
             ];
         }
 

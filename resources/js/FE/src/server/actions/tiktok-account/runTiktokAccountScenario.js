@@ -7,6 +7,13 @@ export default async function runTiktokAccountScenario(accountId, data = {}) {
     return withAuthCheck(async () => {
         try {
             const resp = await apiRunAccountScenario(accountId, data)
+            if (resp?.success === false) {
+                return {
+                    success: false,
+                    message: resp?.message || 'Account scenario failed',
+                    data: resp,
+                }
+            }
             return {
                 success: true,
                 data: resp,
