@@ -22,3 +22,18 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Next.js build files
+resources/js/FE/.next/
+resources/js/FE/out/
+resources/js/FE/build/
+resources/js/FE/dist/
+
+# Build artifacts
+*.zip
+*.tar.gz
+*.rar
+
+# Package lock files (optional - uncomment if you want to exclude them)
+# package-lock.json
+# yarn.lock
