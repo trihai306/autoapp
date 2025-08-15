@@ -6,7 +6,9 @@ const Clickable = () => {
             <Card
                 clickable
                 className="hover:shadow-lg transition duration-150 ease-in-out"
-                onClick={(e) => // console.log('Card Clickable', e)}
+                onClick={(e) => {
+                    // console.log('Card Clickable', e)
+                }}
             >
                 <h5>Card title</h5>
                 <p className="mt-2">

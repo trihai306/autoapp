@@ -19,10 +19,10 @@ const StickyFooter = (props) => {
         const observer = new IntersectionObserver(
             ([e]) => {
                 // console.log(
-                    'e.intersectionRatio < 1',
-                    e.intersectionRatio,
-                    e.intersectionRatio < 1,
-                )
+                //     'e.intersectionRatio < 1',
+                //     e.intersectionRatio,
+                //     e.intersectionRatio < 1,
+                // )
                 if (!(e.intersectionRatio < 1)) {
                     window.scrollTo({
                         top: document.body.scrollHeight - 1,

@@ -7,7 +7,9 @@ const Group = () => {
             omittedAvatarTooltip
             maxCount={4}
             omittedAvatarProps={{ shape: 'circle' }}
-            onOmittedAvatarClick={() => // console.log('Omitted Avatar Clicked')}
+            onOmittedAvatarClick={() => {
+                // console.log('Omitted Avatar Clicked')
+            }}
         >
             <Avatar src="/img/avatars/thumb-1.jpg" />
             <Avatar src="/img/avatars/thumb-2.jpg" />
