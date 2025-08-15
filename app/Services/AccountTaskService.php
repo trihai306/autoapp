@@ -128,9 +128,6 @@ class AccountTaskService
                 'scheduled_at' => null,
             ];
 
-            // Debug logging
-            \Log::info('Creating AccountTask with data:', $taskData);
-            
             try {
                 $task = $this->accountTaskRepository->create($taskData);
                 $createdTasks[] = $task;
@@ -138,11 +135,9 @@ class AccountTaskService
                 // Dispatch event for real-time updates
                 if ($deviceId) {
                     event(new TaskDispatchedToDevice((string) $deviceId));
-                    \Log::info('TaskDispatchedToDevice event fired for device:', ['device_id' => $deviceId]);
                 }
             } catch (\Exception $e) {
-                \Log::error('Failed to create AccountTask:', ['error' => $e->getMessage(), 'data' => $taskData]);
-                throw $e;
+                throw $e;   
             }
             $order++;
         }
