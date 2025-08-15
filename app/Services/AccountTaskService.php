@@ -135,8 +135,12 @@ class AccountTaskService
                 
                 // Dispatch event for real-time updates
                 if ($deviceId) {
-                    Log::info('Dispatching event for device: ' . $deviceId);
-                    event(new TaskDispatchedToDevice($deviceId));
+                    // Lấy device thực tế để có device_id (mã máy)
+                    $device = \App\Models\Device::find($deviceId);
+                    if ($device && $device->device_id) {
+                        Log::info('Dispatching event for device: ' . $device->device_id);
+                        event(new TaskDispatchedToDevice($device->device_id));
+                    }
                 }
                 
             } catch (\Exception $e) {
