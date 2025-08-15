@@ -260,49 +260,46 @@ const TiktokAccountManagementClient = ({ data, params }) => {
                         {/* Statistics Dashboard */}
                         <DashboardStats loading={isLoading} />
 
-                        {/* Main Content Grid */}
-                        <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
-                            {/* Account Management Table - Takes 2/3 columns on lg, 3 columns on xl */}
-                            <div className="lg:col-span-2 xl:col-span-3">
-                                <AdaptiveCard className="overflow-hidden">
-                                    <div className="p-4 lg:p-6">
-                                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4 lg:mb-6">
-                                            <div>
-                                                <h2 className="text-lg lg:text-xl font-semibold text-gray-900 dark:text-gray-100">
-                                                    Danh sách tài khoản
-                                                </h2>
-                                                <p className="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mt-1">
-                                                    Quản lý và theo dõi trạng thái của {data?.total || 0} tài khoản
-                                                </p>
-                                            </div>
-                                            <TiktokAccountListActionTools />
-                                        </div>
-                                        
-                                                                <TiktokAccountListTable
-                            tiktokAccountListTotal={data?.total || 0}
-                            page={parseInt(params.page) || 1}
-                            per_page={parseInt(params.per_page) || 10}
-                            onRefresh={handleRefresh}
-                        />
-                                    </div>
-                                </AdaptiveCard>
-                                
-                                {/* Pagination - Outside the card */}
-                                <TiktokAccountListPagination
-                                    tiktokAccountListTotal={data?.total || 0}
-                                    page={parseInt(params.page) || 1}
-                                    per_page={parseInt(params.per_page) || 10}
-                                />
-                            </div>
+                        {/* Quick Actions - Horizontal Layout */}
+                        <div className="mb-6">
+                            <QuickActions 
+                                selectedAccounts={selectedAccounts}
+                                onAction={handleQuickAction}
+                                loading={isLoading}
+                            />
+                        </div>
 
-                            {/* Quick Actions Sidebar - Takes 1 column on both lg and xl */}
-                            <div className="lg:col-span-1 xl:col-span-1">
-                                <QuickActions 
-                                    selectedAccounts={selectedAccounts}
-                                    onAction={handleQuickAction}
-                                    loading={isLoading}
-                                />
-                            </div>
+                        {/* Main Content - Full Width Table */}
+                        <div className="w-full">
+                            <AdaptiveCard className="overflow-hidden">
+                                <div className="p-4 lg:p-6">
+                                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4 lg:mb-6">
+                                        <div>
+                                            <h2 className="text-lg lg:text-xl font-semibold text-gray-900 dark:text-gray-100">
+                                                Danh sách tài khoản
+                                            </h2>
+                                            <p className="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mt-1">
+                                                Quản lý và theo dõi trạng thái của {data?.total || 0} tài khoản
+                                            </p>
+                                        </div>
+                                        <TiktokAccountListActionTools />
+                                    </div>
+                                    
+                                    <TiktokAccountListTable
+                                        tiktokAccountListTotal={data?.total || 0}
+                                        page={parseInt(params.page) || 1}
+                                        per_page={parseInt(params.per_page) || 10}
+                                        onRefresh={handleRefresh}
+                                    />
+                                </div>
+                            </AdaptiveCard>
+                            
+                            {/* Pagination - Outside the card */}
+                            <TiktokAccountListPagination
+                                tiktokAccountListTotal={data?.total || 0}
+                                page={parseInt(params.page) || 1}
+                                per_page={parseInt(params.per_page) || 10}
+                            />
                         </div>
                     </div>
                 </Container>

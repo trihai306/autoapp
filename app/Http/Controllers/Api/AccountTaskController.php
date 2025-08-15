@@ -8,6 +8,7 @@ use App\Services\AccountTaskService;
 use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 /**
  * APIs for managing Account Tasks.
@@ -152,5 +153,43 @@ class AccountTaskController extends Controller
         $count = $this->accountTaskService->updateStatusMultiple($validated['ids'], $validated['status']);
 
         return response()->json(['message' => "Successfully updated {$count} account tasks to status '{$validated['status']}'."]);
+    }
+
+    /**
+     * Get recent activities for TikTok accounts
+     */
+    public function getRecentActivities(Request $request): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'user_id' => 'required|integer',
+                'page' => 'integer|min:1',
+                'per_page' => 'integer|min:1|max:100',
+                'status' => 'nullable|string|in:completed,failed,running',
+                'start_date' => 'nullable|date',
+                'account_id' => 'nullable|integer'
+            ]);
+
+            $result = $this->accountTaskService->getRecentActivities($validated);
+
+            if (!$result['success']) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $result['message']
+                ], 500);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $result['data'],
+                'message' => $result['message']
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Lỗi server: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

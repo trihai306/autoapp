@@ -106,6 +106,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('account-tasks', AccountTaskController::class)
         ->middleware('permission:account-tasks.view');
     
+    // Account tasks recent activities
+    Route::post('account-tasks/recent-activities', [AccountTaskController::class, 'getRecentActivities'])
+        ->middleware('permission:account-tasks.view');
+    
     // Device specific routes (must come before resource routes)
     Route::post('devices/bulk-delete', [DeviceController::class, 'bulkDelete'])
         ->middleware('permission:devices.delete');

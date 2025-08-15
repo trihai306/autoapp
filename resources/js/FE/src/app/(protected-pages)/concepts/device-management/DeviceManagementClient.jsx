@@ -165,41 +165,37 @@ const DeviceManagementClient = ({ data, params }) => {
 
                 <Container className="py-6">
                     <div className="space-y-6">
-                        {/* Main Content Grid */}
-                        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
-                            {/* Device Management Table - Takes 3 columns */}
-                            <div className="xl:col-span-3">
-                                <AdaptiveCard className="overflow-hidden">
-                                    <div className="p-6">
-                                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-                                            <div>
-                                                <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-                                                    {t('deviceList')}
-                                                </h2>
-                                                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                                                    {t('deviceListDesc', { count: data?.total || 0 })}
-                                                </p>
-                                            </div>
+                        {/* Quick Actions - Horizontal Layout */}
+                        <div className="mb-6">
+                            <QuickActions 
+                                selectedDevices={selectedDevices}
+                                onAction={handleQuickAction}
+                                loading={isLoading}
+                            />
+                        </div>
 
+                        {/* Main Content - Full Width Table */}
+                        <div className="w-full">
+                            <AdaptiveCard className="overflow-hidden">
+                                <div className="p-6">
+                                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+                                        <div>
+                                            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                                                {t('deviceList')}
+                                            </h2>
+                                            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                                                {t('deviceListDesc', { count: data?.total || 0 })}
+                                            </p>
                                         </div>
-                                        
-                                        <DeviceListTable
-                                            deviceListTotal={data?.total || 0}
-                                            page={parseInt(params.page) || 1}
-                                            per_page={parseInt(params.per_page) || 10}
-                                        />
                                     </div>
-                                </AdaptiveCard>
-                            </div>
-
-                            {/* Quick Actions Sidebar - Takes 1 column */}
-                            <div className="xl:col-span-1">
-                                <QuickActions 
-                                    selectedDevices={selectedDevices}
-                                    onAction={handleQuickAction}
-                                    loading={isLoading}
-                                />
-                            </div>
+                                    
+                                    <DeviceListTable
+                                        deviceListTotal={data?.total || 0}
+                                        page={parseInt(params.page) || 1}
+                                        per_page={parseInt(params.per_page) || 10}
+                                    />
+                                </div>
+                            </AdaptiveCard>
                         </div>
                     </div>
                 </Container>
