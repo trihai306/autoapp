@@ -313,7 +313,7 @@ const FriendVideoInteractionModal = ({
             try {
                 const saveData = {
                     name: config.name,
-                    type: action?.type || 'friend_video_interaction',
+                    type: action?.type || 'friend_interaction',
                     parameters: {
                         ...config
                     }

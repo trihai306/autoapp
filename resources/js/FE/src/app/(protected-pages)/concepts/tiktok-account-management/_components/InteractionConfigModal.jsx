@@ -33,7 +33,8 @@ import {
     NotificationModal,
     ChangeBioModal,
     FollowUserListModal,
-    FollowBackModal
+    FollowBackModal,
+    FriendVideoInteractionModal
 } from './action-modals'
 
 import { useTranslations } from 'next-intl'
@@ -72,6 +73,7 @@ const InteractionConfigModal = ({ isOpen, onClose, accountId }) => {
     const [showChangeNameModal, setShowChangeNameModal] = useState(false)
     const [showChangeBioModal, setShowChangeBioModal] = useState(false)
     const [showNotificationModal, setShowNotificationModal] = useState(false)
+    const [showFriendVideoInteractionModal, setShowFriendVideoInteractionModal] = useState(false)
     const [showDeleteScenarioDialog, setShowDeleteScenarioDialog] = useState(false)
     const [showDeleteActionDialog, setShowDeleteActionDialog] = useState(false)
     const [preventActionListClose, setPreventActionListClose] = useState(false)
@@ -481,6 +483,7 @@ const InteractionConfigModal = ({ isOpen, onClose, accountId }) => {
         const changeNameActions = ['change_name']
         const changeBioActions = ['change_bio']
         const notificationActions = ['notification']
+        const friendVideoActions = [ 'friend_video']
 
         if (randomVideoActions.includes(actionData.id)) {
             setShowVideoInteractionModal(true)
@@ -510,6 +513,8 @@ const InteractionConfigModal = ({ isOpen, onClose, accountId }) => {
             setShowChangeBioModal(true)
         } else if (notificationActions.includes(actionData.id)) {
             setShowNotificationModal(true)
+        } else if (friendVideoActions.includes(actionData.id)) {
+            setShowFriendVideoInteractionModal(true)
         } else {
             setShowActionConfigModal(true)
         }
@@ -544,7 +549,8 @@ const InteractionConfigModal = ({ isOpen, onClose, accountId }) => {
         const changeNameActions = ['change_name']
         const changeBioActions = ['change_bio']
         const notificationActions = ['notification']
-        
+        const friendVideoActions = ['friend_video']
+
         if (randomVideoActions.includes(actionType)) {
             setShowVideoInteractionModal(true)
         } else if (specificVideoActions.includes(actionType)) {
@@ -573,6 +579,8 @@ const InteractionConfigModal = ({ isOpen, onClose, accountId }) => {
             setShowChangeBioModal(true)
         } else if (notificationActions.includes(actionType)) {
             setShowNotificationModal(true)
+        } else if (friendVideoActions.includes(actionType)) {
+            setShowFriendVideoInteractionModal(true)
         } else {
             setShowActionConfigModal(true)
         }
@@ -714,7 +722,9 @@ const InteractionConfigModal = ({ isOpen, onClose, accountId }) => {
         await saveActionConfig(action, config, setShowNotificationModal)
     }
 
-
+    const handleFriendVideoInteractionSave = async (action, config) => {
+        await saveActionConfig(action, config, setShowFriendVideoInteractionModal)
+    }
 
     const handleDeleteAction = (action) => {
         setDeletingAction(action)
@@ -1333,6 +1343,19 @@ const InteractionConfigModal = ({ isOpen, onClose, accountId }) => {
                 }}
                 action={configuringAction}
                 onSave={handleNotificationSave}
+            />
+
+            {/* Friend Video Interaction Modal */}
+            <FriendVideoInteractionModal
+                isOpen={showFriendVideoInteractionModal}
+                onClose={() => {
+                    setShowFriendVideoInteractionModal(false)
+                    setConfiguringAction(null)
+                }}
+                action={configuringAction}
+                onSave={handleVideoInteractionSave}
+                onFetchContentGroups={handleFetchContentGroups}
+                onFetchContentsByGroup={handleFetchContentsByGroup}
             />
 
             {/* Delete Scenario Confirmation Dialog */}
