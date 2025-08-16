@@ -29,6 +29,7 @@ class AccountTaskController extends Controller
      *
      * Retrieve a paginated list of all account tasks.
      * Supports searching, filtering, and sorting.
+     * Admin can see all tasks, regular users can only see tasks from their own accounts.
      *
      * @response \Illuminate\Pagination\LengthAwarePaginator<App\Models\AccountTask>
      */
@@ -44,6 +45,15 @@ class AccountTaskController extends Controller
     #[QueryParameter('per_page', description: 'The number of items per page.', example: 15)]
     public function index(Request $request)
     {
+        $user = $request->user();
+        
+        // Nếu user là admin, hiển thị tất cả tasks
+        if ($user->hasRole('admin')) {
+            return response()->json($this->accountTaskService->getAll($request));
+        }
+        
+        // Nếu không phải admin, chỉ hiển thị tasks từ accounts của user đó
+        $request->merge(['user_id' => $user->id]);
         return response()->json($this->accountTaskService->getAll($request));
     }
 
@@ -51,9 +61,12 @@ class AccountTaskController extends Controller
      * Create a new account task
      *
      * Creates a new account task with the given details.
+     * Admin can create tasks for any account, regular users can only create for their own accounts.
      */
     public function store(Request $request)
     {
+        $user = $request->user();
+        
         $validated = $request->validate([
             'tiktok_account_id' => 'required|exists:tiktok_accounts,id',
             'interaction_scenario_id' => 'nullable|exists:interaction_scenarios,id',
@@ -65,6 +78,12 @@ class AccountTaskController extends Controller
             'scheduled_at' => 'nullable|date',
         ]);
 
+        // Kiểm tra quyền: chỉ admin hoặc chủ sở hữu account mới có thể tạo task
+        $account = \App\Models\TiktokAccount::find($validated['tiktok_account_id']);
+        if (!$user->hasRole('admin') && $account->user_id != $user->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
         $task = $this->accountTaskService->create($validated);
 
         return response()->json($task, 201);
@@ -74,9 +93,17 @@ class AccountTaskController extends Controller
      * Get a specific account task
      *
      * Retrieves the details of a specific account task by its ID.
+     * Admin can see any task, regular users can only see tasks from their own accounts.
      */
-    public function show(AccountTask $accountTask)
+    public function show(Request $request, AccountTask $accountTask)
     {
+        $user = $request->user();
+        
+        // Kiểm tra quyền: chỉ admin hoặc chủ sở hữu account mới có thể xem
+        if (!$user->hasRole('admin') && $accountTask->tiktokAccount->user_id != $user->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
         return response()->json($accountTask);
     }
 
@@ -84,9 +111,17 @@ class AccountTaskController extends Controller
      * Update an account task
      *
      * Updates the details of a specific account task.
+     * Admin can update any task, regular users can only update tasks from their own accounts.
      */
     public function update(Request $request, AccountTask $accountTask)
     {
+        $user = $request->user();
+        
+        // Kiểm tra quyền: chỉ admin hoặc chủ sở hữu account mới có thể cập nhật
+        if (!$user->hasRole('admin') && $accountTask->tiktokAccount->user_id != $user->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
         $validated = $request->validate([
             'interaction_scenario_id' => 'nullable|exists:interaction_scenarios,id',
             'device_id' => 'nullable|exists:devices,id',
@@ -112,9 +147,17 @@ class AccountTaskController extends Controller
      * Delete an account task
      *
      * Deletes a specific account task.
+     * Admin can delete any task, regular users can only delete tasks from their own accounts.
      */
-    public function destroy(AccountTask $accountTask)
+    public function destroy(Request $request, AccountTask $accountTask)
     {
+        $user = $request->user();
+        
+        // Kiểm tra quyền: chỉ admin hoặc chủ sở hữu account mới có thể xóa
+        if (!$user->hasRole('admin') && $accountTask->tiktokAccount->user_id != $user->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
         $this->accountTaskService->delete($accountTask);
 
         return response()->json(null, 204);
@@ -124,13 +167,24 @@ class AccountTaskController extends Controller
      * Delete multiple account tasks
      *
      * Deletes a list of account tasks by their IDs.
+     * Admin can delete any tasks, regular users can only delete tasks from their own accounts.
      */
     public function bulkDelete(Request $request)
     {
+        $user = $request->user();
+        
         $validated = $request->validate([
             'ids' => 'required|array',
             'ids.*' => 'exists:account_tasks,id',
         ]);
+
+        // Kiểm tra quyền cho từng task
+        $tasks = AccountTask::whereIn('id', $validated['ids'])->with('tiktokAccount')->get();
+        foreach ($tasks as $task) {
+            if (!$user->hasRole('admin') && $task->tiktokAccount->user_id != $user->id) {
+                return response()->json(['message' => 'Unauthorized to delete some tasks'], 403);
+            }
+        }
 
         $count = $this->accountTaskService->deleteMultiple($validated['ids']);
 
@@ -141,14 +195,25 @@ class AccountTaskController extends Controller
      * Update status for multiple account tasks
      *
      * Updates the status for a list of account tasks.
+     * Admin can update any tasks, regular users can only update tasks from their own accounts.
      */
     public function bulkUpdateStatus(Request $request)
     {
+        $user = $request->user();
+        
         $validated = $request->validate([
             'ids' => 'required|array',
             'ids.*' => 'exists:account_tasks,id',
             'status' => 'required|string|in:pending,running,completed,failed',
         ]);
+
+        // Kiểm tra quyền cho từng task
+        $tasks = AccountTask::whereIn('id', $validated['ids'])->with('tiktokAccount')->get();
+        foreach ($tasks as $task) {
+            if (!$user->hasRole('admin') && $task->tiktokAccount->user_id != $user->id) {
+                return response()->json(['message' => 'Unauthorized to update some tasks'], 403);
+            }
+        }
 
         $count = $this->accountTaskService->updateStatusMultiple($validated['ids'], $validated['status']);
 
