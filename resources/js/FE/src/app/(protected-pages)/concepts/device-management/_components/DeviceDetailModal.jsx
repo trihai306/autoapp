@@ -1,9 +1,10 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Dialog from '@/components/ui/Dialog'
 import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
 import Tooltip from '@/components/ui/Tooltip'
+import { apiGetDeviceConnectedAccounts } from '@/services/device/DeviceService'
 import { 
     HiOutlineDesktopComputer as Desktop,
     HiOutlineDeviceMobile as Mobile,
@@ -20,11 +21,35 @@ import {
     HiOutlinePlay as Play,
     HiOutlinePause as Pause,
     HiOutlineCog as Settings,
-    HiOutlineShieldCheck as Shield
+    HiOutlineShieldCheck as Shield,
+    HiOutlineRefresh as Refresh
 } from 'react-icons/hi'
 
 const DeviceDetailModal = ({ isOpen, onClose, device, onDelete }) => {
     const [activeTab, setActiveTab] = useState('overview')
+    const [connectedAccounts, setConnectedAccounts] = useState([])
+    const [loadingAccounts, setLoadingAccounts] = useState(false)
+
+    useEffect(() => {
+        if (isOpen && device?.id) {
+            loadConnectedAccounts()
+        }
+    }, [isOpen, device?.id])
+
+    const loadConnectedAccounts = async () => {
+        if (!device?.id) return
+        
+        setLoadingAccounts(true)
+        try {
+            const response = await apiGetDeviceConnectedAccounts(device.id)
+            setConnectedAccounts(response.data?.accounts || [])
+        } catch (error) {
+            console.error('Error loading connected accounts:', error)
+            setConnectedAccounts([])
+        } finally {
+            setLoadingAccounts(false)
+        }
+    }
 
     if (!device) return null
 
@@ -217,45 +242,123 @@ const DeviceDetailModal = ({ isOpen, onClose, device, onDelete }) => {
     const renderAccounts = () => (
         <div className="space-y-6">
             <div>
-                <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                    Tài khoản đã kết nối
-                </h4>
+                <div className="flex items-center justify-between mb-4">
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100">
+                        Tài khoản đã kết nối
+                    </h4>
+                    <Tooltip title="Làm mới danh sách">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={loadConnectedAccounts}
+                            disabled={loadingAccounts}
+                            className="!px-2"
+                        >
+                            <Refresh className={`w-4 h-4 ${loadingAccounts ? 'animate-spin' : ''}`} />
+                        </Button>
+                    </Tooltip>
+                </div>
                 
-                {/* Mock data - Replace with real data */}
-                <div className="space-y-3">
-                    {[
-                        { id: 1, platform: 'TikTok', username: '@user123', status: 'active', lastLogin: '2 giờ trước' },
-                        { id: 2, platform: 'Instagram', username: '@insta_user', status: 'inactive', lastLogin: '1 ngày trước' },
-                        { id: 3, platform: 'Facebook', username: 'facebook.user', status: 'active', lastLogin: '30 phút trước' },
-                    ].map((account) => (
-                        <div key={account.id} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
-                                    <User className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                {loadingAccounts ? (
+                    <div className="flex items-center justify-center py-8">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                        <span className="ml-2 text-gray-600 dark:text-gray-400">Đang tải...</span>
+                    </div>
+                ) : connectedAccounts.length > 0 ? (
+                    <div className="space-y-3">
+                        {connectedAccounts.map((account) => (
+                            <div key={account.id} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                                        {account.avatar_url ? (
+                                            <img 
+                                                src={account.avatar_url} 
+                                                alt={account.username}
+                                                className="w-8 h-8 rounded-full object-cover"
+                                            />
+                                        ) : (
+                                            <User className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                                        )}
+                                    </div>
+                                    <div>
+                                        <p className="font-medium text-gray-900 dark:text-gray-100">
+                                            {account.platform}
+                                        </p>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                                            {account.username}
+                                        </p>
+                                        {account.nickname && (
+                                            <p className="text-xs text-gray-400 dark:text-gray-500">
+                                                {account.nickname}
+                                            </p>
+                                        )}
+                                        {account.email && (
+                                            <p className="text-xs text-gray-400 dark:text-gray-500">
+                                                {account.email}
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
-                                <div>
-                                    <p className="font-medium text-gray-900 dark:text-gray-100">
-                                        {account.platform}
+                                <div className="text-right">
+                                    <Badge className={account.isActive 
+                                        ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                        : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
+                                    }>
+                                        {account.isActive ? 'Hoạt động' : 'Không hoạt động'}
+                                    </Badge>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                        {account.lastLogin}
                                     </p>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                                        {account.username}
-                                    </p>
+                                    {account.follower_count && (
+                                        <p className="text-xs text-gray-400 dark:text-gray-500">
+                                            {account.follower_count.toLocaleString()} followers
+                                        </p>
+                                    )}
                                 </div>
                             </div>
-                            <div className="text-right">
-                                <Badge className={account.status === 'active' 
-                                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                                    : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
-                                }>
-                                    {account.status === 'active' ? 'Hoạt động' : 'Không hoạt động'}
-                                </Badge>
-                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                    {account.lastLogin}
+                        ))}
+                    </div>
+                ) : (
+                    <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                        <User className="w-12 h-12 mx-auto mb-3 text-gray-300 dark:text-gray-600" />
+                        <p>Chưa có tài khoản nào được kết nối với thiết bị này</p>
+                    </div>
+                )}
+
+                {/* Account Statistics */}
+                {connectedAccounts.length > 0 && (
+                    <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                        <h5 className="font-medium text-gray-900 dark:text-gray-100 mb-3">
+                            Thống kê tài khoản
+                        </h5>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                            <div>
+                                <p className="text-gray-600 dark:text-gray-400">Tổng số tài khoản</p>
+                                <p className="font-semibold text-gray-900 dark:text-gray-100">
+                                    {connectedAccounts.length}
+                                </p>
+                            </div>
+                            <div>
+                                <p className="text-gray-600 dark:text-gray-400">Đang hoạt động</p>
+                                <p className="font-semibold text-green-600 dark:text-green-400">
+                                    {connectedAccounts.filter(acc => acc.isActive).length}
+                                </p>
+                            </div>
+                            <div>
+                                <p className="text-gray-600 dark:text-gray-400">Tổng followers</p>
+                                <p className="font-semibold text-gray-900 dark:text-gray-100">
+                                    {connectedAccounts.reduce((sum, acc) => sum + (acc.follower_count || 0), 0).toLocaleString()}
+                                </p>
+                            </div>
+                            <div>
+                                <p className="text-gray-600 dark:text-gray-400">Tổng videos</p>
+                                <p className="font-semibold text-gray-900 dark:text-gray-100">
+                                    {connectedAccounts.reduce((sum, acc) => sum + (acc.video_count || 0), 0).toLocaleString()}
                                 </p>
                             </div>
                         </div>
-                    ))}
-                </div>
+                    </div>
+                )}
                 
                 {/* Device Status */}
                 <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">

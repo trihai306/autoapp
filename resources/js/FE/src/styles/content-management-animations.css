@@ -71,6 +71,43 @@
     }
 }
 
+/* New animations for content group cards */
+@keyframes card-float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-2px);
+    }
+}
+
+@keyframes icon-pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes border-glow {
+    0%, 100% {
+        border-color: rgba(59, 130, 246, 0.3);
+    }
+    50% {
+        border-color: rgba(59, 130, 246, 0.6);
+    }
+}
+
+@keyframes content-count-bounce {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
 /* Animation Classes */
 .animate-fade-in {
     animation: fade-in 0.6s ease-out forwards;
@@ -86,6 +123,23 @@
 
 .animate-bounce-in {
     animation: bounce-in 0.8s ease-out forwards;
+}
+
+/* New animation classes for cards */
+.animate-card-float {
+    animation: card-float 3s ease-in-out infinite;
+}
+
+.animate-icon-pulse {
+    animation: icon-pulse 2s ease-in-out infinite;
+}
+
+.animate-border-glow {
+    animation: border-glow 2s ease-in-out infinite;
+}
+
+.animate-content-count-bounce {
+    animation: content-count-bounce 0.6s ease-out;
 }
 
 /* Stagger animations for grid items */
@@ -122,6 +176,20 @@
 
 .transition-shadow {
     transition: box-shadow 0.3s ease;
+}
+
+/* Card specific transitions */
+.card-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.card-selected {
+    animation: border-glow 2s ease-in-out infinite;
 }
 
 /* Smooth scrolling */
@@ -212,6 +280,15 @@
 
 .shadow-strong {
     box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.15), 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* Card specific shadows */
+.shadow-card {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.shadow-card-hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 /* Responsive animations */

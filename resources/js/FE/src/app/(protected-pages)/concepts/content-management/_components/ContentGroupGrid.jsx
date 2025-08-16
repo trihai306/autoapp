@@ -30,9 +30,9 @@ const ContentGroupGrid = ({ contentGroups, onRefresh }) => {
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-8">
             {/* Search Bar */}
-            <div className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+            <div className="flex items-center justify-between p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-soft">
                 <div className="flex-1 max-w-md">
                     <Input
                         placeholder="Tìm kiếm nhóm content..."
@@ -42,23 +42,23 @@ const ContentGroupGrid = ({ contentGroups, onRefresh }) => {
                         className="w-full"
                     />
                 </div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">
+                <div className="text-sm text-gray-500 dark:text-gray-400 font-medium">
                     {filteredGroups.length} nhóm content
                 </div>
             </div>
 
             {/* Empty State */}
             {filteredGroups.length === 0 && (
-                <div className="text-center py-16">
-                    <div className="mx-auto w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
-                        <HiOutlineSearch className="w-8 h-8 text-gray-400" />
+                <div className="text-center py-20">
+                    <div className="mx-auto w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 rounded-full flex items-center justify-center mb-6 shadow-soft">
+                        <HiOutlineSearch className="w-12 h-12 text-gray-400" />
                     </div>
                     
-                    <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">
                         {searchTerm ? 'Không tìm thấy nhóm content' : 'Chưa có nhóm content nào'}
                     </h3>
                     
-                    <p className="text-gray-500 dark:text-gray-400 mb-4 max-w-md mx-auto">
+                    <p className="text-gray-500 dark:text-gray-400 mb-6 max-w-md mx-auto leading-relaxed">
                         {searchTerm 
                             ? `Không có nhóm content nào chứa "${searchTerm}". Thử tìm kiếm với từ khóa khác.`
                             : 'Bắt đầu hành trình quản lý content của bạn bằng cách tạo nhóm content đầu tiên!'
@@ -74,7 +74,7 @@ const ContentGroupGrid = ({ contentGroups, onRefresh }) => {
                         <div
                             key={group.id}
                             style={{
-                                animationDelay: `${index * 100}ms`,
+                                animationDelay: `${index * 150}ms`,
                             }}
                             className="animate-fade-in"
                         >

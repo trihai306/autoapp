@@ -376,4 +376,64 @@ class DeviceController extends Controller
             'devices' => $importedDevices
         ], 200);
     }
+
+    /**
+     * Get connected TikTok accounts for a device
+     *
+     * Returns all TikTok accounts connected to a specific device.
+     * Admin can see any device's accounts, regular users can only see their own device's accounts.
+     */
+    public function getConnectedAccounts(Request $request, Device $device)
+    {
+        $user = $request->user();
+        
+        // Kiểm tra quyền: chỉ admin hoặc chủ sở hữu mới có thể xem
+        if (!$user->hasRole('admin') && $device->user_id != $user->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $accounts = $device->tiktokAccounts()
+            ->select([
+                'id',
+                'username',
+                'email',
+                'nickname',
+                'avatar_url',
+                'follower_count',
+                'following_count',
+                'heart_count',
+                'video_count',
+                'status',
+                'last_login_at',
+                'last_activity_at',
+                'created_at'
+            ])
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($account) {
+                return [
+                    'id' => $account->id,
+                    'platform' => 'TikTok',
+                    'username' => $account->username,
+                    'nickname' => $account->nickname,
+                    'email' => $account->email,
+                    'avatar_url' => $account->avatar_url,
+                    'follower_count' => $account->follower_count,
+                    'following_count' => $account->following_count,
+                    'heart_count' => $account->heart_count,
+                    'video_count' => $account->video_count,
+                    'status' => $account->status,
+                    'last_login_at' => $account->last_login_at,
+                    'last_activity_at' => $account->last_activity_at,
+                    'created_at' => $account->created_at,
+                    'lastLogin' => $account->last_login_at ? $account->last_login_at->diffForHumans() : 'Chưa đăng nhập',
+                    'isActive' => $account->status === 'active'
+                ];
+            });
+
+        return response()->json([
+            'accounts' => $accounts,
+            'total' => $accounts->count()
+        ]);
+    }
 }

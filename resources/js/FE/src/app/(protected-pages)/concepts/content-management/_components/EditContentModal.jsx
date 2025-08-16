@@ -12,7 +12,6 @@ import { apiGetContentsByGroup } from '@/services/content/ContentService'
 import { toast } from 'react-hot-toast'
 
 const schema = z.object({
-    title: z.string().min(1, 'Tiêu đề content là bắt buộc'),
     content: z.string().min(1, 'Nội dung content là bắt buộc'),
 })
 
@@ -35,7 +34,6 @@ const EditContentModal = ({ onSuccess }) => {
         formState: { errors },
     } = useForm({
         defaultValues: {
-            title: '',
             content: '',
         },
         resolver: zodResolver(schema),
@@ -43,13 +41,19 @@ const EditContentModal = ({ onSuccess }) => {
 
     useEffect(() => {
         if (editingContent) {
-            const contentValue = typeof editingContent.content === 'string' 
-                ? editingContent.content 
-                : JSON.stringify(editingContent.content, null, 2)
+            // Extract content text from JSON or use as string
+            let contentText = ''
+            if (typeof editingContent.content === 'string') {
+                contentText = editingContent.content
+            } else if (editingContent.content && typeof editingContent.content === 'object') {
+                // If content is JSON object, extract the text field
+                contentText = editingContent.content.text || editingContent.content.content || JSON.stringify(editingContent.content)
+            } else {
+                contentText = String(editingContent.content || '')
+            }
                 
             reset({
-                title: editingContent.title,
-                content: contentValue,
+                content: contentText,
             })
         }
     }, [editingContent, reset])
@@ -64,7 +68,16 @@ const EditContentModal = ({ onSuccess }) => {
 
         try {
             setIsSubmitting(true)
-            const response = await apiUpdateContent(editingContent.id, values)
+            
+            // Format content back to JSON structure if needed
+            const formattedContent = {
+                text: values.content
+            }
+            
+            const response = await apiUpdateContent(editingContent.id, {
+                title: editingContent.title, // Keep existing title
+                content: formattedContent
+            })
             
             if (response.data) {
                 toast.success('Cập nhật content thành công!')
@@ -109,24 +122,6 @@ const EditContentModal = ({ onSuccess }) => {
                 <Form onSubmit={handleSubmit(onSubmit)}>
                     <FormContainer>
                         <FormItem
-                            label="Tiêu đề content"
-                            invalid={Boolean(errors.title)}
-                            errorMessage={errors.title?.message}
-                        >
-                            <Controller
-                                name="title"
-                                control={control}
-                                render={({ field }) => (
-                                    <Input
-                                        {...field}
-                                        placeholder="Nhập tiêu đề content..."
-                                        autoFocus
-                                    />
-                                )}
-                            />
-                        </FormItem>
-                        
-                        <FormItem
                             label="Nội dung"
                             invalid={Boolean(errors.content)}
                             errorMessage={errors.content?.message}
@@ -139,7 +134,8 @@ const EditContentModal = ({ onSuccess }) => {
                                         {...field}
                                         placeholder="Nhập nội dung content..."
                                         textArea
-                                        rows={6}
+                                        rows={8}
+                                        autoFocus
                                     />
                                 )}
                             />

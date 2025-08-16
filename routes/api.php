@@ -121,6 +121,8 @@ Route::middleware('auth:sanctum')->group(function () {
         ->middleware('permission:devices.view');
     Route::post('devices/import', [DeviceController::class, 'import'])
         ->middleware('permission:devices.create');
+    Route::get('devices/{device}/connected-accounts', [DeviceController::class, 'getConnectedAccounts'])
+        ->middleware('permission:devices.view');
     
     // Device resource routes (must come after specific routes)
     Route::apiResource('devices', DeviceController::class)

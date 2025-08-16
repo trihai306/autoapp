@@ -89,3 +89,11 @@ export async function apiImportDevices(data) {
         data,
     })
 }
+
+// Get connected TikTok accounts for a device
+export async function apiGetDeviceConnectedAccounts(deviceId) {
+    return ApiService.fetchDataWithAxios({
+        url: `/devices/${deviceId}/connected-accounts`,
+        method: 'get',
+    })
+}
