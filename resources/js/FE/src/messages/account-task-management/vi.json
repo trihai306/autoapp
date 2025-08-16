@@ -1,0 +1,38 @@
+{
+    "title": "Quản lý Task Tài khoản",
+    "quickSearch": "Tìm kiếm tasks...",
+    "filter": "Lọc",
+    "table": {
+        "taskId": "ID Task",
+        "tiktokAccount": "Tài khoản TikTok",
+        "type": "Loại",
+        "status": "Trạng thái",
+        "priority": "Độ ưu tiên",
+        "scheduledAt": "Lên lịch",
+        "actions": "Thao tác"
+    },
+    "bulkAction": {
+        "selected": "Đã chọn {{count}} tasks",
+        "delete": "Xóa đã chọn",
+        "clear": "Bỏ chọn"
+    },
+    "deleteConfirm": {
+        "title": "Xác nhận xóa",
+        "content": "Bạn có chắc chắn muốn xóa {{count}} tasks đã chọn? Hành động này không thể hoàn tác.",
+        "cancel": "Hủy",
+        "delete": "Xóa"
+    },
+    "filterForm": {
+        "title": "Lọc Tasks",
+        "taskType": "Loại Task",
+        "selectTaskType": "Chọn loại task",
+        "status": "Trạng thái",
+        "selectStatus": "Chọn trạng thái",
+        "priority": "Độ ưu tiên",
+        "selectPriority": "Chọn độ ưu tiên",
+        "tiktokAccount": "Tài khoản TikTok",
+        "searchAccount": "Tìm kiếm tài khoản...",
+        "cancel": "Hủy",
+        "apply": "Áp dụng"
+    }
+}

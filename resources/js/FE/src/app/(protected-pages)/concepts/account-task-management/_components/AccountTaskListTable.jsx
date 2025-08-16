@@ -7,9 +7,14 @@ import { useAccountTaskListStore } from '../_store/accountTaskListStore'
 import useAppendQueryParams from '@/utils/hooks/useAppendQueryParams'
 import { useRouter } from 'next/navigation'
 import AccountTaskListTableTools from './AccountTaskListTableTools'
+import AccountTaskDetailModal from './AccountTaskDetailModal'
 import dayjs from 'dayjs'
 import { useTranslations } from 'next-intl'
 import cloneDeep from 'lodash/cloneDeep'
+import { HiOutlineEye as Eye, HiOutlineTrash as Trash } from 'react-icons/hi'
+import { apiDeleteAccountTask } from '@/services/accountTask/AccountTaskService'
+import toast from '@/components/ui/toast'
+import Notification from '@/components/ui/Notification'
 
 const taskStatusColor = {
     pending: 'bg-yellow-200 dark:bg-yellow-200 text-gray-900 dark:text-gray-900',
@@ -37,6 +42,9 @@ const AccountTaskListTable = ({
     const t = useTranslations('accountTaskManagement.table')
     
     const router = useRouter()
+    const [selectedTask, setSelectedTask] = useState(null)
+    const [showDetailModal, setShowDetailModal] = useState(false)
+    const [isDeleting, setIsDeleting] = useState(false)
 
     const { onAppendQueryParams } = useAppendQueryParams()
 
@@ -104,8 +112,28 @@ const AccountTaskListTable = ({
                 header: t('actions'),
                 accessorKey: 'actions',
                 cell: (props) => {
-                    // Actions like view details, retry, etc. can be added here
-                    return null
+                    const row = props.row.original
+                    return (
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={() => {
+                                    setSelectedTask(row)
+                                    setShowDetailModal(true)
+                                }}
+                                className="text-blue-600 hover:text-blue-700 p-1 rounded hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                                title="Xem chi tiết"
+                            >
+                                <Eye className="w-4 h-4" />
+                            </button>
+                            <button
+                                onClick={() => handleDeleteTask(row.id)}
+                                className="text-red-600 hover:text-red-700 p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20"
+                                title="Xóa task"
+                            >
+                                <Trash className="w-4 h-4" />
+                            </button>
+                        </div>
+                    )
                 },
             },
         ],
@@ -144,6 +172,35 @@ const AccountTaskListTable = ({
         }
     }
 
+    const handleDeleteTask = async (taskId) => {
+        if (confirm('Bạn có chắc chắn muốn xóa task này?')) {
+            setIsDeleting(true)
+            try {
+                const result = await apiDeleteAccountTask(taskId)
+                if (result.success !== false) {
+                    toast.push(
+                        <Notification title="Thành công" type="success" closable>
+                            Đã xóa task thành công
+                        </Notification>
+                    )
+                    // Refresh lại danh sách
+                    router.refresh()
+                } else {
+                    throw new Error(result.message || 'Lỗi khi xóa task')
+                }
+            } catch (error) {
+                console.error('Error deleting task:', error)
+                toast.push(
+                    <Notification title="Lỗi" type="danger" closable>
+                        {error.message || 'Có lỗi xảy ra khi xóa task'}
+                    </Notification>
+                )
+            } finally {
+                setIsDeleting(false)
+            }
+        }
+    }
+
     return (
         <div>
             <AccountTaskListTableTools />
@@ -168,6 +225,16 @@ const AccountTaskListTable = ({
                 onSort={handleSort}
                 onCheckBoxChange={handleRowSelect}
                 onIndeterminateCheckBoxChange={handleAllRowSelect}
+            />
+            
+            {/* Detail Modal */}
+            <AccountTaskDetailModal
+                isOpen={showDetailModal}
+                onClose={() => {
+                    setShowDetailModal(false)
+                    setSelectedTask(null)
+                }}
+                task={selectedTask}
             />
         </div>
     )

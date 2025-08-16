@@ -261,6 +261,36 @@
                 "overview": "Tổng quan",
                 "keyFeatures": "Các tính năng chính:",
                 "acknowledge": "Ghi nhận"
+            },
+            "notifications": {
+                "title": "Thông báo",
+                "noNotifications": "Không có thông báo nào",
+                "noMoreNotifications": "Không còn thông báo nào để tải",
+                "loadMore": "Tải thêm",
+                "markAsRead": "Đánh dấu đã đọc",
+                "markAllAsRead": "Đánh dấu tất cả đã đọc",
+                "delete": "Xóa",
+                "deleteAll": "Xóa tất cả",
+                "confirmDelete": "Bạn có chắc chắn muốn xóa thông báo này?",
+                "confirmDeleteAll": "Bạn có chắc chắn muốn xóa tất cả thông báo chưa đọc?",
+                "showUnreadOnly": "Chỉ hiển thị chưa đọc",
+                "showAllNotifications": "Hiển thị tất cả",
+                "unread": "chưa đọc",
+                "readAt": "Đã đọc lúc",
+                "defaultTitle": "Thông báo mới",
+                "defaultMessage": "Bạn có một thông báo mới",
+                "types": {
+                    "deposit": "Nạp tiền",
+                    "taskCompleted": "Task hoàn thành",
+                    "taskFailed": "Task thất bại",
+                    "general": "Chung"
+                },
+                "filter": {
+                    "deposit": "Nạp tiền",
+                    "taskCompleted": "Task hoàn thành",
+                    "taskFailed": "Task thất bại",
+                    "general": "Chung"
+                }
             }
         }
     }

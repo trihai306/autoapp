@@ -4,7 +4,8 @@ import Dialog from '@/components/ui/Dialog'
 import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
 import Tooltip from '@/components/ui/Tooltip'
-import { apiGetDeviceConnectedAccounts } from '@/services/device/DeviceService'
+import { apiGetDeviceConnectedAccounts, apiGetDeviceTasks } from '@/services/device/DeviceService'
+import toast from '@/components/ui/toast'
 import { 
     HiOutlineDesktopComputer as Desktop,
     HiOutlineDeviceMobile as Mobile,
@@ -29,25 +30,81 @@ const DeviceDetailModal = ({ isOpen, onClose, device, onDelete }) => {
     const [activeTab, setActiveTab] = useState('overview')
     const [connectedAccounts, setConnectedAccounts] = useState([])
     const [loadingAccounts, setLoadingAccounts] = useState(false)
+    const [deviceTasks, setDeviceTasks] = useState([])
+    const [loadingTasks, setLoadingTasks] = useState(false)
 
     useEffect(() => {
         if (isOpen && device?.id) {
             loadConnectedAccounts()
+            loadDeviceTasks()
         }
     }, [isOpen, device?.id])
 
     const loadConnectedAccounts = async () => {
-        if (!device?.id) return
+        if (!device?.id) {
+            console.log('No device ID found') // Debug log
+            return
+        }
         
+        console.log('Loading accounts for device ID:', device.id) // Debug log
         setLoadingAccounts(true)
         try {
             const response = await apiGetDeviceConnectedAccounts(device.id)
-            setConnectedAccounts(response.data?.accounts || [])
+            console.log('API Response:', response) // Debug log
+            
+            // Kiểm tra response structure - sử dụng API tiktok-accounts
+            if (response && response.data) {
+                setConnectedAccounts(response.data)
+            } else if (response && response.accounts) {
+                setConnectedAccounts(response.accounts)
+            } else {
+                console.log('No accounts found in response') // Debug log
+                setConnectedAccounts([])
+            }
         } catch (error) {
             console.error('Error loading connected accounts:', error)
             setConnectedAccounts([])
+            toast.push(
+                <div className="text-red-600">
+                    Không thể tải danh sách tài khoản kết nối: {error.message || 'Lỗi kết nối'}
+                </div>
+            )
         } finally {
             setLoadingAccounts(false)
+        }
+    }
+
+    const loadDeviceTasks = async () => {
+        if (!device?.id) {
+            console.log('No device ID found for tasks') // Debug log
+            return
+        }
+        
+        console.log('Loading tasks for device ID:', device.id) // Debug log
+        setLoadingTasks(true)
+        try {
+            const response = await apiGetDeviceTasks(device.id)
+            console.log('Tasks API Response:', response) // Debug log
+            
+            // Kiểm tra response structure
+            if (response && response.data) {
+                setDeviceTasks(response.data)
+            } else if (response && response.tasks) {
+                setDeviceTasks(response.tasks)
+            } else {
+                console.log('No tasks found in response') // Debug log
+                setDeviceTasks([])
+            }
+        } catch (error) {
+            console.error('Error loading device tasks:', error)
+            setDeviceTasks([])
+            toast.push(
+                <div className="text-red-600">
+                    Không thể tải danh sách task: {error.message || 'Lỗi kết nối'}
+                </div>
+            )
+        } finally {
+            setLoadingTasks(false)
         }
     }
 
@@ -81,6 +138,40 @@ const DeviceDetailModal = ({ isOpen, onClose, device, onDelete }) => {
                 return 'Không hoạt động'
             case 'blocked':
                 return 'Bị chặn'
+            default:
+                return 'Không xác định'
+        }
+    }
+
+    const getTaskStatusColor = (status) => {
+        switch (status) {
+            case 'pending':
+                return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
+            case 'running':
+                return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+            case 'completed':
+                return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+            case 'failed':
+                return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+            case 'cancelled':
+                return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
+            default:
+                return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
+        }
+    }
+
+    const getTaskStatusText = (status) => {
+        switch (status) {
+            case 'pending':
+                return 'Chờ xử lý'
+            case 'running':
+                return 'Đang chạy'
+            case 'completed':
+                return 'Hoàn thành'
+            case 'failed':
+                return 'Thất bại'
+            case 'cancelled':
+                return 'Đã hủy'
             default:
                 return 'Không xác định'
         }
@@ -244,8 +335,8 @@ const DeviceDetailModal = ({ isOpen, onClose, device, onDelete }) => {
             <div>
                 <div className="flex items-center justify-between mb-4">
                     <h4 className="font-semibold text-gray-900 dark:text-gray-100">
-                        Tài khoản đã kết nối
-                    </h4>
+                    Tài khoản đã kết nối
+                </h4>
                     <Tooltip title="Làm mới danh sách">
                         <Button
                             variant="outline"
@@ -262,14 +353,14 @@ const DeviceDetailModal = ({ isOpen, onClose, device, onDelete }) => {
                 {loadingAccounts ? (
                     <div className="flex items-center justify-center py-8">
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                        <span className="ml-2 text-gray-600 dark:text-gray-400">Đang tải...</span>
+                        <span className="ml-2 text-gray-600 dark:text-gray-400">Đang tải danh sách tài khoản...</span>
                     </div>
                 ) : connectedAccounts.length > 0 ? (
-                    <div className="space-y-3">
+                <div className="space-y-3">
                         {connectedAccounts.map((account) => (
-                            <div key={account.id} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                        <div key={account.id} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
                                         {account.avatar_url ? (
                                             <img 
                                                 src={account.avatar_url} 
@@ -277,16 +368,16 @@ const DeviceDetailModal = ({ isOpen, onClose, device, onDelete }) => {
                                                 className="w-8 h-8 rounded-full object-cover"
                                             />
                                         ) : (
-                                            <User className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                                    <User className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                                         )}
-                                    </div>
-                                    <div>
-                                        <p className="font-medium text-gray-900 dark:text-gray-100">
-                                            {account.platform}
-                                        </p>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                                            {account.username}
-                                        </p>
+                                </div>
+                                <div>
+                                    <p className="font-medium text-gray-900 dark:text-gray-100">
+                                        {account.platform}
+                                    </p>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                                        {account.username}
+                                    </p>
                                         {account.nickname && (
                                             <p className="text-xs text-gray-400 dark:text-gray-500">
                                                 {account.nickname}
@@ -297,27 +388,27 @@ const DeviceDetailModal = ({ isOpen, onClose, device, onDelete }) => {
                                                 {account.email}
                                             </p>
                                         )}
-                                    </div>
                                 </div>
-                                <div className="text-right">
+                            </div>
+                            <div className="text-right">
                                     <Badge className={account.isActive 
-                                        ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                                        : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
-                                    }>
+                                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                    : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
+                                }>
                                         {account.isActive ? 'Hoạt động' : 'Không hoạt động'}
-                                    </Badge>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                        {account.lastLogin}
-                                    </p>
+                                </Badge>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                    {account.lastLogin}
+                                </p>
                                     {account.follower_count && (
                                         <p className="text-xs text-gray-400 dark:text-gray-500">
                                             {account.follower_count.toLocaleString()} followers
                                         </p>
                                     )}
-                                </div>
                             </div>
-                        ))}
-                    </div>
+                        </div>
+                    ))}
+                </div>
                 ) : (
                     <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                         <User className="w-12 h-12 mx-auto mb-3 text-gray-300 dark:text-gray-600" />
@@ -391,8 +482,114 @@ const DeviceDetailModal = ({ isOpen, onClose, device, onDelete }) => {
 
     const renderActivity = () => (
         <div className="space-y-6">
-            <div className="text-center text-gray-500 dark:text-gray-400">
-                Lịch sử hoạt động sẽ được hiển thị ở đây
+            <div>
+                <div className="flex items-center justify-between mb-4">
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100">
+                        Danh sách Task
+                    </h4>
+                    <Tooltip title="Làm mới danh sách">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={loadDeviceTasks}
+                            disabled={loadingTasks}
+                            className="!px-2"
+                        >
+                            <Refresh className={`w-4 h-4 ${loadingTasks ? 'animate-spin' : ''}`} />
+                        </Button>
+                    </Tooltip>
+                </div>
+                
+                {loadingTasks ? (
+                    <div className="flex items-center justify-center py-8">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                        <span className="ml-2 text-gray-600 dark:text-gray-400">Đang tải danh sách task...</span>
+                    </div>
+                ) : deviceTasks.length > 0 ? (
+                    <div className="space-y-3">
+                        {deviceTasks.map((task) => (
+                            <div key={task.id} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                                        <Clock className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                                    </div>
+                                    <div>
+                                        <p className="font-medium text-gray-900 dark:text-gray-100">
+                                            {task.task_type || 'Task'}
+                                        </p>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                                            {task.tiktok_account?.username || 'N/A'}
+                                        </p>
+                                        {task.description && (
+                                            <p className="text-xs text-gray-400 dark:text-gray-500">
+                                                {task.description}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="text-right">
+                                    <Badge className={getTaskStatusColor(task.status)}>
+                                        {getTaskStatusText(task.status)}
+                                    </Badge>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                        {task.created_at ? new Date(task.created_at).toLocaleString('vi-VN') : 'N/A'}
+                                    </p>
+                                    {task.completed_at && (
+                                        <p className="text-xs text-gray-400 dark:text-gray-500">
+                                            Hoàn thành: {new Date(task.completed_at).toLocaleString('vi-VN')}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                        <Clock className="w-12 h-12 mx-auto mb-3 text-gray-300 dark:text-gray-600" />
+                        <p>Chưa có task nào được thực hiện trên thiết bị này</p>
+                    </div>
+                )}
+
+                {/* Task Statistics */}
+                {deviceTasks.length > 0 && (
+                    <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                        <h5 className="font-medium text-gray-900 dark:text-gray-100 mb-3">
+                            Thống kê Task
+                        </h5>
+                        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
+                            <div>
+                                <p className="text-gray-600 dark:text-gray-400">Tổng số task</p>
+                                <p className="font-semibold text-gray-900 dark:text-gray-100">
+                                    {deviceTasks.length}
+                                </p>
+                            </div>
+                            <div>
+                                <p className="text-gray-600 dark:text-gray-400">Chờ xử lý</p>
+                                <p className="font-semibold text-yellow-600 dark:text-yellow-400">
+                                    {deviceTasks.filter(task => task.status === 'pending').length}
+                                </p>
+                            </div>
+                            <div>
+                                <p className="text-gray-600 dark:text-gray-400">Đang chạy</p>
+                                <p className="font-semibold text-blue-600 dark:text-blue-400">
+                                    {deviceTasks.filter(task => task.status === 'running').length}
+                                </p>
+                            </div>
+                            <div>
+                                <p className="text-gray-600 dark:text-gray-400">Hoàn thành</p>
+                                <p className="font-semibold text-green-600 dark:text-green-400">
+                                    {deviceTasks.filter(task => task.status === 'completed').length}
+                                </p>
+                            </div>
+                            <div>
+                                <p className="text-gray-600 dark:text-gray-400">Thất bại</p>
+                                <p className="font-semibold text-red-600 dark:text-red-400">
+                                    {deviceTasks.filter(task => task.status === 'failed').length}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     )

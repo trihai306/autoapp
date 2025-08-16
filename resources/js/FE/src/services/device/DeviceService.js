@@ -92,8 +92,26 @@ export async function apiImportDevices(data) {
 
 // Get connected TikTok accounts for a device
 export async function apiGetDeviceConnectedAccounts(deviceId) {
+    // Tạm thời sử dụng API tiktok-accounts với filter device_id
     return ApiService.fetchDataWithAxios({
-        url: `/devices/${deviceId}/connected-accounts`,
+        url: '/tiktok-accounts',
         method: 'get',
+        params: {
+            device_id: deviceId,
+            per_page: 100
+        }
+    })
+}
+
+// Get device tasks
+export async function apiGetDeviceTasks(deviceId, params = {}) {
+    return ApiService.fetchDataWithAxios({
+        url: '/account-tasks',
+        method: 'get',
+        params: {
+            device_id: deviceId,
+            per_page: 50,
+            ...params
+        }
     })
 }

@@ -5,7 +5,7 @@ import Button from '@/components/ui/Button'
 import Tabs from '@/components/ui/Tabs'
 import Pagination from '@/components/ui/Pagination'
 import getNotifications from '@/server/actions/notification/getNotifications'
-import { markAllAsReadAction } from '@/server/actions/notification/notificationActions'
+import { markAllNotificationsAsRead } from '@/server/actions/notification/notificationActions'
 import useSWR from 'swr'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -79,7 +79,7 @@ const SettingsNotificationList = ({ data: initialData }) => {
 
     const handleMarkAllRead = async () => {
         try {
-            const result = await markAllAsReadAction();
+            const result = await markAllNotificationsAsRead();
             if (result.success) {
                 toast.push(<Notification type="success">All notifications marked as read.</Notification>)
                 mutate() // Revalidate current view

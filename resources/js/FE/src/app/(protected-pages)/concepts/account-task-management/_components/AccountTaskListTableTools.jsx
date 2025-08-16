@@ -7,7 +7,7 @@ import Button from '@/components/ui/Button'
 import { TbTrash, TbX } from 'react-icons/tb'
 import Dialog from '@/components/ui/Dialog'
 import { useState } from 'react'
-import deleteAccountTasks from '@/server/actions/account/deleteAccountTasks'
+import { apiBulkDeleteAccountTasks } from '@/services/accountTask/AccountTaskService'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
 import { useRouter } from 'next/navigation'
@@ -32,20 +32,24 @@ const AccountTaskListBulkActionTools = () => {
 
     const handleDeleteConfirm = async () => {
         const taskIds = selectedTasks.map((task) => task.id)
-        const result = await deleteAccountTasks(taskIds)
-
-        if (result.success) {
+        try {
+            const result = await apiBulkDeleteAccountTasks(taskIds)
+            if (result.success !== false) {
+                toast.push(
+                    <Notification title="Thành công" type="success" closable>
+                        Đã xóa {taskIds.length} task thành công
+                    </Notification>
+                )
+                setSelectAllTasks([])
+                router.refresh()
+            } else {
+                throw new Error(result.message || 'Lỗi khi xóa tasks')
+            }
+        } catch (error) {
+            console.error('Error bulk deleting tasks:', error)
             toast.push(
-                <Notification title="Success" type="success" closable>
-                    {result.message}
-                </Notification>
-            )
-            setSelectAllTasks([])
-            router.refresh()
-        } else {
-            toast.push(
-                <Notification title="Error" type="danger" closable>
-                    {result.message}
+                <Notification title="Lỗi" type="danger" closable>
+                    {error.message || 'Có lỗi xảy ra khi xóa tasks'}
                 </Notification>
             )
         }

@@ -21,8 +21,11 @@ import useResponsive from '@/utils/hooks/useResponsive'
 import { useRouter } from 'next/navigation'
 import { HiOutlineMailOpen } from 'react-icons/hi'
 import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
 import { useNotifications } from '@/utils/hooks/useRealtime'
 import { toast } from 'react-hot-toast'
+
+dayjs.extend(relativeTime)
 
 const notificationHeight = 'h-[280px]'
 

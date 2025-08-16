@@ -1,0 +1,38 @@
+{
+    "title": "Account Task Management",
+    "quickSearch": "Search tasks...",
+    "filter": "Filter",
+    "table": {
+        "taskId": "Task ID",
+        "tiktokAccount": "TikTok Account",
+        "type": "Type",
+        "status": "Status",
+        "priority": "Priority",
+        "scheduledAt": "Scheduled At",
+        "actions": "Actions"
+    },
+    "bulkAction": {
+        "selected": "{{count}} tasks selected",
+        "delete": "Delete Selected",
+        "clear": "Clear Selection"
+    },
+    "deleteConfirm": {
+        "title": "Confirm Delete",
+        "content": "Are you sure you want to delete {{count}} selected tasks? This action cannot be undone.",
+        "cancel": "Cancel",
+        "delete": "Delete"
+    },
+    "filterForm": {
+        "title": "Filter Tasks",
+        "taskType": "Task Type",
+        "selectTaskType": "Select task type",
+        "status": "Status",
+        "selectStatus": "Select status",
+        "priority": "Priority",
+        "selectPriority": "Select priority",
+        "tiktokAccount": "TikTok Account",
+        "searchAccount": "Search account...",
+        "cancel": "Cancel",
+        "apply": "Apply"
+    }
+}

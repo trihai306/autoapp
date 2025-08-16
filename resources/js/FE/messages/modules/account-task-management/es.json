@@ -1,87 +1,38 @@
 {
     "title": "Gestión de Tareas de Cuenta",
-    "addNew": "Agregar Nueva Tarea",
-    "searchPlaceholder": "Buscar tareas...",
+    "quickSearch": "Buscar tareas...",
     "filter": "Filtrar",
-    "columns": "Columnas",
-    "createTitle": "Crear Nueva Tarea de Cuenta",
-    "editTitle": "Editar Tarea de Cuenta",
     "table": {
-        "title": "Título",
-        "description": "Descripción",
+        "taskId": "ID de Tarea",
+        "tiktokAccount": "Cuenta de TikTok",
+        "type": "Tipo",
         "status": "Estado",
         "priority": "Prioridad",
-        "assignedTo": "Asignado a",
-        "dueDate": "Fecha de Vencimiento",
-        "createdDate": "Fecha de Creación",
-        "edit": "Editar",
-        "view": "Ver"
+        "scheduledAt": "Programado para",
+        "actions": "Acciones"
     },
-    "detail": {
-        "title": "Detalles de Tarea de Cuenta",
-        "status": "Estado",
-        "priority": "Prioridad",
-        "assignedTo": "Asignado a",
-        "dueDate": "Fecha de Vencimiento",
-        "description": "Descripción",
-        "createdDate": "Fecha de Creación",
-        "notProvided": "No proporcionado",
-        "noDescription": "Sin descripción",
-        "edit": "Editar"
+    "bulkAction": {
+        "selected": "{{count}} tareas seleccionadas",
+        "delete": "Eliminar Seleccionadas",
+        "clear": "Limpiar Selección"
     },
-    "form": {
-        "basicInfo": "Información Básica",
-        "taskInfo": "Información de Tarea",
-        "additionalInfo": "Información Adicional",
-        "title": "Título",
-        "description": "Descripción",
-        "descriptionPlaceholder": "Ingrese descripción de la tarea...",
-        "status": "Estado",
-        "priority": "Prioridad",
-        "assignedTo": "Asignado a",
-        "dueDate": "Fecha de Vencimiento",
-        "selectStatus": "Seleccionar Estado",
-        "statusPending": "Pendiente",
-        "statusInProgress": "En Progreso",
-        "statusCompleted": "Completado",
-        "statusCancelled": "Cancelado",
-        "selectPriority": "Seleccionar Prioridad",
-        "priorityLow": "Baja",
-        "priorityMedium": "Media",
-        "priorityHigh": "Alta",
-        "priorityUrgent": "Urgente",
-        "back": "Atrás",
-        "save": "Guardar",
-        "saving": "Guardando...",
+    "deleteConfirm": {
+        "title": "Confirmar Eliminación",
+        "content": "¿Estás seguro de que quieres eliminar {{count}} tareas seleccionadas? Esta acción no se puede deshacer.",
+        "cancel": "Cancelar",
         "delete": "Eliminar"
     },
     "filterForm": {
-        "title": "Título",
+        "title": "Filtrar Tareas",
         "taskType": "Tipo de Tarea",
         "selectTaskType": "Seleccionar tipo de tarea",
         "status": "Estado",
+        "selectStatus": "Seleccionar estado",
         "priority": "Prioridad",
-        "assignedTo": "Asignado a",
+        "selectPriority": "Seleccionar prioridad",
+        "tiktokAccount": "Cuenta de TikTok",
+        "searchAccount": "Buscar cuenta...",
         "cancel": "Cancelar",
         "apply": "Aplicar"
-    },
-    "bulkAction": {
-        "selected": "{{count}} tarea(s) seleccionada(s)",
-        "delete": "Eliminar",
-        "clear": "Limpiar Selección"
-    },
-    "bulkDeleteConfirm": {
-        "title": "Eliminar Tareas Seleccionadas",
-        "content": "¿Está seguro de que desea eliminar {{count}} tarea(s) seleccionada(s)? Esta acción no se puede deshacer.",
-        "cancel": "Cancelar",
-        "delete": "Eliminar",
-        "confirmText": "Sí, eliminarlas"
-    },
-    "deleteConfirm": {
-        "title": "Eliminar Tarea de Cuenta",
-        "content": "¿Está seguro de que desea eliminar esta tarea de cuenta? Esta acción no se puede deshacer.",
-        "cancel": "Cancelar",
-        "delete": "Eliminar",
-        "confirmText": "Sí, eliminarla"
     }
 } 
