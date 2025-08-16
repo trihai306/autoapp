@@ -81,10 +81,7 @@ const ContentManagementClient = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-            {/* Background pattern */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.15)_1px,transparent_0)] [background-size:20px_20px] opacity-20"></div>
-            
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
             <Container className="relative h-full">
                 <div className="flex flex-col h-full">
                     {/* Header with animation */}
@@ -95,9 +92,7 @@ const ContentManagementClient = () => {
                     {/* Main Content */}
                     <div className="flex-1 flex relative">
                         {/* Content Groups Grid */}
-                        <div className={`flex-1 transition-all duration-500 ease-out ${
-                            isContentSidebarOpen ? 'mr-96' : ''
-                        }`}>
+                        <div className="flex-1">
                             <div className="animate-slide-up" style={{ animationDelay: '200ms' }}>
                                 <ContentGroupGrid 
                                     contentGroups={contentGroups}
@@ -105,11 +100,6 @@ const ContentManagementClient = () => {
                                 />
                             </div>
                         </div>
-                        
-                        {/* Sidebar backdrop */}
-                        {isContentSidebarOpen && (
-                            <div className="fixed inset-0 bg-black/10 backdrop-blur-sm z-40 animate-fade-in" />
-                        )}
                         
                         {/* Content Sidebar */}
                         <ContentSidebar />

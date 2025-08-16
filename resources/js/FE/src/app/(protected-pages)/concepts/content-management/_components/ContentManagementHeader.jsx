@@ -12,13 +12,14 @@ const ContentManagementHeader = ({ onRefresh }) => {
     } = useContentManagementStore()
 
     return (
-        <div className="mb-6">
-            <div className="flex items-center justify-between">
+        <div className="mb-8">
+            {/* Main Header */}
+            <div className="flex items-center justify-between mb-6">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                    <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
                         Quản lý Content
                     </h1>
-                    <p className="text-gray-600 dark:text-gray-400 mt-1">
+                    <p className="text-gray-600 dark:text-gray-400 text-base">
                         Quản lý nhóm content và nội dung một cách dễ dàng
                     </p>
                 </div>
@@ -29,7 +30,7 @@ const ContentManagementHeader = ({ onRefresh }) => {
                         size="sm"
                         icon={<HiOutlineRefresh />}
                         onClick={onRefresh}
-                        className="text-gray-600 hover:text-gray-900"
+                        className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                     >
                         Làm mới
                     </Button>
@@ -40,7 +41,7 @@ const ContentManagementHeader = ({ onRefresh }) => {
                             size="sm"
                             icon={<HiOutlinePlus />}
                             onClick={() => setCreateContentModalOpen(true)}
-                            className="bg-blue-600 hover:bg-blue-700"
+                            className="bg-gray-800 hover:bg-gray-700 dark:bg-gray-200 dark:hover:bg-gray-300 dark:text-gray-800"
                         >
                             Thêm Content
                         </Button>
@@ -51,7 +52,7 @@ const ContentManagementHeader = ({ onRefresh }) => {
                         size="sm"
                         icon={<HiOutlinePlus />}
                         onClick={() => setCreateGroupModalOpen(true)}
-                        className="bg-primary hover:bg-primary-dark"
+                        className="bg-blue-600 hover:bg-blue-700"
                     >
                         Tạo nhóm mới
                     </Button>

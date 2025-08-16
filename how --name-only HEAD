@@ -1,5 +1,0 @@
-[33m043fb7a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m chore: remove unused .next.zip file to clean up project resources
-[33m1910378[m chore: remove package-lock.json and update Next.js configuration for optimized builds and bundle size management
-[33m59e465c[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m refactor: update action identifiers and enhance modal configurations for TikTok account management components
-[33m65dbe05[m refactor: update event dispatching in DeviceController to use TiktokAccountTableReload for improved consistency
-[33mfdf969d[m feat: implement file upload and post creation functionality for TikTok accounts, enhancing content management capabilities

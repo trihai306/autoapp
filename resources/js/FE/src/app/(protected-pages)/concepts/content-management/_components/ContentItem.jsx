@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Card, Button, Dropdown } from '@/components/ui'
+import { Card, Dropdown } from '@/components/ui'
 import { HiOutlineDotsVertical, HiOutlinePencil, HiOutlineTrash, HiOutlineDocumentText } from 'react-icons/hi'
 import { useContentManagementStore } from '../_store/contentManagementStore'
 import { apiDeleteContents } from '@/services/content/ContentService'
@@ -20,16 +20,21 @@ const ContentItem = ({ content }) => {
     const [isDeleting, setIsDeleting] = useState(false)
 
     const handleEdit = () => {
+        console.log('Edit clicked for content:', content.id)
         setEditContentModalOpen(true, content)
     }
 
     const handleDelete = async () => {
+        console.log('Delete clicked for content:', content.id)
+        
         if (!confirm('Bạn có chắc chắn muốn xóa content này?')) {
             return
         }
 
         try {
             setIsDeleting(true)
+            console.log('Deleting content with ID:', content.id)
+            
             await apiDeleteContents({ ids: [content.id] })
             toast.success('Xóa content thành công')
             
@@ -54,13 +59,13 @@ const ContentItem = ({ content }) => {
         {
             key: 'edit',
             label: 'Chỉnh sửa',
-            icon: <HiOutlinePencil />,
+            icon: <HiOutlinePencil className="w-4 h-4" />,
             onClick: handleEdit,
         },
         {
             key: 'delete',
             label: 'Xóa',
-            icon: <HiOutlineTrash />,
+            icon: <HiOutlineTrash className="w-4 h-4" />,
             onClick: handleDelete,
             className: 'text-red-600 hover:text-red-700',
         },
@@ -70,38 +75,37 @@ const ContentItem = ({ content }) => {
     const contentPreview = getContentPreview(content.content, 100)
 
     return (
-        <Card className={`group transition-all duration-500 ease-out hover:shadow-md hover:scale-[1.01] hover:-translate-y-1 ${
-            isDeleting ? 'opacity-50 pointer-events-none animate-pulse' : ''
-        } relative overflow-hidden bg-gradient-to-br from-white via-gray-50/30 to-white dark:from-gray-800 dark:via-gray-700/30 dark:to-gray-800 border-gray-200/50 dark:border-gray-700/50 hover:border-gray-300/60 dark:hover:border-gray-600/60`}>
-            {/* Hover glow effect */}
-            <div className="absolute inset-0 bg-gradient-to-br from-transparent via-gray-100/30 to-transparent dark:via-gray-700/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-            
-            <div className="relative p-5">
+        <Card className={`group transition-all duration-200 hover:shadow-md ${
+            isDeleting ? 'opacity-50 pointer-events-none' : ''
+        }`}>
+            <div className="p-5">
                 {/* Header */}
                 <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-start space-x-4 flex-1 min-w-0">
-                        <div className="p-3 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 rounded-xl transition-all duration-300 group-hover:from-gray-200 group-hover:to-gray-300 dark:group-hover:from-gray-600 dark:group-hover:to-gray-700 shadow-sm">
-                            <HiOutlineDocumentText className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors duration-300" />
+                    <div className="flex items-start space-x-3 flex-1 min-w-0">
+                        <div className="p-2.5 bg-gray-100 dark:bg-gray-700 rounded text-gray-600 dark:text-gray-300">
+                            <HiOutlineDocumentText className="w-4 h-4" />
                         </div>
                         <div className="flex-1 min-w-0">
-                            <h4 className="font-bold text-base text-gray-900 dark:text-white truncate group-hover:text-gray-800 dark:group-hover:text-gray-100 transition-colors duration-300">
+                            <h4 className="font-medium text-gray-900 dark:text-white text-base truncate">
                                 {content.title}
                             </h4>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 font-medium mt-1">
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                                 ID: {content.id}
                             </p>
                         </div>
                     </div>
                     
+                    {/* Dropdown Menu */}
                     <Dropdown
                         placement="bottom-end"
                         renderTitle={
-                            <Button
-                                variant="plain"
-                                size="sm"
-                                icon={<HiOutlineDotsVertical />}
-                                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
-                            />
+                            <button
+                                type="button"
+                                className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200"
+                                title="Tùy chọn"
+                            >
+                                <HiOutlineDotsVertical className="w-4 h-4" />
+                            </button>
                         }
                     >
                         {dropdownItems.map((item) => (
@@ -120,31 +124,25 @@ const ContentItem = ({ content }) => {
                     </Dropdown>
                 </div>
 
-                {/* Content Preview with enhanced styling */}
+                {/* Content Preview */}
                 <div className="mb-4">
-                    <div className="p-3 bg-gradient-to-r from-gray-50 to-gray-100/50 dark:from-gray-700/50 dark:to-gray-800/50 rounded-lg border border-gray-200/50 dark:border-gray-600/50">
+                    <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700">
                         <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-3 leading-relaxed">
                             {contentPreview || 'Nội dung trống'}
                         </p>
                     </div>
                 </div>
 
-                {/* Footer with enhanced design */}
-                <div className="flex items-center justify-between pt-3 border-t border-gray-200/50 dark:border-gray-600/50">
-                    <div className="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400">
-                        <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                        <span className="font-medium">
-                            {new Date(content.created_at).toLocaleDateString('vi-VN')}
-                        </span>
+                {/* Footer */}
+                <div className="flex items-center justify-between pt-3 border-t border-gray-200 dark:border-gray-700">
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                        Tạo: {new Date(content.created_at).toLocaleDateString('vi-VN')}
                     </div>
-                    <div className="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400">
-                        <span>Cập nhật:</span>
-                        <span className="font-medium">
-                            {new Date(content.updated_at).toLocaleTimeString('vi-VN', {
-                                hour: '2-digit',
-                                minute: '2-digit'
-                            })}
-                        </span>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                        Cập nhật: {new Date(content.updated_at).toLocaleTimeString('vi-VN', {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })}
                     </div>
                 </div>
             </div>
