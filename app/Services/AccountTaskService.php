@@ -97,14 +97,6 @@ class AccountTaskService
             ];
         })->values()->all();
 
-        $completePayload = [
-            'account_username' => $account->username,
-            'scenario_name' => $scenario->name,
-            'device_id' => $deviceId,
-            'created_by' => $createdByUserId,
-            'scenario_scripts' => $scenarioScripts,
-        ];
-
         $createdTasks = [];
         $order = 1;
         foreach ($scripts as $scriptModel) {
@@ -118,12 +110,15 @@ class AccountTaskService
             $script = $scriptData;
             $taskType = $script['type'] ?? ($script['task_type'] ?? 'unknown');
 
+            // SỬA: Chỉ lưu parameters của script này, không lưu toàn bộ payload
+            $taskParameters = $script['parameters'] ?? $script;
+
             $taskData = [
                 'tiktok_account_id' => $account->id,
                 'interaction_scenario_id' => $scenario->id,
                 'device_id' => $deviceId,
                 'task_type' => $taskType,
-                'parameters' => json_encode($completePayload), // Store complete payload
+                'parameters' => json_encode($taskParameters), // Chỉ lưu parameters của script này
                 'priority' => 'medium',
                 'status' => 'pending',
                 'scheduled_at' => null,
@@ -148,6 +143,15 @@ class AccountTaskService
             }
             $order++;
         }
+
+        // Return complete payload for frontend (không thay đổi)
+        $completePayload = [
+            'account_username' => $account->username,
+            'scenario_name' => $scenario->name,
+            'device_id' => $deviceId,
+            'created_by' => $createdByUserId,
+            'scenario_scripts' => $scenarioScripts,
+        ];
 
         return $completePayload;
     }
