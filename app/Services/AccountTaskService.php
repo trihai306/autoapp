@@ -110,15 +110,37 @@ class AccountTaskService
             $script = $scriptData;
             $taskType = $script['type'] ?? ($script['task_type'] ?? 'unknown');
 
-            // SỬA: Chỉ lưu parameters của script này, không lưu toàn bộ payload
-            $taskParameters = $script['parameters'] ?? $script;
+            // Tạo payload cho mỗi task với chỉ 1 script
+            $singleScriptPayload = [
+                'account_username' => $account->username,
+                'scenario_name' => $scenario->name,
+                'device_id' => $deviceId,
+                'created_by' => $createdByUserId,
+                'scenario_scripts' => [
+                    [
+                        'id' => $scriptModel->id,
+                        'type' => $script['type'] ?? ($script['task_type'] ?? 'unknown'),
+                        'name' => $script['name'] ?? ($script['type'] ?? 'unknown'),
+                        'description' => $script['description'] ?? null,
+                        'order' => $scriptModel->order ?? $order,
+                        'is_active' => $script['is_active'] ?? true,
+                        'delay_min' => $script['delay_min'] ?? null,
+                        'delay_max' => $script['delay_max'] ?? null,
+                        'parameters' => $script['parameters'] ?? $script,
+                        'success_count' => 0,
+                        'failure_count' => 0,
+                        'last_executed_at' => null,
+                        'success_rate' => 0,
+                    ]
+                ],
+            ];
 
             $taskData = [
                 'tiktok_account_id' => $account->id,
                 'interaction_scenario_id' => $scenario->id,
                 'device_id' => $deviceId,
                 'task_type' => $taskType,
-                'parameters' => json_encode($taskParameters), // Chỉ lưu parameters của script này
+                'parameters' => json_encode($singleScriptPayload), // Lưu chỉ 1 script
                 'priority' => 'medium',
                 'status' => 'pending',
                 'scheduled_at' => null,
