@@ -148,6 +148,10 @@ class TiktokAccountController extends Controller
         // Add computed fields
         $accountData = $tiktokAccount->toArray();
         
+        // Add proxy fields
+        $accountData['proxy_port'] = $tiktokAccount->proxy_port;
+        $accountData['proxy_username'] = $tiktokAccount->proxy_username;
+        $accountData['proxy_password'] = $tiktokAccount->proxy_password;
         // Add task statistics
         $accountData['task_statistics'] = [
             'pending_tasks_count' => $tiktokAccount->pendingTasks->count(),
@@ -243,7 +247,6 @@ class TiktokAccountController extends Controller
              * Additional fields from frontend (will be ignored if not in database)
              */
             'display_name' => 'sometimes|nullable|string|max:255',
-            'proxy_ip' => 'sometimes|nullable|string|max:255',
             'proxy_port' => 'sometimes|nullable|integer|min:1|max:65535',
             'proxy_username' => 'sometimes|nullable|string|max:255',
             'proxy_password' => 'sometimes|nullable|string|max:255',

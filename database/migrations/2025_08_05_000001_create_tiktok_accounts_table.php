@@ -25,9 +25,13 @@ return new class extends Migration
             $table->text('bio_signature')->nullable();
             $table->string('status')->default('active'); // e.g., active, inactive, banned
             $table->unsignedBigInteger('proxy_id')->nullable();
+            $table->unsignedBigInteger('proxy_port')->nullable();
+            $table->string('proxy_username')->nullable(); // Thêm cột proxy_username
+            $table->string('proxy_password')->nullable(); // Thêm cột proxy_password
             $table->timestamp('last_login_at')->nullable();
             $table->timestamp('last_activity_at')->nullable();
             $table->timestamps();
+ 
         });
     }
 

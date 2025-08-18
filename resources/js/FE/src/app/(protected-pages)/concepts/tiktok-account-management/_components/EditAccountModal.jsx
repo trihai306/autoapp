@@ -217,8 +217,8 @@ const EditAccountModal = ({
                 if (formData.tags && Array.isArray(formData.tags) && formData.tags.length > 0) {
                     saveData.tags = formData.tags.filter(tag => tag && tag.trim())
                 }
-                
-                // // console.log('Prepared save data:', saveData)
+
+                // Send the prepared data to the API
                 await onSave(account.id, saveData)
                 // onClose() will be called from parent component after successful save
             } catch (error) {
