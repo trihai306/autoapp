@@ -18,6 +18,7 @@ const { Option } = Select
 const { TextArea } = Input
 
 export default function ProxyManagementPage() {
+    const t = useTranslations('proxy-management')
     const [proxies, setProxies] = useState([])
     const [loading, setLoading] = useState(false)
     const [stats, setStats] = useState({})
@@ -196,9 +197,9 @@ export default function ProxyManagementPage() {
             const result = await testProxyConnection(id)
             if (result.success) {
                 if (result.data.success) {
-                    message.success(`Connection successful! Response time: ${result.data.response_time}`)
+                    message.success(t('test.success'))
                 } else {
-                    message.error(`Connection failed: ${result.data.message}`)
+                    message.error(t('test.error'))
                 }
                 loadProxies(pagination.current, pagination.pageSize, filters)
             } else {
@@ -227,7 +228,7 @@ export default function ProxyManagementPage() {
 
             const result = await importProxies({ proxies: proxyList })
             if (result.success) {
-                message.success(result.message)
+                message.success(t('import.success', { count: result.data?.length || 0 }))
                 setImportModalVisible(false)
                 loadProxies(pagination.current, pagination.pageSize, filters)
                 loadStats()
@@ -236,20 +237,20 @@ export default function ProxyManagementPage() {
             }
         } catch (error) {
             console.error('Error importing proxies:', error)
-            message.error('Failed to import proxies')
+            message.error(t('import.error'))
         }
     }
 
     // Table columns
     const columns = [
         {
-            title: 'Name',
+            title: t('table.name'),
             dataIndex: 'name',
             key: 'name',
             sorter: true,
         },
         {
-            title: 'Host',
+            title: t('table.host'),
             dataIndex: 'host',
             key: 'host',
             render: (host, record) => (
@@ -260,13 +261,13 @@ export default function ProxyManagementPage() {
             ),
         },
         {
-            title: 'Status',
+            title: t('table.status'),
             dataIndex: 'status',
             key: 'status',
             filters: [
-                { text: 'Active', value: 'active' },
-                { text: 'Inactive', value: 'inactive' },
-                { text: 'Error', value: 'error' },
+                { text: t('status.active'), value: 'active' },
+                { text: t('status.inactive'), value: 'inactive' },
+                { text: t('status.error'), value: 'error' },
             ],
             render: (status) => {
                 const colors = {
@@ -274,35 +275,35 @@ export default function ProxyManagementPage() {
                     inactive: 'orange',
                     error: 'red',
                 }
-                return <Badge color={colors[status]} text={status.toUpperCase()} />
+                return <Badge color={colors[status]} text={t(`status.${status}`)} />
             },
         },
         {
-            title: 'Country',
+            title: t('table.country'),
             dataIndex: 'country',
             key: 'country',
             filters: true,
         },
         {
-            title: 'Last Used',
+            title: t('table.lastUsed'),
             dataIndex: 'last_used_at',
             key: 'last_used_at',
             sorter: true,
             render: (date) => date ? new Date(date).toLocaleDateString() : 'Never',
         },
         {
-            title: 'Actions',
+            title: t('table.actions'),
             key: 'actions',
             render: (_, record) => (
                 <Space>
-                    <Tooltip title="Test Connection">
+                    <Tooltip title={t('test.title')}>
                         <Button
                             type="text"
                             icon={<PlayCircleOutlined />}
                             onClick={() => handleTestConnection(record.id)}
                         />
                     </Tooltip>
-                    <Tooltip title="Edit">
+                    <Tooltip title={t('form.update')}>
                         <Button
                             type="text"
                             icon={<EditOutlined />}
@@ -314,12 +315,12 @@ export default function ProxyManagementPage() {
                         />
                     </Tooltip>
                     <Popconfirm
-                        title="Are you sure you want to delete this proxy?"
+                        title={t('deleteConfirm.singleContent')}
                         onConfirm={() => handleDelete(record.id)}
-                        okText="Yes"
-                        cancelText="No"
+                        okText={t('deleteConfirm.delete')}
+                        cancelText={t('deleteConfirm.cancel')}
                     >
-                        <Tooltip title="Delete">
+                        <Tooltip title={t('deleteConfirm.delete')}>
                             <Button type="text" danger icon={<DeleteOutlined />} />
                         </Tooltip>
                     </Popconfirm>
@@ -331,32 +332,32 @@ export default function ProxyManagementPage() {
     return (
         <div className="p-6">
             <div className="mb-6">
-                <h1 className="text-2xl font-bold mb-4">Proxy Management</h1>
+                <h1 className="text-2xl font-bold mb-4">{t('title')}</h1>
                 
                 {/* Statistics Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                     <Card>
                         <div className="text-center">
                             <div className="text-2xl font-bold text-blue-600">{stats.total || 0}</div>
-                            <div className="text-gray-600">Total Proxies</div>
+                            <div className="text-gray-600">{t('stats.total')}</div>
                         </div>
                     </Card>
                     <Card>
                         <div className="text-center">
                             <div className="text-2xl font-bold text-green-600">{stats.active || 0}</div>
-                            <div className="text-gray-600">Active</div>
+                            <div className="text-gray-600">{t('stats.active')}</div>
                         </div>
                     </Card>
                     <Card>
                         <div className="text-center">
                             <div className="text-2xl font-bold text-orange-600">{stats.inactive || 0}</div>
-                            <div className="text-gray-600">Inactive</div>
+                            <div className="text-gray-600">{t('stats.inactive')}</div>
                         </div>
                     </Card>
                     <Card>
                         <div className="text-center">
                             <div className="text-2xl font-bold text-red-600">{stats.error || 0}</div>
-                            <div className="text-gray-600">Error</div>
+                            <div className="text-gray-600">{t('stats.error')}</div>
                         </div>
                     </Card>
                 </div>
@@ -366,7 +367,7 @@ export default function ProxyManagementPage() {
                     <div className="flex flex-wrap gap-4 items-center justify-between">
                         <div className="flex gap-4">
                             <Input.Search
-                                placeholder="Search proxies..."
+                                placeholder={t('quickSearch')}
                                 onSearch={handleSearch}
                                 style={{ width: 300 }}
                             />
@@ -381,19 +382,19 @@ export default function ProxyManagementPage() {
                                     setModalVisible(true)
                                 }}
                             >
-                                Add Proxy
+                                {t('addNew')}
                             </Button>
                             <Button
                                 icon={<ImportOutlined />}
                                 onClick={() => setImportModalVisible(true)}
                             >
-                                Import
+                                {t('import')}
                             </Button>
                             <Button
                                 icon={<ReloadOutlined />}
                                 onClick={() => loadProxies(pagination.current, pagination.pageSize, filters)}
                             >
-                                Refresh
+                                {t('refresh')}
                             </Button>
                             {selectedRowKeys.length > 0 && (
                                 <>
@@ -401,17 +402,17 @@ export default function ProxyManagementPage() {
                                         danger
                                         onClick={handleBulkDelete}
                                     >
-                                        Delete Selected ({selectedRowKeys.length})
+                                        {t('bulkAction.delete')} ({selectedRowKeys.length})
                                     </Button>
                                     <Button
                                         onClick={() => handleStatusUpdate(selectedRowKeys, 'active')}
                                     >
-                                        Activate Selected
+                                        {t('bulkAction.activate')}
                                     </Button>
                                     <Button
                                         onClick={() => handleStatusUpdate(selectedRowKeys, 'inactive')}
                                     >
-                                        Deactivate Selected
+                                        {t('bulkAction.deactivate')}
                                     </Button>
                                 </>
                             )}
@@ -438,7 +439,7 @@ export default function ProxyManagementPage() {
 
             {/* Create/Edit Modal */}
             <Modal
-                title={editingProxy ? 'Edit Proxy' : 'Add New Proxy'}
+                title={editingProxy ? t('form.update') : t('addNew')}
                 open={modalVisible}
                 onCancel={() => {
                     setModalVisible(false)
