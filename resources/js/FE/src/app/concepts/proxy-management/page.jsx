@@ -179,7 +179,7 @@ export default function ProxyManagementPage() {
         try {
             const result = await updateProxyStatus(ids, status)
             if (result.success) {
-                message.success(result.message)
+                message.success(t('messages.statusUpdated'))
                 loadProxies(pagination.current, pagination.pageSize, filters)
                 loadStats()
             } else {
@@ -187,7 +187,7 @@ export default function ProxyManagementPage() {
             }
         } catch (error) {
             console.error('Error updating proxy status:', error)
-            message.error('Failed to update proxy status')
+            message.error(t('messages.error'))
         }
     }
 
@@ -207,7 +207,7 @@ export default function ProxyManagementPage() {
             }
         } catch (error) {
             console.error('Error testing connection:', error)
-            message.error('Failed to test connection')
+            message.error(t('test.error'))
         }
     }
 
