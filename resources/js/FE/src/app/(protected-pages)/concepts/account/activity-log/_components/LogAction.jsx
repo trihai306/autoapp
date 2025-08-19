@@ -4,6 +4,8 @@ import Dropdown from '@/components/ui/Dropdown'
 import Switcher from '@/components/ui/Switcher'
 import {
     UPDATE_TICKET,
+    COMMENT,
+    COMMENT_MENTION,
     ASSIGN_TICKET,
     ADD_TAGS_TO_TICKET,
     ADD_FILES_TO_TICKET,
@@ -22,6 +24,8 @@ const LogAction = ({
 
     const filterItems = useMemo(() => [
         { label: t('filter.ticketStatus'), value: UPDATE_TICKET },
+        { label: t('filter.comment'), value: COMMENT },
+        { label: t('filter.commentMention'), value: COMMENT_MENTION },
         { label: t('filter.assignTicket'), value: ASSIGN_TICKET },
         { label: t('filter.newTicket'), value: CREATE_TICKET },
         { label: t('filter.addTags'), value: ADD_TAGS_TO_TICKET },

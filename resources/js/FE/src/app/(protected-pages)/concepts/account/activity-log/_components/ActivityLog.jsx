@@ -42,7 +42,7 @@ const ActivityLog = () => {
 
     const fetchLogs = async (index) => {
         setIsLoading(true)
-        const result = await getLogs(index);
+        const result = await getLogs(index, selectedType);
         if (result.data) {
             setActivities([...activities, ...result.data]);
             setLoadable(result.loadable);
