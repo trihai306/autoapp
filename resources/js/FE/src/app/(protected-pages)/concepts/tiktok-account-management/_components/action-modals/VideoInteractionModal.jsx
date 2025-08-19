@@ -5,6 +5,7 @@ import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import Select from '@/components/ui/Select'
 import Switcher from '@/components/ui/Switcher'
+import Checkbox from '@/components/ui/Checkbox'
 
 const VideoInteractionModal = ({ 
     isOpen, 
@@ -47,7 +48,8 @@ const VideoInteractionModal = ({
         comment_gap_to: 3,
         comment_contents: [],
         user_list: "",
-        content_group: ""
+        content_group: "",
+        delete_comment_after_done: false
     }
     
     const [config, setConfig] = useState(initialConfig)
@@ -214,9 +216,21 @@ const VideoInteractionModal = ({
                             ...prev,
                             ...scriptData.parameters
                         }))
+                        // Map content_group_id -> content_group nếu chỉ có id được lưu trong script
+                        if (
+                            scriptData.parameters.content_group_id &&
+                            !scriptData.parameters.content_group
+                        ) {
+                            setConfig(prev => ({
+                                ...prev,
+                                content_group: String(scriptData.parameters.content_group_id),
+                            }))
+                        }
                         // If there is a saved content_group, fetch its contents
                         if (scriptData.parameters.content_group) {
                             fetchContentsByGroup(scriptData.parameters.content_group)
+                        } else if (scriptData.parameters.content_group_id) {
+                            fetchContentsByGroup(scriptData.parameters.content_group_id)
                         }
                     }
                 }
@@ -362,7 +376,11 @@ const VideoInteractionModal = ({
                                 typeof content === 'string' ? content : (content.text || content.content || content.value || '')
                               ).filter(text => typeof text === 'string' && text.trim() !== '')
                             : [],
-                        content_group: config.content_group
+                        content_group: config.content_group,
+                        // Lưu rõ ràng id nhóm bình luận để backend đọc dễ dàng
+                        content_group_id: config.content_group,
+                        // Chỉ thêm cờ xóa bình luận khi làm xong
+                        delete_comment_after_done: Boolean(config.delete_comment_after_done)
                     }
                 }
                 await onSave(action, saveData)
@@ -885,6 +903,15 @@ const VideoInteractionModal = ({
                                                 }
                                                 loadingMessage={() => 'Đang tải...'}
                                             />
+                                            <div className="mt-3">
+                                                <Checkbox
+                                                    checked={Boolean(config.delete_comment_after_done)}
+                                                    onChange={(checked) => handleSwitchChange('delete_comment_after_done', checked)}
+                                                    disabled={!config.content_group}
+                                                >
+                                                    <span className="text-sm">Xóa bình luận khi làm xong</span>
+                                                </Checkbox>
+                                            </div>
                                             {loadingContents && (
                                                 <p className="text-xs text-blue-500 dark:text-blue-400 mt-1">
                                                     Đang tải nội dung...

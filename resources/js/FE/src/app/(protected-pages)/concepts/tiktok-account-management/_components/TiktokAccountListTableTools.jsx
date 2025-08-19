@@ -13,8 +13,7 @@ import {
     TbPlayerPlay,
     TbPlayerStop,
     TbRefresh,
-    TbSortAscending,
-    TbSortDescending
+    
 } from 'react-icons/tb'
 import Dialog from '@/components/ui/Dialog'
 import { useState } from 'react'
@@ -356,8 +355,6 @@ const TiktokAccountListBulkActionTools = () => {
 const TiktokAccountListTableTools = ({ columns, selectableColumns, onColumnToggle, onRefresh }) => {
     const { onAppendQueryParams } = useAppendQueryParams()
     const selectedTiktokAccount = useTiktokAccountListStore((state) => state.selectedTiktokAccount)
-    const [sortBy, setSortBy] = useState('')
-    const [sortOrder, setSortOrder] = useState('asc')
     const t = useTranslations('tiktokAccountManagement.tableTools')
     const tTableTools = useTranslations('tiktokAccountManagement.tableTools')
 
@@ -367,33 +364,7 @@ const TiktokAccountListTableTools = ({ columns, selectableColumns, onColumnToggl
         })
     }
 
-    const handleQuickFilter = (filterType, value) => {
-        onAppendQueryParams({
-            [`filter[${filterType}]`]: value,
-            page: '1'
-        })
-    }
-
-    const handleSort = (field) => {
-        const newOrder = sortBy === field && sortOrder === 'asc' ? 'desc' : 'asc'
-        setSortBy(field)
-        setSortOrder(newOrder)
-        onAppendQueryParams({
-            sort: newOrder === 'desc' ? `-${field}` : field,
-            page: '1'
-        })
-    }
-
-    const clearFilters = () => {
-        onAppendQueryParams({
-            search: '',
-            'filter[status]': '',
-            'filter[task_status]': '',
-            'filter[has_pending_tasks]': '',
-            sort: '',
-            page: '1'
-        })
-    }
+    // Quick filters & sort UI removed per request
 
     if (selectedTiktokAccount.length > 0) {
         return <TiktokAccountListBulkActionTools />
@@ -424,97 +395,7 @@ const TiktokAccountListTableTools = ({ columns, selectableColumns, onColumnToggl
                 </div>
             </div>
 
-            {/* Quick Filters */}
-            <div className="flex flex-wrap items-center gap-2">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{tTableTools('quickFilters')}:</span>
-                
-                {/* Status Filters */}
-                <Button
-                    size="xs"
-                    variant="default"
-                    className="bg-green-50 text-green-700 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400"
-                    onClick={() => handleQuickFilter('status', 'active')}
-                >
-                    {tTableTools('status.active')}
-                </Button>
-                <Button
-                    size="xs"
-                    variant="default"
-                    className="bg-gray-50 text-gray-700 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-400"
-                    onClick={() => handleQuickFilter('status', 'inactive')}
-                >
-                    {tTableTools('status.inactive')}
-                </Button>
-                <Button
-                    size="xs"
-                    variant="default"
-                    className="bg-red-50 text-red-700 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400"
-                    onClick={() => handleQuickFilter('status', 'suspended')}
-                >
-                    {tTableTools('status.suspended')}
-                </Button>
-
-                {/* Task Status Filters */}
-                <Button
-                    size="xs"
-                    variant="default"
-                    className="bg-yellow-50 text-yellow-700 hover:bg-yellow-100 dark:bg-yellow-900/20 dark:text-yellow-400"
-                    onClick={() => handleQuickFilter('has_pending_tasks', 'true')}
-                >
-                    {tTableTools('taskStatus.hasPending')}
-                </Button>
-                <Button
-                    size="xs"
-                    variant="default"
-                    className="bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400"
-                    onClick={() => handleQuickFilter('has_pending_tasks', 'false')}
-                >
-                    {tTableTools('taskStatus.noPending')}
-                </Button>
-
-                {/* Sort Options */}
-                <div className="flex items-center gap-1 ml-4">
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{tTableTools('sortBy')}:</span>
-                    <Button
-                        size="xs"
-                        variant="default"
-                        icon={sortBy === 'username' && sortOrder === 'desc' ? <TbSortDescending /> : <TbSortAscending />}
-                        onClick={() => handleSort('username')}
-                        className={sortBy === 'username' ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400' : ''}
-                    >
-                        {tTableTools('sort.username')}
-                    </Button>
-                    <Button
-                        size="xs"
-                        variant="default"
-                        icon={sortBy === 'created_at' && sortOrder === 'desc' ? <TbSortDescending /> : <TbSortAscending />}
-                        onClick={() => handleSort('created_at')}
-                        className={sortBy === 'created_at' ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400' : ''}
-                    >
-                        {tTableTools('sort.createdAt')}
-                    </Button>
-                    <Button
-                        size="xs"
-                        variant="default"
-                        icon={sortBy === 'pending_tasks_count' && sortOrder === 'desc' ? <TbSortDescending /> : <TbSortAscending />}
-                        onClick={() => handleSort('pending_tasks_count')}
-                        className={sortBy === 'pending_tasks_count' ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400' : ''}
-                    >
-                        {tTableTools('sort.tasks')}
-                    </Button>
-                </div>
-
-                {/* Clear Filters */}
-                <Button
-                    size="xs"
-                    variant="default"
-                    icon={<TbX />}
-                    onClick={clearFilters}
-                    className="ml-2"
-                >
-                    {tTableTools('clearFilters')}
-                </Button>
-            </div>
+            {/* Quick Filters & Sort UI removed */}
         </div>
     )
 }

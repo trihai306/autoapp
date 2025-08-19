@@ -12,7 +12,7 @@ import { z } from 'zod'
 import { Select } from '@/components/ui'
 import debounce from 'lodash/debounce'
 import { useTranslations } from 'next-intl'
-import getTiktokAccounts from '@/server/actions/ai/getTiktokAccounts'
+import getTiktokAccounts from '@/server/actions/tiktok-account/getTiktokAccounts'
 
 const validationSchema = z.object({
     task_type: z.string().optional(),

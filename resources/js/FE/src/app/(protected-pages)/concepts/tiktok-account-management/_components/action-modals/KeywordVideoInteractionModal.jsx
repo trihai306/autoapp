@@ -5,6 +5,7 @@ import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import Select from '@/components/ui/Select'
 import Switcher from '@/components/ui/Switcher'
+import Checkbox from '@/components/ui/Checkbox'
 
 const KeywordVideoInteractionModal = ({ 
     isOpen, 
@@ -44,7 +45,8 @@ const KeywordVideoInteractionModal = ({
         comment_gap_from: 1,
         comment_gap_to: 3,
         comment_contents: [],
-        content_group: ""
+        content_group: "",
+        delete_comment_after_done: false
     }
     
     const [config, setConfig] = useState(initialConfig)
@@ -344,7 +346,9 @@ const KeywordVideoInteractionModal = ({
                                 typeof content === 'string' ? content : (content.text || content.content || content.value || '')
                               ).filter(text => typeof text === 'string' && text.trim() !== '')
                             : [],
-                        content_group: config.content_group
+                        content_group: config.content_group,
+                        content_group_id: config.content_group,
+                        delete_comment_after_done: Boolean(config.delete_comment_after_done)
                     }
                 }
                 await onSave(action, saveData)
@@ -812,6 +816,15 @@ const KeywordVideoInteractionModal = ({
                                                 }
                                                 loadingMessage={() => 'Đang tải...'}
                                             />
+                                            <div className="mt-3">
+                                                <Checkbox
+                                                    checked={Boolean(config.delete_comment_after_done)}
+                                                    onChange={(checked) => handleSwitchChange('delete_comment_after_done', checked)}
+                                                    disabled={!config.content_group}
+                                                >
+                                                    <span className="text-sm">Xóa bình luận khi làm xong</span>
+                                                </Checkbox>
+                                            </div>
                                             {loadingContents && (
                                                 <p className="text-xs text-blue-500 dark:text-blue-400 mt-1">
                                                     Đang tải nội dung...

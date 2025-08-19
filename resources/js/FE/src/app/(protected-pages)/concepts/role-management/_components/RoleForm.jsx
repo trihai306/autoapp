@@ -16,6 +16,7 @@ import { useEffect, useState } from 'react'
 import getPermissions from '@/server/actions/user/getPermissions'
 import { useTranslations } from 'next-intl'
 import { TbUser, TbShieldCheck, TbCheck, TbSearch, TbChevronLeft, TbChevronRight } from 'react-icons/tb'
+import { useRoleListStore } from '../_store/roleListStore'
 
 const validationSchema = z.object({
     name: z.string().min(1, 'Name is required'),
@@ -161,6 +162,9 @@ const RoleForm = ({ mode = 'add', role, onClose }) => {
     const [totalPermissions, setTotalPermissions] = useState(0)
     const [perPage] = useState(12) // Show 12 permissions per page
     const t = useTranslations('roleManagement.form')
+    
+    // Get loading state from store
+    const isFormLoading = useRoleListStore((state) => state.isFormLoading)
 
 
     const {
@@ -266,45 +270,53 @@ const RoleForm = ({ mode = 'add', role, onClose }) => {
             console.log('🔍 RoleForm - Role permissions:', role.permissions);
             console.log('🔍 RoleForm - All permissions loaded:', allPermissions.length);
             
-            const permissionIds = role.permissions?.map(p => {
-                // Handle both cases: permission object with id, or just permission name
-                if (typeof p === 'object' && p.id) {
-                    console.log('📌 Found permission with ID:', p.id, p.name);
-                    return p.id;
-                } else if (typeof p === 'string') {
-                    // Find permission by name in allPermissions
-                    const found = allPermissions.find(ap => ap.name === p);
-                    console.log('📌 Finding permission by name:', p, found ? `Found ID: ${found.id}` : 'Not found');
-                    return found?.id;
-                } else if (p.name) {
-                    // Permission object with name but no id
-                    const found = allPermissions.find(ap => ap.name === p.name);
-                    console.log('📌 Finding permission by object name:', p.name, found ? `Found ID: ${found.id}` : 'Not found');
-                    return found?.id;
-                }
-                console.log('⚠️ Unknown permission format:', p);
-                return null;
-            }).filter(Boolean) || [];
-            
-            console.log('✅ RoleForm - Mapped permission IDs:', permissionIds);
-            console.log('✅ RoleForm - Setting form data:', { name: role.name, permissions: permissionIds });
-            
-            // Use setValue instead of reset to avoid form state issues
-            reset({ 
-                name: role.name, 
-                permissions: permissionIds
-            });
-            
-            // Force update the form values to ensure selectedPermissions is updated
-            setTimeout(() => {
-                console.log('🔄 RoleForm - Force updating form after reset');
+            // Check if role has permissions data
+            if (role.permissions && Array.isArray(role.permissions)) {
+                const permissionIds = role.permissions.map(p => {
+                    // Handle both cases: permission object with id, or just permission name
+                    if (typeof p === 'object' && p.id) {
+                        console.log('📌 Found permission with ID:', p.id, p.name);
+                        return p.id;
+                    } else if (typeof p === 'string') {
+                        // Find permission by name in allPermissions
+                        const found = allPermissions.find(ap => ap.name === p);
+                        console.log('📌 Finding permission by name:', p, found ? `Found ID: ${found.id}` : 'Not found');
+                        return found?.id;
+                    } else if (p.name) {
+                        // Permission object with name but no id
+                        const found = allPermissions.find(ap => ap.name === p.name);
+                        console.log('📌 Finding permission by object name:', p.name, found ? `Found ID: ${found.id}` : 'Not found');
+                        return found?.id;
+                    }
+                    console.log('⚠️ Unknown permission format:', p);
+                    return null;
+                }).filter(Boolean);
+                
+                console.log('✅ RoleForm - Mapped permission IDs:', permissionIds);
+                console.log('✅ RoleForm - Setting form data:', { name: role.name, permissions: permissionIds });
+                
                 reset({ 
                     name: role.name, 
                     permissions: permissionIds
                 });
-                // Trigger re-render to update selectedPermissions display
-                triggerUpdate();
-            }, 100);
+                
+                // Force update the form values to ensure selectedPermissions is updated
+                setTimeout(() => {
+                    console.log('🔄 RoleForm - Force updating form after reset');
+                    reset({ 
+                        name: role.name, 
+                        permissions: permissionIds
+                    });
+                    // Trigger re-render to update selectedPermissions display
+                    triggerUpdate();
+                }, 100);
+            } else {
+                console.log('⚠️ RoleForm - No permissions data found in role');
+                reset({ 
+                    name: role.name, 
+                    permissions: []
+                });
+            }
         } else if (!role) {
             console.log('🔄 RoleForm - Resetting form for new role');
             reset({ name: '', permissions: [] });
@@ -397,6 +409,34 @@ const RoleForm = ({ mode = 'add', role, onClose }) => {
             ? currentValue.filter((id) => id !== permissionId)
             : [...currentValue, permissionId];
         return newValue;
+    }
+
+    // Show loading state when form is loading
+    if (isFormLoading) {
+        return (
+            <div className="w-full">
+                <div className="mb-6">
+                    <h5 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                        {mode === 'add' ? t('createTitle') : t('editTitle')}
+                    </h5>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        {mode === 'add' 
+                            ? 'Tạo vai trò mới và phân quyền cho người dùng'
+                            : 'Chỉnh sửa thông tin vai trò và quyền hạn'
+                        }
+                    </p>
+                </div>
+                
+                <div className="flex items-center justify-center py-20">
+                    <div className="text-center">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                        <p className="text-gray-600 dark:text-gray-400">
+                            Đang tải thông tin vai trò...
+                        </p>
+                    </div>
+                </div>
+            </div>
+        )
     }
 
     return (

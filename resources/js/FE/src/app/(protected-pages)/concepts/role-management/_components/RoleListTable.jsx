@@ -67,10 +67,10 @@ const RoleListTable = ({
     const { onAppendQueryParams } = useAppendQueryParams()
 
     const openForm = useRoleListStore((state) => state.openForm)
-    const handleEdit = (role) => {
+    const handleEdit = async (role) => {
         console.log('🔍 RoleListTable - Edit clicked for role:', role);
         console.log('🔍 RoleListTable - Role permissions:', role.permissions);
-        openForm('edit', role)
+        await openForm('edit', role)
     }
 
     const handleDelete = async (role) => {

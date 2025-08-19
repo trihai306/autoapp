@@ -12,9 +12,10 @@ const initialState = {
     isFormOpen: false,
     formMode: 'add',
     selectedRoleForForm: null,
+    isFormLoading: false,
 }
 
-export const useRoleListStore = create((set) => ({
+export const useRoleListStore = create((set, get) => ({
     ...initialState,
     setFilterData: (payload) => set(() => ({ filterData: payload })),
     setSelectedRole: (checked, row) =>
@@ -33,10 +34,61 @@ export const useRoleListStore = create((set) => ({
     setSelectAllRole: (rows) => set(() => ({ selectedRole: rows })),
     setRoleList: (roleList) => set(() => ({ roleList })),
     setInitialLoading: (payload) => set(() => ({ initialLoading: payload })),
-    openForm: (mode, role) => {
+    openForm: async (mode, role) => {
         console.log('🔍 RoleListStore - openForm called:', { mode, role });
-        console.log('🔍 RoleListStore - Role permissions:', role?.permissions);
-        set(() => ({ isFormOpen: true, formMode: mode, selectedRoleForForm: role }))
+        
+        if (mode === 'edit' && role?.id) {
+            // Set loading state
+            set(() => ({ 
+                isFormOpen: true, 
+                formMode: mode, 
+                selectedRoleForForm: role,
+                isFormLoading: true
+            }))
+            
+            // Fetch full role details including permissions
+            try {
+                // Import getRole function
+                const { default: getRole } = await import('@/server/actions/user/getRole')
+                const response = await getRole(role.id)
+                
+                if (response.success) {
+                    console.log('✅ RoleListStore - Fetched role details:', response.data);
+                    set(() => ({ 
+                        isFormOpen: true, 
+                        formMode: mode, 
+                        selectedRoleForForm: response.data,
+                        isFormLoading: false
+                    }))
+                } else {
+                    console.error('❌ RoleListStore - Failed to fetch role details:', response.message);
+                    // Fallback to basic role data
+                    set(() => ({ 
+                        isFormOpen: true, 
+                        formMode: mode, 
+                        selectedRoleForForm: role,
+                        isFormLoading: false
+                    }))
+                }
+            } catch (error) {
+                console.error('❌ RoleListStore - Error fetching role details:', error);
+                // Fallback to basic role data
+                set(() => ({ 
+                    isFormOpen: true, 
+                    formMode: mode, 
+                    selectedRoleForForm: role,
+                    isFormLoading: false
+                }))
+            }
+        } else {
+            // For add mode or no role, just open form
+            set(() => ({ 
+                isFormOpen: true, 
+                formMode: mode, 
+                selectedRoleForForm: role,
+                isFormLoading: false
+            }))
+        }
     },
     closeForm: () => {
         console.log('🔍 RoleListStore - closeForm called');
