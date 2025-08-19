@@ -54,11 +54,11 @@ export default function ProxyManagementPage() {
                     total: result.total || 0,
                 })
             } else {
-                message.error(result.message || 'Failed to load proxies')
+                message.error(result.message || t('messages.error'))
             }
         } catch (error) {
             console.error('Error loading proxies:', error)
-            message.error('Failed to load proxies')
+            message.error(t('messages.error'))
         } finally {
             setLoading(false)
         }
@@ -119,7 +119,7 @@ export default function ProxyManagementPage() {
             }
 
             if (result.success) {
-                message.success(result.message)
+                message.success(editingProxy ? t('messages.updated') : t('messages.created'))
                 setModalVisible(false)
                 setEditingProxy(null)
                 form.resetFields()
@@ -130,7 +130,7 @@ export default function ProxyManagementPage() {
             }
         } catch (error) {
             console.error('Error saving proxy:', error)
-            message.error('Failed to save proxy')
+            message.error(t('messages.error'))
         }
     }
 
@@ -139,7 +139,7 @@ export default function ProxyManagementPage() {
         try {
             const result = await deleteProxy(id)
             if (result.success) {
-                message.success(result.message)
+                message.success(t('messages.deleted'))
                 loadProxies(pagination.current, pagination.pageSize, filters)
                 loadStats()
             } else {
@@ -147,21 +147,21 @@ export default function ProxyManagementPage() {
             }
         } catch (error) {
             console.error('Error deleting proxy:', error)
-            message.error('Failed to delete proxy')
+            message.error(t('messages.error'))
         }
     }
 
     // Handle bulk delete
     const handleBulkDelete = async () => {
         if (selectedRowKeys.length === 0) {
-            message.warning('Please select proxies to delete')
+            message.warning(t('messages.error'))
             return
         }
 
         try {
             const result = await deleteProxies(selectedRowKeys)
             if (result.success) {
-                message.success(result.message)
+                message.success(t('messages.bulkDeleted', { count: selectedRowKeys.length }))
                 setSelectedRowKeys([])
                 loadProxies(pagination.current, pagination.pageSize, filters)
                 loadStats()
@@ -170,7 +170,7 @@ export default function ProxyManagementPage() {
             }
         } catch (error) {
             console.error('Error bulk deleting proxies:', error)
-            message.error('Failed to delete proxies')
+            message.error(t('messages.error'))
         }
     }
 
@@ -460,79 +460,79 @@ export default function ProxyManagementPage() {
                 >
                     <Form.Item
                         name="name"
-                        label="Name"
-                        rules={[{ required: true, message: 'Please enter proxy name' }]}
+                        label={t('form.name')}
+                        rules={[{ required: true, message: t('validation.nameRequired') }]}
                     >
-                        <Input placeholder="Enter proxy name" />
+                        <Input placeholder={t('form.namePlaceholder')} />
                     </Form.Item>
 
                     <div className="grid grid-cols-2 gap-4">
                         <Form.Item
                             name="host"
-                            label="Host"
-                            rules={[{ required: true, message: 'Please enter host' }]}
+                            label={t('form.host')}
+                            rules={[{ required: true, message: t('validation.hostRequired') }]}
                         >
-                            <Input placeholder="192.168.1.100" />
+                            <Input placeholder={t('form.hostPlaceholder')} />
                         </Form.Item>
 
                         <Form.Item
                             name="port"
-                            label="Port"
-                            rules={[{ required: true, message: 'Please enter port' }]}
+                            label={t('form.port')}
+                            rules={[{ required: true, message: t('validation.portRequired') }]}
                         >
-                            <Input type="number" placeholder="8080" />
+                            <Input type="number" placeholder={t('form.portPlaceholder')} />
                         </Form.Item>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                        <Form.Item name="username" label="Username">
-                            <Input placeholder="Username (optional)" />
+                        <Form.Item name="username" label={t('form.username')}>
+                            <Input placeholder={t('form.usernamePlaceholder')} />
                         </Form.Item>
 
-                        <Form.Item name="password" label="Password">
-                            <Input.Password placeholder="Password (optional)" />
+                        <Form.Item name="password" label={t('form.password')}>
+                            <Input.Password placeholder={t('form.passwordPlaceholder')} />
                         </Form.Item>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                        <Form.Item name="type" label="Type">
-                            <Select>
-                                <Option value="http">HTTP</Option>
-                                <Option value="https">HTTPS</Option>
-                                <Option value="socks4">SOCKS4</Option>
-                                <Option value="socks5">SOCKS5</Option>
+                        <Form.Item name="type" label={t('form.type')}>
+                            <Select placeholder={t('form.selectType')}>
+                                <Option value="http">{t('type.http')}</Option>
+                                <Option value="https">{t('type.https')}</Option>
+                                <Option value="socks4">{t('type.socks4')}</Option>
+                                <Option value="socks5">{t('type.socks5')}</Option>
                             </Select>
                         </Form.Item>
 
-                        <Form.Item name="status" label="Status">
-                            <Select>
-                                <Option value="active">Active</Option>
-                                <Option value="inactive">Inactive</Option>
-                                <Option value="error">Error</Option>
+                        <Form.Item name="status" label={t('form.status')}>
+                            <Select placeholder={t('form.selectStatus')}>
+                                <Option value="active">{t('status.active')}</Option>
+                                <Option value="inactive">{t('status.inactive')}</Option>
+                                <Option value="error">{t('status.error')}</Option>
                             </Select>
                         </Form.Item>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                        <Form.Item name="country" label="Country">
-                            <Input placeholder="Country (optional)" />
+                        <Form.Item name="country" label={t('form.country')}>
+                            <Input placeholder={t('form.countryPlaceholder')} />
                         </Form.Item>
 
-                        <Form.Item name="city" label="City">
-                            <Input placeholder="City (optional)" />
+                        <Form.Item name="city" label={t('form.city')}>
+                            <Input placeholder={t('form.cityPlaceholder')} />
                         </Form.Item>
                     </div>
 
-                    <Form.Item name="notes" label="Notes">
-                        <TextArea rows={3} placeholder="Additional notes (optional)" />
+                    <Form.Item name="notes" label={t('form.notes')}>
+                        <TextArea rows={3} placeholder={t('form.notesPlaceholder')} />
                     </Form.Item>
 
                     <div className="flex justify-end gap-2">
                         <Button onClick={() => setModalVisible(false)}>
-                            Cancel
+                            {t('form.cancel')}
                         </Button>
                         <Button type="primary" htmlType="submit">
-                            {editingProxy ? 'Update' : 'Create'}
+                            {editingProxy ? t('form.update') : t('form.save')}
                         </Button>
                     </div>
                 </Form>
@@ -540,7 +540,7 @@ export default function ProxyManagementPage() {
 
             {/* Import Modal */}
             <Modal
-                title="Import Proxies"
+                title={t('import.title')}
                 open={importModalVisible}
                 onCancel={() => setImportModalVisible(false)}
                 footer={null}
@@ -549,22 +549,22 @@ export default function ProxyManagementPage() {
                 <Form onFinish={handleImport}>
                     <Form.Item
                         name="proxyList"
-                        label="Proxy List"
-                        rules={[{ required: true, message: 'Please enter proxy list' }]}
-                        extra="Format: host:port:username:password (one per line). Username and password are optional."
+                        label={t('import.title')}
+                        rules={[{ required: true, message: t('import.error') }]}
+                        extra={t('import.description')}
                     >
                         <TextArea
                             rows={10}
-                            placeholder="192.168.1.100:8080:user1:pass1&#10;192.168.1.101:8081:user2:pass2&#10;192.168.1.102:8082"
+                            placeholder={t('import.placeholder')}
                         />
                     </Form.Item>
 
                     <div className="flex justify-end gap-2">
                         <Button onClick={() => setImportModalVisible(false)}>
-                            Cancel
+                            {t('import.cancel')}
                         </Button>
                         <Button type="primary" htmlType="submit">
-                            Import
+                            {t('import.import')}
                         </Button>
                     </div>
                 </Form>
