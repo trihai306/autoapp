@@ -64,7 +64,6 @@ class ProxyController extends Controller
         $user = $request->user();
         
         $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
             'name' => 'required|string|max:255',
             'host' => 'required|string|max:255',
             'port' => 'required|integer|min:1|max:65535',
@@ -77,10 +76,8 @@ class ProxyController extends Controller
             'notes' => 'nullable|string',
         ]);
 
-        // Kiểm tra quyền: chỉ admin mới có thể tạo proxy cho user khác
-        if (!$user->hasRole('admin') && $validated['user_id'] != $user->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
+        // Luôn gán proxy cho user đang đăng nhập
+        $validated['user_id'] = $user->id;
 
         $proxy = $this->proxyService->create($validated);
 
@@ -132,6 +129,9 @@ class ProxyController extends Controller
             'city' => 'nullable|string|max:255',
             'notes' => 'nullable|string',
         ]);
+
+        // Bảo đảm owner không bị thay đổi bằng payload
+        $validated['user_id'] = $proxy->user_id;
 
         $updatedProxy = $this->proxyService->update($proxy, $validated);
 
@@ -270,18 +270,10 @@ class ProxyController extends Controller
             'proxies.*.country' => 'nullable|string|max:255',
             'proxies.*.city' => 'nullable|string|max:255',
             'proxies.*.notes' => 'nullable|string',
-            'user_id' => 'sometimes|exists:users,id',
         ]);
 
-        // Kiểm tra quyền: chỉ admin mới có thể import cho user khác
-        if (isset($validated['user_id']) && !$user->hasRole('admin') && $validated['user_id'] != $user->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
-        // Nếu không có user_id, sử dụng user hiện tại
-        if (!isset($validated['user_id'])) {
-            $validated['user_id'] = $user->id;
-        }
+        // Luôn import cho user đang đăng nhập
+        $validated['user_id'] = $user->id;
 
         $result = $this->proxyService->importProxies($validated);
 

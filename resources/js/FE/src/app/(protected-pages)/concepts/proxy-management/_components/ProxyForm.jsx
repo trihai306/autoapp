@@ -1,7 +1,7 @@
 'use client'
 import { Form, FormItem, FormContainer } from '@/components/ui/Form'
 import Input from '@/components/ui/Input'
-import Select from '@/components/ui/Select'
+import Select, { Option } from '@/components/ui/Select'
 import Button from '@/components/ui/Button'
 import { useRouter } from 'next/navigation'
 import createProxy from '@/server/actions/proxy/createProxy'
@@ -135,48 +135,35 @@ const ProxyForm = ({ mode = 'add', proxy, onClose }) => {
                     </FormItem>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                {/* Removed username & password to simplify form */}
+
+                <div>
                     <FormItem label={t('form.typeLabel')} invalid={Boolean(errors.type)} errorMessage={errors.type?.message}>
                         <Controller 
                             name="type" 
                             control={control} 
-                            render={({ field }) => (
-                                <Select {...field}>
-                                    <Select.Option value="http">HTTP</Select.Option>
-                                    <Select.Option value="https">HTTPS</Select.Option>
-                                    <Select.Option value="socks4">SOCKS4</Select.Option>
-                                    <Select.Option value="socks5">SOCKS5</Select.Option>
-                                </Select>
-                            )} 
-                        />
-                    </FormItem>
-                    <FormItem label={t('form.statusLabel')} invalid={Boolean(errors.status)} errorMessage={errors.status?.message}>
-                        <Controller 
-                            name="status" 
-                            control={control} 
-                            render={({ field }) => (
-                                <Select {...field}>
-                                    <Select.Option value="active">Active</Select.Option>
-                                    <Select.Option value="inactive">Inactive</Select.Option>
-                                    <Select.Option value="error">Error</Select.Option>
-                                </Select>
-                            )} 
+                            render={({ field }) => {
+                                const options = [
+                                    { value: 'http', label: 'HTTP' },
+                                    { value: 'https', label: 'HTTPS' },
+                                    { value: 'socks4', label: 'SOCKS4' },
+                                    { value: 'socks5', label: 'SOCKS5' },
+                                ]
+                                const selected = options.find(o => o.value === field.value) || null
+                                return (
+                                    <Select
+                                        value={selected}
+                                        onChange={(opt) => field.onChange(opt?.value)}
+                                        options={options}
+                                        placeholder={t('form.typeLabel')}
+                                    />
+                                )
+                            }} 
                         />
                     </FormItem>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                    <FormItem label={t('form.countryLabel')}>
-                        <Controller name="country" control={control} render={({ field }) => <Input placeholder={t('form.countryPlaceholder')} {...field} />} />
-                    </FormItem>
-                    <FormItem label={t('form.cityLabel')}>
-                        <Controller name="city" control={control} render={({ field }) => <Input placeholder={t('form.cityPlaceholder')} {...field} />} />
-                    </FormItem>
-                </div>
-
-                <FormItem label={t('form.notesLabel')}>
-                    <Controller name="notes" control={control} render={({ field }) => <Input.TextArea rows={3} placeholder={t('form.notesPlaceholder')} {...field} />} />
-                </FormItem>
+                {/* Removed country, city, and notes to simplify form */}
 
                 <div className="text-right mt-4">
                     <Button

@@ -19,7 +19,7 @@ const ProxyListActionTools = ({ onAddNew, onImport }) => {
                 icon={<TbUpload />}
                 onClick={onImport}
             >
-                {t('import')}
+                {t('import.import')}
             </Button>
         </div>
     )

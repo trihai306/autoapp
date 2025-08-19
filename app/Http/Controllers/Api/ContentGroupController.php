@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\ContentGroup;
+use App\Models\Content;
 use App\Services\ContentGroupService;
 use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
@@ -170,5 +171,88 @@ class ContentGroupController extends Controller
         $count = $this->contentGroupService->updateMultiple($ids, $validated);
 
         return response()->json(['message' => "Successfully updated {$count} content groups."]);
+    }
+
+    /**
+     * Remove contents from a specific group
+     *
+     * Xóa một hoặc nhiều nội dung thuộc về group chỉ định. Chỉ các nội dung
+     * có `content_group_id` trùng với group hiện tại mới bị xóa; nội dung nằm
+     * ngoài group sẽ bị bỏ qua.
+     *
+     * Input (JSON body) – có thể truyền một trong các khóa sau (ít nhất 1 khóa):
+     * - names: array<string> (tùy chọn)
+     *   Danh sách tên nội dung cần xóa. Mỗi phần tử khớp chính xác với cột `title`.
+     * - name: string (tùy chọn)
+     *   Tên một nội dung duy nhất cần xóa. Tương đương truyền 1 phần tử trong `names`.
+     * - titles: array<string> (tùy chọn)
+     *   Đồng nghĩa với `names`. Hỗ trợ để thuận tiện khi client đang dùng khóa này.
+     * - title: string (tùy chọn)
+     *   Đồng nghĩa với `name`.
+     *
+     * Quy tắc và hành vi:
+     * - Cần cung cấp ít nhất một trong các khóa: `names`, `name`, `titles`, `title`.
+     * - Nếu truyền nhiều khóa, tất cả sẽ được gộp lại, loại trùng và loại bỏ phần tử rỗng trước khi xử lý.
+     * - Việc so khớp dựa trên cột `title` (so khớp chính xác theo chuỗi được lưu trong DB).
+     * - API trả về số lượng bản ghi đã xóa trong trường `deleted`.
+     *
+     * Ví dụ:
+     * {
+     *   "names": ["Video A", "Video B"]
+     * }
+     * Hoặc
+     * {
+     *   "name": "Video A"
+     * }
+     */
+    public function removeContents(Request $request, ContentGroup $contentGroup)
+    {
+        // Ensure the group belongs to the authenticated user
+        if ($contentGroup->user_id !== auth()->id()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        // Support deleting by names (preferred) and keep flexible keys
+        $request->validate([
+            'names' => 'sometimes|array|min:1',
+            'names.*' => 'string',
+            'name' => 'sometimes|string',
+            'titles' => 'sometimes|array|min:1',
+            'titles.*' => 'string',
+            'title' => 'sometimes|string',
+        ]);
+
+        $names = [];
+        if ($request->filled('names')) {
+            $names = array_merge($names, $request->input('names'));
+        }
+        if ($request->filled('titles')) {
+            $names = array_merge($names, $request->input('titles'));
+        }
+        if ($request->filled('name')) {
+            $names[] = $request->input('name');
+        }
+        if ($request->filled('title')) {
+            $names[] = $request->input('title');
+        }
+
+        // Normalize and deduplicate
+        $names = array_values(array_unique(array_filter($names, function ($v) {
+            return !is_null($v) && $v !== '';
+        })));
+
+        if (count($names) === 0) {
+            return response()->json(['message' => 'No names provided'], 422);
+        }
+
+        // Delete contents that match both the names (title) and the group
+        $deleted = Content::where('content_group_id', $contentGroup->id)
+            ->whereIn('title', $names)
+            ->delete();
+
+        return response()->json([
+            'message' => "Deleted {$deleted} contents from the group.",
+            'deleted' => $deleted,
+        ]);
     }
 }

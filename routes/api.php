@@ -192,6 +192,7 @@ Route::middleware('auth:sanctum')->group(function () {
         ->middleware('permission:content-groups.bulk-operations');
     Route::post('content-groups/bulk-update', [ContentGroupController::class, 'bulkUpdate'])
         ->middleware('permission:content-groups.bulk-operations');
+    Route::post('content-groups/{contentGroup}/remove-contents', [ContentGroupController::class, 'removeContents']);
     
     // Get contents by group
     Route::get('content-groups/{groupId}/contents', [ContentController::class, 'getByGroup'])

@@ -83,7 +83,8 @@ const ImportForm = ({ onClose }) => {
                         name="proxyList" 
                         control={control} 
                         render={({ field }) => (
-                            <Input.TextArea 
+                            <Input 
+                                textArea
                                 rows={10} 
                                 placeholder={t('import.placeholder')} 
                                 {...field} 
