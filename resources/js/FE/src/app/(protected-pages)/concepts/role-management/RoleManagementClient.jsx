@@ -35,6 +35,10 @@ const RoleManagementClient = ({ data, params }) => {
     const closeForm = useRoleListStore((state) => state.closeForm)
     const t = useTranslations('roleManagement')
 
+    console.log('🔍 RoleManagementClient - Data received:', data);
+    console.log('🔍 RoleManagementClient - Selected role for form:', selectedRoleForForm);
+    console.log('🔍 RoleManagementClient - Form mode:', formMode);
+
     useEffect(() => {
         // Calculate stats from data
         if (data) {
@@ -146,6 +150,7 @@ const RoleManagementClient = ({ data, params }) => {
                     width={900}
                 >
                     <RoleForm 
+                        key={`${formMode}-${selectedRoleForForm?.id || 'new'}`}
                         mode={formMode} 
                         role={selectedRoleForForm} 
                         onClose={closeForm} 

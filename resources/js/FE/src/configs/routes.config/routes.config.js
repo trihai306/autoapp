@@ -4,12 +4,14 @@ import uiComponentsRoute from './uiComponentsRoute'
 import authRoute from './authRoute'
 import authDemoRoute from './authDemoRoute'
 import guideRoute from './guideRoute'
+import proxyManagementRoute from './proxyManagementRoute'
 
 export const protectedRoutes = {
     ...dashboardsRoute,
     ...uiComponentsRoute,
     ...conceptsRoute,
     ...guideRoute,
+    ...proxyManagementRoute,
 }
 
 export const publicRoutes = {

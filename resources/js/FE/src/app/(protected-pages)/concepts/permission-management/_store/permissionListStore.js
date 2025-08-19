@@ -11,7 +11,7 @@ const initialState = {
     selectedPermission: [],
     isFormOpen: false,
     formMode: 'add',
-    editingPermission: null,
+    selectedPermissionForForm: null,
 }
 
 export const usePermissionListStore = create((set) => ({
@@ -38,6 +38,12 @@ export const usePermissionListStore = create((set) => ({
     setSelectAllPermission: (row) => set(() => ({ selectedPermission: row })),
     setPermissionList: (permissionList) => set(() => ({ permissionList })),
     setInitialLoading: (payload) => set(() => ({ initialLoading: payload })),
-    openForm: (mode, permission) => set(() => ({ isFormOpen: true, formMode: mode, editingPermission: permission })),
-    closeForm: () => set(() => ({ isFormOpen: false, editingPermission: null })),
+    openForm: (mode, permission) => {
+        console.log('Store openForm called with:', { mode, permission })
+        set(() => ({ isFormOpen: true, formMode: mode, selectedPermissionForForm: permission }))
+    },
+    closeForm: () => {
+        console.log('Store closeForm called')
+        set(() => ({ isFormOpen: false, selectedPermissionForForm: null }))
+    },
 }))

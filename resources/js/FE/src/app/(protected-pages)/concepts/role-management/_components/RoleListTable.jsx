@@ -68,6 +68,8 @@ const RoleListTable = ({
 
     const openForm = useRoleListStore((state) => state.openForm)
     const handleEdit = (role) => {
+        console.log('🔍 RoleListTable - Edit clicked for role:', role);
+        console.log('🔍 RoleListTable - Role permissions:', role.permissions);
         openForm('edit', role)
     }
 

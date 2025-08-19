@@ -20,7 +20,7 @@ class RoleService
 
     public function getAllRoles(Request $request)
     {
-        $query = $this->roleRepository->getModel()->query();
+        $query = $this->roleRepository->getModel()->query()->with('permissions');
 
         if (!$request->has('sort')) {
             $query->latest();

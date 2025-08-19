@@ -17,6 +17,8 @@ const PermissionManagementClient = ({ data, params }) => {
     const closeForm = usePermissionListStore((state) => state.closeForm)
     const t = useTranslations('permissionManagement')
 
+    console.log('PermissionManagementClient render - formMode:', formMode, 'selectedPermissionForForm:', selectedPermissionForForm)
+
     return (
         <PermissionListProvider permissionList={data.list}>
             <Container>
@@ -40,6 +42,7 @@ const PermissionManagementClient = ({ data, params }) => {
                 onRequestClose={closeForm}
             >
                 <PermissionForm 
+                    key={`${formMode}-${selectedPermissionForForm?.id || 'new'}`}
                     mode={formMode} 
                     permission={selectedPermissionForForm} 
                     onClose={closeForm} 

@@ -76,14 +76,14 @@ const managementNavigationConfig = [
                 key: 'management.proxyManagement',
                 path: `${CONCEPTS_PREFIX_PATH}/proxy-management`,
                 title: 'Proxy Management',
-                translateKey: 'nav.management.managementProxyManagement.proxyManagement',
+                translateKey: 'nav.conceptsProxyManagement.proxyManagement',
                 icon: 'connection',
                 type: NAV_ITEM_TYPE_ITEM,
                 authority: [ADMIN],
                 permissions: ['proxies.view'],
                 meta: {
                     description: {
-                        translateKey: 'nav.management.managementProxyManagement.proxyManagementDesc',
+                        translateKey: 'nav.conceptsProxyManagement.proxyManagementDesc',
                         label: 'Manage proxy servers',
                     },
                 },

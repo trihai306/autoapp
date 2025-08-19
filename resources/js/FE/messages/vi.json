@@ -54,6 +54,10 @@
             "roleManagement": "Quản lý vai trò",
             "roleManagementDesc": "Quản lý vai trò và quyền"
         },
+        "conceptsProxyManagement": {
+            "proxyManagement": "Quản lý Proxy",
+            "proxyManagementDesc": "Quản lý máy chủ proxy"
+        },
         "conceptsTransactionManagement": {
             "transactionManagement": "Quản lý giao dịch",
             "transactionManagementDesc": "Quản lý tất cả các giao dịch"
@@ -376,6 +380,106 @@
             "clear": "Xóa bộ lọc",
             "cancel": "Hủy",
             "apply": "Áp dụng"
+        }
+    },
+    "proxy-management": {
+        "title": "Quản lý Proxy",
+        "addNew": "Thêm mới",
+        "import": "Import",
+        "refresh": "Làm mới",
+        "quickSearch": "Tìm kiếm nhanh...",
+        "columns": "Cột",
+        "stats": {
+            "total": "Tổng cộng",
+            "active": "Hoạt động",
+            "inactive": "Không hoạt động",
+            "error": "Lỗi"
+        },
+        "table": {
+            "name": "Tên",
+            "host": "Host",
+            "status": "Trạng thái",
+            "country": "Quốc gia",
+            "lastUsed": "Lần cuối sử dụng",
+            "edit": "Chỉnh sửa",
+            "delete": "Xóa"
+        },
+        "status": {
+            "active": "Hoạt động",
+            "inactive": "Không hoạt động",
+            "error": "Lỗi"
+        },
+        "form": {
+            "createTitle": "Tạo Proxy mới",
+            "editTitle": "Chỉnh sửa Proxy",
+            "nameLabel": "Tên",
+            "namePlaceholder": "Nhập tên proxy",
+            "hostLabel": "Host",
+            "hostPlaceholder": "Nhập địa chỉ host",
+            "portLabel": "Port",
+            "portPlaceholder": "Nhập số port",
+            "usernameLabel": "Tên đăng nhập",
+            "usernamePlaceholder": "Nhập tên đăng nhập (tùy chọn)",
+            "passwordLabel": "Mật khẩu",
+            "passwordPlaceholder": "Nhập mật khẩu (tùy chọn)",
+            "typeLabel": "Loại",
+            "statusLabel": "Trạng thái",
+            "countryLabel": "Quốc gia",
+            "countryPlaceholder": "Nhập tên quốc gia",
+            "cityLabel": "Thành phố",
+            "cityPlaceholder": "Nhập tên thành phố",
+            "notesLabel": "Ghi chú",
+            "notesPlaceholder": "Nhập ghi chú bổ sung",
+            "cancel": "Hủy",
+            "save": "Lưu",
+            "saving": "Đang lưu...",
+            "update": "Cập nhật"
+        },
+        "test": {
+            "title": "Kiểm tra kết nối",
+            "success": "Kiểm tra kết nối thành công",
+            "error": "Kiểm tra kết nối thất bại"
+        },
+        "import": {
+            "title": "Import Proxy",
+            "description": "Nhập danh sách proxy theo định dạng: host:port:username:password (mỗi proxy một dòng)",
+            "placeholder": "192.168.1.1:8080:user:pass\n192.168.1.2:8080\n192.168.1.3:8080:user2:pass2",
+            "cancel": "Hủy",
+            "import": "Import",
+            "importing": "Đang import...",
+            "success": "Import thành công {count} proxy",
+            "error": "Lỗi khi import"
+        },
+        "bulkAction": {
+            "selected": "Đã chọn {count} mục",
+            "delete": "Xóa",
+            "activate": "Kích hoạt",
+            "deactivate": "Vô hiệu hóa",
+            "clear": "Xóa lựa chọn"
+        },
+        "bulkDeleteConfirm": {
+            "title": "Xác nhận xóa",
+            "content": "Bạn có chắc chắn muốn xóa {count} proxy đã chọn?",
+            "cancel": "Hủy",
+            "delete": "Xóa"
+        },
+        "deleteConfirm": {
+            "title": "Xác nhận xóa",
+            "content": "Bạn có chắc chắn muốn xóa proxy này?",
+            "confirmText": "Xóa"
+        },
+        "messages": {
+            "created": "Tạo proxy thành công",
+            "updated": "Cập nhật proxy thành công",
+            "deleted": "Xóa proxy thành công",
+            "bulkDeleted": "Xóa thành công {count} proxy",
+            "statusUpdated": "Cập nhật trạng thái proxy thành công",
+            "error": "Đã xảy ra lỗi"
+        },
+        "validation": {
+            "nameRequired": "Tên proxy là bắt buộc",
+            "hostRequired": "Địa chỉ host là bắt buộc",
+            "portRequired": "Số port là bắt buộc"
         }
     }
 }

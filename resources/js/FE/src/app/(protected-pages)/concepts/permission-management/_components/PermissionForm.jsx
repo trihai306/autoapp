@@ -23,6 +23,9 @@ const validationSchema = z.object({
 const PermissionForm = ({ mode = 'add', permission, onClose }) => {
     const router = useRouter()
     const t = useTranslations('permissionManagement.form')
+    
+    console.log('PermissionForm props:', { mode, permission, onClose })
+    
     const {
         control,
         handleSubmit,
@@ -34,9 +37,42 @@ const PermissionForm = ({ mode = 'add', permission, onClose }) => {
     })
 
     useEffect(() => {
+        console.log('PermissionForm useEffect - mode:', mode, 'permission:', permission)
         if (mode === 'edit' && permission) {
+            console.log('Setting form data for edit:', permission.name)
             reset({ name: permission.name })
         } else {
+            console.log('Setting form data for add or no permission')
+            reset({ name: '' })
+        }
+    }, [mode, permission, reset])
+
+    // Thêm useEffect riêng để theo dõi thay đổi của permission
+    useEffect(() => {
+        console.log('PermissionForm permission changed:', permission)
+        if (permission && mode === 'edit') {
+            console.log('Resetting form with permission data:', permission.name)
+            reset({ name: permission.name })
+        }
+    }, [permission, mode, reset])
+
+    // Thêm useEffect để theo dõi thay đổi của mode
+    useEffect(() => {
+        console.log('PermissionForm mode changed:', mode)
+        if (mode === 'add') {
+            console.log('Resetting form for add mode')
+            reset({ name: '' })
+        }
+    }, [mode, reset])
+
+    // Thêm useEffect để theo dõi thay đổi của isFormOpen
+    useEffect(() => {
+        console.log('PermissionForm isFormOpen changed, mode:', mode, 'permission:', permission)
+        if (mode === 'edit' && permission) {
+            console.log('Form opened for edit, setting data:', permission.name)
+            reset({ name: permission.name })
+        } else if (mode === 'add') {
+            console.log('Form opened for add, clearing data')
             reset({ name: '' })
         }
     }, [mode, permission, reset])

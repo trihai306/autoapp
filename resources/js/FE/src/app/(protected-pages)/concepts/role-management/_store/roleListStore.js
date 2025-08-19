@@ -33,6 +33,13 @@ export const useRoleListStore = create((set) => ({
     setSelectAllRole: (rows) => set(() => ({ selectedRole: rows })),
     setRoleList: (roleList) => set(() => ({ roleList })),
     setInitialLoading: (payload) => set(() => ({ initialLoading: payload })),
-    openForm: (mode, role) => set(() => ({ isFormOpen: true, formMode: mode, selectedRoleForForm: role })),
-    closeForm: () => set(() => ({ isFormOpen: false, selectedRoleForForm: null })),
+    openForm: (mode, role) => {
+        console.log('🔍 RoleListStore - openForm called:', { mode, role });
+        console.log('🔍 RoleListStore - Role permissions:', role?.permissions);
+        set(() => ({ isFormOpen: true, formMode: mode, selectedRoleForForm: role }))
+    },
+    closeForm: () => {
+        console.log('🔍 RoleListStore - closeForm called');
+        set(() => ({ isFormOpen: false, selectedRoleForForm: null }))
+    },
 }))

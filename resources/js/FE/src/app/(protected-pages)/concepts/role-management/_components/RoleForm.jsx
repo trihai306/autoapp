@@ -161,6 +161,8 @@ const RoleForm = ({ mode = 'add', role, onClose }) => {
     const [totalPermissions, setTotalPermissions] = useState(0)
     const [perPage] = useState(12) // Show 12 permissions per page
     const t = useTranslations('roleManagement.form')
+
+    console.log('🔍 RoleForm - Component props:', { mode, role: role?.name, roleId: role?.id });
     const {
         control,
         handleSubmit,
@@ -173,6 +175,25 @@ const RoleForm = ({ mode = 'add', role, onClose }) => {
     })
 
     const selectedPermissions = watch('permissions') || []
+
+    // Debug selectedPermissions changes
+    useEffect(() => {
+        console.log('🎯 RoleForm - selectedPermissions changed:', selectedPermissions);
+        console.log('🎯 RoleForm - selectedPermissions count:', selectedPermissions.length);
+    }, [selectedPermissions]);
+
+    // Debug when role prop changes
+    useEffect(() => {
+        console.log('🔍 RoleForm - Role prop changed:', role);
+        if (role) {
+            console.log('🔍 RoleForm - Role details:', {
+                id: role.id,
+                name: role.name,
+                permissions: role.permissions,
+                permissionsCount: role.permissions?.length || 0
+            });
+        }
+    }, [role]);
 
     // Fetch permissions with pagination
     const fetchPermissions = async (page = 1, search = '') => {
@@ -241,35 +262,63 @@ const RoleForm = ({ mode = 'add', role, onClose }) => {
 
     useEffect(() => {
         if (role && allPermissions.length > 0) {
-            // console.log('Setting form data for role:', role);
-            // console.log('Role permissions:', role.permissions);
+            console.log('🔍 RoleForm - Setting form data for role:', role);
+            console.log('🔍 RoleForm - Role permissions:', role.permissions);
+            console.log('🔍 RoleForm - All permissions loaded:', allPermissions.length);
             
             const permissionIds = role.permissions?.map(p => {
                 // Handle both cases: permission object with id, or just permission name
                 if (typeof p === 'object' && p.id) {
+                    console.log('📌 Found permission with ID:', p.id, p.name);
                     return p.id;
                 } else if (typeof p === 'string') {
                     // Find permission by name in allPermissions
                     const found = allPermissions.find(ap => ap.name === p);
+                    console.log('📌 Finding permission by name:', p, found ? `Found ID: ${found.id}` : 'Not found');
                     return found?.id;
                 } else if (p.name) {
                     // Permission object with name but no id
                     const found = allPermissions.find(ap => ap.name === p.name);
+                    console.log('📌 Finding permission by object name:', p.name, found ? `Found ID: ${found.id}` : 'Not found');
                     return found?.id;
                 }
+                console.log('⚠️ Unknown permission format:', p);
                 return null;
             }).filter(Boolean) || [];
             
-            // console.log('Mapped permission IDs:', permissionIds);
+            console.log('✅ RoleForm - Mapped permission IDs:', permissionIds);
+            console.log('✅ RoleForm - Setting form data:', { name: role.name, permissions: permissionIds });
             
             reset({ 
                 name: role.name, 
                 permissions: permissionIds
             });
         } else if (!role) {
+            console.log('🔄 RoleForm - Resetting form for new role');
             reset({ name: '', permissions: [] });
+        } else {
+            console.log('⏳ RoleForm - Waiting for permissions to load...', { 
+                hasRole: !!role, 
+                allPermissionsCount: allPermissions.length 
+            });
         }
     }, [role, allPermissions, reset])
+
+    // Additional effect to ensure form reset when mode changes
+    useEffect(() => {
+        console.log('🔄 RoleForm - Mode changed:', mode);
+        if (mode === 'add') {
+            console.log('🔄 RoleForm - Resetting for add mode');
+            reset({ name: '', permissions: [] });
+        }
+    }, [mode, reset]);
+
+    // Effect to reset form when role changes but allPermissions is not ready yet
+    useEffect(() => {
+        if (mode === 'edit' && role && allPermissions.length === 0) {
+            console.log('⏳ RoleForm - Role available but permissions not loaded yet');
+        }
+    }, [mode, role, allPermissions]);
 
     const onSubmit = async (values) => {
         try {
