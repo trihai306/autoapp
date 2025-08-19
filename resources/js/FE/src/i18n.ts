@@ -53,6 +53,7 @@ async function loadModuleMessages(locale) {
         const accountMessages = (await import(`../messages/modules/account/${locale}.json`)).default
         const accountTaskManagementMessages = (await import(`../messages/modules/account-task-management/${locale}.json`)).default
         const tiktokAccountManagementMessages = (await import(`../messages/modules/tiktok-account-management/${locale}.json`)).default
+        const proxyManagementMessages = (await import(`../messages/proxy-management/${locale}.json`)).default
 
         return {
             ...authMessages,
@@ -63,6 +64,7 @@ async function loadModuleMessages(locale) {
             ...accountMessages,
             ...accountTaskManagementMessages,
             ...tiktokAccountManagementMessages,
+            ...proxyManagementMessages,
         }
     } catch (error) {
         console.warn(`Failed to load module messages for locale ${locale}:`, error.message)
@@ -77,6 +79,7 @@ async function loadModuleMessages(locale) {
         const accountMessages = (await import(`../messages/modules/account/${fallbackLocale}.json`)).default
         const accountTaskManagementMessages = (await import(`../messages/modules/account-task-management/${fallbackLocale}.json`)).default
         const tiktokAccountManagementMessages = (await import(`../messages/modules/tiktok-account-management/${fallbackLocale}.json`)).default
+        const proxyManagementMessages = (await import(`../messages/proxy-management/${fallbackLocale}.json`)).default
 
         return {
             ...authMessages,
@@ -87,6 +90,7 @@ async function loadModuleMessages(locale) {
             ...accountMessages,
             ...accountTaskManagementMessages,
             ...tiktokAccountManagementMessages,
+            ...proxyManagementMessages,
         }
     }
 }

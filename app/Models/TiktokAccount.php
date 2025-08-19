@@ -27,9 +27,6 @@ class TiktokAccount extends Model
         'status',
         'notes',
         'proxy_id',
-        'proxy_port',
-        'proxy_username',
-        'proxy_password',
         'device_id',
         'scenario_id',
         'two_factor_enabled',
@@ -80,10 +77,10 @@ class TiktokAccount extends Model
         return $this->belongsTo(User::class);
     }
 
-    // public function proxy()
-    // {
-    //     return $this->belongsTo(Proxy::class);
-    // }
+    public function proxy()
+    {
+        return $this->belongsTo(Proxy::class);
+    }
 
     public function device()
     {

@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\AccountTaskController;
 use App\Http\Controllers\Api\DeviceController;
 use App\Http\Controllers\Api\ContentGroupController;
 use App\Http\Controllers\Api\ContentController;
+use App\Http\Controllers\Api\ProxyController;
 use App\Http\Controllers\RealtimeTestController;
 use App\Http\Controllers\Api\PrivateUserController;
 use Illuminate\Support\Facades\Broadcast;
@@ -165,6 +166,24 @@ Route::middleware('auth:sanctum')->group(function () {
         ->middleware('permission:account-tasks.delete');
     Route::post('tiktok-accounts/import', [\App\Http\Controllers\Api\TiktokAccountController::class, 'import'])
         ->middleware('permission:tiktok-accounts.import');
+
+    // Proxy Management
+    Route::get('proxies/active', [ProxyController::class, 'getActiveProxies'])
+        ->middleware('permission:proxies.view');
+    Route::get('proxies/stats', [ProxyController::class, 'stats'])
+        ->middleware('permission:proxies.view');
+    Route::post('proxies/bulk-delete', [ProxyController::class, 'bulkDelete'])
+        ->middleware('permission:proxies.delete');
+    Route::post('proxies/bulk-update-status', [ProxyController::class, 'bulkUpdateStatus'])
+        ->middleware('permission:proxies.edit');
+    Route::post('proxies/import', [ProxyController::class, 'import'])
+        ->middleware('permission:proxies.create');
+    Route::post('proxies/{proxy}/test-connection', [ProxyController::class, 'testConnection'])
+        ->middleware('permission:proxies.edit');
+    Route::get('proxies/{proxy}/full-url', [ProxyController::class, 'getFullUrl'])
+        ->middleware('permission:proxies.view');
+    Route::apiResource('proxies', ProxyController::class)
+        ->middleware('permission:proxies.view');
 
     // Content Management
     Route::apiResource('content-groups', ContentGroupController::class)

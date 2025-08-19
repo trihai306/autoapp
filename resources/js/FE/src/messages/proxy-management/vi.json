@@ -1,0 +1,155 @@
+{
+    "title": "Quản lý Proxy",
+    "description": "Quản lý máy chủ proxy cho tài khoản TikTok",
+    "quickSearch": "Tìm kiếm proxy...",
+    "filter": "Lọc",
+    "refresh": "Làm mới",
+    "addNew": "Thêm Proxy Mới",
+    "import": "Nhập Proxy",
+    "export": "Xuất Proxy",
+    "bulkActions": "Thao tác hàng loạt",
+    "clearSelection": "Bỏ chọn",
+    "selected": "Đã chọn {{count}} proxy",
+    
+    "table": {
+        "name": "Tên",
+        "host": "Máy chủ",
+        "port": "Cổng",
+        "type": "Loại",
+        "status": "Trạng thái",
+        "country": "Quốc gia",
+        "city": "Thành phố",
+        "lastUsed": "Lần cuối sử dụng",
+        "lastTested": "Lần cuối kiểm tra",
+        "actions": "Thao tác"
+    },
+    
+    "status": {
+        "active": "Hoạt động",
+        "inactive": "Không hoạt động",
+        "error": "Lỗi"
+    },
+    
+    "type": {
+        "http": "HTTP",
+        "https": "HTTPS",
+        "socks4": "SOCKS4",
+        "socks5": "SOCKS5"
+    },
+    
+    "form": {
+        "title": "Thông tin Proxy",
+        "name": "Tên Proxy",
+        "namePlaceholder": "Nhập tên proxy",
+        "host": "Máy chủ",
+        "hostPlaceholder": "Nhập máy chủ proxy",
+        "port": "Cổng",
+        "portPlaceholder": "Nhập cổng proxy",
+        "username": "Tên đăng nhập",
+        "usernamePlaceholder": "Nhập tên đăng nhập (tùy chọn)",
+        "password": "Mật khẩu",
+        "passwordPlaceholder": "Nhập mật khẩu (tùy chọn)",
+        "type": "Loại Proxy",
+        "selectType": "Chọn loại proxy",
+        "status": "Trạng thái",
+        "selectStatus": "Chọn trạng thái",
+        "country": "Quốc gia",
+        "countryPlaceholder": "Nhập quốc gia (tùy chọn)",
+        "city": "Thành phố",
+        "cityPlaceholder": "Nhập thành phố (tùy chọn)",
+        "notes": "Ghi chú",
+        "notesPlaceholder": "Nhập ghi chú (tùy chọn)",
+        "cancel": "Hủy",
+        "save": "Lưu",
+        "update": "Cập nhật"
+    },
+    
+    "bulkAction": {
+        "delete": "Xóa đã chọn",
+        "activate": "Kích hoạt đã chọn",
+        "deactivate": "Vô hiệu hóa đã chọn",
+        "test": "Kiểm tra đã chọn"
+    },
+    
+    "deleteConfirm": {
+        "title": "Xác nhận xóa",
+        "content": "Bạn có chắc chắn muốn xóa {{count}} proxy đã chọn? Hành động này không thể hoàn tác.",
+        "singleContent": "Bạn có chắc chắn muốn xóa proxy này? Hành động này không thể hoàn tác.",
+        "cancel": "Hủy",
+        "delete": "Xóa"
+    },
+    
+    "filterForm": {
+        "title": "Lọc Proxy",
+        "name": "Tên",
+        "namePlaceholder": "Tìm kiếm theo tên...",
+        "host": "Máy chủ",
+        "hostPlaceholder": "Tìm kiếm theo máy chủ...",
+        "type": "Loại",
+        "selectType": "Chọn loại",
+        "status": "Trạng thái",
+        "selectStatus": "Chọn trạng thái",
+        "country": "Quốc gia",
+        "countryPlaceholder": "Tìm kiếm theo quốc gia...",
+        "city": "Thành phố",
+        "cityPlaceholder": "Tìm kiếm theo thành phố...",
+        "cancel": "Hủy",
+        "apply": "Áp dụng",
+        "reset": "Đặt lại"
+    },
+    
+    "import": {
+        "title": "Nhập Proxy",
+        "description": "Nhập proxy từ danh sách. Mỗi dòng chứa: máy_chủ:cổng:tên_đăng_nhập:mật_khẩu:loại",
+        "placeholder": "Nhập danh sách proxy (mỗi dòng một proxy)\nVí dụ:\n192.168.1.1:8080:user:pass:http\n10.0.0.1:3128::socks5",
+        "cancel": "Hủy",
+        "import": "Nhập",
+        "success": "Đã nhập thành công {{count}} proxy",
+        "error": "Không thể nhập proxy"
+    },
+    
+    "test": {
+        "title": "Kiểm tra kết nối",
+        "testing": "Đang kiểm tra kết nối...",
+        "success": "Kết nối thành công",
+        "error": "Kết nối thất bại",
+        "timeout": "Kết nối bị timeout"
+    },
+    
+    "stats": {
+        "title": "Thống kê Proxy",
+        "total": "Tổng số Proxy",
+        "active": "Hoạt động",
+        "inactive": "Không hoạt động",
+        "error": "Lỗi",
+        "byType": "Theo loại",
+        "byCountry": "Theo quốc gia"
+    },
+    
+    "messages": {
+        "created": "Đã tạo proxy thành công",
+        "updated": "Đã cập nhật proxy thành công",
+        "deleted": "Đã xóa proxy thành công",
+        "bulkDeleted": "Đã xóa {{count}} proxy thành công",
+        "statusUpdated": "Đã cập nhật trạng thái thành công",
+        "testSuccess": "Kiểm tra kết nối thành công",
+        "testFailed": "Kiểm tra kết nối thất bại",
+        "importSuccess": "Đã nhập {{count}} proxy thành công",
+        "importFailed": "Không thể nhập proxy",
+        "error": "Đã xảy ra lỗi"
+    },
+    
+    "validation": {
+        "nameRequired": "Tên là bắt buộc",
+        "hostRequired": "Máy chủ là bắt buộc",
+        "portRequired": "Cổng là bắt buộc",
+        "portNumber": "Cổng phải là số từ 1 đến 65535",
+        "invalidHost": "Định dạng máy chủ không hợp lệ",
+        "invalidPort": "Số cổng không hợp lệ"
+    },
+    
+    "navigation": {
+        "proxyManagement": "Quản lý Proxy",
+        "proxyManagementDesc": "Quản lý máy chủ proxy"
+    }
+}

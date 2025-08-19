@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             TransactionSeeder::class,
             InteractionScenarioSeeder::class, // Tạo scenarios trước
             DeviceSeeder::class, // Tạo devices trước
+            ProxySeeder::class, // Tạo proxies trước
             TiktokAccountSeeder::class, // Tạo accounts sau khi có scenarios
             AccountTaskSeeder::class, // Tạo tasks cuối cùng
         ]);

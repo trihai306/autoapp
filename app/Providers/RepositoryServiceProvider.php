@@ -33,6 +33,8 @@ use App\Repositories\ContentGroupRepositoryInterface;
 use App\Repositories\Eloquent\ContentGroupRepository;
 use App\Repositories\ContentRepositoryInterface;
 use App\Repositories\Eloquent\ContentRepository;
+use App\Repositories\ProxyRepositoryInterface;
+use App\Repositories\Eloquent\ProxyRepository;
 use App\Services\Interfaces\DeviceServiceInterface;
 use App\Services\DeviceService;
 
@@ -58,6 +60,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(TiktokAccountRepositoryInterface::class, TiktokAccountRepository::class);
         $this->app->bind(ContentGroupRepositoryInterface::class, ContentGroupRepository::class);
         $this->app->bind(ContentRepositoryInterface::class, ContentRepository::class);
+        $this->app->bind(ProxyRepositoryInterface::class, ProxyRepository::class);
         
         // Bind DeviceServiceInterface với DeviceService
         $this->app->bind(DeviceServiceInterface::class, DeviceService::class);
