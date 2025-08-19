@@ -34,7 +34,7 @@ class ProxyFactory extends Factory
             'city' => $this->faker->optional()->city(),
             'notes' => $this->faker->optional()->sentence(),
             'last_used_at' => $this->faker->optional()->dateTimeThisMonth(),
-            'last_tested_at' => $this->faker->optional()->dateTimeThisWeek(),
+            'last_tested_at' => $this->faker->optional()->dateTimeBetween('-1 week', 'now'),
         ];
     }
 
