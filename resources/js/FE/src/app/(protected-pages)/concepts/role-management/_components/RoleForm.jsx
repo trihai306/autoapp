@@ -162,7 +162,7 @@ const RoleForm = ({ mode = 'add', role, onClose }) => {
     const [perPage] = useState(12) // Show 12 permissions per page
     const t = useTranslations('roleManagement.form')
 
-    console.log('🔍 RoleForm - Component props:', { mode, role: role?.name, roleId: role?.id });
+
     const {
         control,
         handleSubmit,
@@ -176,11 +176,11 @@ const RoleForm = ({ mode = 'add', role, onClose }) => {
 
     const selectedPermissions = watch('permissions') || []
 
-    // Debug selectedPermissions changes
-    useEffect(() => {
-        console.log('🎯 RoleForm - selectedPermissions changed:', selectedPermissions);
-        console.log('🎯 RoleForm - selectedPermissions count:', selectedPermissions.length);
-    }, [selectedPermissions]);
+
+
+    // Force re-render when form values change
+    const [forceUpdate, setForceUpdate] = useState(0);
+    const triggerUpdate = () => setForceUpdate(prev => prev + 1);
 
     // Debug when role prop changes
     useEffect(() => {
@@ -289,10 +289,22 @@ const RoleForm = ({ mode = 'add', role, onClose }) => {
             console.log('✅ RoleForm - Mapped permission IDs:', permissionIds);
             console.log('✅ RoleForm - Setting form data:', { name: role.name, permissions: permissionIds });
             
+            // Use setValue instead of reset to avoid form state issues
             reset({ 
                 name: role.name, 
                 permissions: permissionIds
             });
+            
+            // Force update the form values to ensure selectedPermissions is updated
+            setTimeout(() => {
+                console.log('🔄 RoleForm - Force updating form after reset');
+                reset({ 
+                    name: role.name, 
+                    permissions: permissionIds
+                });
+                // Trigger re-render to update selectedPermissions display
+                triggerUpdate();
+            }, 100);
         } else if (!role) {
             console.log('🔄 RoleForm - Resetting form for new role');
             reset({ name: '', permissions: [] });
@@ -319,6 +331,17 @@ const RoleForm = ({ mode = 'add', role, onClose }) => {
             console.log('⏳ RoleForm - Role available but permissions not loaded yet');
         }
     }, [mode, role, allPermissions]);
+
+    // Effect to monitor form values changes
+    useEffect(() => {
+        const subscription = watch((value, { name }) => {
+            if (name === 'permissions') {
+                console.log('🔄 RoleForm - Form permissions field changed:', value.permissions);
+                console.log('🔄 RoleForm - New permissions count:', value.permissions?.length || 0);
+            }
+        });
+        return () => subscription.unsubscribe();
+    }, [watch]);
 
     const onSubmit = async (values) => {
         try {

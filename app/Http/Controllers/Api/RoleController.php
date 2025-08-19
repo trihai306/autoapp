@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Role;
+use Spatie\Permission\Models\Role;
 use App\Services\RoleService;
 use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
@@ -29,7 +29,7 @@ class RoleController extends Controller
      * Retrieve a paginated list of roles.
      * Supports searching and sorting.
      *
-     * @response \Illuminate\Pagination\LengthAwarePaginator<App\Models\Role>
+     * @response \Illuminate\Pagination\LengthAwarePaginator<\Spatie\Permission\Models\Role>
      */
     #[QueryParameter('search', description: 'Search for roles by name.', example: 'admin')]
     #[QueryParameter('sort', description: 'Sort by `name` or `created_at`. Prefix with `-` for descending.', example: '-name')]
@@ -44,7 +44,7 @@ class RoleController extends Controller
      * Create a new role
      *
      * Creates a new role and optionally assigns permissions to it.
-     * @response \App\Models\Role
+     * @response \Spatie\Permission\Models\Role
      */
     public function store(Request $request)
     {
@@ -55,8 +55,8 @@ class RoleController extends Controller
     /**
      * Get a specific role
      *
-     * @param Role $role The role model instance.
-     * @response \App\Models\Role
+     * @param \Spatie\Permission\Models\Role $role The role model instance.
+     * @response \Spatie\Permission\Models\Role
      */
     public function show(Role $role)
     {
@@ -66,8 +66,8 @@ class RoleController extends Controller
     /**
      * Update a role
      *
-     * @param Role $role The role model instance.
-     * @response \App\Models\Role
+     * @param \Spatie\Permission\Models\Role $role The role model instance.
+     * @response \Spatie\Permission\Models\Role
      */
     public function update(Request $request, Role $role)
     {
@@ -78,7 +78,7 @@ class RoleController extends Controller
     /**
      * Delete a role
      *
-     * @param Role $role The role model instance.
+     * @param \Spatie\Permission\Models\Role $role The role model instance.
      */
     public function destroy(Role $role)
     {

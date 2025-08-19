@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Role;
+use Spatie\Permission\Models\Role;
 use App\Queries\BaseQuery;
 use App\Repositories\RoleRepositoryInterface;
 use Illuminate\Http\Request;
@@ -20,13 +20,23 @@ class RoleService
 
     public function getAllRoles(Request $request)
     {
-        $query = $this->roleRepository->getModel()->query()->with('permissions');
+        $query = $this->roleRepository->getModel()->query();
 
         if (!$request->has('sort')) {
             $query->latest();
         }
 
-        return BaseQuery::for($query, $request)->paginate();
+        // Apply BaseQuery filters first
+        $result = BaseQuery::for($query, $request)->paginate();
+        
+        // Then load permissions for each role in the result
+        if (isset($result['data'])) {
+            $result['data'] = collect($result['data'])->map(function ($role) {
+                return $role->load('permissions');
+            })->toArray();
+        }
+        
+        return $result;
     }
 
     public function createRole(array $data): Role
