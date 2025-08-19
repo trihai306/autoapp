@@ -154,8 +154,9 @@ resources/js/FE/src/messages/proxy-management/
 - `validation.invalidPort`: Số cổng không hợp lệ
 
 ### 14. Navigation
-- `navigation.proxyManagement`: Quản lý Proxy
-- `navigation.proxyManagementDesc`: Mô tả quản lý proxy
+Navigation keys được định nghĩa trong file bản dịch chính (`resources/js/FE/messages/en.json` và `vi.json`):
+- `nav.management.managementProxyManagement.proxyManagement`: Quản lý Proxy
+- `nav.management.managementProxyManagement.proxyManagementDesc`: Mô tả quản lý proxy
 
 ## Cách sử dụng
 
@@ -213,11 +214,11 @@ File `resources/js/FE/src/configs/navigation.config/management.navigation.config
     key: 'management.proxyManagement',
     path: `${CONCEPTS_PREFIX_PATH}/proxy-management`,
     title: 'Proxy Management',
-    translateKey: 'navigation.proxyManagement',
+    translateKey: 'nav.management.managementProxyManagement.proxyManagement',
     // ...
     meta: {
         description: {
-            translateKey: 'navigation.proxyManagementDesc',
+            translateKey: 'nav.management.managementProxyManagement.proxyManagementDesc',
             label: 'Manage proxy servers',
         },
     },

@@ -146,10 +146,5 @@
         "portNumber": "Port must be a number between 1 and 65535",
         "invalidHost": "Invalid host format",
         "invalidPort": "Invalid port number"
-    },
-    
-    "navigation": {
-        "proxyManagement": "Proxy Management",
-        "proxyManagementDesc": "Manage proxy servers"
     }
 }

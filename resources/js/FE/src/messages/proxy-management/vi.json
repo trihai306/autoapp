@@ -146,10 +146,5 @@
         "portNumber": "Cổng phải là số từ 1 đến 65535",
         "invalidHost": "Định dạng máy chủ không hợp lệ",
         "invalidPort": "Số cổng không hợp lệ"
-    },
-    
-    "navigation": {
-        "proxyManagement": "Quản lý Proxy",
-        "proxyManagementDesc": "Quản lý máy chủ proxy"
     }
 }

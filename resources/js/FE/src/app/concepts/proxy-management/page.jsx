@@ -2,7 +2,16 @@
 
 import { useState, useEffect } from 'react'
 import { Card, Button, Input, Select, Badge, Modal, Form, message, Table, Space, Tooltip, Popconfirm } from 'antd'
-import { PlusOutlined, EditOutlined, DeleteOutlined, ReloadOutlined, ImportOutlined, ExportOutlined, EyeOutlined, PlayCircleOutlined } from '@ant-design/icons'
+import { 
+    PiPlusDuotone, 
+    PiPencilSimpleLineDuotone, 
+    PiTrashDuotone, 
+    PiArrowClockwiseDuotone, 
+    PiUploadDuotone, 
+    PiDownloadDuotone, 
+    PiEyeDuotone, 
+    PiPlayCircleDuotone 
+} from 'react-icons/pi'
 import { useTranslations } from 'next-intl'
 import getProxies from '@/server/actions/proxy/getProxies'
 import createProxy from '@/server/actions/proxy/createProxy'
@@ -299,14 +308,14 @@ export default function ProxyManagementPage() {
                     <Tooltip title={t('test.title')}>
                         <Button
                             type="text"
-                            icon={<PlayCircleOutlined />}
+                            icon={<PiPlayCircleDuotone />}
                             onClick={() => handleTestConnection(record.id)}
                         />
                     </Tooltip>
                     <Tooltip title={t('form.update')}>
                         <Button
                             type="text"
-                            icon={<EditOutlined />}
+                            icon={<PiPencilSimpleLineDuotone />}
                             onClick={() => {
                                 setEditingProxy(record)
                                 form.setFieldsValue(record)
@@ -321,7 +330,7 @@ export default function ProxyManagementPage() {
                         cancelText={t('deleteConfirm.cancel')}
                     >
                         <Tooltip title={t('deleteConfirm.delete')}>
-                            <Button type="text" danger icon={<DeleteOutlined />} />
+                            <Button type="text" danger icon={<PiTrashDuotone />} />
                         </Tooltip>
                     </Popconfirm>
                 </Space>
@@ -374,7 +383,7 @@ export default function ProxyManagementPage() {
                         </div>
                         <div className="flex gap-2">
                             <Button
-                                icon={<PlusOutlined />}
+                                icon={<PiPlusDuotone />}
                                 type="primary"
                                 onClick={() => {
                                     setEditingProxy(null)
@@ -385,13 +394,13 @@ export default function ProxyManagementPage() {
                                 {t('addNew')}
                             </Button>
                             <Button
-                                icon={<ImportOutlined />}
+                                icon={<PiUploadDuotone />}
                                 onClick={() => setImportModalVisible(true)}
                             >
                                 {t('import')}
                             </Button>
                             <Button
-                                icon={<ReloadOutlined />}
+                                icon={<PiArrowClockwiseDuotone />}
                                 onClick={() => loadProxies(pagination.current, pagination.pageSize, filters)}
                             >
                                 {t('refresh')}

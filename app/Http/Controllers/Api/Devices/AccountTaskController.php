@@ -22,7 +22,7 @@ class AccountTaskController extends Controller
         $tasks = AccountTask::where('device_id', $device->id)
             ->pending()
             ->scheduled()
-            ->with(['scenario', 'account'])
+            ->with(['scenario', 'account.proxy'])
             ->orderBy('priority', 'desc')
             ->orderBy('id')
             ->get();

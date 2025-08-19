@@ -92,6 +92,7 @@ import {
     PiCircleHalfTiltDuotone,
     PiHouseLineDuotone,
     PiKanbanDuotone,
+    PiGlobeDuotone,
 } from 'react-icons/pi'
 
 const navigationIcon = {
@@ -172,6 +173,7 @@ const navigationIcon = {
     accountActivityLogs: <PiFileTextDuotone />,
     accountRoleAndPermission: <PiUserGearDuotone />,
     accountPricing: <PiCurrencyCircleDollarDuotone />,
+    connection: <PiGlobeDuotone />,
     ai: <PiSparkleDuotone />,
     aiChat: <PiChatCenteredDotsDuotone />,
     aiImage: <PiImagesDuotone />,

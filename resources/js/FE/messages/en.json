@@ -272,6 +272,25 @@
             "sharedComponentDoc": "Shared Component",
             "utilsDoc": "Utilities",
             "changeLog": "Changelog"
+        },
+        "management": {
+            "management": "Management",
+            "managementUserManagement": {
+                "userManagement": "User Management",
+                "userManagementDesc": "Manage users and permissions"
+            },
+            "managementPermissionManagement": {
+                "permissionManagement": "Permission Management",
+                "permissionManagementDesc": "Manage permissions"
+            },
+            "managementRoleManagement": {
+                "roleManagement": "Role Management",
+                "roleManagementDesc": "Manage roles and permissions"
+            },
+            "managementProxyManagement": {
+                "proxyManagement": "Proxy Management",
+                "proxyManagementDesc": "Manage proxy servers"
+            }
         }
     },
     "deviceManagement": {

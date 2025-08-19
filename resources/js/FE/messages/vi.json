@@ -285,6 +285,25 @@
             "sharedComponentDoc": "Thành phần được chia sẻ",
             "utilsDoc": "Tiện ích",
             "changeLog": "Nhật ký thay đổi"
+        },
+        "management": {
+            "management": "Quản lý",
+            "managementUserManagement": {
+                "userManagement": "Quản lý người dùng",
+                "userManagementDesc": "Quản lý người dùng và quyền hạn"
+            },
+            "managementPermissionManagement": {
+                "permissionManagement": "Quản lý quyền hạn",
+                "permissionManagementDesc": "Quản lý quyền hạn"
+            },
+            "managementRoleManagement": {
+                "roleManagement": "Quản lý vai trò",
+                "roleManagementDesc": "Quản lý vai trò và quyền hạn"
+            },
+            "managementProxyManagement": {
+                "proxyManagement": "Quản lý Proxy",
+                "proxyManagementDesc": "Quản lý máy chủ proxy"
+            }
         }
     },
     "deviceManagement": {
