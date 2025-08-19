@@ -22,15 +22,7 @@ const Page = () => {
 AUTH_SECRET=your-secret-key
 
 # Base URL for NextAuth callbacks
-NEXTAUTH_URL=http://localhost:3000
-
-# OAuth Provider (Google)
-GOOGLE_AUTH_CLIENT_ID=your-google-client-id
-GOOGLE_AUTH_CLIENT_SECRET=GOCSPX-your-google-secret
-
-# OAuth Provider (Github)
-GITHUB_AUTH_CLIENT_ID=your-github-client-id
-GITHUB_AUTH_CLIENT_SECRET=your-github-secret`}</SyntaxHighlighter>
+NEXTAUTH_URL=http://localhost:3000`}</SyntaxHighlighter>
                 <ul>
                     <li>
                         <strong>
@@ -46,15 +38,7 @@ GITHUB_AUTH_CLIENT_SECRET=your-github-secret`}</SyntaxHighlighter>
                         callbacks. Update this in production to match your
                         deployed domain.
                     </li>
-                    <li>
-                        <strong>
-                            <code>GOOGLE_CLIENT_ID</code>,
-                            <code>GOOGLE_CLIENT_SECRET</code>,{' '}
-                            <code>GITHUB_CLIENT_ID</code>,
-                            <code>GITHUB_CLIENT_SECRET</code>
-                        </strong>
-                        , : Credentials for integrating with OAuth.
-                    </li>
+
                 </ul>
                 <p>
                     In our template, the NextAuth configuration is centralized
@@ -82,13 +66,10 @@ GITHUB_AUTH_CLIENT_SECRET=your-github-secret`}</SyntaxHighlighter>
 import type { NextAuthConfig } from "next-auth";
 import validateCredential from "../server/actions/user/validateCredential";
 import Credentials from "next-auth/providers/credentials";
-import Github from "next-auth/providers/github";
-import Google from "next-auth/providers/google";
 import type { SignInCredential } from "@/@types/auth";
 
 export default {
     providers: [
-        ..., // other providers, e.g., Github, Google
         Credentials({
             async authorize(credentials) {
                 /** validate credentials from backend here */
@@ -168,25 +149,9 @@ export default {
             <div className="mt-10" id="oauth">
                 <h5>OAuth Integration</h5>
                 <p>
-                    NextAuth supports a wide range of OAuth providers, you can
-                    check out this{' '}
-                    <a
-                        href="https://authjs.dev/getting-started/authentication/oauth"
-                        target="_blank"
-                    >
-                        link
-                    </a>{' '}
-                    for more built in providers NextAuth supports. Below is an
-                    example of integrating Google as an OAuth provider.
+                    This application uses credentials-based authentication only.
+                    OAuth providers have been removed for simplicity and security.
                 </p>
-                <SyntaxHighlighter language="ts">{`export default {
-    providers: [
-        Google({
-            clientId: process.env.GOOGLE_AUTH_CLIENT_ID,
-            clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET,
-        }),
-    ]
-}`}</SyntaxHighlighter>
             </div>
             <div className="mt-10" id="session">
                 <h5>Accessing Sessions on Client and Server</h5>

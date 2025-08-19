@@ -21,8 +21,55 @@ class AccountTaskService
 
     public function getAll(Request $request): LengthAwarePaginator
     {
-        $query = $this->accountTaskRepository->getModel()->query();
-        return BaseQuery::for($query, $request)->paginate();
+        \Log::info('🔍 AccountTaskService::getAll - Request params:', $request->all());
+        
+        $query = $this->accountTaskRepository->getModel()->query()
+            ->with(['tiktokAccount' => function($q) {
+                $q->select('id', 'username', 'nickname', 'avatar_url');
+            }])
+            ->orderBy('created_at', 'desc'); // Sắp xếp từ mới nhất đến cũ nhất
+        
+        // Áp dụng filter trực tiếp thay vì dùng BaseQuery.handle()
+        if ($request->has('status') && !empty($request->input('status'))) {
+            $query->where('status', $request->input('status'));
+            \Log::info('🔍 AccountTaskService::getAll - Applied status filter:', ['status' => $request->input('status')]);
+        }
+        
+        if ($request->has('user_id') && !empty($request->input('user_id'))) {
+            $query->whereHas('tiktokAccount', function($q) use ($request) {
+                $q->where('user_id', $request->input('user_id'));
+            });
+            \Log::info('🔍 AccountTaskService::getAll - Applied user_id filter:', ['user_id' => $request->input('user_id')]);
+        }
+        
+        $perPage = $request->input('per_page', 20);
+        $result = $query->paginate($perPage);
+        
+        \Log::info('📊 AccountTaskService::getAll - Query result:', [
+            'total' => $result->total(),
+            'per_page' => $perPage,
+            'current_page' => $result->currentPage(),
+            'last_page' => $result->lastPage(),
+            'first_item_id' => $result->first() ? $result->first()->id : null,
+            'first_item_tiktok_account_id' => $result->first() ? $result->first()->tiktok_account_id : null,
+            'first_item_tiktok_account_loaded' => $result->first() ? ($result->first()->tiktokAccount ? 'YES' : 'NO') : null,
+        ]);
+        
+        // Log chi tiết task đầu tiên nếu có
+        if ($result->first()) {
+            $firstTask = $result->first();
+            \Log::info('🔍 AccountTaskService::getAll - First task details:', [
+                'task_id' => $firstTask->id,
+                'task_type' => $firstTask->task_type,
+                'status' => $firstTask->status,
+                'tiktok_account_id' => $firstTask->tiktok_account_id,
+                'tiktok_account_username' => $firstTask->tiktokAccount ? $firstTask->tiktokAccount->username : 'NULL',
+                'tiktok_account_nickname' => $firstTask->tiktokAccount ? $firstTask->tiktokAccount->nickname : 'NULL',
+                'tiktok_account_loaded' => $firstTask->tiktokAccount ? 'YES' : 'NO',
+            ]);
+        }
+        
+        return $result;
     }
 
     public function getById(int $id): ?AccountTask

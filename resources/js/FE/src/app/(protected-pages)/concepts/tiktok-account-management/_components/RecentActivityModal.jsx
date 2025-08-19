@@ -20,27 +20,29 @@ import {
     HiOutlineCog as Settings,
     HiOutlineDocumentText as Document,
     HiOutlinePhotograph as Photo,
-    HiOutlineUser as User
+    HiOutlineUser as User,
+    HiOutlineCalendar as Calendar,
+    HiOutlineTag as Tag
 } from 'react-icons/hi'
 import { useTranslations } from 'next-intl'
-import getRecentActivities from '@/server/actions/tiktok-account/getRecentActivities'
+import getAccountTasks from '@/server/actions/account/getAccountTasks'
 
 const RecentActivityModal = ({ isOpen, onClose }) => {
     const t = useTranslations('tiktokAccountManagement')
-    const [activities, setActivities] = useState([])
+    const [tasks, setTasks] = useState([])
     const [loading, setLoading] = useState(false)
-    const [filter, setFilter] = useState('all') // all, completed, failed, running
+    const [filter, setFilter] = useState('all') // all, completed, failed, running, pending
     const [timeRange, setTimeRange] = useState('24h') // 24h, 7d, 30d
     const [pagination, setPagination] = useState(null)
     const [error, setError] = useState(null)
 
     useEffect(() => {
         if (isOpen) {
-            loadActivities()
+            loadTasks()
         }
     }, [isOpen, filter, timeRange])
 
-    const loadActivities = async (page = 1) => {
+    const loadTasks = async (page = 1) => {
         setLoading(true)
         setError(null)
         
@@ -48,32 +50,52 @@ const RecentActivityModal = ({ isOpen, onClose }) => {
             const params = {
                 page,
                 per_page: 20,
-                status: filter === 'all' ? null : filter,
-                time_range: timeRange
+                'filter[status]': filter === 'all' ? null : filter,
+                sort: '-created_at' // Sắp xếp từ mới nhất đến cũ nhất
             }
             
-            const result = await getRecentActivities(params)
+            console.log('🔄 RecentActivityModal - Loading tasks with params:', params)
+            
+            const result = await getAccountTasks(params)
+            
+            console.log('✅ RecentActivityModal - getAccountTasks result:', result)
+            console.log('📋 RecentActivityModal - Tasks list:', result.list)
+            console.log('📊 RecentActivityModal - Tasks total:', result.total)
             
             if (result.success) {
-                setActivities(result.data.activities)
-                setPagination(result.data.pagination)
+                // Log chi tiết từng task để debug
+                if (result.list && result.list.length > 0) {
+                    console.log('🔍 RecentActivityModal - First task details:', result.list[0])
+                    console.log('🔍 RecentActivityModal - First task tiktok_account:', result.list[0]?.tiktok_account)
+                }
+                
+                setTasks(result.list || [])
+                setPagination({
+                    current_page: page,
+                    per_page: 20,
+                    total: result.total || 0,
+                    last_page: Math.ceil((result.total || 0) / 20),
+                    from: ((page - 1) * 20) + 1,
+                    to: Math.min(page * 20, result.total || 0)
+                })
             } else {
-                setError(result.message || 'Không thể tải dữ liệu hoạt động')
+                console.error('❌ RecentActivityModal - API returned error:', result.message)
+                setError(result.message || 'Không thể tải dữ liệu tác vụ')
             }
         } catch (error) {
-            console.error('Error loading activities:', error)
-            setError('Lỗi khi tải dữ liệu hoạt động')
+            console.error('❌ RecentActivityModal - Error loading tasks:', error)
+            setError('Lỗi khi tải dữ liệu tác vụ')
         } finally {
             setLoading(false)
         }
     }
 
     const handlePageChange = (page) => {
-        loadActivities(page)
+        loadTasks(page)
     }
 
-    const getActionIcon = (action) => {
-        switch (action) {
+    const getTaskTypeIcon = (taskType) => {
+        switch (taskType) {
             case 'follow_user':
                 return <UserAdd className="w-4 h-4" />
             case 'unfollow_user':
@@ -96,26 +118,29 @@ const RecentActivityModal = ({ isOpen, onClose }) => {
                 return <Photo className="w-4 h-4" />
             case 'change_name':
                 return <User className="w-4 h-4" />
+            case 'schedule_post':
+                return <Calendar className="w-4 h-4" />
             default:
-                return <Settings className="w-4 h-4" />
+                return <Tag className="w-4 h-4" />
         }
     }
 
-    const getActionText = (action) => {
-        const actionMap = {
-            'follow_user': 'Theo dõi',
-            'unfollow_user': 'Bỏ theo dõi',
+    const getTaskTypeText = (taskType) => {
+        const taskTypeMap = {
+            'follow_user': 'Theo dõi người dùng',
+            'unfollow_user': 'Bỏ theo dõi người dùng',
             'like_video': 'Thích video',
-            'comment_video': 'Bình luận',
-            'share_video': 'Chia sẻ',
+            'comment_video': 'Bình luận video',
+            'share_video': 'Chia sẻ video',
             'create_post': 'Tạo bài viết',
             'live_interaction': 'Tương tác live',
             'notification': 'Đọc thông báo',
-            'change_bio': 'Đổi tiểu sử',
+            'change_bio': 'Thay đổi tiểu sử',
             'update_avatar': 'Cập nhật avatar',
-            'change_name': 'Đổi tên'
+            'change_name': 'Thay đổi tên',
+            'schedule_post': 'Lên lịch bài viết'
         }
-        return actionMap[action] || action
+        return taskTypeMap[taskType] || taskType
     }
 
     const getStatusIcon = (status) => {
@@ -126,6 +151,10 @@ const RecentActivityModal = ({ isOpen, onClose }) => {
                 return <XCircle className="w-4 h-4 text-red-500" />
             case 'running':
                 return <Play className="w-4 h-4 text-blue-500 animate-pulse" />
+            case 'pending':
+                return <Clock className="w-4 h-4 text-yellow-500" />
+            case 'paused':
+                return <Pause className="w-4 h-4 text-orange-500" />
             default:
                 return <Clock className="w-4 h-4 text-gray-400" />
         }
@@ -139,12 +168,29 @@ const RecentActivityModal = ({ isOpen, onClose }) => {
                 return 'text-red-600 dark:text-red-400'
             case 'running':
                 return 'text-blue-600 dark:text-blue-400'
+            case 'pending':
+                return 'text-yellow-600 dark:text-yellow-400'
+            case 'paused':
+                return 'text-orange-600 dark:text-orange-400'
             default:
                 return 'text-gray-600 dark:text-gray-400'
         }
     }
 
+    const getStatusText = (status) => {
+        const statusMap = {
+            'completed': 'Hoàn thành',
+            'failed': 'Thất bại',
+            'running': 'Đang chạy',
+            'pending': 'Chờ xử lý',
+            'paused': 'Tạm dừng'
+        }
+        return statusMap[status] || status
+    }
+
     const getRelativeTime = (timestamp) => {
+        if (!timestamp) return 'Không xác định'
+        
         const date = new Date(timestamp)
         const now = new Date()
         const diff = now - date
@@ -159,7 +205,7 @@ const RecentActivityModal = ({ isOpen, onClose }) => {
     }
 
     const getFilteredCount = () => {
-        return activities.length
+        return tasks.length
     }
 
     const getTotalCount = () => {
@@ -179,17 +225,17 @@ const RecentActivityModal = ({ isOpen, onClose }) => {
                 <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
                     <div>
                         <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-                            Hoạt động gần đây
+                            Danh sách tác vụ tài khoản
                         </h2>
                         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                            Theo dõi hoạt động của tất cả tài khoản TikTok
+                            Quản lý và theo dõi các tác vụ của tài khoản TikTok
                         </p>
                     </div>
                     <div className="flex items-center gap-2">
                         <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => loadActivities(1)}
+                            onClick={() => loadTasks(1)}
                             disabled={loading}
                             className="flex items-center gap-2"
                         >
@@ -221,9 +267,11 @@ const RecentActivityModal = ({ isOpen, onClose }) => {
                                     className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                 >
                                     <option value="all">Tất cả ({getTotalCount()})</option>
-                                    <option value="completed">Thành công</option>
-                                    <option value="failed">Thất bại</option>
+                                    <option value="pending">Chờ xử lý</option>
                                     <option value="running">Đang chạy</option>
+                                    <option value="completed">Hoàn thành</option>
+                                    <option value="failed">Thất bại</option>
+                                    <option value="paused">Tạm dừng</option>
                                 </select>
                             </div>
 
@@ -245,7 +293,7 @@ const RecentActivityModal = ({ isOpen, onClose }) => {
                         </div>
 
                         <div className="text-sm text-gray-500 dark:text-gray-400">
-                            Hiển thị {getFilteredCount()} / {getTotalCount()} hoạt động
+                            Hiển thị {getFilteredCount()} / {getTotalCount()} tác vụ
                         </div>
                     </div>
                 </div>
@@ -260,88 +308,119 @@ const RecentActivityModal = ({ isOpen, onClose }) => {
                     ) : error ? (
                         <div className="text-center py-12">
                             <div className="text-red-600 dark:text-red-400 mb-4">{error}</div>
-                            <Button variant="outline" size="sm" onClick={() => loadActivities(1)}>
+                            <Button variant="outline" size="sm" onClick={() => loadTasks(1)}>
                                 Thử lại
                             </Button>
                         </div>
-                    ) : activities.length > 0 ? (
+                    ) : tasks.length > 0 ? (
                         <div className="space-y-4">
-                            {activities.map((activity) => (
+                            {tasks.map((task) => (
                                 <div
-                                    key={activity.id}
+                                    key={task.id}
                                     className="flex items-start gap-4 p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:shadow-md transition-shadow"
                                 >
                                     {/* Account Avatar */}
                                     <div className="flex-shrink-0">
                                         <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
-                                            {activity.account.username.charAt(0).toUpperCase()}
+                                            {task.tiktok_account?.username?.charAt(0)?.toUpperCase() || 
+                                             task.tiktok_account?.nickname?.charAt(0)?.toUpperCase() || 
+                                             'T'}
                                         </div>
                                     </div>
 
-                                    {/* Activity Content */}
+                                    {/* Task Content */}
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center justify-between mb-2">
                                             <div className="flex items-center gap-2">
                                                 <span className="font-medium text-gray-900 dark:text-gray-100">
-                                                    @{activity.account.username}
+                                                    @{task.tiktok_account?.username || 'Tài khoản không xác định'}
                                                 </span>
                                                 <span className="text-sm text-gray-500 dark:text-gray-400">
-                                                    ({activity.account.display_name})
+                                                    ({task.tiktok_account?.nickname || 'Không có tên hiển thị'})
                                                 </span>
                                             </div>
                                             <div className="flex items-center gap-2">
-                                                {getStatusIcon(activity.status)}
-                                                <span className={`text-sm font-medium ${getStatusColor(activity.status)}`}>
-                                                    {activity.status === 'completed' ? 'Thành công' :
-                                                     activity.status === 'failed' ? 'Thất bại' :
-                                                     activity.status === 'running' ? 'Đang chạy' : 'Chờ xử lý'}
+                                                {getStatusIcon(task.status)}
+                                                <span className={`text-sm font-medium ${getStatusColor(task.status)}`}>
+                                                    {getStatusText(task.status)}
                                                 </span>
                                             </div>
                                         </div>
 
                                         <div className="flex items-center gap-2 mb-2">
-                                            {getActionIcon(activity.action)}
+                                            {getTaskTypeIcon(task.task_type)}
                                             <span className="font-medium text-gray-900 dark:text-gray-100">
-                                                {getActionText(activity.action)}
+                                                {getTaskTypeText(task.task_type)}
                                             </span>
-                                            {activity.target && (
+                                            {task.target && (
                                                 <span className="text-sm text-gray-500 dark:text-gray-400">
-                                                    • {activity.target}
+                                                    • {task.target}
+                                                </span>
+                                            )}
+                                            {task.priority && (
+                                                <span className={`text-xs px-2 py-1 rounded-full ${
+                                                    task.priority === 'high' ? 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400' :
+                                                    task.priority === 'medium' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400' :
+                                                    'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
+                                                }`}>
+                                                    {task.priority === 'high' ? 'Cao' : 
+                                                     task.priority === 'medium' ? 'Trung bình' : 'Thấp'}
                                                 </span>
                                             )}
                                         </div>
 
                                         <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                                            {activity.details}
+                                            {task.description || 'Không có mô tả'}
                                         </p>
 
-                                        {activity.error_message && (
+                                        {task.error_message && (
                                             <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-2 rounded">
-                                                Lỗi: {activity.error_message}
+                                                Lỗi: {task.error_message}
                                             </div>
                                         )}
 
-                                        {activity.status === 'running' && activity.progress !== undefined && (
+                                        {task.status === 'running' && task.progress !== undefined && (
                                             <div className="mt-2">
                                                 <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-1">
                                                     <span>Tiến độ</span>
-                                                    <span>{activity.progress}%</span>
+                                                    <span>{task.progress || 0}%</span>
                                                 </div>
                                                 <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                                                     <div 
                                                         className="h-2 rounded-full bg-blue-500 transition-all duration-300"
-                                                        style={{ width: `${activity.progress}%` }}
+                                                        style={{ width: `${task.progress || 0}%` }}
                                                     />
                                                 </div>
                                             </div>
                                         )}
 
                                         <div className="flex items-center justify-between mt-3 text-xs text-gray-500 dark:text-gray-400">
-                                            <span>{getRelativeTime(activity.timestamp)}</span>
-                                            {activity.duration > 0 && (
-                                                <span>Thời gian: {activity.duration}s</span>
-                                            )}
+                                            <span>Được tạo: {getRelativeTime(task.created_at)}</span>
+                                            <div className="flex items-center gap-4">
+                                                {task.updated_at && task.updated_at !== task.created_at && (
+                                                    <span>Cập nhật: {getRelativeTime(task.updated_at)}</span>
+                                                )}
+                                                {task.retry_count > 0 && (
+                                                    <span className="text-orange-600 dark:text-orange-400">
+                                                        Thử lại: {task.retry_count}/{task.max_retries || 3}
+                                                    </span>
+                                                )}
+                                            </div>
                                         </div>
+
+                                        {task.scheduled_at && (
+                                            <div className="mt-2 text-xs text-blue-600 dark:text-blue-400">
+                                                <Calendar className="w-3 h-3 inline mr-1" />
+                                                Lên lịch: {getRelativeTime(task.scheduled_at)}
+                                            </div>
+                                        )}
+
+                                        {task.started_at && task.status === 'running' && (
+                                            <div className="mt-2 text-xs text-blue-600 dark:text-blue-400">
+                                                <Play className="w-3 h-3 inline mr-1" />
+                                                Bắt đầu: {getRelativeTime(task.started_at)}
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             ))}
@@ -350,7 +429,7 @@ const RecentActivityModal = ({ isOpen, onClose }) => {
                             {pagination && pagination.last_page > 1 && (
                                 <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
                                     <div className="text-sm text-gray-500 dark:text-gray-400">
-                                        Hiển thị {pagination.from} - {pagination.to} của {pagination.total} hoạt động
+                                        Hiển thị {pagination.from} - {pagination.to} của {pagination.total} tác vụ
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <Button 
@@ -380,10 +459,10 @@ const RecentActivityModal = ({ isOpen, onClose }) => {
                         <div className="text-center py-12">
                             <Clock className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                             <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
-                                Không có hoạt động nào
+                                Không có tác vụ nào
                             </h3>
                             <p className="text-gray-500 dark:text-gray-400">
-                                Không tìm thấy hoạt động nào trong khoảng thời gian đã chọn.
+                                Không tìm thấy tác vụ nào trong khoảng thời gian đã chọn.
                             </p>
                         </div>
                     )}

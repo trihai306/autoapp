@@ -1,6 +1,5 @@
 'use client'
 import SignIn from '@/components/auth/SignIn'
-import handleOauthSignIn from '@/server/actions/auth/handleOauthSignIn'
 import { REDIRECT_URL_KEY } from '@/constants/app.constant'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
@@ -45,17 +44,9 @@ const SignInClient = () => {
         }
     }
 
-    const handleOAuthSignIn = async ({ type }) => {
-        console.log('[sign-in] Start OAuth sign in', { type })
-        if (type === 'google') {
-            await handleOauthSignIn('google')
-        }
-        if (type === 'github') {
-            await handleOauthSignIn('github')
-        }
-    }
 
-    return <SignIn onSignIn={handleSignIn} onOauthSignIn={handleOAuthSignIn} />
+
+    return <SignIn onSignIn={handleSignIn} />
 }
 
 export default SignInClient

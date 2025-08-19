@@ -47,6 +47,21 @@ class AccountTaskController extends Controller
     {
         $user = $request->user();
         
+        // Xử lý tham số filter và sort
+        $filters = $request->all();
+        
+        // Chuyển đổi filter[status] thành status nếu có
+        if (isset($filters['filter']['status'])) {
+            $filters['status'] = $filters['filter']['status'];
+        }
+        
+        // Đảm bảo sắp xếp mặc định theo thời gian mới nhất
+        if (!isset($filters['sort'])) {
+            $filters['sort'] = '-created_at';
+        }
+        
+        $request->merge($filters);
+        
         // Nếu user là admin, hiển thị tất cả tasks
         if ($user->hasRole('admin')) {
             return response()->json($this->accountTaskService->getAll($request));
@@ -257,4 +272,6 @@ class AccountTaskController extends Controller
             ], 500);
         }
     }
+
+
 }

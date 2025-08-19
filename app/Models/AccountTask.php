@@ -121,32 +121,16 @@ class AccountTask extends Model
 
     public function tiktokAccount(): BelongsTo
     {
-        return $this->belongsTo(TiktokAccount::class);
+        return $this->belongsTo(TiktokAccount::class, 'tiktok_account_id');
     }
 
     public function interactionScenario(): BelongsTo
     {
-        return $this->belongsTo(InteractionScenario::class);
+        return $this->belongsTo(InteractionScenario::class, 'interaction_scenario_id');
     }
 
     public function device(): BelongsTo
     {
         return $this->belongsTo(Device::class);
-    }
-
-    /**
-     * Relationship với tài khoản TikTok
-     */
-    public function account(): BelongsTo
-    {
-        return $this->belongsTo(TiktokAccount::class, 'tiktok_account_id');
-    }
-
-    /**
-     * Relationship với interaction scenario
-     */
-    public function scenario(): BelongsTo
-    {
-        return $this->belongsTo(InteractionScenario::class, 'interaction_scenario_id');
     }
 }
