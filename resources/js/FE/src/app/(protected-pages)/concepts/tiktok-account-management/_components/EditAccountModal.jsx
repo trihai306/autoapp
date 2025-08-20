@@ -45,7 +45,7 @@ const EditAccountModal = ({
         two_factor_enabled: false,
         two_factor_backup_codes: [],
         notes: '',
-        proxy_ip: '',
+        proxy_id: '',
         proxy_port: '',
         proxy_username: '',
         proxy_password: '',
@@ -73,7 +73,7 @@ const EditAccountModal = ({
                 two_factor_enabled: account.two_factor_enabled || false,
                 two_factor_backup_codes: account.two_factor_backup_codes || [],
                 notes: account.notes || '',
-                proxy_ip: account.proxy_ip || '',
+                proxy_id: account.proxy_id || '',
                 proxy_port: account.proxy_port || '',
                 proxy_username: account.proxy_username || '',
                 proxy_password: '', // Don't pre-fill proxy password for security
@@ -84,6 +84,7 @@ const EditAccountModal = ({
             })
             setErrors({})
         }
+        console.log('Account data loaded:', formData)
     }, [account])
 
     // Load devices and scenarios when modal opens (emit to parent)
@@ -185,8 +186,8 @@ const EditAccountModal = ({
                 if (formData.notes && formData.notes.trim()) {
                     saveData.notes = formData.notes.trim()
                 }
-                if (formData.proxy_ip && formData.proxy_ip.trim()) {
-                    saveData.proxy_ip = formData.proxy_ip.trim()
+                if (formData.proxy_id && formData.proxy_id.trim()) {
+                    saveData.proxy_id = parseInt(formData.proxy_id.trim())
                 }
                 if (formData.proxy_port && formData.proxy_port.toString().trim()) {
                     saveData.proxy_port = parseInt(formData.proxy_port)
@@ -242,7 +243,7 @@ const EditAccountModal = ({
             two_factor_enabled: false,
             two_factor_backup_codes: [],
             notes: '',
-            proxy_ip: '',
+            proxy_id: '',
             proxy_port: '',
             proxy_username: '',
             proxy_password: '',
@@ -464,8 +465,8 @@ const EditAccountModal = ({
                                             {t('fields.proxyIp')}
                                         </label>
                                         <Input
-                                            value={formData.proxy_ip}
-                                            onChange={(e) => handleInputChange('proxy_ip', e.target.value)}
+                                            value={formData.proxy_id}
+                                            onChange={(e) => handleInputChange('proxy_id', e.target.value)}
                                             placeholder={t('placeholders.proxyIp')}
                                             className="border-gray-300 dark:border-gray-600"
                                         />
