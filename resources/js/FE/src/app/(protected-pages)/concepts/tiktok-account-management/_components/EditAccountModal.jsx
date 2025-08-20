@@ -86,6 +86,7 @@ const EditAccountModal = ({
             })
             setErrors({})
         }
+        console.log('Account data loaded:', formData)
     }, [account])
 
     // Load devices and scenarios when component mounts
