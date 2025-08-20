@@ -60,28 +60,28 @@
         "apply": "应用"
     },
     "bulkAction": {
-        "selected": "已选择 {{count}} 个账户",
+        "selected": "已选择 {count} 个账户",
         "delete": "删除",
         "suspend": "暂停",
         "clear": "清除选择"
     },
     "bulkDeleteConfirm": {
         "title": "删除选中的账户",
-        "content": "您确定要删除 {{count}} 个选中的 TikTok 账户吗？此操作无法撤销。",
+        "content": "您确定要删除 {count} 个选中的 TikTok 账户吗？此操作无法撤销。",
         "cancel": "取消",
         "delete": "删除",
         "confirmText": "是的，删除它们"
     },
     "bulkSuspendConfirm": {
         "title": "暂停选中的账户",
-        "content": "您确定要暂停 {{count}} 个选中的 TikTok 账户吗？",
+        "content": "您确定要暂停 {count} 个选中的 TikTok 账户吗？",
         "cancel": "取消",
         "suspend": "暂停",
         "confirmText": "是的，暂停它们"
     },
     "bulkStartConfirm": {
         "title": "启动选中的账户",
-        "content": "您确定要为 {{count}} 个选中的 TikTok 账户启动运行场景吗？",
+        "content": "您确定要为 {count} 个选中的 TikTok 账户启动运行场景吗？",
         "cancel": "取消",
         "start": "启动",
         "confirmText": "是的，启动它们"
@@ -128,6 +128,8 @@
         "selectDevicePlaceholder": "选择设备",
         "selectScenario": "选择场景",
         "selectScenarioPlaceholder": "选择场景",
+        "selectProxy": "选择代理",
+        "selectProxyPlaceholder": "选择代理",
         "redo": "重做",
         "exit": "退出",
         "save": "保存",
@@ -289,6 +291,23 @@
         },
         "settings": {
             "placeholder": "账户设置将在此处显示"
+        },
+        "fields": {
+            "username": "用户名",
+            "email": "邮箱",
+            "phoneNumber": "电话号码",
+            "status": "状态",
+            "notes": "备注",
+            "proxy": "代理",
+            "deviceInfo": "设备信息"
+        },
+        "placeholders": {
+            "selectProxy": "选择代理",
+            "deviceInfo": "输入设备信息"
+        },
+        "hints": {
+            "proxyHint": "选择此账户将使用的代理",
+            "deviceHint": "选择此账户将使用的设备"
         }
     }
 } 

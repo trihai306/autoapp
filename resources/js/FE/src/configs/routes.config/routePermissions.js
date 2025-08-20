@@ -4,12 +4,6 @@
  */
 
 const routePermissions = {
-    // Dashboard routes
-    '/dashboards/analytic': {
-        permissions: ['analytics.view'],
-        roles: [],
-    },
-
     // User Management
     '/concepts/user-management': {
         permissions: ['users.view'],

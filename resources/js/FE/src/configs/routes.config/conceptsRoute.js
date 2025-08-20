@@ -103,39 +103,7 @@ const conceptsRoute = {
             pageContainerType: 'contained',
         },
     },
-    '/concepts/account/settings': {
-        key: 'concepts.account.settings',
-        authority: [ADMIN, USER],
-        meta: {
-            // layout: LAYOUT_TOP_BAR_CLASSIC,
-            header: {
-                title: 'Settings',
-            },
-            pageContainerType: 'contained',
-        },
-    },
-    '/concepts/account/activity-log': {
-        key: 'concepts.account.activityLog',
-        authority: [ADMIN, USER],
-        meta: {
-            pageContainerType: 'contained',
-        },
-    },
-    '/concepts/account/pricing': {
-        key: 'concepts.account.pricing',
-        authority: [ADMIN, USER],
-        meta: {
-            pageContainerType: 'contained',
-        },
-    },
-    '/concepts/account/roles-permissions': {
-        key: 'concepts.account.rolesPermissions',
-        authority: [ADMIN, USER],
-        meta: {
-            pageContainerType: 'contained',
-            pageBackgroundType: 'plain',
-        },
-    },
+
     '/concepts/help-center/support-hub': {
         key: 'concepts.helpCenter.supportHub',
         authority: [ADMIN, USER],

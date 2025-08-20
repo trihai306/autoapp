@@ -68,11 +68,11 @@ const ProxyListTable = ({
 }) => {
     const router = useRouter()
     const t = useTranslations('proxy-management.table')
+    const tStatus = useTranslations('proxy-management.status')
     const allColumns = [
         { header: t('name'), accessorKey: 'name' },
         { header: t('host'), accessorKey: 'host' },
         { header: t('status'), accessorKey: 'status' },
-        { header: t('country'), accessorKey: 'country' },
         { header: t('lastUsed'), accessorKey: 'last_used_at' },
     ]
     const [visibleColumns, setVisibleColumns] = useState(allColumns.map(c => c.accessorKey))
@@ -171,14 +171,13 @@ const ProxyListTable = ({
                                 content={
                                     <span className="flex items-center gap-1">
                                         {config.icon}
-                                        {t(`status.${status}`)}
+                                        {tStatus(status)}
                                     </span>
                                 } 
                             />
                         )
                     }
                 },
-                { header: t('country'), accessorKey: 'country' },
                 {
                     header: t('lastUsed'),
                     accessorKey: 'last_used_at',

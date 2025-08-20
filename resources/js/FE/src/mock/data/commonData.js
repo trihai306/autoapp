@@ -83,38 +83,7 @@ export const notificationListData = [
 ]
 
 export const searchQueryPoolData = [
-    {
-        key: 'dashboard.ecommerce',
-        path: `${DASHBOARDS_PREFIX_PATH}/ecommerce`,
-        title: 'Ecommerce',
-        icon: 'dashboardEcommerce',
-        category: 'Dashboard',
-        categoryTitle: 'Dashboard',
-    },
-    {
-        key: 'dashboard.project',
-        path: `${DASHBOARDS_PREFIX_PATH}/project`,
-        title: 'Project',
-        icon: 'dashboardProject',
-        category: 'Dashboard',
-        categoryTitle: 'Dashboard',
-    },
-    {
-        key: 'dashboard.marketing',
-        path: `${DASHBOARDS_PREFIX_PATH}/marketing`,
-        title: 'Marketing',
-        icon: 'dashboardMarketing',
-        category: 'Dashboard',
-        categoryTitle: 'Dashboard',
-    },
-    {
-        key: 'dashboard.analytic',
-        path: `${DASHBOARDS_PREFIX_PATH}/analytic`,
-        title: 'Analytic',
-        icon: 'dashboardAnalytic',
-        category: 'Dashboard',
-        categoryTitle: 'Dashboard',
-    },
+
     {
         key: 'authentication.signInSimple',
         path: `${AUTH_PREFIX_PATH}/sign-in-simple`,
@@ -651,38 +620,7 @@ export const searchQueryPoolData = [
         category: 'Orders',
         categoryTitle: 'Concepts',
     },
-    {
-        key: 'concepts.account.settings',
-        path: `${CONCEPTS_PREFIX_PATH}/account/settings`,
-        title: 'Settings',
-        icon: 'accountSettings',
-        category: 'Account',
-        categoryTitle: 'Concepts',
-    },
-    {
-        key: 'concepts.account.activityLog',
-        path: `${CONCEPTS_PREFIX_PATH}/account/activity-log`,
-        title: 'Activity log',
-        icon: 'accountActivityLogs',
-        category: 'Account',
-        categoryTitle: 'Concepts',
-    },
-    {
-        key: 'concepts.account.rolesPermissions',
-        path: `${CONCEPTS_PREFIX_PATH}/account/roles-permissions`,
-        title: 'Roles & Permissions',
-        icon: 'accountRoleAndPermission',
-        category: 'Account',
-        categoryTitle: 'Concepts',
-    },
-    {
-        key: 'concepts.account.pricing',
-        path: `${CONCEPTS_PREFIX_PATH}/account/pricing`,
-        title: 'Pricing',
-        icon: 'accountPricing',
-        category: 'Account',
-        categoryTitle: 'Concepts',
-    },
+
     {
         key: 'concepts.helpCenter.supportHub',
         path: `${CONCEPTS_PREFIX_PATH}/help-center/support-hub`,

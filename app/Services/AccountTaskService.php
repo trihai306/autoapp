@@ -116,6 +116,19 @@ class AccountTaskService
             ];
         }
 
+        // Không tạo thêm task nếu thiết bị đang có task chạy
+        if ($deviceId) {
+            $hasRunningTaskOnDevice = AccountTask::where('device_id', $deviceId)
+                ->where('status', 'running')
+                ->exists();
+            if ($hasRunningTaskOnDevice) {
+                return [
+                    'success' => false,
+                    'message' => 'Thiết bị đang có task chạy, không tạo thêm task mới.',
+                ];
+            }
+        }
+
         // Build the complete payload structure first
         $scenarioScripts = $scripts->map(function($scriptModel, $idx) {
             // Decode JSON string if needed
@@ -213,7 +226,7 @@ class AccountTaskService
             $order++;
         }
 
-        // Return complete payload for frontend (không thay đổi)
+        // Return complete payload for frontend
         $completePayload = [
             'account_username' => $account->username,
             'scenario_name' => $scenario->name,
@@ -222,7 +235,11 @@ class AccountTaskService
             'scenario_scripts' => $scenarioScripts,
         ];
 
-        return $completePayload;
+        return [
+            'success' => true,
+            'message' => 'Đã tạo task từ kịch bản thành công',
+            'data' => $completePayload,
+        ];
     }
 
     /**

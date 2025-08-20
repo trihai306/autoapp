@@ -8,14 +8,21 @@ use App\Queries\BaseQuery;
 use App\Repositories\TiktokAccountRepositoryInterface;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use App\Events\StopTaskOnDevice;
+use App\Models\Device;
 
 class TiktokAccountService
 {
     protected $repository;
+    protected $accountTaskService;
 
-    public function __construct(TiktokAccountRepositoryInterface $repository)
+    public function __construct(TiktokAccountRepositoryInterface $repository, AccountTaskService $accountTaskService)
     {
         $this->repository = $repository;
+        $this->accountTaskService = $accountTaskService;
     }
 
     public function getAll(Request $request)
@@ -146,6 +153,350 @@ class TiktokAccountService
     }
 
     /**
+     * Get account details with relations and computed fields
+     */
+    public function getAccountDetails(TiktokAccount $tiktokAccount, $user): array
+    {
+        // Load relationships and additional data
+        $tiktokAccount->load([
+            'pendingTasks' => function($query) {
+                $query->select('id', 'tiktok_account_id', 'task_type', 'status', 'priority', 'scheduled_at', 'created_at')
+                      ->orderBy('created_at', 'desc')
+                      ->limit(10);
+            },
+            'runningTasks' => function($query) {
+                $query->select('id', 'tiktok_account_id', 'task_type', 'status', 'priority', 'started_at', 'created_at')
+                      ->orderBy('created_at', 'desc')
+                      ->limit(10);
+            },
+            'interactionScenario:id,name',
+            'proxy:id,name,host,port,type,status'
+        ]);
+
+        $accountData = $tiktokAccount->toArray();
+        // Remove old proxy fields and use proxy relationship data
+        $accountData['task_statistics'] = [
+            'pending_tasks_count' => $tiktokAccount->pendingTasks->count(),
+            'running_tasks_count' => $tiktokAccount->runningTasks->count(),
+            'total_tasks_count' => $tiktokAccount->accountTasks()->count(),
+            'completed_tasks_count' => $tiktokAccount->accountTasks()->where('status', 'completed')->count(),
+            'failed_tasks_count' => $tiktokAccount->accountTasks()->where('status', 'failed')->count(),
+        ];
+        $accountData['join_date'] = $tiktokAccount->created_at->format('d/m/Y');
+        $accountData['last_activity'] = $tiktokAccount->last_activity_at ?
+            $tiktokAccount->last_activity_at->diffForHumans() : 'Chưa có hoạt động';
+        $accountData['display_name'] = $tiktokAccount->nickname ?: $tiktokAccount->username;
+        $accountData['estimated_views'] = $tiktokAccount->video_count * 1000;
+
+        return $accountData;
+    }
+
+    /**
+     * Get activity history with filters and pagination for a TikTok account
+     */
+    public function getActivityHistory(TiktokAccount $tiktokAccount, array $filters): array
+    {
+        $perPage = $filters['per_page'] ?? 20;
+        $page = $filters['page'] ?? 1;
+
+        $query = $tiktokAccount->accountTasks()
+            ->select([
+                'id', 'task_type', 'status', 'priority', 'completed_at',
+                'started_at', 'scheduled_at', 'created_at', 'error_message'
+            ]);
+
+        if (isset($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+        if (isset($filters['task_type'])) {
+            $query->where('task_type', $filters['task_type']);
+        }
+        if (isset($filters['priority'])) {
+            $query->where('priority', $filters['priority']);
+        }
+
+        $query->orderByRaw("
+            CASE 
+                WHEN completed_at IS NOT NULL THEN completed_at
+                WHEN started_at IS NOT NULL THEN started_at
+                WHEN scheduled_at IS NOT NULL THEN scheduled_at
+                ELSE created_at
+            END DESC
+        ");
+
+        $activities = $query->paginate($perPage, ['*'], 'page', $page);
+
+        return [
+            'activities' => $activities->items(),
+            'pagination' => [
+                'current_page' => $activities->currentPage(),
+                'per_page' => $activities->perPage(),
+                'total' => $activities->total(),
+                'last_page' => $activities->lastPage(),
+                'from' => $activities->firstItem(),
+                'to' => $activities->lastItem(),
+            ]
+        ];
+    }
+
+    /**
+     * Run linked scenario: create tasks from scenario for account
+     */
+    public function runScenarioForAccount(TiktokAccount $account, ?int $deviceId, int $userId): array
+    {
+        return $this->accountTaskService->createTasksFromScenario($account, $deviceId, $userId);
+    }
+
+    /**
+     * Enable 2FA with optional backup codes
+     */
+    public function enableTwoFactor(TiktokAccount $account, ?array $backupCodes = null): TiktokAccount
+    {
+        $codes = $backupCodes ?? $this->generateBackupCodes();
+        return $this->updateTiktokAccount($account, [
+            'two_factor_enabled' => true,
+            'two_factor_backup_codes' => $codes,
+        ]);
+    }
+
+    /**
+     * Disable 2FA
+     */
+    public function disableTwoFactor(TiktokAccount $account): TiktokAccount
+    {
+        return $this->updateTiktokAccount($account, [
+            'two_factor_enabled' => false,
+            'two_factor_backup_codes' => null,
+        ]);
+    }
+
+    /**
+     * Regenerate 2FA backup codes
+     */
+    public function regenerateBackupCodes(TiktokAccount $account): TiktokAccount
+    {
+        $codes = $this->generateBackupCodes();
+        return $this->updateTiktokAccount($account, [
+            'two_factor_backup_codes' => $codes,
+        ]);
+    }
+
+    /**
+     * Delete all pending tasks for specified accounts of the user
+     */
+    public function deletePendingTasksForUser($user, array $accountIds): array
+    {
+        // Get accounts that belong to the user with their devices
+        $accounts = TiktokAccount::where('user_id', $user->id)
+            ->whereIn('id', $accountIds)
+            ->with('device')
+            ->get();
+
+        if ($accounts->isEmpty()) {
+            return [
+                'success' => false,
+                'message' => 'Không tìm thấy tài khoản nào thuộc về bạn'
+            ];
+        }
+
+        $deletedCount = 0;
+        $devicesNotified = [];
+
+        foreach ($accounts as $account) {
+            $deleted = $account->accountTasks()
+                ->where('status', 'pending')
+                ->delete();
+
+            $deletedCount += $deleted;
+
+            if ($deleted > 0 && $account->device && !in_array($account->device->id, $devicesNotified)) {
+                event(new StopTaskOnDevice($account->device));
+                $devicesNotified[] = $account->device->id;
+                Log::info("Fired StopTaskOnDevice event for device: {$account->device->device_id}");
+            }
+        }
+
+        return [
+            'success' => true,
+            'message' => "Đã xóa {$deletedCount} pending tasks thành công",
+            'data' => [
+                'deleted_count' => $deletedCount,
+                'processed_accounts' => $accounts->count(),
+                'devices_notified' => count($devicesNotified)
+            ]
+        ];
+    }
+
+    /**
+     * Upload file for account and return file info
+     */
+    public function uploadFileForAccount(TiktokAccount $account, UploadedFile $file, string $type, string $description, int $userId): array
+    {
+        $directory = "tiktok-accounts/{$account->id}/{$type}";
+        $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+        $path = $file->storeAs($directory, $filename, 'public');
+
+        return [
+            'tiktok_account_id' => $account->id,
+            'user_id' => $userId,
+            'filename' => $filename,
+            'original_name' => $file->getClientOriginalName(),
+            'path' => $path,
+            'type' => $type,
+            'mime_type' => $file->getMimeType(),
+            'size' => $file->getSize(),
+            'description' => $description,
+            'file_url' => asset('storage/' . $path),
+        ];
+    }
+
+    /**
+     * Create a post task for account
+     */
+    public function createPostForAccount(TiktokAccount $account, array $validated, int $userId): array
+    {
+        // Block if device has running task
+        if ($account->device_id && $this->hasRunningTaskOnDevice($account->device_id)) {
+            return [
+                'success' => false,
+                'message' => 'Thiết bị đang có task chạy, không tạo thêm task mới.'
+            ];
+        }
+
+        $uploadedFiles = [];
+        if (isset($validated['files']) && is_array($validated['files'])) {
+            foreach ($validated['files'] as $file) {
+                $directory = "tiktok-accounts/{$account->id}/post_content";
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $path = $file->storeAs($directory, $filename, 'public');
+
+                $uploadedFiles[] = [
+                    'filename' => $filename,
+                    'original_name' => $file->getClientOriginalName(),
+                    'path' => $path,
+                    'url' => asset('storage/' . $path),
+                    'size' => $file->getSize(),
+                    'mime_type' => $file->getMimeType(),
+                ];
+            }
+        }
+
+        $postData = [
+            'tiktok_account_id' => $account->id,
+            'user_id' => $userId,
+            'title' => $validated['title'] ?? '',
+            'content' => $validated['content'] ?? '',
+            'files' => $uploadedFiles,
+            'settings' => $validated['settings'] ?? [],
+            'scheduled_at' => $validated['scheduled_at'] ?? null,
+            'auto_cut' => $validated['auto_cut'] ?? false,
+            'filter_type' => $validated['filter_type'] ?? 'random',
+            'custom_filters' => $validated['custom_filters'] ?? [],
+            'add_trending_music' => $validated['add_trending_music'] ?? false,
+            'enable_tiktok_shop' => $validated['enable_tiktok_shop'] ?? false,
+            'status' => 'pending',
+        ];
+
+        $taskData = [
+            'tiktok_account_id' => $account->id,
+            'task_type' => 'create_post',
+            'status' => 'pending',
+            'priority' => 'medium',
+            'parameters' => $postData,
+            'scheduled_at' => $validated['scheduled_at'] ?? now(),
+            'device_id' => $account->device_id,
+        ];
+
+        $task = $this->accountTaskService->create($taskData);
+
+        return [
+            'success' => true,
+            'message' => 'Post created successfully and queued for publishing',
+            'data' => [
+                'post_id' => $task->id,
+                'task_id' => $task->id,
+                'status' => 'pending',
+                'scheduled_at' => $task->scheduled_at,
+                'files' => $uploadedFiles,
+            ]
+        ];
+    }
+
+    /**
+     * Update avatar for account and create task
+     */
+    public function updateAvatarForAccount(TiktokAccount $account, UploadedFile $file, string $description, int $userId): array
+    {
+        if ($account->device_id && $this->hasRunningTaskOnDevice($account->device_id)) {
+            return [
+                'success' => false,
+                'message' => 'Thiết bị đang có task chạy, không tạo thêm task mới.'
+            ];
+        }
+
+        $directory = "tiktok-accounts/{$account->id}/avatars";
+
+        if ($account->avatar_url) {
+            $oldPath = str_replace(asset('storage/'), '', $account->avatar_url);
+            Storage::disk('public')->delete($oldPath);
+        }
+
+        $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+        $path = $file->storeAs($directory, $filename, 'public');
+
+        $updatedAccount = $this->updateTiktokAccount($account, [
+            'avatar_url' => asset('storage/' . $path),
+        ]);
+
+        $taskData = [
+            'tiktok_account_id' => $account->id,
+            'task_type' => 'update_avatar',
+            'status' => 'pending',
+            'priority' => 'medium',
+            'parameters' => [
+                'avatar_url' => asset('storage/' . $path),
+                'description' => $description,
+            ],
+            'scheduled_at' => now(),
+            'device_id' => $account->device_id,
+        ];
+
+        $task = $this->accountTaskService->create($taskData);
+
+        return [
+            'success' => true,
+            'message' => 'Avatar updated successfully and queued for TikTok update',
+            'data' => [
+                'avatar_url' => asset('storage/' . $path),
+                'task_id' => $task->id,
+                'status' => 'pending',
+            ]
+        ];
+    }
+
+    /**
+     * Helper: check if a device currently has running task
+     */
+    private function hasRunningTaskOnDevice(int $deviceId): bool
+    {
+        return AccountTask::where('device_id', $deviceId)
+            ->where('status', 'running')
+            ->exists();
+    }
+
+    /**
+     * Generate backup codes for 2FA
+     */
+    private function generateBackupCodes(): array
+    {
+        $codes = [];
+        for ($i = 0; $i < 8; $i++) {
+            $codes[] = strtoupper(substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 8));
+        }
+        return $codes;
+    }
+
+    /**
      * Delete a tiktok account
      *
      * @param TiktokAccount $tiktokAccount
@@ -255,6 +606,11 @@ class TiktokAccountService
 
                 if (!empty($data['scenarioId'])) {
                     $accountData['scenario_id'] = $data['scenarioId'];
+                }
+
+                // Thêm proxy nếu có
+                if (!empty($data['proxyId'])) {
+                    $accountData['proxy_id'] = $data['proxyId'];
                 }
 
                 // Thêm 2FA vào notes nếu có
@@ -578,33 +934,31 @@ class TiktokAccountService
         // Get user's TikTok account IDs
         $accountIds = TiktokAccount::where('user_id', $user->id)->pluck('id');
 
-        // Get recent account tasks
-        $recentTasks = AccountTask::with(['tiktokAccount', 'interactionScenario'])
+        $query = AccountTask::with(['tiktokAccount:id,username'])
             ->whereIn('tiktok_account_id', $accountIds)
-            ->orderBy('updated_at', 'desc')
-            ->limit(10)
+            ->select(['id','tiktok_account_id','task_type','status','priority','completed_at','started_at','scheduled_at','created_at','error_message'])
+            ->orderByRaw("\n            CASE \n                WHEN completed_at IS NOT NULL THEN completed_at\n                WHEN started_at IS NOT NULL THEN started_at\n                WHEN scheduled_at IS NOT NULL THEN scheduled_at\n                ELSE created_at\n            END DESC\n        ")
+            ->limit(20)
             ->get();
 
-        $activities = [];
-        
-        foreach ($recentTasks as $task) {
-            $timeAgo = $this->getTimeAgo($task->updated_at);
-            $action = $this->getActionDescription($task);
-            $status = $this->getStatusType($task->status);
-
-            $activities[] = [
-                'id' => $task->id,
-                'username' => '@' . ($task->tiktokAccount->username ?? 'unknown'),
-                'action' => $action,
-                'status' => $status,
-                'time' => $timeAgo,
-                'scenario_name' => $task->interactionScenario->name ?? null,
-                'task_type' => $task->task_type,
-                'task_status' => $task->status
-            ];
-        }
-
-        return $activities;
+        return $query->filter(function ($task) {
+                return $task->tiktokAccount !== null;
+            })
+            ->map(function ($task) {
+                $time = $task->completed_at ?? $task->started_at ?? $task->scheduled_at ?? $task->created_at;
+                return [
+                    'id' => $task->id,
+                    'username' => '@' . $task->tiktokAccount->username,
+                    'action' => $this->getActionDescription($task),
+                    'status' => $task->status,
+                    'time' => $this->getTimeAgo($time),
+                    'scenario_name' => $task->interactionScenario->name ?? null,
+                    'priority' => $task->priority,
+                    'error_message' => $task->error_message,
+                ];
+            })
+            ->values()
+            ->toArray();
     }
 
     /**

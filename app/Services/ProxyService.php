@@ -99,14 +99,18 @@ class ProxyService
     }
 
     /**
-     * Get active proxies for user
+     * Get active proxies for a specific user
      *
      * @param int $userId
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getActiveForUser(int $userId)
     {
-        return $this->proxyRepository->findActiveByUserId($userId);
+        return $this->proxyRepository->getModel()->query()
+            ->where('user_id', $userId)
+            ->where('status', 'active')
+            ->orderBy('name')
+            ->get();
     }
 
     /**

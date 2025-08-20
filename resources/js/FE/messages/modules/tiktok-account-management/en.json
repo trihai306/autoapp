@@ -50,10 +50,7 @@
             "status": "Status",
             "twoFactorEnabled": "Enable Two-Factor Authentication",
             "notes": "Notes",
-            "proxyIp": "Proxy IP",
-            "proxyPort": "Proxy Port",
-            "proxyUsername": "Proxy Username",
-            "proxyPassword": "Proxy Password",
+            "proxy": "Proxy",
             "deviceInfo": "Device Information",
             "device": "Device",
             "scenario": "Scenario"
@@ -66,10 +63,7 @@
             "phoneNumber": "Enter phone number",
             "password": "Enter new password",
             "notes": "Enter notes about this account...",
-            "proxyIp": "192.168.1.1",
-            "proxyPort": "8080",
-            "proxyUsername": "Enter proxy username",
-            "proxyPassword": "Enter proxy password",
+            "selectProxy": "Select proxy",
             "deviceInfo": "Enter device information",
             "selectDevice": "Select a device",
             "selectScenario": "Select a scenario"
@@ -91,6 +85,7 @@
         "hints": {
             "passwordHint": "Leave empty to keep current password",
             "twoFactorHint": "Enable two-factor authentication for better security",
+            "proxyHint": "Select the proxy this account will use",
             "deviceHint": "Select the device this account will use",
             "scenarioHint": "Choose the interaction scenario for this account"
         },
@@ -131,28 +126,28 @@
         "apply": "Apply"
     },
     "bulkAction": {
-        "selected": "{{count}} account(s) selected",
+        "selected": "{count} account(s) selected",
         "delete": "Delete",
         "suspend": "Suspend",
         "clear": "Clear Selection"
     },
     "bulkDeleteConfirm": {
         "title": "Delete Selected Accounts",
-        "content": "Are you sure you want to delete {{count}} selected TikTok account(s)? This action cannot be undone.",
+        "content": "Are you sure you want to delete {count} selected TikTok account(s)? This action cannot be undone.",
         "cancel": "Cancel",
         "delete": "Delete",
         "confirmText": "Yes, delete them"
     },
     "bulkSuspendConfirm": {
         "title": "Suspend Selected Accounts",
-        "content": "Are you sure you want to suspend {{count}} selected TikTok account(s)?",
+        "content": "Are you sure you want to suspend {count} selected TikTok account(s)?",
         "cancel": "Cancel",
         "suspend": "Suspend",
         "confirmText": "Yes, suspend them"
     },
     "bulkStartConfirm": {
         "title": "Start Selected Accounts",
-        "content": "Are you sure you want to start running scenarios for {{count}} selected TikTok account(s)?",
+        "content": "Are you sure you want to start running scenarios for {count} selected TikTok account(s)?",
         "cancel": "Cancel",
         "start": "Start",
         "confirmText": "Yes, start them"
@@ -217,6 +212,8 @@
         "selectDevicePlaceholder": "Select device",
         "selectScenario": "Select scenario",
         "selectScenarioPlaceholder": "Select scenario",
+        "selectProxy": "Select proxy",
+        "selectProxyPlaceholder": "Select proxy",
         "redo": "Redo",
         "exit": "Exit",
         "save": "Save",

@@ -1,0 +1,20 @@
+{
+  "tiktokAccountManagement": {
+    "tableTools": {
+      "refresh": "Refresh",
+      "success": "Success",
+      "error": "Error",
+      "successTitle": "Success",
+      "errorTitle": "Error",
+      "someAccountsFailed": "Some accounts failed",
+      "errorCreatingTasks": "An error occurred while creating tasks",
+      "activateSuccess": "Started {count} accounts",
+      "activateSuccessDesc": "Scenario tasks have been queued",
+      "deleteTasksError": "Error deleting tasks",
+      "deleteTasksErrorDesc": "Some tasks could not be deleted",
+      "suspendSuccess": "Suspended {count} accounts",
+      "deleteTasksSuccess": "deleted {count} pending tasks",
+      "errorStoppingAccounts": "An error occurred while suspending accounts"
+    }
+  }
+}

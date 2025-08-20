@@ -34,10 +34,12 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [devices, setDevices] = useState([])
     const [scenarios, setScenarios] = useState([])
+    const [proxies, setProxies] = useState([])
     const [isLoadingData, setIsLoadingData] = useState(true)
     const [menuPortalTarget, setMenuPortalTarget] = useState(null)
     const [deviceMenuOpen, setDeviceMenuOpen] = useState(false)
     const [scenarioMenuOpen, setScenarioMenuOpen] = useState(false)
+    const [proxyMenuOpen, setProxyMenuOpen] = useState(false)
     
     // Enhanced validation states
     const [validationResults, setValidationResults] = useState({
@@ -113,6 +115,25 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
                         </Notification>
                     )
                 }
+
+                // Load proxies
+                try {
+                    const proxiesResponse = await fetch('/api/proxies/active-for-select', {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    
+                    if (proxiesResponse.ok) {
+                        const proxiesData = await proxiesResponse.json()
+                        setProxies(proxiesData)
+                    } else {
+                        console.error('❌ [ImportAccountsModal] Failed to load proxies:', proxiesResponse.statusText)
+                    }
+                } catch (error) {
+                    console.error('❌ [ImportAccountsModal] Error loading proxies:', error)
+                }
             } catch (error) {
                 console.error('Error loading data:', error)
                 toast.push(
@@ -137,6 +158,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
         autoAssign: false,
         deviceId: '',
         scenarioId: '',
+        proxyId: '',
         format: 'new', // Default to new format: UID|PASS|2FA|MAIL
     })
 
@@ -621,7 +643,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
 
 
                         {/* Dropdowns */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative">
                             <div>
                                 <div className="flex items-center justify-between">
                                     <label className="form-label">
@@ -763,6 +785,56 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
                                         menuIsOpen={scenarioMenuOpen}
                                         onMenuOpen={() => setScenarioMenuOpen(true)}
                                         onMenuClose={() => setScenarioMenuOpen(false)}
+                                        menuPortalTarget={menuPortalTarget}
+                                        menuPosition="fixed"
+                                        menuPlacement="auto"
+                                        menuShouldBlockScroll={true}
+                                        menuShouldScrollIntoView={true}
+                                        styles={{
+                                            menuPortal: (base) => ({
+                                                ...base,
+                                                zIndex: 9999
+                                            }),
+                                            menu: (base) => ({
+                                                ...base,
+                                                zIndex: 9999
+                                            })
+                                        }}
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <div className="flex items-center justify-between">
+                                    <label className="form-label">
+                                        {t('selectProxy')}
+                                        {!isLoadingData && (
+                                            <span className="text-xs text-gray-500 ml-2">
+                                                ({proxies.length} proxy)
+                                            </span>
+                                        )}
+                                    </label>
+                                </div>
+                                <div className="relative">
+                                    <Select
+                                        instanceId="import-accounts-proxy-select"
+                                        placeholder={
+                                            isLoadingData 
+                                                ? "Đang tải..." 
+                                                : proxies.length === 0 
+                                                    ? "Không có proxy nào"
+                                                    : t('selectProxyPlaceholder')
+                                        }
+                                        value={formData.proxyId ? { value: formData.proxyId, label: (Array.isArray(proxies) ? proxies.find(p => p.id == formData.proxyId)?.name : '') || '' } : null}
+                                        onChange={(option) => handleInputChange('proxyId', option?.value || '')}
+                                        options={(Array.isArray(proxies) ? proxies : []).map(proxy => ({
+                                            value: proxy.id,
+                                            label: proxy.name
+                                        }))}
+                                        isDisabled={isLoadingData}
+                                        menuIsOpen={proxyMenuOpen}
+                                        onMenuOpen={() => setProxyMenuOpen(true)}
+                                        onMenuClose={() => setProxyMenuOpen(false)}
                                         menuPortalTarget={menuPortalTarget}
                                         menuPosition="fixed"
                                         menuPlacement="auto"

@@ -1,0 +1,21 @@
+{
+  "tiktokAccountManagement": {
+    "tableTools": {
+      "refresh": "Làm mới",
+      "success": "Thành công",
+      "error": "Lỗi",
+      "successTitle": "Thành công",
+      "errorTitle": "Lỗi",
+      "someAccountsFailed": "Một số tài khoản thực thi thất bại",
+      "errorCreatingTasks": "Có lỗi xảy ra khi tạo tác vụ",
+      "activateSuccess": "Đã bắt đầu {count} tài khoản",
+      "activateSuccessDesc": "Kịch bản đã được tạo và đưa vào hàng đợi",
+      "deleteTasksError": "Lỗi khi xóa tác vụ",
+      "deleteTasksErrorDesc": "Không thể xóa một số tác vụ",
+      "suspendSuccess": "Đã tạm khóa {count} tài khoản",
+      "deleteTasksSuccess": "đã xóa {count} tác vụ đang chờ",
+      "errorStoppingAccounts": "Có lỗi xảy ra khi tạm khóa tài khoản"
+    }
+  }
+}
+

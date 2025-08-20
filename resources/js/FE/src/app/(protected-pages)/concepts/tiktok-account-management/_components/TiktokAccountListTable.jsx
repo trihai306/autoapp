@@ -219,23 +219,14 @@ const ExpandedRowContent = ({ row }) => {
     )
 }
 
-// Enhanced User Info Column with username, email and status
+// Enhanced User Info Column with username, email and task status only
 const UserInfoColumn = ({ row, onViewDetail }) => {
-    const statusInfo = statusConfig[row.status] || statusConfig.inactive
-    const StatusIcon = statusInfo.icon
-    
     return (
         <div className="flex items-center gap-3">
             <div className="relative">
                 <Avatar size={44} shape="circle" className="bg-gradient-to-br from-blue-500 to-purple-600">
                     {row.username ? row.username[0].toUpperCase() : 'T'}
                 </Avatar>
-                {/* Status indicator */}
-                <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white dark:border-gray-800 ${
-                    row.status === 'active' ? 'bg-green-500' :
-                    row.status === 'running' ? 'bg-blue-500' :
-                    row.status === 'suspended' ? 'bg-red-500' : 'bg-gray-400'
-                }`} />
             </div>
             <div className="flex-1 min-w-0">
                 <div
@@ -255,17 +246,13 @@ const UserInfoColumn = ({ row, onViewDetail }) => {
                         {row.email}
                     </div>
                 )}
-                <div className="flex items-center gap-2 mt-1">
-                    <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
-                        <StatusIcon className="w-3 h-3" />
-                        <span>{statusInfo.label}</span>
-                    </div>
-                    {row.pending_tasks_count > 0 && (
+                {row.pending_tasks_count > 0 && (
+                    <div className="flex items-center gap-2 mt-1">
                         <Badge className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 text-xs px-1.5 py-0.5">
                             {row.pending_tasks_count} task{row.pending_tasks_count > 1 ? 's' : ''}
                         </Badge>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
         </div>
     )
@@ -495,7 +482,6 @@ const TiktokAccountListTable = ({
     const allColumns = [
         { header: 'Thông tin người dùng', accessorKey: 'user_info', sortable: true },
         { header: 'Số điện thoại', accessorKey: 'phone_number', sortable: false },
-        { header: 'Trạng thái', accessorKey: 'status', sortable: true },
         { header: 'Task Status', accessorKey: 'task_status', sortable: true },
         { header: 'Device & Scenario', accessorKey: 'device_scenario', sortable: false },
         { header: 'Ghi chú', accessorKey: 'notes', sortable: false },
@@ -504,7 +490,7 @@ const TiktokAccountListTable = ({
     ]
 
     const [visibleColumns, setVisibleColumns] = useState([
-        'user_info', 'status', 'task_status', 'device_scenario', 'created_at'
+        'user_info', 'task_status', 'device_scenario', 'created_at'
     ])
     
     const [expandedRows, setExpandedRows] = useState(new Set())
@@ -911,14 +897,6 @@ const TiktokAccountListTable = ({
                         const row = props.row.original
                         return <ContactColumn row={row} type="phone" />
                     }
-                },
-                {
-                    header: 'Trạng thái',
-                    accessorKey: 'status',
-                    cell: (props) => {
-                        const row = props.row.original
-                        return <StatusColumn row={row} />
-                    },
                 },
                 {
                     header: 'Task Status',

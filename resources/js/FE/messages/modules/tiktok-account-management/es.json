@@ -63,28 +63,28 @@
         "apply": "Aplicar"
     },
     "bulkAction": {
-        "selected": "{{count}} cuenta(s) seleccionada(s)",
+        "selected": "{count} cuenta(s) seleccionada(s)",
         "delete": "Eliminar",
         "suspend": "Suspender",
         "clear": "Limpiar Selección"
     },
     "bulkDeleteConfirm": {
         "title": "Eliminar Cuentas Seleccionadas",
-        "content": "¿Está seguro de que desea eliminar {{count}} cuenta(s) de TikTok seleccionada(s)? Esta acción no se puede deshacer.",
+        "content": "¿Está seguro de que desea eliminar {count} cuenta(s) de TikTok seleccionada(s)? Esta acción no se puede deshacer.",
         "cancel": "Cancelar",
         "delete": "Eliminar",
         "confirmText": "Sí, eliminarlas"
     },
     "bulkSuspendConfirm": {
         "title": "Suspender Cuentas Seleccionadas",
-        "content": "¿Está seguro de que desea suspender {{count}} cuenta(s) de TikTok seleccionada(s)?",
+        "content": "¿Está seguro de que desea suspender {count} cuenta(s) de TikTok seleccionada(s)?",
         "cancel": "Cancelar",
         "suspend": "Suspender",
         "confirmText": "Sí, suspenderlas"
     },
     "bulkStartConfirm": {
         "title": "Iniciar Cuentas Seleccionadas",
-        "content": "¿Está seguro de que desea iniciar la ejecución de escenarios para {{count}} cuenta(s) de TikTok seleccionada(s)?",
+        "content": "¿Está seguro de que desea iniciar la ejecución de escenarios para {count} cuenta(s) de TikTok seleccionada(s)?",
         "cancel": "Cancelar",
         "start": "Iniciar",
         "confirmText": "Sí, iniciarlas"
@@ -149,6 +149,8 @@
         "selectDevicePlaceholder": "Seleccionar dispositivo",
         "selectScenario": "Seleccionar escenario",
         "selectScenarioPlaceholder": "Seleccionar escenario",
+        "selectProxy": "Seleccionar proxy",
+        "selectProxyPlaceholder": "Seleccionar proxy",
         "redo": "Rehacer",
         "exit": "Salir",
         "save": "Guardar",
@@ -417,6 +419,23 @@
                 "testError": "Conexión fallida",
                 "invalidInput": "Datos de entrada inválidos"
             }
+        },
+        "placeholders": {
+            "selectProxy": "Seleccionar proxy",
+            "deviceInfo": "Ingresar información del dispositivo"
+        },
+        "hints": {
+            "proxyHint": "Selecciona el proxy que usará esta cuenta",
+            "deviceHint": "Selecciona el dispositivo que usará esta cuenta"
+        },
+        "fields": {
+            "username": "Nombre de Usuario",
+            "email": "Correo Electrónico",
+            "phoneNumber": "Número de Teléfono",
+            "status": "Estado",
+            "notes": "Notas",
+            "proxy": "Proxy",
+            "deviceInfo": "Información del Dispositivo"
         }
     }
 } 

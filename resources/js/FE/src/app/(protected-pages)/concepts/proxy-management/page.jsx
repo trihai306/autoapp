@@ -9,14 +9,15 @@ export default async function Page({ searchParams }) {
 
     // Ensure data has the expected structure
     const safeData = {
-        list: data?.list || [],
-        total: data?.total || 0
+        // data?.data is Laravel paginator; data?.data?.data is the array
+        list: Array.isArray(data?.data?.data) ? data.data.data : (Array.isArray(data?.data) ? data.data : []),
+        total: (data?.data && typeof data.data.total === 'number') ? data.data.total : (data?.total || 0)
     }
 
     return (
         <ProxyManagementClient
             data={safeData}
-            stats={stats || {}}
+            stats={stats?.data || {}}
             params={{
                 page: params.page,
                 per_page: params.per_page,
