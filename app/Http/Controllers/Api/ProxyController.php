@@ -192,6 +192,28 @@ class ProxyController extends Controller
     }
 
     /**
+     * Get active proxies for current user (formatted for select)
+     *
+     * Returns all active proxies for the authenticated user formatted for select dropdown.
+     */
+    public function getActiveProxiesForSelect(Request $request)
+    {
+        $user = $request->user();
+        $proxies = $this->proxyService->getActiveForUser($user->id);
+        
+        // Format for select dropdown
+        $formattedProxies = $proxies->map(function ($proxy) {
+            return [
+                'value' => $proxy->id,
+                'label' => $proxy->name ?: "{$proxy->host}:{$proxy->port}",
+                'data' => $proxy
+            ];
+        });
+
+        return response()->json($formattedProxies);
+    }
+
+    /**
      * Delete multiple proxies
      *
      * Deletes a list of proxies by their IDs.

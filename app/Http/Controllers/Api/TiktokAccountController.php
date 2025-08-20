@@ -108,6 +108,15 @@ class TiktokAccountController extends Controller
              */
             'two_factor_backup_codes' => ['sometimes', 'array'],
             'two_factor_backup_codes.*' => ['string', 'max:255'],
+            /**
+             * Additional fields
+             */
+            'nickname' => ['sometimes', 'string', 'max:255'],
+            'display_name' => ['sometimes', 'string', 'max:255'],
+            'device_id' => ['sometimes', 'nullable', 'integer', 'exists:devices,id'],
+            'scenario_id' => ['sometimes', 'nullable', 'integer', 'exists:interaction_scenarios,id'],
+            'proxy_id' => ['sometimes', 'nullable', 'integer', 'exists:proxies,id'],
+            'device_info' => ['sometimes', 'string', 'max:1000'],
         ]);
 
         $tiktokAccount = $this->tiktokAccountService->createTiktokAccount($validated);
@@ -200,14 +209,11 @@ class TiktokAccountController extends Controller
             'bio_signature' => 'sometimes|nullable|string|max:1000',
             'device_id' => 'sometimes|nullable|integer|exists:devices,id',
             'scenario_id' => 'sometimes|nullable|integer|exists:interaction_scenarios,id',
-            'proxy_id' => 'sometimes|nullable|integer',
+            'proxy_id' => 'sometimes|nullable|integer|exists:proxies,id',
             /**
              * Additional fields from frontend (will be ignored if not in database)
              */
             'display_name' => 'sometimes|nullable|string|max:255',
-            'proxy_port' => 'sometimes|nullable|integer|min:1|max:65535',
-            'proxy_username' => 'sometimes|nullable|string|max:255',
-            'proxy_password' => 'sometimes|nullable|string|max:255',
             'device_info' => 'sometimes|nullable|string|max:1000',
             'tags' => 'sometimes|nullable|array',
         ]);
@@ -283,6 +289,7 @@ class TiktokAccountController extends Controller
      * @bodyParam autoAssign boolean Auto-assign device and scenario to accounts.
      * @bodyParam deviceId string The device ID to assign to imported accounts.
      * @bodyParam scenarioId string The scenario ID to assign to imported accounts.
+     * @bodyParam proxyId string The proxy ID to assign to imported accounts.
      * @bodyParam format string The format of the account list: 'legacy' or 'new'. Default: 'legacy'
      * 
      * @response {
@@ -336,6 +343,11 @@ class TiktokAccountController extends Controller
              * @example "scenario_456"
              */
             'scenarioId' => 'sometimes|string|exists:interaction_scenarios,id',
+            /**
+             * Proxy ID to assign to imported accounts.
+             * @example "proxy_789"
+             */
+            'proxyId' => 'sometimes|string|exists:proxies,id',
             /**
              * Format of the account list.
              * @example "new"

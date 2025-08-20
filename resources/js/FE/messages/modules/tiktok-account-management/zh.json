@@ -128,6 +128,8 @@
         "selectDevicePlaceholder": "选择设备",
         "selectScenario": "选择场景",
         "selectScenarioPlaceholder": "选择场景",
+        "selectProxy": "选择代理",
+        "selectProxyPlaceholder": "选择代理",
         "redo": "重做",
         "exit": "退出",
         "save": "保存",
@@ -289,6 +291,23 @@
         },
         "settings": {
             "placeholder": "账户设置将在此处显示"
+        },
+        "fields": {
+            "username": "用户名",
+            "email": "邮箱",
+            "phoneNumber": "电话号码",
+            "status": "状态",
+            "notes": "备注",
+            "proxy": "代理",
+            "deviceInfo": "设备信息"
+        },
+        "placeholders": {
+            "selectProxy": "选择代理",
+            "deviceInfo": "输入设备信息"
+        },
+        "hints": {
+            "proxyHint": "选择此账户将使用的代理",
+            "deviceHint": "选择此账户将使用的设备"
         }
     }
 } 

@@ -169,13 +169,12 @@ class TiktokAccountService
                       ->orderBy('created_at', 'desc')
                       ->limit(10);
             },
-            'interactionScenario:id,name'
+            'interactionScenario:id,name',
+            'proxy:id,name,host,port,type,status'
         ]);
 
         $accountData = $tiktokAccount->toArray();
-        $accountData['proxy_port'] = $tiktokAccount->proxy_port;
-        $accountData['proxy_username'] = $tiktokAccount->proxy_username;
-        $accountData['proxy_password'] = $tiktokAccount->proxy_password;
+        // Remove old proxy fields and use proxy relationship data
         $accountData['task_statistics'] = [
             'pending_tasks_count' => $tiktokAccount->pendingTasks->count(),
             'running_tasks_count' => $tiktokAccount->runningTasks->count(),
@@ -607,6 +606,11 @@ class TiktokAccountService
 
                 if (!empty($data['scenarioId'])) {
                     $accountData['scenario_id'] = $data['scenarioId'];
+                }
+
+                // Thêm proxy nếu có
+                if (!empty($data['proxyId'])) {
+                    $accountData['proxy_id'] = $data['proxyId'];
                 }
 
                 // Thêm 2FA vào notes nếu có

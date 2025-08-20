@@ -50,10 +50,7 @@
             "status": "Trạng thái",
             "twoFactorEnabled": "Bật xác thực hai yếu tố",
             "notes": "Ghi chú",
-            "proxyIp": "IP Proxy",
-            "proxyPort": "Port Proxy",
-            "proxyUsername": "Tên đăng nhập Proxy",
-            "proxyPassword": "Mật khẩu Proxy",
+            "proxy": "Proxy",
             "deviceInfo": "Thông tin thiết bị",
             "device": "Thiết bị",
             "scenario": "Kịch bản"
@@ -66,10 +63,7 @@
             "phoneNumber": "Nhập số điện thoại",
             "password": "Nhập mật khẩu mới",
             "notes": "Nhập ghi chú về tài khoản này...",
-            "proxyIp": "192.168.1.1",
-            "proxyPort": "8080",
-            "proxyUsername": "Nhập tên đăng nhập proxy",
-            "proxyPassword": "Nhập mật khẩu proxy",
+            "selectProxy": "Chọn proxy",
             "deviceInfo": "Nhập thông tin thiết bị",
             "selectDevice": "Chọn thiết bị",
             "selectScenario": "Chọn kịch bản"
@@ -91,6 +85,7 @@
         "hints": {
             "passwordHint": "Để trống để giữ mật khẩu hiện tại",
             "twoFactorHint": "Bật xác thực hai yếu tố để bảo mật tốt hơn",
+            "proxyHint": "Chọn proxy mà tài khoản này sẽ sử dụng",
             "deviceHint": "Chọn thiết bị mà tài khoản này sẽ sử dụng",
             "scenarioHint": "Chọn kịch bản tương tác cho tài khoản này"
         },
@@ -297,6 +292,8 @@
         "selectDevicePlaceholder": "Chọn thiết bị",
         "selectScenario": "Chọn kịch bản",
         "selectScenarioPlaceholder": "Chọn kịch bản",
+        "selectProxy": "Chọn proxy",
+        "selectProxyPlaceholder": "Chọn proxy",
         "redo": "Làm lại",
         "exit": "Thoát",
         "save": "Lưu",

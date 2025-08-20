@@ -45,10 +45,7 @@ const EditAccountModal = ({
         two_factor_enabled: false,
         two_factor_backup_codes: [],
         notes: '',
-        proxy_ip: '',
-        proxy_port: '',
-        proxy_username: '',
-        proxy_password: '',
+        proxy_id: '',
         device_info: '',
         device_id: '',
         scenario_id: '',
@@ -58,6 +55,8 @@ const EditAccountModal = ({
     const [isLoading, setIsLoading] = useState(false)
     const [errors, setErrors] = useState({})
     const [showPassword, setShowPassword] = useState(false)
+    const [proxies, setProxies] = useState([])
+    const [loadingProxies, setLoadingProxies] = useState(false)
 
     // Initialize form data when account changes
     useEffect(() => {
@@ -73,10 +72,7 @@ const EditAccountModal = ({
                 two_factor_enabled: account.two_factor_enabled || false,
                 two_factor_backup_codes: account.two_factor_backup_codes || [],
                 notes: account.notes || '',
-                proxy_ip: account.proxy_ip || '',
-                proxy_port: account.proxy_port || '',
-                proxy_username: account.proxy_username || '',
-                proxy_password: '', // Don't pre-fill proxy password for security
+                proxy_id: account.proxy_id !== undefined && account.proxy_id !== null ? String(account.proxy_id) : '',
                 device_info: account.device_info || '',
                 device_id: account.device_id !== undefined && account.device_id !== null ? String(account.device_id) : '',
                 scenario_id: account.scenario_id !== undefined && account.scenario_id !== null ? String(account.scenario_id) : '',
@@ -86,18 +82,38 @@ const EditAccountModal = ({
         }
     }, [account])
 
-    // Load devices and scenarios when modal opens (emit to parent)
+    // Load devices and scenarios when component mounts
     useEffect(() => {
-        if (isOpen && onLoadDevices && devices.length === 0) {
-            onLoadDevices()
+        if (isOpen) {
+            if (onLoadDevices) onLoadDevices()
+            if (onLoadScenarios) onLoadScenarios()
+            loadProxies()
         }
-    }, [isOpen, onLoadDevices, devices.length])
+    }, [isOpen, onLoadDevices, onLoadScenarios])
 
-    useEffect(() => {
-        if (isOpen && onLoadScenarios && scenarios.length === 0) {
-            onLoadScenarios()
+    // Load proxies from API
+    const loadProxies = async () => {
+        try {
+            setLoadingProxies(true)
+            const response = await fetch('/api/proxies/active-for-select', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json',
+                }
+            })
+            
+            if (response.ok) {
+                const data = await response.json()
+                setProxies(data)
+            } else {
+                console.error('Failed to load proxies')
+            }
+        } catch (error) {
+            console.error('Error loading proxies:', error)
+        } finally {
+            setLoadingProxies(false)
         }
-    }, [isOpen, onLoadScenarios, scenarios.length])
+    }
 
     const handleInputChange = (field, value) => {
         setFormData(prev => ({
@@ -185,17 +201,8 @@ const EditAccountModal = ({
                 if (formData.notes && formData.notes.trim()) {
                     saveData.notes = formData.notes.trim()
                 }
-                if (formData.proxy_ip && formData.proxy_ip.trim()) {
-                    saveData.proxy_ip = formData.proxy_ip.trim()
-                }
-                if (formData.proxy_port && formData.proxy_port.toString().trim()) {
-                    saveData.proxy_port = parseInt(formData.proxy_port)
-                }
-                if (formData.proxy_username && formData.proxy_username.trim()) {
-                    saveData.proxy_username = formData.proxy_username.trim()
-                }
-                if (formData.proxy_password && formData.proxy_password.trim()) {
-                    saveData.proxy_password = formData.proxy_password.trim()
+                if (formData.proxy_id && formData.proxy_id.toString().trim()) {
+                    saveData.proxy_id = parseInt(formData.proxy_id)
                 }
                 if (formData.device_info && formData.device_info.trim()) {
                     saveData.device_info = formData.device_info.trim()
@@ -242,10 +249,7 @@ const EditAccountModal = ({
             two_factor_enabled: false,
             two_factor_backup_codes: [],
             notes: '',
-            proxy_ip: '',
-            proxy_port: '',
-            proxy_username: '',
-            proxy_password: '',
+            proxy_id: '',
             device_info: '',
             device_id: '',
             scenario_id: '',
@@ -300,13 +304,6 @@ const EditAccountModal = ({
                                 className="flex items-center gap-1.5 text-[11px] md:text-xs whitespace-nowrap"
                             >
                                 <span className="hidden sm:inline">{t('sections.accountInfo')}</span>
-                            </Tabs.TabNav>
-                            <Tabs.TabNav
-                                value="proxy"
-                                icon={<Globe className="w-3 h-3" />}
-                                className="flex items-center gap-1.5 text-[11px] md:text-xs whitespace-nowrap"
-                            >
-                                <span className="hidden sm:inline">{t('sections.proxySettings')}</span>
                             </Tabs.TabNav>
                             <Tabs.TabNav
                                 value="device"
@@ -452,71 +449,6 @@ const EditAccountModal = ({
 
 
 
-                        <Tabs.TabContent value="proxy">
-                            <div className="bg-white dark:bg-gray-800 rounded-lg p-5 shadow-sm border border-gray-200 dark:border-gray-700">
-                                <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
-                                    <Globe className="w-5 h-5 mr-2 text-purple-500" />
-                                    {t('sections.proxySettings')}
-                                </h3>
-                                <div className="space-y-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                            {t('fields.proxyIp')}
-                                        </label>
-                                        <Input
-                                            value={formData.proxy_ip}
-                                            onChange={(e) => handleInputChange('proxy_ip', e.target.value)}
-                                            placeholder={t('placeholders.proxyIp')}
-                                            className="border-gray-300 dark:border-gray-600"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                            {t('fields.proxyPort')}
-                                        </label>
-                                        <Input
-                                            type="number"
-                                            min="1"
-                                            max="65535"
-                                            value={formData.proxy_port}
-                                            onChange={(e) => handleInputChange('proxy_port', e.target.value)}
-                                            placeholder={t('placeholders.proxyPort')}
-                                            className={`border-gray-300 dark:border-gray-600 ${errors.proxy_port ? 'border-red-500' : ''}`}
-                                        />
-                                        {errors.proxy_port && (
-                                            <p className="text-red-500 text-xs mt-1 flex items-center">
-                                                <AlertCircle className="w-3 h-3 mr-1" />
-                                                {errors.proxy_port}
-                                            </p>
-                                        )}
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                            {t('fields.proxyUsername')}
-                                        </label>
-                                        <Input
-                                            value={formData.proxy_username}
-                                            onChange={(e) => handleInputChange('proxy_username', e.target.value)}
-                                            placeholder={t('placeholders.proxyUsername')}
-                                            className="border-gray-300 dark:border-gray-600"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                            {t('fields.proxyPassword')}
-                                        </label>
-                                        <Input
-                                            type="password"
-                                            value={formData.proxy_password}
-                                            onChange={(e) => handleInputChange('proxy_password', e.target.value)}
-                                            placeholder={t('placeholders.proxyPassword')}
-                                            className="border-gray-300 dark:border-gray-600"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </Tabs.TabContent>
-
                         <Tabs.TabContent value="device">
                             <div className="bg-white dark:bg-gray-800 rounded-lg p-5 shadow-sm border border-gray-200 dark:border-gray-700">
                                 <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
@@ -567,6 +499,27 @@ const EditAccountModal = ({
                                     {t('sections.securitySettings')}
                                 </h3>
                                 <div className="space-y-4">
+                                    {/* Proxy Settings */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            {t('fields.proxy')}
+                                        </label>
+                                        <Select
+                                            value={proxies.find(opt => opt.value === formData.proxy_id) || null}
+                                            onChange={(opt) => handleInputChange('proxy_id', opt?.value ?? '')}
+                                            options={proxies}
+                                            isLoading={loadingProxies}
+                                            className="border-gray-300 dark:border-gray-600"
+                                            placeholder={t('placeholders.selectProxy')}
+                                        />
+                                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                            {t('hints.proxyHint')}
+                                        </p>
+                                    </div>
+
+                                    <div className="pt-4 mt-2 border-t border-gray-200 dark:border-gray-700" />
+
+                                    {/* Two-Factor Authentication */}
                                     <div className="space-y-4">
                                         <div>
                                             <Checkbox

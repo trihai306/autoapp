@@ -170,6 +170,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Proxy Management
     Route::get('proxies/active', [ProxyController::class, 'getActiveProxies'])
         ->middleware('permission:proxies.view');
+    Route::get('proxies/active-for-select', [ProxyController::class, 'getActiveProxiesForSelect'])
+        ->middleware('permission:proxies.view');
     Route::get('proxies/stats', [ProxyController::class, 'stats'])
         ->middleware('permission:proxies.view');
     Route::post('proxies/bulk-delete', [ProxyController::class, 'bulkDelete'])

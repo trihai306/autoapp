@@ -149,6 +149,8 @@
         "selectDevicePlaceholder": "Seleccionar dispositivo",
         "selectScenario": "Seleccionar escenario",
         "selectScenarioPlaceholder": "Seleccionar escenario",
+        "selectProxy": "Seleccionar proxy",
+        "selectProxyPlaceholder": "Seleccionar proxy",
         "redo": "Rehacer",
         "exit": "Salir",
         "save": "Guardar",
@@ -417,6 +419,23 @@
                 "testError": "Conexión fallida",
                 "invalidInput": "Datos de entrada inválidos"
             }
+        },
+        "placeholders": {
+            "selectProxy": "Seleccionar proxy",
+            "deviceInfo": "Ingresar información del dispositivo"
+        },
+        "hints": {
+            "proxyHint": "Selecciona el proxy que usará esta cuenta",
+            "deviceHint": "Selecciona el dispositivo que usará esta cuenta"
+        },
+        "fields": {
+            "username": "Nombre de Usuario",
+            "email": "Correo Electrónico",
+            "phoneNumber": "Número de Teléfono",
+            "status": "Estado",
+            "notes": "Notas",
+            "proxy": "Proxy",
+            "deviceInfo": "Información del Dispositivo"
         }
     }
 } 
