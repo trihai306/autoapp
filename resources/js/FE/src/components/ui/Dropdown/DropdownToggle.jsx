@@ -71,7 +71,19 @@ const DropdownToggle = (props) => {
 
     if (renderTitle) {
         return (
-            <div className={dropdownToggleClass} {...rest} ref={ref}>
+            <div 
+                className={dropdownToggleClass} 
+                {...rest} 
+                ref={ref}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        rest.onClick?.(e)
+                    }
+                }}
+            >
                 {renderTitle}
             </div>
         )

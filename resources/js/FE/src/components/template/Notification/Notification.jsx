@@ -216,14 +216,17 @@ const _Notification = ({ className }) => {
             <Dropdown.Item variant="header">
                 <div className="dark:border-gray-700 px-2 flex items-center justify-between mb-1">
                     <h6>Notifications</h6>
-                    <Button
-                        variant="plain"
-                        shape="circle"
-                        size="sm"
-                        icon={<HiOutlineMailOpen className="text-xl" />}
-                        title="Mark all as read"
-                        onClick={onMarkAllAsRead}
-                    />
+                                    <Button
+                    variant="plain"
+                    shape="circle"
+                    size="sm"
+                    icon={<HiOutlineMailOpen className="text-xl" />}
+                    title="Mark all as read"
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        onMarkAllAsRead()
+                    }}
+                />
                 </div>
             </Dropdown.Item>
             <ScrollBar className={classNames('overflow-y-auto', notificationHeight)}>
@@ -240,7 +243,10 @@ const _Notification = ({ className }) => {
                                 className={`relative rounded-xl flex px-4 py-3 cursor-pointer hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-700 ${
                                     item.isRealtime ? 'bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500' : ''
                                 }`}
-                                onClick={() => onMarkAsRead(item.id)}
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    onMarkAsRead(item.id)
+                                }}
                             >
                                 <NotificationAvatar type={item.type} />
                                 <div className="mx-3 flex-1">
@@ -293,7 +299,10 @@ const _Notification = ({ className }) => {
                     <Button
                         block
                         variant="solid"
-                        onClick={handleViewAllActivity}
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            handleViewAllActivity()
+                        }}
                     >
                         View All Activity
                     </Button>

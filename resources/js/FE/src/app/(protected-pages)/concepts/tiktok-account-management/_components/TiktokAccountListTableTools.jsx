@@ -30,6 +30,7 @@ const TiktokAccountListBulkActionTools = () => {
     const [showSuspendConfirmation, setShowSuspendConfirmation] = useState(false)
     const [showStartConfirmation, setShowStartConfirmation] = useState(false)
     const tTableTools = useTranslations('tiktokAccountManagement.tableTools')
+    const t = useTranslations('tiktokAccountManagement.tableTools')
 
     const selectedTiktokAccount = useTiktokAccountListStore((state) => state.selectedTiktokAccount)
     const setSelectAllTiktokAccount = useTiktokAccountListStore((state) => state.setSelectAllTiktokAccount)

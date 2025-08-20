@@ -128,7 +128,7 @@ const DropdownMenu = (props) => {
     })
 
     const click = useClick(context, {
-        event: 'mousedown',
+        event: 'click',
         toggle: !isNested,
         ignoreMouse: isNested,
     })

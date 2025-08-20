@@ -60,28 +60,28 @@
         "apply": "应用"
     },
     "bulkAction": {
-        "selected": "已选择 {{count}} 个账户",
+        "selected": "已选择 {count} 个账户",
         "delete": "删除",
         "suspend": "暂停",
         "clear": "清除选择"
     },
     "bulkDeleteConfirm": {
         "title": "删除选中的账户",
-        "content": "您确定要删除 {{count}} 个选中的 TikTok 账户吗？此操作无法撤销。",
+        "content": "您确定要删除 {count} 个选中的 TikTok 账户吗？此操作无法撤销。",
         "cancel": "取消",
         "delete": "删除",
         "confirmText": "是的，删除它们"
     },
     "bulkSuspendConfirm": {
         "title": "暂停选中的账户",
-        "content": "您确定要暂停 {{count}} 个选中的 TikTok 账户吗？",
+        "content": "您确定要暂停 {count} 个选中的 TikTok 账户吗？",
         "cancel": "取消",
         "suspend": "暂停",
         "confirmText": "是的，暂停它们"
     },
     "bulkStartConfirm": {
         "title": "启动选中的账户",
-        "content": "您确定要为 {{count}} 个选中的 TikTok 账户启动运行场景吗？",
+        "content": "您确定要为 {count} 个选中的 TikTok 账户启动运行场景吗？",
         "cancel": "取消",
         "start": "启动",
         "confirmText": "是的，启动它们"

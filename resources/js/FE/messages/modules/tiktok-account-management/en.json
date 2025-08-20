@@ -131,28 +131,28 @@
         "apply": "Apply"
     },
     "bulkAction": {
-        "selected": "{{count}} account(s) selected",
+        "selected": "{count} account(s) selected",
         "delete": "Delete",
         "suspend": "Suspend",
         "clear": "Clear Selection"
     },
     "bulkDeleteConfirm": {
         "title": "Delete Selected Accounts",
-        "content": "Are you sure you want to delete {{count}} selected TikTok account(s)? This action cannot be undone.",
+        "content": "Are you sure you want to delete {count} selected TikTok account(s)? This action cannot be undone.",
         "cancel": "Cancel",
         "delete": "Delete",
         "confirmText": "Yes, delete them"
     },
     "bulkSuspendConfirm": {
         "title": "Suspend Selected Accounts",
-        "content": "Are you sure you want to suspend {{count}} selected TikTok account(s)?",
+        "content": "Are you sure you want to suspend {count} selected TikTok account(s)?",
         "cancel": "Cancel",
         "suspend": "Suspend",
         "confirmText": "Yes, suspend them"
     },
     "bulkStartConfirm": {
         "title": "Start Selected Accounts",
-        "content": "Are you sure you want to start running scenarios for {{count}} selected TikTok account(s)?",
+        "content": "Are you sure you want to start running scenarios for {count} selected TikTok account(s)?",
         "cancel": "Cancel",
         "start": "Start",
         "confirmText": "Yes, start them"

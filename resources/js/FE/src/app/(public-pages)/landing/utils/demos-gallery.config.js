@@ -1,40 +1,8 @@
-export const allDemos = [
-    {
-        id: 'dashboardEcommerce',
-        name: 'Ecommerce',
-        path: '/dashboards/ecommerce',
-    },
-    {
-        id: 'dashboardProject',
-        name: 'Project',
-        path: '/dashboards/project',
-    },
-    {
-        id: 'dashboardMarketing',
-        name: 'Marketing',
-        path: '/dashboards/marketing',
-    },
-    {
-        id: 'dashboardAnalytic',
-        name: 'Analytic',
-        path: '/dashboards/analytic',
-    },
-]
+export const allDemos = []
 
-export const ecommerceDemos = [
-    {
-        id: 'dashboardEcommerce',
-        name: 'Dashboard',
-        path: '/dashboards/ecommerce',
-    },
-]
+export const ecommerceDemos = []
 
 export const marketingDemos = [
-    {
-        id: 'dashboardMarketing',
-        name: 'Dashboard',
-        path: '/dashboards/marketing',
-    },
     {
         id: 'cutomerList',
         name: 'Customer List',
@@ -58,11 +26,6 @@ export const marketingDemos = [
 ]
 
 export const projectDemos = [
-    {
-        id: 'dashboardProject',
-        name: 'Dashboard',
-        path: '/dashboards/project',
-    },
     {
         id: 'projectIssue',
         name: 'Issue',

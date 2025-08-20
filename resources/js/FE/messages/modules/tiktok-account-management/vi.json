@@ -131,7 +131,7 @@
         "apply": "Áp dụng"
     },
     "bulkAction": {
-        "selected": "Đã chọn {{count}} tài khoản",
+        "selected": "Đã chọn {count} tài khoản",
         "activate": "Kích hoạt",
         "pause": "Tạm dừng",
         "suspend": "Tạm khóa",
@@ -139,9 +139,9 @@
         "clear": "Bỏ chọn",
         "success": "Thành công",
         "error": "Lỗi",
-        "activateSuccess": "Đã kích hoạt {{count}} tài khoản thành công",
+        "activateSuccess": "Đã kích hoạt {count} tài khoản thành công",
         "activateSuccessDesc": "Đã tạo tasks theo kịch bản",
-        "pauseSuccess": "Đã tạm dừng {{count}} tài khoản thành công",
+        "pauseSuccess": "Đã tạm dừng {count} tài khoản thành công",
         "someAccountsFailed": "Một số tài khoản thất bại",
         "errorCreatingTasks": "Có lỗi xảy ra khi tạo tasks",
         "statusUpdateError": "Lỗi cập nhật trạng thái",
@@ -149,8 +149,8 @@
         "deleteTasksErrorDesc": "Lỗi khi xóa tasks",
         "successTitle": "Thành công",
         "errorTitle": "Lỗi",
-        "suspendSuccess": "Đã dừng {{count}} tài khoản",
-        "deleteTasksSuccess": "và xóa {{count}} pending tasks",
+        "suspendSuccess": "Đã dừng {count} tài khoản",
+        "deleteTasksSuccess": "và xóa {count} pending tasks",
         "errorStoppingAccounts": "Có lỗi xảy ra khi dừng tài khoản"
     },
     "tableTools": {
@@ -175,21 +175,21 @@
     },
     "bulkDeleteConfirm": {
         "title": "Xóa tài khoản đã chọn",
-        "content": "Bạn có chắc chắn muốn xóa {{count}} tài khoản TikTok đã chọn? Hành động này không thể hoàn tác.",
+        "content": "Bạn có chắc chắn muốn xóa {count} tài khoản TikTok đã chọn? Hành động này không thể hoàn tác.",
         "cancel": "Hủy",
         "delete": "Xóa",
         "confirmText": "Có, xóa chúng"
     },
     "bulkSuspendConfirm": {
         "title": "Tạm khóa tài khoản đã chọn",
-        "content": "Bạn có chắc chắn muốn tạm khóa {{count}} tài khoản TikTok đã chọn?",
+        "content": "Bạn có chắc chắn muốn tạm khóa {count} tài khoản TikTok đã chọn?",
         "cancel": "Hủy",
         "suspend": "Tạm khóa",
         "confirmText": "Có, tạm khóa chúng"
     },
     "bulkStartConfirm": {
         "title": "Bắt đầu tài khoản đã chọn",
-        "content": "Bạn có chắc chắn muốn bắt đầu chạy kịch bản cho {{count}} tài khoản TikTok đã chọn?",
+        "content": "Bạn có chắc chắn muốn bắt đầu chạy kịch bản cho {count} tài khoản TikTok đã chọn?",
         "cancel": "Hủy",
         "start": "Bắt đầu",
         "confirmText": "Có, bắt đầu chúng"
@@ -230,8 +230,8 @@
         "addScenario": "Thêm",
         "searchPlaceholder": "Tìm kiếm ...",
         "scenarioDetails": "Kịch bản: {name}",
-        "totalActions": "Tổng số hành động: {{count}}",
-        "runTimes": "Đã chạy: {{count}} lần",
+        "totalActions": "Tổng số hành động: {count}",
+        "runTimes": "Đã chạy: {count} lần",
         "addAction": "Thêm Hành Động",
         "actionTable": {
             "id": "ID",
@@ -338,8 +338,8 @@
             "videos": "Videos",
             "estimatedViews": "Views (ước tính)",
             "currentTasks": "Tác vụ hiện tại",
-            "runningTasks": "{{count}} đang chạy",
-            "pendingTasks": "{{count}} chờ xử lý",
+            "runningTasks": "{count} đang chạy",
+            "pendingTasks": "{count} chờ xử lý",
             "noTasks": "Không có tác vụ nào đang thực hiện",
             "priority": "Ưu tiên: {priority}",
             "startedAt": "Bắt đầu: {time}",
@@ -399,7 +399,7 @@
                 "description": "Theo dõi tất cả các tác vụ tương tác của tài khoản",
                 "noActivity": "Chưa có hoạt động nào",
                 "noActivityDescription": "Tài khoản này chưa thực hiện tác vụ tương tác nào.",
-                "viewMore": "Xem thêm {{count}} hoạt động",
+                "viewMore": "Xem thêm {count} hoạt động",
                 "pagination": {
                     "showing": "Hiển thị {from}-{to} trong tổng số {total} hoạt động",
                     "page": "Trang {current} / {total}",
@@ -450,8 +450,8 @@
                 "disabledMessage": "Tài khoản chưa được bảo vệ bởi 2FA",
                 "recommendation": "Khuyến nghị bật 2FA để tăng cường bảo mật cho tài khoản TikTok này.",
                 "backupCodes": "Mã dự phòng",
-                "backupCodesAvailable": "{{count}} mã dự phòng có sẵn",
-                "moreBackupCodes": "+{{count}} mã khác"
+                        "backupCodesAvailable": "{count} mã dự phòng có sẵn",
+        "moreBackupCodes": "+{count} mã khác"
             },
             "securityInfo": {
                 "title": "Thông tin bảo mật",

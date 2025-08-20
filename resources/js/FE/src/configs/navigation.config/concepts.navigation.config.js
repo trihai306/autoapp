@@ -108,41 +108,7 @@ const conceptsNavigationConfig = [
                 },
                 subMenu: [],
             },
-            {
-                key: 'concepts.account',
-                path: '',
-                title: 'Account',
-                translateKey: 'nav.conceptsAccount.account',
-                icon: 'account',
-                type: NAV_ITEM_TYPE_COLLAPSE,
-                authority: [ADMIN, USER],
-                meta: {
-                    description: {
-                        translateKey: 'nav.conceptsAccount.accountDesc',
-                        label: 'Account settings and info',
-                    },
-                },
-                subMenu: [
-                    {
-                        key: 'concepts.account.settings',
-                        path: `${CONCEPTS_PREFIX_PATH}/account/settings`,
-                        title: 'Settings',
-                        translateKey: 'nav.conceptsAccount.settings',
-                        icon: 'accountSettings',
-                        type: NAV_ITEM_TYPE_ITEM,
-                        authority: [ADMIN, USER],
-                        meta: {
-                            description: {
-                                translateKey:
-                                    'nav.conceptsAccount.settingsDesc',
-                                label: 'Configure your settings',
-                            },
-                        },
-                        subMenu: [],
-                    },
 
-                ],
-            },
             // {
             //     key: 'concepts.helpCenter',
             //     path: '',
