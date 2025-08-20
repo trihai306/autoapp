@@ -1,5 +1,5 @@
 'use client'
-import React, { useMemo, useState, useEffect } from 'react'
+import React, { useMemo, useState, useEffect, useCallback } from 'react'
 import Avatar from '@/components/ui/Avatar'
 import Tag from '@/components/ui/Tag'
 import Badge from '@/components/ui/Badge'
@@ -573,25 +573,25 @@ const TiktokAccountListTable = ({
         }
     }, [listenToTableReload, stopListeningToTableReload, onRefresh])
 
-    const handleViewDetails = (tiktokAccount) => {
+    const handleViewDetails = useCallback((tiktokAccount) => {
         setSelectedTiktokAccountForDetail(tiktokAccount)
         setIsDetailViewOpen(true)
-    }
+    }, [setSelectedTiktokAccountForDetail, setIsDetailViewOpen])
 
-    const handleCloseDetailView = () => {
+    const handleCloseDetailView = useCallback(() => {
         setIsDetailViewOpen(false)
         setSelectedTiktokAccountForDetail(null)
-    }
+    }, [setIsDetailViewOpen, setSelectedTiktokAccountForDetail])
 
-    const handleCloseEditModal = () => {
+    const handleCloseEditModal = useCallback(() => {
         setIsEditModalOpen(false)
         setSelectedAccountForEdit(null)
         // Clear data when closing modal
         setDevices([])
         setScenarios([])
-    }
+    }, [setIsEditModalOpen, setSelectedAccountForEdit, setDevices, setScenarios])
 
-    const loadDevicesForEdit = async () => {
+    const loadDevicesForEdit = useCallback(async () => {
         setLoadingDevices(true)
         try {
             const { default: getDevices } = await import('@/server/actions/device/getDevices')
@@ -623,9 +623,9 @@ const TiktokAccountListTable = ({
         } finally {
             setLoadingDevices(false)
         }
-    }
+    }, [setDevices, setLoadingDevices])
 
-    const loadScenariosForEdit = async () => {
+    const loadScenariosForEdit = useCallback(async () => {
         setLoadingScenarios(true)
         try {
             const { default: getInteractionScenarios } = await import('@/server/actions/interaction-scenario/getInteractionScenarios')
@@ -647,18 +647,18 @@ const TiktokAccountListTable = ({
         } finally {
             setLoadingScenarios(false)
         }
-    }
+    }, [setScenarios, setLoadingScenarios])
 
     // Callback functions for edit modal
-    const handleLoadDevices = () => {
+    const handleLoadDevices = useCallback(() => {
         loadDevicesForEdit()
-    }
+    }, [loadDevicesForEdit])
 
-    const handleLoadScenarios = () => {
+    const handleLoadScenarios = useCallback(() => {
         loadScenariosForEdit()
-    }
+    }, [loadScenariosForEdit])
 
-    const handleSaveAccount = async (accountId, accountData) => {
+    const handleSaveAccount = useCallback(async (accountId, accountData) => {
         try {
             const { default: updateTiktokAccount } = await import('@/server/actions/tiktok-account/updateTiktokAccount')
             const result = await updateTiktokAccount(accountId, accountData)
@@ -666,6 +666,18 @@ const TiktokAccountListTable = ({
             if (result.success) {
                 setDialogMessage(`Cập nhật thông tin tài khoản thành công!`)
                 setShowSuccessDialog(true)
+                
+                // Update selectedAccountForEdit with new data
+                if (selectedAccountForEdit) {
+                    const updatedAccount = {
+                        ...selectedAccountForEdit,
+                        ...accountData,
+                        // Ensure proxy_id is properly set
+                        proxy_id: accountData.proxy_id || selectedAccountForEdit.proxy_id
+                    }
+                    setSelectedAccountForEdit(updatedAccount)
+                }
+                
                 handleCloseEditModal()
                 
                 // Refresh data
@@ -681,39 +693,39 @@ const TiktokAccountListTable = ({
             setDialogMessage(`Có lỗi xảy ra khi cập nhật tài khoản`)
             setShowErrorDialog(true)
         }
-    }
+    }, [handleCloseEditModal, onRefresh, setDialogMessage, setShowErrorDialog, setShowSuccessDialog, selectedAccountForEdit])
 
     // Enhanced action handlers
 
-    const handleViewTasks = (tiktokAccount) => {
+    const handleViewTasks = useCallback((tiktokAccount) => {
         // Navigate to tasks page or open tasks modal
         // router.push(`/concepts/tiktok-account-management/${tiktokAccount.id}/tasks`)
-    }
+    }, [router])
 
-    const handleEdit = (tiktokAccount) => {
+    const handleEdit = useCallback((tiktokAccount) => {
         setSelectedAccountForEdit(tiktokAccount)
         setIsEditModalOpen(true)
         // Load devices and scenarios when opening edit modal
         loadDevicesForEdit()
         loadScenariosForEdit()
-    }
+    }, [setSelectedAccountForEdit, setIsEditModalOpen, loadDevicesForEdit, loadScenariosForEdit])
 
-    const handleDelete = (tiktokAccount) => {
+    const handleDelete = useCallback((tiktokAccount) => {
         setSelectedAccountForAction(tiktokAccount)
         setShowDeleteConfirmDialog(true)
-    }
+    }, [setSelectedAccountForAction, setShowDeleteConfirmDialog])
 
-    const handleStart = (tiktokAccount) => {
+    const handleStart = useCallback((tiktokAccount) => {
         setSelectedAccountForAction(tiktokAccount)
         setShowStartConfirmDialog(true)
-    }
+    }, [setSelectedAccountForAction, setShowStartConfirmDialog])
 
-    const handleStop = (tiktokAccount) => {
+    const handleStop = useCallback((tiktokAccount) => {
         setSelectedAccountForAction(tiktokAccount)
         setShowStopConfirmDialog(true)
-    }
+    }, [setSelectedAccountForAction, setShowStopConfirmDialog])
 
-    const confirmStart = async () => {
+    const confirmStart = useCallback(async () => {
         if (!selectedAccountForAction) return
         
         setIsProcessing(true)
@@ -744,9 +756,9 @@ const TiktokAccountListTable = ({
         } finally {
             setIsProcessing(false)
         }
-    }
+    }, [selectedAccountForAction, setDialogMessage, setShowErrorDialog, setShowSuccessDialog, onRefresh, setIsProcessing])
 
-    const confirmStop = async () => {
+    const confirmStop = useCallback(async () => {
         if (!selectedAccountForAction) return
         
         setIsProcessing(true)
@@ -806,9 +818,9 @@ const TiktokAccountListTable = ({
             setIsProcessing(false)
             setSelectedAccountForAction(null)
         }
-    }
+    }, [selectedAccountForAction, setDialogMessage, setShowErrorDialog, setShowSuccessDialog, onRefresh, setIsProcessing])
 
-    const confirmDelete = async () => {
+    const confirmDelete = useCallback(async () => {
         if (!selectedAccountForAction) return
 
         setIsProcessing(true)
@@ -837,17 +849,17 @@ const TiktokAccountListTable = ({
             setIsProcessing(false)
             setSelectedAccountForAction(null)
         }
-    }
+    }, [selectedAccountForAction, setDialogMessage, setShowErrorDialog, setShowSuccessDialog, onRefresh, setIsProcessing])
 
-    const onColumnToggle = (accessorKey) => {
+    const onColumnToggle = useCallback((accessorKey) => {
         if (visibleColumns.includes(accessorKey)) {
             setVisibleColumns(visibleColumns.filter(key => key !== accessorKey))
         } else {
             setVisibleColumns([...visibleColumns, accessorKey])
         }
-    }
+    }, [visibleColumns, setVisibleColumns])
     
-    const toggleRowExpansion = (rowId) => {
+    const toggleRowExpansion = useCallback((rowId) => {
         const newExpandedRows = new Set(expandedRows)
         if (newExpandedRows.has(rowId)) {
             newExpandedRows.delete(rowId)
@@ -855,7 +867,7 @@ const TiktokAccountListTable = ({
             newExpandedRows.add(rowId)
         }
         setExpandedRows(newExpandedRows)
-    }
+    }, [expandedRows, setExpandedRows])
     
     const columns = useMemo(
         () => {

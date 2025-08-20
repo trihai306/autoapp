@@ -49,6 +49,7 @@
             "password": "Mật khẩu",
             "status": "Trạng thái",
             "twoFactorEnabled": "Bật xác thực hai yếu tố",
+            "twoFactorBackupCodes": "Mã dự phòng 2FA",
             "notes": "Ghi chú",
             "proxy": "Proxy",
             "deviceInfo": "Thông tin thiết bị",
@@ -66,7 +67,8 @@
             "selectProxy": "Chọn proxy",
             "deviceInfo": "Nhập thông tin thiết bị",
             "selectDevice": "Chọn thiết bị",
-            "selectScenario": "Chọn kịch bản"
+            "selectScenario": "Chọn kịch bản",
+            "twoFactorBackupCodes": "Nhập mã dự phòng 2FA (cách nhau bởi dấu phẩy)"
         },
         "status": {
             "active": "Hoạt động",
@@ -85,6 +87,7 @@
         "hints": {
             "passwordHint": "Để trống để giữ mật khẩu hiện tại",
             "twoFactorHint": "Bật xác thực hai yếu tố để bảo mật tốt hơn",
+            "twoFactorBackupCodesHint": "Nhập các mã dự phòng 2FA được cung cấp khi bật xác thực hai yếu tố. Mỗi mã là một chuỗi riêng biệt.",
             "proxyHint": "Chọn proxy mà tài khoản này sẽ sử dụng",
             "deviceHint": "Chọn thiết bị mà tài khoản này sẽ sử dụng",
             "scenarioHint": "Chọn kịch bản tương tác cho tài khoản này"

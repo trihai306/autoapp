@@ -14,6 +14,7 @@ import Notification from '@/components/ui/Notification'
 import importTiktokAccounts from '@/server/actions/tiktok-account/importTiktokAccounts'
 import getDevices from '@/server/actions/device/getDevices'
 import getInteractionScenarios from '@/server/actions/interaction-scenario/getInteractionScenarios'
+import getActiveProxies from '@/server/actions/proxy/getActiveProxies'
 import { useTranslations } from 'next-intl'
 import { 
     TbAlertCircle, 
@@ -36,6 +37,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
     const [scenarios, setScenarios] = useState([])
     const [proxies, setProxies] = useState([])
     const [isLoadingData, setIsLoadingData] = useState(true)
+    const [proxiesLoaded, setProxiesLoaded] = useState(false)
     const [menuPortalTarget, setMenuPortalTarget] = useState(null)
     const [deviceMenuOpen, setDeviceMenuOpen] = useState(false)
     const [scenarioMenuOpen, setScenarioMenuOpen] = useState(false)
@@ -118,18 +120,13 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
 
                 // Load proxies
                 try {
-                    const proxiesResponse = await fetch('/api/proxies/active-for-select', {
-                        headers: {
-                            'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-                            'Content-Type': 'application/json',
-                        }
-                    })
+                    const proxiesResponse = await getActiveProxies()
                     
-                    if (proxiesResponse.ok) {
-                        const proxiesData = await proxiesResponse.json()
-                        setProxies(proxiesData)
+                    if (proxiesResponse.success) {
+                        setProxies(proxiesResponse.data)
+                        setProxiesLoaded(true) // Set proxiesLoaded to true after successful load
                     } else {
-                        console.error('❌ [ImportAccountsModal] Failed to load proxies:', proxiesResponse.statusText)
+                        console.error('❌ [ImportAccountsModal] Failed to load proxies:', proxiesResponse.message)
                     }
                 } catch (error) {
                     console.error('❌ [ImportAccountsModal] Error loading proxies:', error)
@@ -146,10 +143,10 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
             }
         }
 
-        if (isOpen) {
+        if (isOpen && !proxiesLoaded) {
             loadData()
         }
-    }, [isOpen])
+    }, [isOpen, proxiesLoaded]) // Chỉ chạy khi isOpen hoặc proxiesLoaded thay đổi
     
     // Form state
     const [formData, setFormData] = useState({
@@ -416,11 +413,13 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
             autoAssign: false,
             deviceId: '',
             scenarioId: '',
+            proxyId: '',
             format: 'new',
         })
         setAccountCount(0)
         setValidationResults({ valid: [], invalid: [], duplicates: [], errors: [] })
         setShowValidation(false)
+        setProxiesLoaded(false) // Reset proxiesLoaded state
         onClose()
     }
 
@@ -431,11 +430,13 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
             autoAssign: false,
             deviceId: '',
             scenarioId: '',
+            proxyId: '',
             format: 'new',
         })
         setAccountCount(0)
         setValidationResults({ valid: [], invalid: [], duplicates: [], errors: [] })
         setShowValidation(false)
+        setProxiesLoaded(false) // Reset proxiesLoaded state
     }
 
     return (

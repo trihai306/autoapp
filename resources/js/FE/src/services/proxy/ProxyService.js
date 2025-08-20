@@ -81,6 +81,14 @@ export async function apiGetActiveProxies() {
     })
 }
 
+// Get active proxies for current user (formatted for select)
+export async function apiGetActiveProxiesForSelect() {
+    return ApiService.fetchDataWithAxios({
+        url: '/proxies/active-for-select',
+        method: 'get',
+    })
+}
+
 // Get proxy statistics
 export async function apiGetProxyStats(params = {}) {
     return ApiService.fetchDataWithAxios({

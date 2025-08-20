@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Container from '@/components/shared/Container'
 import AdaptiveCard from '@/components/shared/AdaptiveCard'
@@ -31,7 +31,7 @@ const TiktokAccountManagementClient = ({ data, params }) => {
     // Get selected accounts from store
     const selectedAccounts = useTiktokAccountListStore((state) => state.selectedTiktokAccount)
 
-    const handleRefresh = async () => {
+    const handleRefresh = useCallback(async () => {
         setIsLoading(true)
         try {
             // Use router.refresh() to trigger server component re-render
@@ -46,7 +46,7 @@ const TiktokAccountManagementClient = ({ data, params }) => {
             console.error('Error refreshing data:', error)
             setIsLoading(false)
         }
-    }
+    }, [router])
 
     // Realtime: reload table on broadcast event (private channel cho user hiện tại)
     const { listenToTableReload, stopListeningToTableReload } = useTiktokAccountTableReload(session?.user?.id)
@@ -105,12 +105,12 @@ const TiktokAccountManagementClient = ({ data, params }) => {
             }
             try { stopListeningToTableReload() } catch (_) {}
         }
-    }, [session?.user?.id, listenToTableReload, stopListeningToTableReload])
+    }, [session?.user?.id, listenToTableReload, stopListeningToTableReload, handleRefresh])
 
-    const handleSettings = () => {
+    const handleSettings = useCallback(() => {
         // Open interaction config modal
         setShowInteractionConfigModal(true)
-    }
+    }, [])
 
 
 

@@ -7,6 +7,8 @@ import Input from '@/components/ui/Input'
 import Checkbox from '@/components/ui/Checkbox'
 import Select from '@/components/ui/Select'
 import Tabs from '@/components/ui/Tabs'
+// Import service action
+import getActiveProxies from '@/server/actions/proxy/getActiveProxies'
 // Removed API imports - now handled by parent component
 import { 
     HiOutlineUser as User,
@@ -43,7 +45,7 @@ const EditAccountModal = ({
         password: '',
         status: 'inactive',
         two_factor_enabled: false,
-        two_factor_backup_codes: [],
+        two_factor_backup_codes: [], // Keep as array
         notes: '',
         proxy_id: '',
         device_info: '',
@@ -57,6 +59,7 @@ const EditAccountModal = ({
     const [showPassword, setShowPassword] = useState(false)
     const [proxies, setProxies] = useState([])
     const [loadingProxies, setLoadingProxies] = useState(false)
+    const [proxiesLoaded, setProxiesLoaded] = useState(false)
 
     // Initialize form data when account changes
     useEffect(() => {
@@ -70,13 +73,16 @@ const EditAccountModal = ({
                 password: '', // Don't pre-fill password for security
                 status: account.status || 'inactive',
                 two_factor_enabled: account.two_factor_enabled || false,
-                two_factor_backup_codes: account.two_factor_backup_codes || [],
+                // Convert array of backup codes to a single string for display
+                two_factor_backup_codes: Array.isArray(account.two_factor_backup_codes) 
+                    ? account.two_factor_backup_codes.join(', ') 
+                    : '',
                 notes: account.notes || '',
                 proxy_id: account.proxy_id !== undefined && account.proxy_id !== null ? String(account.proxy_id) : '',
                 device_info: account.device_info || '',
                 device_id: account.device_id !== undefined && account.device_id !== null ? String(account.device_id) : '',
                 scenario_id: account.scenario_id !== undefined && account.scenario_id !== null ? String(account.scenario_id) : '',
-                tags: account.tags || []
+                tags: Array.isArray(account.tags) ? account.tags : []
             })
             setErrors({})
         }
@@ -84,29 +90,24 @@ const EditAccountModal = ({
 
     // Load devices and scenarios when component mounts
     useEffect(() => {
-        if (isOpen) {
+        if (isOpen && !proxiesLoaded) {
             if (onLoadDevices) onLoadDevices()
             if (onLoadScenarios) onLoadScenarios()
             loadProxies()
         }
-    }, [isOpen, onLoadDevices, onLoadScenarios])
+    }, [isOpen, proxiesLoaded]) // Chỉ chạy khi isOpen hoặc proxiesLoaded thay đổi
 
     // Load proxies from API
     const loadProxies = async () => {
         try {
             setLoadingProxies(true)
-            const response = await fetch('/api/proxies/active-for-select', {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-                    'Content-Type': 'application/json',
-                }
-            })
+            const response = await getActiveProxies()
             
-            if (response.ok) {
-                const data = await response.json()
-                setProxies(data)
+            if (response.success) {
+                setProxies(response.data)
+                setProxiesLoaded(true) // Set proxiesLoaded to true after successful load
             } else {
-                console.error('Failed to load proxies')
+                console.error('Failed to load proxies:', response.message)
             }
         } catch (error) {
             console.error('Error loading proxies:', error)
@@ -134,6 +135,15 @@ const EditAccountModal = ({
         setFormData(prev => ({
             ...prev,
             [field]: checked
+        }))
+    }
+
+    const handleTwoFactorBackupCodesChange = (value) => {
+        // Convert string input to array for storage
+        const codes = value ? [value] : []
+        setFormData(prev => ({
+            ...prev,
+            two_factor_backup_codes: codes
         }))
     }
 
@@ -214,13 +224,19 @@ const EditAccountModal = ({
                     saveData.scenario_id = parseInt(formData.scenario_id)
                 }
                 
-                // Handle boolean fields
+                // Handle two_factor_enabled
                 saveData.two_factor_enabled = formData.two_factor_enabled
                 
-                // Handle array fields
-                if (formData.two_factor_backup_codes && Array.isArray(formData.two_factor_backup_codes) && formData.two_factor_backup_codes.length > 0) {
-                    saveData.two_factor_backup_codes = formData.two_factor_backup_codes.filter(code => code && code.trim())
+                // Handle two_factor_backup_codes (send as array)
+                if (Array.isArray(formData.two_factor_backup_codes) && formData.two_factor_backup_codes.length > 0) {
+                    saveData.two_factor_backup_codes = formData.two_factor_backup_codes
+                } else if (typeof formData.two_factor_backup_codes === 'string' && formData.two_factor_backup_codes.trim() !== '') {
+                    saveData.two_factor_backup_codes = [formData.two_factor_backup_codes.trim()]
+                } else {
+                    saveData.two_factor_backup_codes = []
                 }
+                
+                // Handle array fields
                 if (formData.tags && Array.isArray(formData.tags) && formData.tags.length > 0) {
                     saveData.tags = formData.tags.filter(tag => tag && tag.trim())
                 }
@@ -247,7 +263,7 @@ const EditAccountModal = ({
             password: '',
             status: 'inactive',
             two_factor_enabled: false,
-            two_factor_backup_codes: [],
+            two_factor_backup_codes: [], // Reset two_factor_backup_codes
             notes: '',
             proxy_id: '',
             device_info: '',
@@ -256,6 +272,7 @@ const EditAccountModal = ({
             tags: []
         })
         setErrors({})
+        setProxiesLoaded(false) // Reset proxiesLoaded state
         onClose()
     }
 
@@ -461,7 +478,7 @@ const EditAccountModal = ({
                                             {t('fields.device')}
                                         </label>
                                         <Select
-                                            value={devices.find(opt => opt.value === formData.device_id) || null}
+                                            value={devices.find(opt => String(opt.value) === String(formData.device_id)) || null}
                                             onChange={(opt) => handleInputChange('device_id', opt?.value ?? '')}
                                             options={devices}
                                             isLoading={loadingDevices}
@@ -477,7 +494,7 @@ const EditAccountModal = ({
                                             {t('fields.scenario')}
                                         </label>
                                         <Select
-                                            value={scenarios.find(opt => opt.value === formData.scenario_id) || null}
+                                            value={scenarios.find(opt => String(opt.value) === String(formData.scenario_id)) || null}
                                             onChange={(opt) => handleInputChange('scenario_id', opt?.value ?? '')}
                                             options={scenarios}
                                             isLoading={loadingScenarios}
@@ -505,7 +522,7 @@ const EditAccountModal = ({
                                             {t('fields.proxy')}
                                         </label>
                                         <Select
-                                            value={proxies.find(opt => opt.value === formData.proxy_id) || null}
+                                            value={proxies.find(opt => String(opt.value) === String(formData.proxy_id)) || null}
                                             onChange={(opt) => handleInputChange('proxy_id', opt?.value ?? '')}
                                             options={proxies}
                                             isLoading={loadingProxies}
@@ -534,67 +551,22 @@ const EditAccountModal = ({
                                         </div>
                                         
                                         {formData.two_factor_enabled && (
-                                            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 space-y-3">
-                                                <div>
-                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                        Mã dự phòng 2FA
-                                                    </label>
-                                                    <textarea
-                                                        value={Array.isArray(formData.two_factor_backup_codes) 
-                                                            ? formData.two_factor_backup_codes.join(', ') 
-                                                            : formData.two_factor_backup_codes || ''}
-                                                        onChange={(e) => {
-                                                            const value = e.target.value
-                                                            const codes = value.split(/[,\s]+/).filter(code => code.trim())
-                                                            setFormData(prev => ({
-                                                                ...prev,
-                                                                two_factor_backup_codes: codes
-                                                            }))
-                                                        }}
-                                                        placeholder="Nhập các mã dự phòng, cách nhau bằng dấu phẩy hoặc xuống dòng..."
-                                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 resize-none"
-                                                        rows={3}
-                                                    />
-                                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                                        Hiện có {Array.isArray(formData.two_factor_backup_codes) 
-                                                            ? formData.two_factor_backup_codes.length 
-                                                            : 0} mã dự phòng
-                                                    </p>
-                                                </div>
-                                                
-                                                <div className="flex gap-2">
-                                                    <Button
-                                                        type="button"
-                                                        variant="outline"
-                                                        size="sm"
-                                                        onClick={() => {
-                                                            // Generate sample backup codes
-                                                            const sampleCodes = []
-                                                            for (let i = 0; i < 8; i++) {
-                                                                sampleCodes.push(Math.random().toString(36).substr(2, 8).toUpperCase())
-                                                            }
-                                                            setFormData(prev => ({
-                                                                ...prev,
-                                                                two_factor_backup_codes: sampleCodes
-                                                            }))
-                                                        }}
-                                                    >
-                                                        Tạo mã mẫu
-                                                    </Button>
-                                                    <Button
-                                                        type="button"
-                                                        variant="outline"
-                                                        size="sm"
-                                                        onClick={() => {
-                                                            setFormData(prev => ({
-                                                                ...prev,
-                                                                two_factor_backup_codes: []
-                                                            }))
-                                                        }}
-                                                    >
-                                                        Xóa tất cả
-                                                    </Button>
-                                                </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                    {t('fields.twoFactorBackupCodes')}
+                                                </label>
+                                                <Input
+                                                    type="text"
+                                                    value={Array.isArray(formData.two_factor_backup_codes) 
+                                                        ? formData.two_factor_backup_codes.join(', ') 
+                                                        : formData.two_factor_backup_codes || ''}
+                                                    onChange={(e) => handleTwoFactorBackupCodesChange(e.target.value)}
+                                                    placeholder={t('placeholders.twoFactorBackupCodes')}
+                                                    className="w-full border-gray-300 dark:border-gray-600"
+                                                />
+                                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                    {t('hints.twoFactorBackupCodesHint')}
+                                                </p>
                                             </div>
                                         )}
                                     </div>

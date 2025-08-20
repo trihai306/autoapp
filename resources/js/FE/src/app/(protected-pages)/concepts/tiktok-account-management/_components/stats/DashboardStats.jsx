@@ -24,14 +24,16 @@ const DashboardStats = ({ loading = false }) => {
         runningTasksChange: null,
         runningTasksChangeType: 'neutral'
     })
+    const [statsLoaded, setStatsLoaded] = useState(false)
 
     useEffect(() => {
         const fetchStats = async () => {
-            if (!loading) {
+            if (!loading && !statsLoaded) {
                 try {
                     const response = await getTiktokAccountStats()
                     if (response.success) {
                         setStats(response.data)
+                        setStatsLoaded(true) // Mark as loaded
                     } else {
                         console.error('Failed to fetch stats:', response.message)
                         // Fallback to default values
@@ -49,6 +51,7 @@ const DashboardStats = ({ loading = false }) => {
                             runningTasksChange: null,
                             runningTasksChangeType: 'neutral'
                         })
+                        setStatsLoaded(true) // Mark as loaded even on error
                     }
                 } catch (error) {
                     console.error('Error fetching stats:', error)
@@ -67,12 +70,13 @@ const DashboardStats = ({ loading = false }) => {
                         runningTasksChange: null,
                         runningTasksChangeType: 'neutral'
                     })
+                    setStatsLoaded(true) // Mark as loaded even on error
                 }
             }
         }
 
         fetchStats()
-    }, [loading])
+    }, [loading, statsLoaded])
 
     return (
         <div className="space-y-6">
