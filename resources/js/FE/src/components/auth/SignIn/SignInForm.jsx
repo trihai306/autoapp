@@ -24,7 +24,7 @@ const SignInForm = (props) => {
     const [isSubmitting, setSubmitting] = useState(false)
     const t = useTranslations('signIn')
 
-    const { className, setMessage, onSignIn, passwordHint } = props
+    const { className, setMessage, onSignIn, passwordHint, errorMessage } = props
 
     const {
         handleSubmit,
@@ -44,12 +44,15 @@ const SignInForm = (props) => {
         }
     }
 
+    // Kiểm tra xem có lỗi từ server không
+    const hasServerError = !!errorMessage
+
     return (
         <div className={className}>
             <Form onSubmit={handleSubmit(handleSignIn)}>
                 <FormItem
                     label={t('emailOrPhone')}
-                    invalid={Boolean(errors.login)}
+                    invalid={Boolean(errors.login) || hasServerError}
                     errorMessage={errors.login?.message}
                 >
                     <Controller
@@ -60,6 +63,7 @@ const SignInForm = (props) => {
                                 type="text"
                                 placeholder={t('emailOrPhone')}
                                 autoComplete="off"
+                                className={hasServerError ? 'border-red-500' : ''}
                                 {...field}
                             />
                         )}
@@ -67,7 +71,7 @@ const SignInForm = (props) => {
                 </FormItem>
                 <FormItem
                     label={t('password')}
-                    invalid={Boolean(errors.password)}
+                    invalid={Boolean(errors.password) || hasServerError}
                     errorMessage={errors.password?.message}
                     className={classNames(
                         passwordHint ? 'mb-0' : '',
@@ -83,6 +87,7 @@ const SignInForm = (props) => {
                                 type="text"
                                 placeholder={t('password')}
                                 autoComplete="off"
+                                className={hasServerError ? 'border-red-500' : ''}
                                 {...field}
                             />
                         )}

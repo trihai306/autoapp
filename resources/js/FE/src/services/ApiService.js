@@ -27,25 +27,60 @@ const ApiService = {
             }
         }
         
-        const headers = param.headers || {};
+        // Merge headers - param headers take precedence
+        const headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            ...param.headers
+        };
+        
         if (token) {
             headers['Authorization'] = `Bearer ${token}`;
         }
         
+        // Xử lý baseURL
+        let finalUrl = param.url;
+        if (param.baseURL) {
+            // Nếu có baseURL, sử dụng nó
+            finalUrl = `${param.baseURL}${param.url}`;
+        } else {
+            // Nếu không có baseURL, sử dụng default từ appConfig
+            finalUrl = `${appConfig.API_BASE_URL}/api${param.url}`;
+        }
+        
         const finalParam = {
             ...param,
+            url: finalUrl,
             headers,
         }
 
         return new Promise((resolve, reject) => {
+            console.log('📡 Making API request:', {
+                method: finalParam.method?.toUpperCase(),
+                url: finalParam.url,
+                hasToken: !!token,
+                headers: finalParam.headers
+            });
+            
             AxiosBase(finalParam)
                 .then((response) => {
+                    console.log(`✅ API ${finalParam.method?.toUpperCase()} ${finalParam.url} successful:`, response.data)
                     resolve(response.data)
                 })
-                .catch((errors) => {
+                .catch((error) => {
+                    console.error(`❌ API ${finalParam.method?.toUpperCase()} ${finalParam.url} failed:`, {
+                        status: error.response?.status,
+                        statusText: error.response?.statusText,
+                        data: error.response?.data,
+                        message: error.message,
+                        code: error.code,
+                        url: finalParam.url,
+                        headers: finalParam.headers
+                    })
+                    
                     // Lỗi 401 được xử lý bởi Axios interceptor (redirect to sign-in)
                     // và vẫn được reject để component có thể xử lý error appropriately
-                    reject(errors)
+                    reject(error)
                 })
         })
     },

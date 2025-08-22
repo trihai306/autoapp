@@ -5,22 +5,58 @@ import Credentials from 'next-auth/providers/credentials'
 export default {
     providers: [
         Credentials({
-            async authorize(credentials) {
-                const user = await validateCredential(credentials)
-                if (user) {
-                    return user
+            id: 'credentials',
+            name: 'Credentials',
+            credentials: {
+                login: { label: "Email/Phone", type: "text" },
+                password: { label: "Password", type: "password" }
+            },
+            async authorize(credentials, req) {
+                try {
+                    console.log('🔐 NextAuth authorize called with:', { 
+                        login: credentials?.login,
+                        hasPassword: !!credentials?.password 
+                    })
+                    
+                    if (!credentials?.login || !credentials?.password) {
+                        console.error('❌ Missing credentials')
+                        return null
+                    }
+                    
+                    const user = await validateCredential(credentials)
+                    
+                    if (user) {
+                        console.log('✅ User authorized successfully:', { 
+                            id: user.id, 
+                            email: user.email 
+                        })
+                        return user
+                    }
+                    
+                    console.log('❌ User authorization failed')
+                    return null
+                    
+                } catch (error) {
+                    console.error('❌ NextAuth authorize error:', error)
+                    
+                    // Thay vì throw error, return null để NextAuth xử lý
+                    // và trả về lỗi cụ thể cho client
+                    return null
                 }
-                return null
             },
         }),
     ],
     callbacks: {
-        async jwt({ token, user }) {
-
-            if (user) {
+        async jwt({ token, user, account }) {
+            if (user && account) {
                 // Initial sign-in
+                console.log('🔄 JWT callback - Initial sign-in:', { 
+                    userId: user.id, 
+                    email: user.email 
+                })
+                
                 token.id = user.id
-                token.name = user.full_name // Use full_name from API
+                token.name = user.full_name || user.name
                 token.email = user.email
                 token.avatar = user.avatar
                 token.accessToken = user.token
@@ -28,8 +64,11 @@ export default {
                 token.last_name = user.last_name
                 token.roles = user.roles || []
                 token.login_token = user.login_token
-                token.permissions = user.permissions || { roles: [], permissions: [], permission_groups: {} }
-                // Set a long expiration time for simplicity, as we don't have refresh tokens yet
+                token.permissions = user.permissions || { 
+                    roles: [], 
+                    permissions: [], 
+                    permission_groups: {} 
+                }
                 token.accessTokenExpires = Date.now() + 24 * 60 * 60 * 1000 // 24 hours
             }
 
@@ -38,26 +77,51 @@ export default {
                 return token
             }
 
-            // In a real-world app, you'd handle token refresh here.
-            // For this project, we'll just let the session expire.
+            // Token expired
+            console.log('⏰ JWT token expired')
             return null
         },
         async session({ session, token }) {
             if (token) {
+                console.log('📋 Session callback - Setting user data:', { 
+                    userId: token.id, 
+                    email: token.email 
+                })
+                
                 session.user.id = token.id
                 session.user.name = token.name
                 session.user.email = token.email
                 session.user.avatar = token.avatar
                 session.accessToken = token.accessToken
-                session.user.login_token = token.login_token // Add permanent login_token for device connection
+                session.user.login_token = token.login_token
                 session.user.first_name = token.first_name
                 session.user.last_name = token.last_name
                 session.user.roles = token.permissions?.roles || []
                 session.user.permissions = token.permissions?.permissions || []
                 session.user.permission_groups = token.permissions?.permission_groups || {}
             } else {
+                console.log('❌ Session callback - No valid token')
             }
             return session
+        },
+    },
+    // Thêm xử lý lỗi
+    events: {
+        async signIn({ user, account, profile, isNewUser }) {
+            console.log('✅ User signed in successfully:', { 
+                userId: user.id, 
+                email: user.email,
+                provider: account?.provider 
+            })
+        },
+        async signOut({ session, token }) {
+            console.log('👋 User signed out:', { 
+                userId: token?.id, 
+                email: token?.email 
+            })
+        },
+        async error(error) {
+            console.error('❌ NextAuth error event:', error)
         },
     },
 }

@@ -13,5 +13,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         maxAge: 24 * 60 * 60, // 24 hours
     },
     debug: process.env.NODE_ENV === 'development',
-    ...authConfig,
+    providers: authConfig.providers,
+    callbacks: authConfig.callbacks,
+    events: authConfig.events,
+    // Thêm cấu hình để xử lý lỗi tốt hơn
+    logger: {
+        error(code, ...message) {
+            console.error('NextAuth Error:', code, ...message)
+        },
+        warn(code, ...message) {
+            console.warn('NextAuth Warning:', code, ...message)
+        },
+        debug(code, ...message) {
+            if (process.env.NODE_ENV === 'development') {
+                console.log('NextAuth Debug:', code, ...message)
+            }
+        }
+    }
 })

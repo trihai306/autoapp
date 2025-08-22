@@ -1,7 +1,7 @@
 import ApiService from '@/services/ApiService'
 
 export async function apiSignIn(data) {
-    return ApiService.fetchData({
+    return ApiService.fetchDataWithAxios({
         url: '/login',
         method: 'post',
         data,
@@ -9,55 +9,56 @@ export async function apiSignIn(data) {
 }
 
 export async function apiSignUp(data) {
-    return ApiService.fetchData({
+    return ApiService.fetchDataWithAxios({
         url: '/register',
         method: 'post',
-        data,
+        data
     })
 }
 
 export async function apiLogout(token) {
-    return ApiService.fetchData({
+    return ApiService.fetchDataWithAxios({
         url: '/logout',
-        method: 'post'
+        method: 'post',
+        data
     })
 }
 
 export async function apiForgotPassword(data) {
-    return ApiService.fetchData({
+    return ApiService.fetchDataWithAxios({
         url: '/forgot-password',
         method: 'post',
-        data,
+        data
     })
 }
 
 export async function apiResetPassword(data) {
-    return ApiService.fetchData({
+    return ApiService.fetchDataWithAxios({
         url: '/reset-password',
         method: 'post',
-        data,
+        data
     })
 }
 
 export async function apiGetProfile() {
-    return ApiService.fetchData({
+    return ApiService.fetchDataWithAxios({
         url: '/profile',
         method: 'get',
     })
 }
 
 export async function apiChangePassword(data) {
-    return ApiService.fetchData({
+    return ApiService.fetchDataWithAxios({
         url: '/profile/change-password',
         method: 'post',
-        data,
+        data
     })
 }
 
 export async function apiUpdateProfile(data) {
-    return ApiService.fetchData({
+    return ApiService.fetchDataWithAxios({
         url: '/profile',
         method: 'put',
-        data,
+        data
     })
 }

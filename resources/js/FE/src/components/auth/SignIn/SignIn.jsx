@@ -11,11 +11,15 @@ const SignIn = ({
     signUpUrl = '/sign-up',
     forgetPasswordUrl = '/forgot-password',
     onSignIn,
+    errorMessage = '', // Nhận errorMessage từ parent
 }) => {
     const [message, setMessage] = useTimeOutMessage()
     const t = useTranslations('signIn')
 
     const mode = useTheme((state) => state.mode)
+
+    // Kết hợp message từ hook và errorMessage từ prop
+    const displayMessage = errorMessage || message
 
     return (
         <>
@@ -31,13 +35,14 @@ const SignIn = ({
                 <h2 className="mb-2">{t('welcome')}</h2>
                 <p className="font-semibold heading-text">{t('subtitle')}</p>
             </div>
-            {message && (
+            {displayMessage && (
                 <Alert showIcon className="mb-4" type="danger">
-                    <span className="break-all">{message}</span>
+                    <span className="break-all">{displayMessage}</span>
                 </Alert>
             )}
             <SignInForm
                 setMessage={setMessage}
+                errorMessage={errorMessage} // Truyền errorMessage xuống SignInForm
                 passwordHint={
                     <div className="mb-7 mt-2">
                         <ActionLink
