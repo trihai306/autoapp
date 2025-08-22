@@ -342,8 +342,8 @@ const SpecificLiveInteractionModal = ({
                                 typeof content === 'string' ? content : (content.text || content.content || content.value || '')
                               ).filter(text => typeof text === 'string' && text.trim() !== '')
                             : [],
-                        selectedContentGroupId: config.selectedContentGroupId,
-                        selectedContentTitleId: config.selectedContentTitleId,
+                        content_group: config.selectedContentGroupId,
+                        content_group_id: config.selectedContentGroupId,
                         enable_emotion: config.enable_emotion,
                         emotion_rate: config.emotion_rate,
                         emotion_gap_from: config.emotion_gap_from,

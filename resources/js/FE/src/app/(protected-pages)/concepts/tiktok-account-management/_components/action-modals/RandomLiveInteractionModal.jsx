@@ -337,8 +337,8 @@ const RandomLiveInteractionModal = ({
                                 typeof content === 'string' ? content : (content.text || content.content || content.value || '')
                               ).filter(text => typeof text === 'string' && text.trim() !== '')
                             : [],
-                        selectedContentGroupId: config.selectedContentGroupId,
-                        selectedContentTitleId: config.selectedContentTitleId,
+                        content_group: config.selectedContentGroupId,
+                        content_group_id: config.selectedContentGroupId,
                         delete_comment_after_done: config.delete_comment_after_done
                     }
                 }

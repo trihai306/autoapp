@@ -317,7 +317,8 @@ const FriendVideoInteractionModal = ({
                     name: config.name,
                     type: action?.type || 'friend_interaction',
                     parameters: {
-                        ...config
+                        ...config,
+                        content_group_id: config.content_group,
                     }
                 }
                 await onSave(action, saveData)
