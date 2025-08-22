@@ -86,9 +86,8 @@ export const initializeEcho = async (manualToken = null) => {
     ((process.env.NEXT_PUBLIC_REVERB_SCHEME ?? 'https') === 'https' ? 443 : 80)
   );
   const useTLS = (process.env.NEXT_PUBLIC_REVERB_SCHEME ?? 'https') === 'https';
+  const reverbPath = process.env.NEXT_PUBLIC_REVERB_PATH || '/reverb';
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? `${window.location.origin}`;
-
-
 
   // Lấy token từ NextAuth session hoặc sử dụng token thủ công
   const authToken = manualToken || await getAuthToken();
@@ -107,12 +106,19 @@ export const initializeEcho = async (manualToken = null) => {
       key: pusherKey,
       cluster: pusherCluster,
       encrypted: true,
-      // Giữ cấu hình host/port khi chạy Reverb nội bộ (không ảnh hưởng Pusher cloud)
+      // Cấu hình WebSocket cho Reverb
       wsHost,
       wsPort: port,
       wssPort: port,
       forceTLS: useTLS,
       enabledTransports: ['ws', 'wss'],
+      // Thêm path cho Reverb
+      path: reverbPath,
+      // Cấu hình timeout và retry
+      activityTimeout: 30000,
+      pongTimeout: 15000,
+      maxReconnectionAttempts: 5,
+      maxReconnectGap: 10000,
       authorizer: (channel, options) => {
         return {
           authorize: async (socketId, callback) => {

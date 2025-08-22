@@ -5,6 +5,7 @@ import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import Select from '@/components/ui/Select'
 import Switcher from '@/components/ui/Switcher'
+import Checkbox from '@/components/ui/Checkbox'
 
 const FriendVideoInteractionModal = ({ 
     isOpen, 
@@ -47,7 +48,8 @@ const FriendVideoInteractionModal = ({
         comment_gap_to: 3,
         comment_contents: [],
         user_list: "",
-        content_group: ""
+        content_group: "",
+        delete_comment_after_done: false
     }
     
     const [config, setConfig] = useState(initialConfig)
@@ -841,6 +843,15 @@ const FriendVideoInteractionModal = ({
                                                     Đang tải nội dung...
                                                 </p>
                                             )}
+                                            <div className="mt-3">
+                                                <Checkbox
+                                                    checked={Boolean(config.delete_comment_after_done)}
+                                                    onChange={(checked) => handleSwitchChange('delete_comment_after_done', checked)}
+                                                    disabled={!config.content_group}
+                                                >
+                                                    <span className="text-sm">Xóa bình luận khi làm xong</span>
+                                                </Checkbox>
+                                            </div>
                                         </div>
                                     </div>
 

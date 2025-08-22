@@ -5,6 +5,7 @@ import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import Select from '@/components/ui/Select'
 import Switcher from '@/components/ui/Switcher'
+import Checkbox from '@/components/ui/Checkbox'
 
 const SpecificLiveInteractionModal = ({ 
     isOpen, 
@@ -45,7 +46,8 @@ const SpecificLiveInteractionModal = ({
         enable_add_to_cart: true,
         add_to_cart_rate: 100,
         add_to_cart_gap_from: 1,
-        add_to_cart_gap_to: 3
+        add_to_cart_gap_to: 3,
+        delete_comment_after_done: false
     }
     
     const [config, setConfig] = useState(initialConfig)
@@ -353,7 +355,8 @@ const SpecificLiveInteractionModal = ({
                         enable_add_to_cart: config.enable_add_to_cart,
                         add_to_cart_rate: config.add_to_cart_rate,
                         add_to_cart_gap_from: config.add_to_cart_gap_from,
-                        add_to_cart_gap_to: config.add_to_cart_gap_to
+                        add_to_cart_gap_to: config.add_to_cart_gap_to,
+                        delete_comment_after_done: config.delete_comment_after_done
                     }
                 }
                 await onSave(action, saveData)
@@ -835,6 +838,15 @@ const SpecificLiveInteractionModal = ({
                                                     Đang tải nội dung...
                                                 </p>
                                             )}
+                                            <div className="mt-3">
+                                                <Checkbox
+                                                    checked={Boolean(config.delete_comment_after_done)}
+                                                    onChange={(checked) => handleSwitchChange('delete_comment_after_done', checked)}
+                                                    disabled={!config.selectedContentGroupId}
+                                                >
+                                                    <span className="text-sm">Xóa bình luận khi làm xong</span>
+                                                </Checkbox>
+                                            </div>
                                         </div>
                                     </div>
 
