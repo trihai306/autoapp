@@ -2,11 +2,19 @@ import NextAuth from 'next-auth'
 import appConfig from '@/configs/app.config'
 import authConfig from '@/configs/auth.config'
 
+// Fallback an toàn cho các đường dẫn để tránh undefined/null
+const SAFE_SIGN_IN_PATH =
+    typeof appConfig?.unAuthenticatedEntryPath === 'string' && appConfig.unAuthenticatedEntryPath.trim()
+        ? appConfig.unAuthenticatedEntryPath
+        : '/sign-in'
+
+const SAFE_ERROR_PATH = SAFE_SIGN_IN_PATH
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
     secret: process.env.NEXTAUTH_SECRET || 'default-secret-key',
     pages: {
-        signIn: appConfig.unAuthenticatedEntryPath,
-        error: appConfig.unAuthenticatedEntryPath,
+        signIn: SAFE_SIGN_IN_PATH,
+        error: SAFE_ERROR_PATH,
     },
     session: {
         strategy: 'jwt',
@@ -16,7 +24,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     providers: authConfig.providers,
     callbacks: authConfig.callbacks,
     events: authConfig.events,
-    // Thêm cấu hình để xử lý lỗi tốt hơn
     logger: {
         error(code, ...message) {
             console.error('NextAuth Error:', code, ...message)
@@ -28,6 +35,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             if (process.env.NODE_ENV === 'development') {
                 console.log('NextAuth Debug:', code, ...message)
             }
-        }
-    }
+        },
+    },
 })
