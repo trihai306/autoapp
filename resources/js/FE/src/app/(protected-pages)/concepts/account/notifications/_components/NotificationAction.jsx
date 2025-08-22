@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import Dropdown from '@/components/ui/Dropdown'
 import Switcher from '@/components/ui/Switcher'
 import Button from '@/components/ui/Button'
-import { TbFilter, TbCheck, TbCheckAll, TbTrash } from 'react-icons/tb'
+import { TbFilter, TbCheck, TbTrash } from 'react-icons/tb'
 import { useTranslations } from 'next-intl'
 import { markAllNotificationsAsRead, deleteMultipleNotifications } from '@/server/actions/notification/notificationActions'
 import { useNotification } from '../_store/notificationStore'
@@ -88,7 +88,7 @@ const NotificationAction = ({
                         <Button
                             size="sm"
                             variant="plain"
-                            icon={<TbCheckAll />}
+                            icon={<TbCheck />}
                             onClick={handleMarkAllAsRead}
                             title={t('markAllAsRead')}
                         />

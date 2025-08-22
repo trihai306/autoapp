@@ -40,7 +40,7 @@ const validateCredential = async (values) => {
                 // Create a temporary API call for permissions with the token
                 const ApiService = await import('@/services/ApiService')
                 const permissionsData = await ApiService.default.fetchDataWithAxios({
-                    url: '/api/profile/permissions',
+                    url: '/profile/permissions',
                     method: 'get',
                     headers: {
                         Authorization: `Bearer ${data.token}`,

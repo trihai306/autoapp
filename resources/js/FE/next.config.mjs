@@ -1,9 +1,18 @@
 import createNextIntlPlugin from 'next-intl/plugin';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const withNextIntl = createNextIntlPlugin();
 
+// Xác định __dirname trong ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 /** @type {import('next').NextConfig} */
 let nextConfig = {
+    // Cố định workspace root để Next không suy luận sai (đa lockfiles)
+    outputFileTracingRoot: __dirname,
+
     // Remove deprecated options
     // swcMinify and fastRefresh are enabled by default in newer Next.js versions
     

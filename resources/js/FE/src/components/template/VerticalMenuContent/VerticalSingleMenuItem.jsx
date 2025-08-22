@@ -22,7 +22,7 @@ const CollapsedItem = ({
     const isActive = pathname.startsWith(nav.path)
 
     return (
-        <AuthorityCheck userAuthority={userAuthority} authority={nav.authority}>
+        <AuthorityCheck userAuthority={userAuthority} authority={nav.authority} permissions={nav.permissions || []} requireAll={nav.requireAll}>
             {renderAsIcon ? (
                 <Tooltip
                     title={t(nav.translateKey, nav.title)}
@@ -78,7 +78,7 @@ const DefaultItem = (props) => {
     }, [pathname, nav.path])
 
     return (
-        <AuthorityCheck userAuthority={userAuthority} authority={nav.authority}>
+        <AuthorityCheck userAuthority={userAuthority} authority={nav.authority} permissions={nav.permissions || []} requireAll={nav.requireAll}>
             <MenuItem 
                 key={nav.key} 
                 eventKey={nav.key} 

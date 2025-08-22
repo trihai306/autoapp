@@ -41,17 +41,28 @@ const ApiService = {
         // Xử lý baseURL
         let finalUrl = param.url;
         if (param.baseURL) {
-            // Nếu có baseURL, sử dụng nó
             finalUrl = `${param.baseURL}${param.url}`;
         } else {
-            // Nếu không có baseURL, sử dụng default từ appConfig
             finalUrl = `${appConfig.API_BASE_URL}/api${param.url}`;
+        }
+        
+        // Luôn tắt verify SSL phía Node (server-side ONLY)
+        let extraConfig = {}
+        if (typeof window === 'undefined') {
+            try {
+                process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+                const https = require('https')
+                extraConfig.httpsAgent = new https.Agent({ rejectUnauthorized: false })
+            } catch (e) {
+                // ignore
+            }
         }
         
         const finalParam = {
             ...param,
             url: finalUrl,
             headers,
+            ...extraConfig,
         }
 
         return new Promise((resolve, reject) => {
@@ -78,8 +89,6 @@ const ApiService = {
                         headers: finalParam.headers
                     })
                     
-                    // Lỗi 401 được xử lý bởi Axios interceptor (redirect to sign-in)
-                    // và vẫn được reject để component có thể xử lý error appropriately
                     reject(error)
                 })
         })

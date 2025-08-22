@@ -98,8 +98,8 @@ export const initializeEcho = async (manualToken = null) => {
   try {
     
     // Cấu hình Echo theo mẫu Pusher authorizer
-    const pusherKey = process.env.NEXT_PUBLIC_PUSHER_APP_KEY || import.meta?.env?.VITE_PUSHER_APP_KEY || key;
-    const pusherCluster = process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER || import.meta?.env?.VITE_PUSHER_APP_CLUSTER || 'mt1';
+    const pusherKey = process.env.NEXT_PUBLIC_PUSHER_APP_KEY || key;
+    const pusherCluster = process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER || 'mt1';
 
     const echoOptions = {
       broadcaster: 'pusher',

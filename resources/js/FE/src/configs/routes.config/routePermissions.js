@@ -150,6 +150,11 @@ export const getRoutePermissions = (pathname) => {
 export const canAccessRoute = (pathname, userPermissions = [], userRoles = []) => {
     const requirements = getRoutePermissions(pathname)
     
+    // Super Admin bypass: luôn được phép truy cập
+    if (Array.isArray(userRoles) && userRoles.includes('super-admin')) {
+        return true
+    }
+    
     if (!requirements) {
         return true // No requirements means public access
     }
