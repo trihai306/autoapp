@@ -20,9 +20,7 @@ let nextConfig = {
     serverExternalPackages: [],
     
     // Thêm cấu hình để ổn định hơn
-    experimental: {
-        serverComponentsExternalPackages: [],
-    },
+    // serverComponentsExternalPackages đã được chuyển thành serverExternalPackages
     
     // Tắt một số tính năng có thể gây lỗi
     typescript: {

@@ -3,8 +3,7 @@ import { cookies } from 'next/headers'
 import { themeConfig } from '@/configs/theme.config'
 import { COOKIES_KEY } from '@/constants/app.constant'
 
-// Force dynamic rendering
-export const dynamic = 'force-dynamic'
+// Force dynamic rendering - moved to page level
 
 export async function getTheme() {
     const cookieStore = await cookies()

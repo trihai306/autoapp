@@ -4,8 +4,7 @@ import { cookies } from 'next/headers'
 import appConfig from '@/configs/app.config'
 import { COOKIES_KEY } from '@/constants/app.constant'
 
-// Force dynamic rendering
-export const dynamic = 'force-dynamic'
+// Force dynamic rendering - moved to page level
 
 const COOKIE_NAME = COOKIES_KEY.LOCALE
 

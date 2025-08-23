@@ -9,6 +9,9 @@ import { getTheme } from '@/server/actions/system/theme'
 import { getLocale, getMessages } from 'next-intl/server'
 import '@/assets/styles/app.css'
 
+// Force dynamic rendering for layout
+export const dynamic = 'force-dynamic'
+
 export const metadata = {
     ...pageMetaConfig,
 }
