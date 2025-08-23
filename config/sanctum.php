@@ -8,7 +8,7 @@ return [
 	| Các domain được coi là stateful cho SPA sử dụng Sanctum.
 	*/
 
-	'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', 'localhost,localhost:3000,autoapp.test')), 
+	'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', 'localhost,localhost:3000,autoapp.test,lionsoftware.vn')), 
 
 	'expiration' => null,
 

@@ -20,6 +20,8 @@ return [
 	'allowed_origins' => [
 		env('FRONTEND_URL', 'http://localhost:3000'),
 		env('APP_URL', 'http://autoapp.test'),
+		'https://lionsoftware.vn',
+		'http://lionsoftware.vn',
 	],
 
 	'allowed_origins_patterns' => [],
