@@ -3,7 +3,10 @@ import { protectedRoutes, publicRoutes } from '@/configs/routes.config'
 const routes = { ...publicRoutes, ...protectedRoutes }
 
 export const matchRoute = (path) => {
-    const normalizedPath = path.endsWith('/') ? path.slice(0, -1) : path
+    // Guard: đảm bảo path là string hợp lệ
+    const inputPath = typeof path === 'string' && path.length > 0 ? path : '/'
+
+    const normalizedPath = inputPath.endsWith('/') && inputPath !== '/' ? inputPath.slice(0, -1) : inputPath
 
     if (routes[normalizedPath]) {
         return routes[normalizedPath]
