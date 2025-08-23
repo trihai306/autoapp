@@ -38,6 +38,7 @@ class TiktokAccountService
         $query->with([
             'device', // Device được gán cho account
             'interactionScenario', // Scenario của account
+            'proxy:id,name,host,port,type,status,country,city', // Proxy của account
             'pendingTasks' => function($query) {
                 $query->with(['device'])
                       ->orderBy('priority', 'desc')
@@ -109,6 +110,39 @@ class TiktokAccountService
             $query->where('scenario_id', $scenarioId);
         }
 
+        // Filter theo proxy_status
+        if ($request->has('filter.proxy_status')) {
+            $proxyStatus = $request->input('filter.proxy_status');
+            
+            switch ($proxyStatus) {
+                case 'has_proxy':
+                    $query->whereHas('proxy');
+                    break;
+                    
+                case 'no_proxy':
+                    $query->whereDoesntHave('proxy');
+                    break;
+                    
+                case 'active_proxy':
+                    $query->whereHas('proxy', function($q) {
+                        $q->where('status', 'active');
+                    });
+                    break;
+                    
+                case 'error_proxy':
+                    $query->whereHas('proxy', function($q) {
+                        $q->where('status', 'error');
+                    });
+                    break;
+                    
+                case 'inactive_proxy':
+                    $query->whereHas('proxy', function($q) {
+                        $q->where('status', 'inactive');
+                    });
+                    break;
+            }
+        }
+
         // Filter theo task_status (chỉ pending hoặc no_pending)
         if ($request->has('filter.task_status')) {
             $taskStatus = $request->input('filter.task_status');
@@ -170,7 +204,7 @@ class TiktokAccountService
                       ->limit(10);
             },
             'interactionScenario:id,name',
-            'proxy:id,name,host,port,type,status'
+            'proxy:id,name,host,port,type,status,country,city'
         ]);
 
         $accountData = $tiktokAccount->toArray();

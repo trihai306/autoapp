@@ -3,6 +3,7 @@ import { useState } from 'react'
 import Button from '@/components/ui/Button'
 import Drawer from '@/components/ui/Drawer'
 import Input from '@/components/ui/Input'
+import Select from '@/components/ui/Select'
 import { Form, FormItem } from '@/components/ui/Form'
 import { useTiktokAccountListStore } from '../_store'
 import useAppendQueryParams from '@/utils/hooks/useAppendQueryParams'
@@ -17,6 +18,7 @@ const validationSchema = z.object({
     email: z.string().email({ message: 'Invalid email address' }).optional().or(z.literal('')),
     phone_number: z.string().optional(),
     status: z.string().optional(),
+    proxy_status: z.string().optional(),
 })
 
 const DrawerFooter = ({ onCancel, onSaveClick }) => {
@@ -63,6 +65,7 @@ const TiktokAccountTableFilter = () => {
         if (values.email) filterParams['filter[email]'] = values.email
         if (values.phone_number) filterParams['filter[phone_number]'] = values.phone_number
         if (values.status) filterParams['filter[status]'] = values.status
+        if (values.proxy_status) filterParams['filter[proxy_status]'] = values.proxy_status
 
         onAppendQueryParams(filterParams)
         setFilterData(values)
@@ -131,6 +134,34 @@ const TiktokAccountTableFilter = () => {
                                 <Input
                                     placeholder={tForm('status')}
                                     {...field}
+                                />
+                            )}
+                        />
+                    </FormItem>
+                    <FormItem label="Trạng thái Proxy">
+                        <Controller
+                            name="proxy_status"
+                            control={control}
+                            render={({ field }) => (
+                                <Select
+                                    placeholder="Chọn trạng thái proxy"
+                                    options={[
+                                        { value: '', label: 'Tất cả' },
+                                        { value: 'has_proxy', label: 'Có proxy' },
+                                        { value: 'no_proxy', label: 'Không có proxy' },
+                                        { value: 'active_proxy', label: 'Proxy hoạt động' },
+                                        { value: 'error_proxy', label: 'Proxy lỗi' },
+                                        { value: 'inactive_proxy', label: 'Proxy không hoạt động' }
+                                    ]}
+                                    value={field.value ? { 
+                                        value: field.value, 
+                                        label: field.value === 'has_proxy' ? 'Có proxy' :
+                                               field.value === 'no_proxy' ? 'Không có proxy' :
+                                               field.value === 'active_proxy' ? 'Proxy hoạt động' :
+                                               field.value === 'error_proxy' ? 'Proxy lỗi' :
+                                               field.value === 'inactive_proxy' ? 'Proxy không hoạt động' : field.value
+                                    } : null}
+                                    onChange={(option) => field.onChange(option?.value || '')}
                                 />
                             )}
                         />

@@ -171,12 +171,35 @@ const ExpandedRowContent = ({ row }) => {
                     </div>
                 </div>
 
-                {/* Thiết bị & Kịch bản */}
+                {/* Proxy & Thiết bị & Kịch bản */}
                 <div className="space-y-3">
                     <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-sm">
-                        Thiết bị & Kịch bản
+                        Proxy & Thiết bị & Kịch bản
                     </h4>
                     <div className="space-y-2 text-sm">
+                        {row.proxy && (
+                            <div className="flex items-center gap-2">
+                                <div 
+                                    className={`w-3 h-3 rounded-full flex-shrink-0 ${
+                                        row.proxy.status === 'active' ? 'bg-green-500' : 
+                                        row.proxy.status === 'error' ? 'bg-red-500' : 'bg-gray-400'
+                                    }`} 
+                                />
+                                <span className="text-gray-600 dark:text-gray-400">Proxy:</span>
+                                <span className="text-gray-900 dark:text-gray-100">
+                                    {row.proxy.host}:{row.proxy.port} ({row.proxy.type})
+                                    {row.proxy.country && ` - ${row.proxy.country}${row.proxy.city ? `, ${row.proxy.city}` : ''}`}
+                                    <span className={`ml-2 text-xs px-1.5 py-0.5 rounded ${
+                                        row.proxy.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+                                        row.proxy.status === 'error' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' :
+                                        'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
+                                    }`}>
+                                        {row.proxy.status === 'active' ? 'Hoạt động' :
+                                         row.proxy.status === 'error' ? 'Lỗi' : 'Không hoạt động'}
+                                    </span>
+                                </span>
+                            </div>
+                        )}
                         {(row.device?.name || row.device?.device_name || row.device_id) && (
                             <div className="flex items-center gap-2">
                                 <TbDevices className="w-4 h-4 text-gray-400" />
@@ -390,6 +413,72 @@ const ContactColumn = ({ row, type }) => {
     )
 }
 
+// Proxy Column - hiển thị thông số proxy thay vì tên
+const ProxyColumn = ({ row }) => {
+    const proxy = row.proxy
+    
+    if (!proxy) {
+        return (
+            <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-gray-300 flex-shrink-0" title="Không có proxy" />
+                <span className="text-gray-400 dark:text-gray-500 text-sm">Chưa cấu hình</span>
+            </div>
+        )
+    }
+    
+    // Hiển thị thông số proxy: host:port (type)
+    const proxyInfo = `${proxy.host}:${proxy.port} (${proxy.type})`
+    
+    // Màu sắc dựa trên trạng thái proxy
+    const getStatusColor = (status) => {
+        switch (status) {
+            case 'active':
+                return 'bg-green-500'
+            case 'inactive':
+                return 'bg-gray-400'
+            case 'error':
+                return 'bg-red-500'
+            default:
+                return 'bg-gray-400'
+        }
+    }
+    
+    const getStatusTitle = (status) => {
+        switch (status) {
+            case 'active':
+                return 'Proxy hoạt động'
+            case 'inactive':
+                return 'Proxy không hoạt động'
+            case 'error':
+                return 'Proxy lỗi'
+            default:
+                return 'Proxy không xác định'
+        }
+    }
+    
+    return (
+        <div className="flex items-center gap-2">
+            <div 
+                className={`w-2 h-2 rounded-full flex-shrink-0 ${getStatusColor(proxy.status)}`} 
+                title={getStatusTitle(proxy.status)}
+            />
+            <div className="flex-1 min-w-0">
+                <div className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate" title={proxyInfo}>
+                    {proxyInfo}
+                </div>
+                {proxy.country && (
+                    <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                        {proxy.country}{proxy.city ? `, ${proxy.city}` : ''}
+                    </div>
+                )}
+                <div className="text-xs text-gray-400 dark:text-gray-500">
+                    {getStatusTitle(proxy.status)}
+                </div>
+            </div>
+        </div>
+    )
+}
+
 // Device & Scenario Column
 const DeviceScenarioColumn = ({ row }) => {
     const deviceName = row.device?.name || row.device?.device_name || `Device #${row.device_id}`
@@ -482,6 +571,7 @@ const TiktokAccountListTable = ({
     const allColumns = [
         { header: 'Thông tin người dùng', accessorKey: 'user_info', sortable: true },
         { header: 'Số điện thoại', accessorKey: 'phone_number', sortable: false },
+        { header: 'Proxy', accessorKey: 'proxy', sortable: false },
         { header: 'Task Status', accessorKey: 'task_status', sortable: true },
         { header: 'Device & Scenario', accessorKey: 'device_scenario', sortable: false },
         { header: 'Ghi chú', accessorKey: 'notes', sortable: false },
@@ -490,7 +580,7 @@ const TiktokAccountListTable = ({
     ]
 
     const [visibleColumns, setVisibleColumns] = useState([
-        'user_info', 'task_status', 'device_scenario', 'created_at'
+        'user_info', 'proxy', 'task_status', 'device_scenario', 'created_at'
     ])
     
     const [expandedRows, setExpandedRows] = useState(new Set())
@@ -908,6 +998,14 @@ const TiktokAccountListTable = ({
                     cell: (props) => {
                         const row = props.row.original
                         return <ContactColumn row={row} type="phone" />
+                    }
+                },
+                {
+                    header: 'Proxy',
+                    accessorKey: 'proxy',
+                    cell: (props) => {
+                        const row = props.row.original
+                        return <ProxyColumn row={row} />
                     }
                 },
                 {

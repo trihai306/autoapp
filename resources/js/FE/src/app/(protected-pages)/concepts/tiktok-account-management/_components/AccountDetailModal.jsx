@@ -31,7 +31,10 @@ import {
     HiOutlinePencilAlt as Edit,
     HiOutlinePlay as Play,
     HiOutlinePause as Pause,
-    HiOutlineKey as Key
+    HiOutlineKey as Key,
+    HiOutlineGlobe as Globe,
+    HiOutlineDesktopComputer as Device,
+    HiOutlineTemplate as Scenario
 } from 'react-icons/hi'
 import { HiOutlineRefresh as Refresh } from 'react-icons/hi'
 
@@ -1142,6 +1145,102 @@ const AccountDetailModal = ({ isOpen, onClose, account }) => {
                                 <option value="nobody">{t('settings.privacy.nobody')}</option>
                             </select>
                         </div>
+                    </div>
+                </div>
+
+                {/* Proxy & Device Settings */}
+                <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+                        <Globe className="w-5 h-5" />
+                        Proxy & Thiết bị
+                    </h4>
+                    <div className="space-y-4">
+                        {/* Proxy Information */}
+                        {displayAccount.proxy ? (
+                            <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <div 
+                                        className={`w-3 h-3 rounded-full ${
+                                            displayAccount.proxy.status === 'active' ? 'bg-green-500' : 
+                                            displayAccount.proxy.status === 'error' ? 'bg-red-500' : 'bg-gray-400'
+                                        }`} 
+                                    />
+                                    <span className="font-medium text-blue-900 dark:text-blue-100">Proxy</span>
+                                </div>
+                                <div className="text-sm text-blue-800 dark:text-blue-200">
+                                    <div><strong>Host:</strong> {displayAccount.proxy.host}:{displayAccount.proxy.port}</div>
+                                    <div><strong>Type:</strong> {displayAccount.proxy.type}</div>
+                                    {displayAccount.proxy.country && (
+                                        <div><strong>Location:</strong> {displayAccount.proxy.country}{displayAccount.proxy.city ? `, ${displayAccount.proxy.city}` : ''}</div>
+                                    )}
+                                    <div><strong>Status:</strong> 
+                                        <span className={`ml-1 px-2 py-0.5 rounded text-xs ${
+                                            displayAccount.proxy.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+                                            displayAccount.proxy.status === 'error' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' :
+                                            'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
+                                        }`}>
+                                            {displayAccount.proxy.status === 'active' ? 'Hoạt động' :
+                                             displayAccount.proxy.status === 'error' ? 'Lỗi' : 'Không hoạt động'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                <div className="text-sm text-gray-600 dark:text-gray-400">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 rounded-full bg-gray-400" />
+                                        <span>Chưa cấu hình proxy</span>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Device Information */}
+                        {displayAccount.device ? (
+                            <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <Device className="w-4 h-4 text-green-600 dark:text-green-400" />
+                                    <span className="font-medium text-green-900 dark:text-green-100">Thiết bị</span>
+                                </div>
+                                <div className="text-sm text-green-800 dark:text-green-200">
+                                    <div><strong>Tên:</strong> {displayAccount.device.name || displayAccount.device.device_name}</div>
+                                    <div><strong>ID:</strong> {displayAccount.device.id}</div>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                <div className="text-sm text-gray-600 dark:text-gray-400">
+                                    <div className="flex items-center gap-2">
+                                        <Device className="w-4 h-4" />
+                                        <span>Chưa cấu hình thiết bị</span>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Scenario Information */}
+                        {displayAccount.interaction_scenario || displayAccount.interactionScenario ? (
+                            <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <Scenario className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                                    <span className="font-medium text-purple-900 dark:text-purple-100">Kịch bản</span>
+                                </div>
+                                <div className="text-sm text-purple-800 dark:text-purple-200">
+                                    <div><strong>Tên:</strong> {displayAccount.interaction_scenario?.name || displayAccount.interactionScenario?.name}</div>
+                                    <div><strong>ID:</strong> {displayAccount.interaction_scenario?.id || displayAccount.interactionScenario?.id}</div>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                <div className="text-sm text-gray-600 dark:text-gray-400">
+                                    <div className="flex items-center gap-2">
+                                        <Scenario className="w-4 h-4" />
+                                        <span>Chưa cấu hình kịch bản</span>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
 
