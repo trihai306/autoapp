@@ -6,6 +6,9 @@ import getSettingsBilling from '@/server/actions/account/getSettingsBilling'
 import getUserTransactions from '@/server/actions/transaction/getUserTransactions'
 import getNotifications from '@/server/actions/notification/getNotifications'
 
+// Force dynamic rendering for this page
+export const dynamic = 'force-dynamic'
+
 const Page = async () => {
     // Fetch all necessary data in parallel using server actions
     const [

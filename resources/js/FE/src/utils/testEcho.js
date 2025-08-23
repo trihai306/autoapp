@@ -97,8 +97,10 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
   }, 5000);
 }
 
-export default {
+const testEchoUtils = {
   runEchoTest,
   testAuthOnly,
   testEchoOnly
 };
+
+export default testEchoUtils;

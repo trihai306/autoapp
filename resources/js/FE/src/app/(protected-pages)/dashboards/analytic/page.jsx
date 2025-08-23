@@ -1,6 +1,9 @@
 import AnalyticDashboard from './_components/AnalyticDashboard'
 import getAnalyticDashboard from '@/server/actions/analytic/getAnalyticDashboard'
 
+// Force dynamic rendering for this page
+export const dynamic = 'force-dynamic'
+
 const emptyMetric = { value: 0, growShrink: 0 };
 
 const emptyAnalyticsData = {
