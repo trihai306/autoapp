@@ -17,15 +17,15 @@ class CheckRole
      */
     public function handle(Request $request, Closure $next, string ...$roles): Response
     {
-        // Check if user is authenticated
-        if (!Auth::check()) {
+        // Check if user is authenticated with sanctum guard
+        if (!Auth::guard('sanctum')->check()) {
             return response()->json([
                 'message' => 'Unauthenticated.',
                 'error' => 'You must be logged in to access this resource.'
             ], 401);
         }
 
-        $user = Auth::user();
+        $user = Auth::guard('sanctum')->user();
 
         // Check if user has any of the required roles
         if (!$user->hasAnyRole($roles)) {

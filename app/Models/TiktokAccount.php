@@ -29,6 +29,7 @@ class TiktokAccount extends Model
         'proxy_id',
         'device_id',
         'scenario_id',
+        'connection_type',
         'two_factor_enabled',
         'two_factor_backup_codes',
         'last_login_at',

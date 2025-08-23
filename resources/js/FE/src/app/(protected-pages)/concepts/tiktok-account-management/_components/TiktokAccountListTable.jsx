@@ -42,6 +42,8 @@ import TiktokAccountListTableTools from './TiktokAccountListTableTools'
 import AccountDetailModal from './AccountDetailModal'
 import EditAccountModal from './EditAccountModal'
 import Dialog from '@/components/ui/Dialog'
+import toast from '@/components/ui/toast'
+import Notification from '@/components/ui/Notification'
 // Server actions will be imported dynamically to avoid client-side issues
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -414,14 +416,107 @@ const ContactColumn = ({ row, type }) => {
 }
 
 // Proxy Column - hiển thị thông số proxy thay vì tên
-const ProxyColumn = ({ row }) => {
+const ProxyColumn = ({ row, onProxyChange }) => {
+    const [isChangingProxy, setIsChangingProxy] = useState(false)
+    const [proxies, setProxies] = useState([])
+    const [loadingProxies, setLoadingProxies] = useState(false)
     const proxy = row.proxy
+    
+    // Load proxies khi component mount
+    useEffect(() => {
+        loadProxies()
+    }, [])
+    
+    const loadProxies = async () => {
+        try {
+            setLoadingProxies(true)
+            const { default: getActiveProxies } = await import('@/server/actions/proxy/getActiveProxies')
+            const response = await getActiveProxies()
+
+            
+            if (response.success && response.data && response.data.length > 0) {
+                // API trả về format: { value, label, data: { id, host, port, type, etc } }
+                const proxyOptions = response.data.map(proxy => ({
+                    value: String(proxy.value), // Sử dụng proxy.value thay vì proxy.id
+                    label: `${proxy.data.host}:${proxy.data.port} (${proxy.data.type})`, // Tạo label từ data
+                    subLabel: proxy.label, // Sử dụng proxy.label làm subLabel
+                    data: proxy.data, // Giữ lại data để có thể sử dụng sau này
+                    status: proxy.data.status
+                }))
+                setProxies([{ value: '', label: 'Không sử dụng proxy' }, ...proxyOptions])
+            } else {
+                // Nếu không có proxy nào, chỉ hiển thị option "Không sử dụng proxy"
+                setProxies([{ value: '', label: 'Không sử dụng proxy' }])
+            }
+        } catch (error) {
+            console.error('Error loading proxies:', error)
+            // Nếu có lỗi, chỉ hiển thị option "Không sử dụng proxy"
+            setProxies([{ value: '', label: 'Không sử dụng proxy' }])
+        } finally {
+            setLoadingProxies(false)
+        }
+    }
+    
+    const handleProxyChange = async (newProxyId) => {
+        if (!onProxyChange) return
+        
+        // Không thay đổi nếu chọn cùng proxy hiện tại
+        if (newProxyId === String(proxy?.id || '')) return
+        
+        setIsChangingProxy(true)
+        try {
+            await onProxyChange(row.id, newProxyId)
+        } catch (error) {
+            console.error('Error changing proxy:', error)
+        } finally {
+            setIsChangingProxy(false)
+        }
+    }
     
     if (!proxy) {
         return (
             <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-gray-300 flex-shrink-0" title="Không có proxy" />
-                <span className="text-gray-400 dark:text-gray-500 text-sm">Chưa cấu hình</span>
+                <div className="flex-1 min-w-0 w-56">
+                    <div className="relative">
+                        <Select
+                            size="sm"
+                            placeholder="Chọn proxy"
+                            options={proxies}
+                            value={null}
+                            onChange={(option) => handleProxyChange(option?.value || '')}
+                            loading={loadingProxies}
+                            disabled={isChangingProxy}
+                            className="text-xs w-full min-w-56"
+                            renderOption={(option) => (
+                                <div className="flex items-center gap-2 min-w-0 py-1">
+                                    {option.value && (
+                                        <div 
+                                            className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                                                option.status === 'active' ? 'bg-green-500' : 
+                                                option.status === 'error' ? 'bg-red-500' : 'bg-gray-400'
+                                            }`} 
+                                        />
+                                    )}
+                                    <div className="flex-1 min-w-0">
+                                        <div className="text-sm font-medium truncate">{option.label}</div>
+                                        {option.subLabel && (
+                                            <div className="text-xs text-gray-500 truncate">{option.subLabel}</div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        />
+                    </div>
+                    {isChangingProxy && (
+                        <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                            Đang cập nhật...
+                        </div>
+                    )}
+                    <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                        Chưa cấu hình proxy
+                    </div>
+                </div>
             </div>
         )
     }
@@ -462,17 +557,52 @@ const ProxyColumn = ({ row }) => {
                 className={`w-2 h-2 rounded-full flex-shrink-0 ${getStatusColor(proxy.status)}`} 
                 title={getStatusTitle(proxy.status)}
             />
-            <div className="flex-1 min-w-0">
-                <div className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate" title={proxyInfo}>
-                    {proxyInfo}
+            <div className="flex-1 min-w-0 w-56">
+                <div className="relative">
+                    <Select
+                        size="sm"
+                        placeholder="Chọn proxy"
+                        options={proxies}
+                        value={proxies.find(p => p.value === String(proxy?.id || '')) || null}
+                        onChange={(option) => handleProxyChange(option?.value || '')}
+                        loading={loadingProxies}
+                        disabled={isChangingProxy}
+                        className="text-xs w-full min-w-56"
+                        renderOption={(option) => (
+                            <div className="flex items-center gap-2 min-w-0 py-1">
+                                {option.value && (
+                                    <div 
+                                        className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                                            option.status === 'active' ? 'bg-green-500' : 
+                                            option.status === 'error' ? 'bg-red-500' : 'bg-gray-400'
+                                        }`} 
+                                    />
+                                )}
+                                <div className="flex-1 min-w-0">
+                                    <div className="text-sm font-medium truncate">{option.label}</div>
+                                    {option.subLabel && (
+                                        <div className="text-xs text-gray-500 truncate">{option.subLabel}</div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    />
                 </div>
+                {isChangingProxy && (
+                    <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                        Đang cập nhật...
+                    </div>
+                )}
                 {proxy.country && (
-                    <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                    <div className="text-xs text-gray-500 dark:text-gray-400 truncate mt-1">
                         {proxy.country}{proxy.city ? `, ${proxy.city}` : ''}
                     </div>
                 )}
                 <div className="text-xs text-gray-400 dark:text-gray-500">
                     {getStatusTitle(proxy.status)}
+                </div>
+                <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                    Click để thay đổi
                 </div>
             </div>
         </div>
@@ -785,6 +915,47 @@ const TiktokAccountListTable = ({
         }
     }, [handleCloseEditModal, onRefresh, setDialogMessage, setShowErrorDialog, setShowSuccessDialog, selectedAccountForEdit])
 
+    // Handle proxy change from table
+    const handleProxyChange = useCallback(async (accountId, newProxyId) => {
+        try {
+            const { default: updateTiktokAccount } = await import('@/server/actions/tiktok-account/updateTiktokAccount')
+            const updateData = {
+                proxy_id: newProxyId ? parseInt(newProxyId) : null
+            }
+            
+            const result = await updateTiktokAccount(accountId, updateData)
+            
+            if (result.success) {
+                // Show success notification
+                toast.push(
+                    <Notification title="Thành công" type="success" closable>
+                        Đã thay đổi proxy cho tài khoản thành công!
+                    </Notification>
+                )
+                
+                // Refresh data
+                if (onRefresh) {
+                    onRefresh()
+                }
+            } else {
+                // Show error notification
+                toast.push(
+                    <Notification title="Lỗi" type="danger" closable>
+                        Không thể thay đổi proxy: {result.message}
+                    </Notification>
+                )
+            }
+        } catch (error) {
+            console.error('Error changing proxy:', error)
+            // Show error notification
+            toast.push(
+                <Notification title="Lỗi" type="danger" closable>
+                    Có lỗi xảy ra khi thay đổi proxy
+                </Notification>
+            )
+        }
+    }, [onRefresh])
+
     // Enhanced action handlers
 
     const handleViewTasks = useCallback((tiktokAccount) => {
@@ -1001,11 +1172,22 @@ const TiktokAccountListTable = ({
                     }
                 },
                 {
-                    header: 'Proxy',
+                    header: (
+                        <div className="flex items-center gap-1">
+                            <span>Proxy</span>
+                            <Tooltip title="Click để thay đổi proxy nhanh">
+                                <div className="w-3 h-3 rounded-full bg-blue-100 text-blue-600 text-xs flex items-center justify-center cursor-help">
+                                    ?
+                                </div>
+                            </Tooltip>
+                        </div>
+                    ),
                     accessorKey: 'proxy',
+                    size: 280,
+                    minSize: 250,
                     cell: (props) => {
                         const row = props.row.original
-                        return <ProxyColumn row={row} />
+                        return <ProxyColumn row={row} onProxyChange={handleProxyChange} />
                     }
                 },
                 {
@@ -1072,7 +1254,7 @@ const TiktokAccountListTable = ({
                 col.id === 'expander' || visibleColumns.includes(col.accessorKey)
             ), actionColumn]
         }, 
-        [visibleColumns, expandedRows, handleViewDetails, handleViewTasks, handleEdit, handleDelete, toggleRowExpansion],
+        [visibleColumns, expandedRows, handleViewDetails, handleViewTasks, handleEdit, handleDelete, handleProxyChange, toggleRowExpansion],
     )
 
 
@@ -1111,13 +1293,13 @@ const TiktokAccountListTable = ({
     const { Tr, Th, Td, THead, TBody } = Table
 
     return (
-        <div>
+        <div className="relative">
             <TiktokAccountListTableTools columns={columns} selectableColumns={allColumns} onColumnToggle={onColumnToggle} onRefresh={onRefresh} />
             
 
             
-            <div className="overflow-x-auto">
-                <Table>
+            <div className="overflow-x-auto" style={{ position: 'static' }}>
+                <Table className="relative" style={{ overflow: 'visible' }}>
                     <THead>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <Tr key={headerGroup.id}>

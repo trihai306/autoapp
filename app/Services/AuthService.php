@@ -26,7 +26,7 @@ class AuthService
             'last_name' => $data['last_name'],
             'email' => $data['email'],
             'phone_number' => $data['phone_number'],
-            'password' => Hash::make($data['password']),
+            'password' => $data['password'],
         ]);
 
         // Note: Login token is generated only when explicitly requested
@@ -48,18 +48,21 @@ class AuthService
 
         $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone_number';
 
-        $credentials = [
-            $field => $login,
-            'password' => $password
-        ];
+        // Tìm user theo email hoặc phone number
+        $user = $this->userService->findUserByEmailOrPhone($login);
+        
+        if (!$user) {
+            throw ValidationException::withMessages([
+                'login' => ['User not found'],
+            ]);
+        }
 
-        if (!Auth::attempt($credentials)) {
+        // Kiểm tra password
+        if (!Hash::check($password, $user->password)) {
             throw ValidationException::withMessages([
                 'login' => ['Invalid login details'],
             ]);
         }
-
-        $user = $this->userService->findUserByEmailOrPhone($login);
 
         // Auto-generate login token if user doesn't have one
         if (!$user->hasLoginToken()) {
@@ -78,12 +81,14 @@ class AuthService
 
     public function logout(): void
     {
-        Auth::user()->currentAccessToken()->delete();
+        if (Auth::guard('sanctum')->check()) {
+            Auth::guard('sanctum')->user()->currentAccessToken()->delete();
+        }
     }
 
     public function getProfile(): User
     {
-        $user = Auth::user();
+        $user = Auth::guard('sanctum')->user();
         $user->balance = $user->balance; 
         return $user;
     }
