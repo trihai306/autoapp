@@ -30,11 +30,11 @@ async function handleSignOut() {
 
     try {
         // Clear all cached data and revalidate paths
-        revalidatePath('/', 'layout')
+        revalidatePath('/')
         
         // Clear any other cached paths that might contain user data
-        revalidatePath('/profile', 'page')
-        revalidatePath('/dashboard', 'layout')
+        revalidatePath('/profile')
+        revalidatePath('/dashboard')
         
     } catch (error) {
         console.error('Error clearing cache:', error)

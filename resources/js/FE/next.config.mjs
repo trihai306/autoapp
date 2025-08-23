@@ -19,6 +19,20 @@ let nextConfig = {
     // Use the correct property name for external packages
     serverExternalPackages: [],
     
+    // Thêm cấu hình để ổn định hơn
+    experimental: {
+        serverComponentsExternalPackages: [],
+    },
+    
+    // Tắt một số tính năng có thể gây lỗi
+    typescript: {
+        ignoreBuildErrors: false,
+    },
+    
+    eslint: {
+        ignoreDuringBuilds: false,
+    },
+    
     // Environment variables
     env: {
         NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000',

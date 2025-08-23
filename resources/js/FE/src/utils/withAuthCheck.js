@@ -25,7 +25,7 @@ export async function withAuthCheck(actionLogic) {
             // console.log('401 Unauthorized detected - performing redirect')
             
             // Clear any cached data
-            revalidatePath('/', 'layout')
+            revalidatePath('/')
             
             // Redirect to force logout page
             redirect('/force-logout')
@@ -37,7 +37,7 @@ export async function withAuthCheck(actionLogic) {
             // console.log('403 Forbidden detected - redirecting to 403 page')
             
             // Clear any cached data
-            revalidatePath('/', 'layout')
+            revalidatePath('/')
             
             // Redirect to 403 page
             redirect('/403')
