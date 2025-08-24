@@ -40,12 +40,12 @@ const ForceLogoutPage = () => {
                 // Thực hiện signOut để xóa hết session NextAuth
                 await signOut({ redirect: false })
                 
-                // Redirect về trang chủ thay vì sign-in page
-                router.push('/')
+                // Sử dụng Next.js router để redirect về trang sign-in
+                router.push('/sign-in')
             } catch (error) {
                 console.error('Error during complete logout:', error)
-                // Fallback: force redirect về trang chủ
-                window.location.href = '/'
+                // Fallback: sử dụng Next.js router thay vì window.location.href
+                router.push('/sign-in')
             }
         }
         

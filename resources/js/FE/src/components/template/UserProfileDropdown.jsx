@@ -6,6 +6,7 @@ import Link from 'next/link'
 import signOut from '@/server/actions/auth/handleSignOut'
 import { disconnectEcho } from '@/utils/echo'
 import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import {
     PiUserDuotone,
     PiGearDuotone,
@@ -33,6 +34,8 @@ const dropdownItemList = [
 
 const _UserDropdown = () => {
     const { data: session, status } = useSession()
+    const router = useRouter()
+    
     const handleSignOut = async () => {
         try {
             // Disconnect Echo trước khi logout
@@ -42,15 +45,15 @@ const _UserDropdown = () => {
             
             const result = await signOut()
             
-            // Nếu logout thành công, redirect về trang chủ hoặc trang hiện tại
+            // Nếu logout thành công, redirect về trang sign-in
             if (result?.success) {
-                // Redirect về trang chủ thay vì sign-in page
-                window.location.href = '/'
+                // Sử dụng Next.js router để navigation tối ưu
+                router.push('/sign-in')
             }
         } catch (error) {
             console.error('Error during logout:', error)
-            // Fallback: redirect về trang chủ
-            window.location.href = '/'
+            // Fallback: sử dụng Next.js router
+            router.push('/sign-in')
         }
     }
 

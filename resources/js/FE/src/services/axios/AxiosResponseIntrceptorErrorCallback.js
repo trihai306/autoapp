@@ -26,12 +26,19 @@ const AxiosResponseIntrceptorErrorCallback = async (error) => {
                 redirect: false 
             })
             
-            // Redirect về trang chủ thay vì sign-in page
-            window.location.href = '/'
+            // Sử dụng Next.js router hoặc window.location.href nếu cần thiết
+            // Lưu ý: Trong interceptor này, chúng ta không thể sử dụng useRouter hook
+            // vì interceptor chạy bên ngoài React component context
+            // nên vẫn cần dùng window.location.href hoặc redirect function
+            if (typeof window !== 'undefined') {
+                window.location.href = '/sign-in'
+            }
         } catch (signOutError) {
             console.error('Error during signOut:', signOutError)
-            // Fallback: redirect về trang chủ
-            window.location.href = '/'
+            // Fallback: sử dụng window.location.href
+            if (typeof window !== 'undefined') {
+                window.location.href = '/sign-in'
+            }
         }
         
         // Still reject the promise so components can handle the error appropriately

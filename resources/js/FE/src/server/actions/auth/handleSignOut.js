@@ -12,6 +12,9 @@ import { revalidatePath } from 'next/cache'
  * It first attempts to log out from the API backend, clears all cached data,
  * and then signs out from NextAuth to completely clear user session.
  * The logic is wrapped with `withAuthCheck` for consistent error handling.
+ * 
+ * Note: This function returns success status, but the actual redirect to /sign-in
+ * is handled by the calling component (UserProfileDropdown, etc.)
  */
 async function handleSignOut() {
     try {
