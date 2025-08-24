@@ -99,6 +99,35 @@ export async function apiGetTiktokAccountActivityHistory(id, params = {}) {
     })
 }
 
+// Update connection type for a TikTok account
+export async function apiUpdateTiktokAccountConnectionType(id, connectionType) {
+    return ApiService.fetchDataWithAxios({
+        url: `/tiktok-accounts/${id}/connection-type`,
+        method: 'put',
+        data: { connection_type: connectionType },
+    })
+}
+
+// Bulk update connection type for multiple TikTok accounts
+export async function apiBulkUpdateTiktokAccountConnectionType(accountIds, connectionType) {
+    return ApiService.fetchDataWithAxios({
+        url: '/tiktok-accounts/bulk-update-connection-type',
+        method: 'post',
+        data: { 
+            account_ids: accountIds, 
+            connection_type: connectionType 
+        },
+    })
+}
+
+// Get connection type statistics for TikTok accounts
+export async function apiGetTiktokAccountConnectionTypeStats() {
+    return ApiService.fetchDataWithAxios({
+        url: '/tiktok-accounts/connection-type-stats',
+        method: 'get',
+    })
+}
+
 // Run linked scenario for an account (create account tasks from scenario scripts)
 export async function apiRunAccountScenario(id, data = {}) {
     return ApiService.fetchDataWithAxios({

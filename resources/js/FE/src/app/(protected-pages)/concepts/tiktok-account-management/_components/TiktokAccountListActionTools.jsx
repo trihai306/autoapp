@@ -5,6 +5,7 @@ import Button from '@/components/ui/Button'
 import { TbUpload } from 'react-icons/tb'
 import { useRouter } from 'next/navigation'
 import ImportAccountsModal from './ImportAccountsModal'
+import BulkConnectionTypeUpdate from './BulkConnectionTypeUpdate'
 import { useTranslations } from 'next-intl'
 
 const TiktokAccountListActionTools = () => {
@@ -17,9 +18,15 @@ const TiktokAccountListActionTools = () => {
         router.refresh()
     }
 
+    const handleConnectionTypeUpdateSuccess = () => {
+        // Refresh trang sau khi cập nhật connection type thành công
+        router.refresh()
+    }
+
     return (
         <>
             <div className="flex flex-col md:flex-row gap-3">
+                <BulkConnectionTypeUpdate onSuccess={handleConnectionTypeUpdateSuccess} />
                 <Button
                     variant="solid"
                     color="green-500"

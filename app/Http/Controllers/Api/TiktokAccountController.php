@@ -42,7 +42,8 @@ class TiktokAccountController extends Controller
     #[QueryParameter('filter[pending_task_priority]', description: 'Filter accounts by pending task priority: low, medium, high.', example: 'high')]
     #[QueryParameter('filter[pending_task_device_id]', description: 'Filter accounts by device ID in pending tasks.', example: '123')]
     #[QueryParameter('filter[scenario_id]', description: 'Filter accounts by their assigned scenario ID.', example: '456')]
-    #[QueryParameter('sort', description: 'Sort tiktok accounts by `username`, `email`, `created_at`, `pending_tasks_count`. Prefix with `-` for descending.', example: '-pending_tasks_count')]
+    #[QueryParameter('filter[connection_type]', description: 'Filter accounts by connection type: wifi or 4g.', example: 'wifi')]
+    #[QueryParameter('sort', description: 'Sort tiktok accounts by `username`, `email`, `created_at`, `pending_tasks_count`, `connection_type`. Prefix with `-` for descending.', example: '-pending_tasks_count')]
     #[QueryParameter('page', description: 'The page number for pagination.', example: 2)]
     #[QueryParameter('per_page', description: 'The number of items per page.', example: 25)]
     public function index(Request $request)
@@ -117,6 +118,11 @@ class TiktokAccountController extends Controller
             'scenario_id' => ['sometimes', 'nullable', 'integer', 'exists:interaction_scenarios,id'],
             'proxy_id' => ['sometimes', 'nullable', 'integer', 'exists:proxies,id'],
             'device_info' => ['sometimes', 'string', 'max:1000'],
+            /**
+             * The connection type for the account (WiFi or 4G).
+             * @example wifi
+             */
+            'connection_type' => ['sometimes', 'string', 'in:wifi,4g'],
         ]);
 
         $tiktokAccount = $this->tiktokAccountService->createTiktokAccount($validated);
@@ -210,6 +216,11 @@ class TiktokAccountController extends Controller
             'device_id' => 'sometimes|nullable|integer|exists:devices,id',
             'scenario_id' => 'sometimes|nullable|integer|exists:interaction_scenarios,id',
             'proxy_id' => 'sometimes|nullable|integer|exists:proxies,id',
+            /**
+             * The connection type for the account (WiFi or 4G).
+             * @example wifi
+             */
+            'connection_type' => 'sometimes|string|in:wifi,4g',
             /**
              * Additional fields from frontend (will be ignored if not in database)
              */
@@ -348,6 +359,11 @@ class TiktokAccountController extends Controller
              * @example "proxy_789"
              */
             'proxyId' => 'sometimes|string|exists:proxies,id',
+            /**
+             * Connection type to assign to imported accounts.
+             * @example "wifi"
+             */
+            'connectionType' => 'sometimes|string|in:wifi,4g',
             /**
              * Format of the account list.
              * @example "new"
@@ -950,6 +966,136 @@ class TiktokAccountController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to update avatar: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Update connection type for a TikTok account
+     *
+     * Updates the connection type (WiFi/4G) for the specified TikTok account.
+     * This is useful for managing network connectivity preferences.
+     * 
+     * @param Request $request
+     * @param TiktokAccount $tiktokAccount
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateConnectionType(Request $request, TiktokAccount $tiktokAccount)
+    {
+        $user = $request->user();
+        if (!$user->hasRole('admin') && $tiktokAccount->user_id !== $user->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $validated = $request->validate([
+            /**
+             * The connection type to set for the account.
+             * @example wifi
+             */
+            'connection_type' => 'required|string|in:wifi,4g',
+        ]);
+
+        try {
+            $updatedAccount = $this->tiktokAccountService->updateConnectionType($tiktokAccount, $validated['connection_type']);
+
+            return response()->json([
+                'success' => true,
+                'message' => "Connection type updated successfully to {$validated['connection_type']}",
+                'data' => [
+                    'id' => $updatedAccount->id,
+                    'username' => $updatedAccount->username,
+                    'connection_type' => $updatedAccount->connection_type,
+                    'updated_at' => $updatedAccount->updated_at,
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Error updating connection type for TikTok account: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update connection type: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Bulk update connection type for multiple TikTok accounts
+     *
+     * Updates the connection type (WiFi/4G) for multiple TikTok accounts at once.
+     * This is useful for batch operations on multiple accounts.
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function bulkUpdateConnectionType(Request $request)
+    {
+        $validated = $request->validate([
+            /**
+             * Array of TikTok account IDs to update.
+             * @example [1, 2, 3]
+             */
+            'account_ids' => 'required|array|min:1',
+            'account_ids.*' => 'integer|exists:tiktok_accounts,id',
+            /**
+             * The connection type to set for all accounts.
+             * @example 4g
+             */
+            'connection_type' => 'required|string|in:wifi,4g',
+        ]);
+
+        $user = $request->user();
+        $accountIds = $validated['account_ids'];
+        $connectionType = $validated['connection_type'];
+
+        try {
+            $result = $this->tiktokAccountService->bulkUpdateConnectionType($user, $accountIds, $connectionType);
+            
+            return response()->json([
+                'success' => true,
+                'message' => "Successfully updated connection type to {$connectionType} for {$result['updated_count']} accounts",
+                'data' => [
+                    'updated_count' => $result['updated_count'],
+                    'failed_count' => $result['failed_count'],
+                    'total_processed' => count($accountIds),
+                    'connection_type' => $connectionType,
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Error bulk updating connection type: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to bulk update connection type: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get connection type statistics for TikTok accounts
+     *
+     * Retrieves statistics about connection types across all TikTok accounts.
+     * Shows count of accounts using WiFi vs 4G.
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getConnectionTypeStats(Request $request)
+    {
+        $user = $request->user();
+        
+        try {
+            $stats = $this->tiktokAccountService->getConnectionTypeStatistics($user);
+            
+            return response()->json([
+                'success' => true,
+                'data' => $stats
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Error getting connection type statistics: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to get connection type statistics: ' . $e->getMessage()
             ], 500);
         }
     }

@@ -41,6 +41,7 @@ import {
 import TiktokAccountListTableTools from './TiktokAccountListTableTools'
 import AccountDetailModal from './AccountDetailModal'
 import EditAccountModal from './EditAccountModal'
+import ConnectionTypeToggle from './ConnectionTypeToggle'
 import Dialog from '@/components/ui/Dialog'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
@@ -956,6 +957,18 @@ const TiktokAccountListTable = ({
         }
     }, [onRefresh])
 
+    // Handle connection type change from table
+    const handleConnectionTypeUpdate = useCallback(async (accountId, newConnectionType) => {
+        try {
+            // Refresh data after connection type update
+            if (onRefresh) {
+                onRefresh()
+            }
+        } catch (error) {
+            console.error('Error updating connection type:', error)
+        }
+    }, [onRefresh])
+
     // Enhanced action handlers
 
     const handleViewTasks = useCallback((tiktokAccount) => {
@@ -1209,6 +1222,16 @@ const TiktokAccountListTable = ({
                     },
                 },
                 {
+                    header: 'Kết nối',
+                    accessorKey: 'connection_type',
+                    size: 150,
+                    minSize: 120,
+                    cell: (props) => {
+                        const row = props.row.original
+                        return <ConnectionTypeToggle account={row} onUpdate={handleConnectionTypeUpdate} />
+                    },
+                },
+                {
                     header: 'Ghi chú',
                     accessorKey: 'notes',
                     cell: (props) => {
@@ -1254,7 +1277,7 @@ const TiktokAccountListTable = ({
                 col.id === 'expander' || visibleColumns.includes(col.accessorKey)
             ), actionColumn]
         }, 
-        [visibleColumns, expandedRows, handleViewDetails, handleViewTasks, handleEdit, handleDelete, handleProxyChange, toggleRowExpansion],
+        [visibleColumns, expandedRows, handleViewDetails, handleViewTasks, handleEdit, handleDelete, handleProxyChange, handleConnectionTypeUpdate, toggleRowExpansion],
     )
 
 

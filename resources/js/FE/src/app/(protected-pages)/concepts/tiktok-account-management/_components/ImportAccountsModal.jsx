@@ -156,6 +156,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
         deviceId: '',
         scenarioId: '',
         proxyId: '',
+        connectionType: 'wifi', // Default to WiFi
         format: 'new', // Default to new format: UID|PASS|2FA|MAIL
     })
 
@@ -414,6 +415,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
             deviceId: '',
             scenarioId: '',
             proxyId: '',
+            connectionType: 'wifi',
             format: 'new',
         })
         setAccountCount(0)
@@ -431,6 +433,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
             deviceId: '',
             scenarioId: '',
             proxyId: '',
+            connectionType: 'wifi',
             format: 'new',
         })
         setAccountCount(0)
@@ -853,6 +856,26 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
                                         }}
                                     />
                                 </div>
+                            </div>
+                        </div>
+
+                        {/* Connection Type */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label className="form-label">
+                                    Loại kết nối
+                                </label>
+                                <Select
+                                    instanceId="import-accounts-connection-type-select"
+                                    placeholder="Chọn loại kết nối"
+                                    value={{ value: formData.connectionType, label: formData.connectionType === 'wifi' ? 'WiFi' : '4G' }}
+                                    onChange={(option) => handleInputChange('connectionType', option?.value || 'wifi')}
+                                    options={[
+                                        { value: 'wifi', label: 'WiFi' },
+                                        { value: '4g', label: '4G' }
+                                    ]}
+                                    isDisabled={isLoadingData}
+                                />
                             </div>
                         </div>
                     </div>

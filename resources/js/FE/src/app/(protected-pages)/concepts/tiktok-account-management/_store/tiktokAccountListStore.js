@@ -5,6 +5,7 @@ export const initialFilterData = {
     email: '',
     phone_number: '',
     status: '',
+    connection_type: '',
 }
 
 const initialState = {

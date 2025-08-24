@@ -19,6 +19,7 @@ const validationSchema = z.object({
     phone_number: z.string().optional(),
     status: z.string().optional(),
     proxy_status: z.string().optional(),
+    connection_type: z.string().optional(),
 })
 
 const DrawerFooter = ({ onCancel, onSaveClick }) => {
@@ -66,6 +67,7 @@ const TiktokAccountTableFilter = () => {
         if (values.phone_number) filterParams['filter[phone_number]'] = values.phone_number
         if (values.status) filterParams['filter[status]'] = values.status
         if (values.proxy_status) filterParams['filter[proxy_status]'] = values.proxy_status
+        if (values.connection_type) filterParams['filter[connection_type]'] = values.connection_type
 
         onAppendQueryParams(filterParams)
         setFilterData(values)
@@ -160,6 +162,27 @@ const TiktokAccountTableFilter = () => {
                                                field.value === 'active_proxy' ? 'Proxy hoạt động' :
                                                field.value === 'error_proxy' ? 'Proxy lỗi' :
                                                field.value === 'inactive_proxy' ? 'Proxy không hoạt động' : field.value
+                                    } : null}
+                                    onChange={(option) => field.onChange(option?.value || '')}
+                                />
+                            )}
+                        />
+                    </FormItem>
+                    <FormItem label="Loại kết nối">
+                        <Controller
+                            name="connection_type"
+                            control={control}
+                            render={({ field }) => (
+                                <Select
+                                    placeholder="Chọn loại kết nối"
+                                    options={[
+                                        { value: '', label: 'Tất cả' },
+                                        { value: 'wifi', label: 'WiFi' },
+                                        { value: '4g', label: '4G' }
+                                    ]}
+                                    value={field.value ? { 
+                                        value: field.value, 
+                                        label: field.value === 'wifi' ? 'WiFi' : '4G'
                                     } : null}
                                     onChange={(option) => field.onChange(option?.value || '')}
                                 />
