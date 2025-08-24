@@ -219,6 +219,25 @@ class DetailedPermissionSeeder extends Seeder
                     'notifications.view-own', 'notifications.mark-read',
                     'ai-spending.view-own', 'ai-spending.record',
                     
+                    // Account Task Management (Quản lý tác vụ tài khoản)
+                    'account-tasks.view', 'account-tasks.create', 'account-tasks.edit', 'account-tasks.delete',
+                    
+                    // TikTok Account Management (Quản lý tài khoản TikTok)
+                    'tiktok-accounts.view', 'tiktok-accounts.create', 'tiktok-accounts.edit', 'tiktok-accounts.delete',
+                    
+                    // Device Management (Quản lý thiết bị)
+                    'devices.view', 'devices.create', 'devices.edit', 'devices.delete',
+                    
+                    // Content Management (Quản lý nội dung)
+                    'contents.view', 'contents.create', 'contents.edit', 'contents.delete',
+                    'content-groups.view', 'content-groups.create', 'content-groups.edit', 'content-groups.delete',
+                    
+                    // Interaction Scenarios
+                    'interaction-scenarios.view', 'interaction-scenarios.create', 'interaction-scenarios.edit', 'interaction-scenarios.delete',
+                    
+                    // Scenario Scripts
+                    'scenario-scripts.view', 'scenario-scripts.create', 'scenario-scripts.edit', 'scenario-scripts.delete',
+                    
                     // Profile
                     'profile.view', 'profile.edit', 'profile.change-password', 'profile.update-avatar',
                 ],

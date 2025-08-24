@@ -79,8 +79,8 @@ export const testApiConnectivity = async (baseUrl, apiPrefix = '/api') => {
         const response = await secureFetch(testUrl, {
             method: 'POST',
             body: JSON.stringify({
-                login: 'admin@example.com',
-                password: 'password'
+                login: '',
+                password: ''
             }),
         })
         

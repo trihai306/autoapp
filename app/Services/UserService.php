@@ -52,6 +52,11 @@ class UserService
         }
         $user = $this->userRepository->create($data);
 
+        // Tự động gán role "user" cho người dùng mới đăng ký
+        if (!isset($data['roles'])) {
+            $data['roles'] = ['user'];
+        }
+        
         if (isset($data['roles'])) {
             $user->syncRoles($data['roles']);
         }

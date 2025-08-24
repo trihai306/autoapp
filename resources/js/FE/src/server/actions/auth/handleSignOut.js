@@ -42,9 +42,11 @@ async function handleSignOut() {
 
     // Always sign out from the client-side session and clear all NextAuth data
     await signOut({ 
-        redirectTo: appConfig.unAuthenticatedEntryPath,
-        redirect: true 
+        redirect: false 
     })
+    
+    // Return success status so the calling component can handle redirect if needed
+    return { success: true, message: 'Logged out successfully' }
 }
 
 export default handleSignOut

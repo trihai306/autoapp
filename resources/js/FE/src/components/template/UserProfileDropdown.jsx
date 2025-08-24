@@ -34,11 +34,24 @@ const dropdownItemList = [
 const _UserDropdown = () => {
     const { data: session, status } = useSession()
     const handleSignOut = async () => {
-        // Disconnect Echo trước khi logout
-        if (typeof window !== 'undefined') {
-            disconnectEcho()
+        try {
+            // Disconnect Echo trước khi logout
+            if (typeof window !== 'undefined') {
+                disconnectEcho()
+            }
+            
+            const result = await signOut()
+            
+            // Nếu logout thành công, redirect về trang chủ hoặc trang hiện tại
+            if (result?.success) {
+                // Redirect về trang chủ thay vì sign-in page
+                window.location.href = '/'
+            }
+        } catch (error) {
+            console.error('Error during logout:', error)
+            // Fallback: redirect về trang chủ
+            window.location.href = '/'
         }
-        await signOut()
     }
 
     const avatarProps = {

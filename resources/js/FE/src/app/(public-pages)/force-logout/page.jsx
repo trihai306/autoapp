@@ -40,12 +40,12 @@ const ForceLogoutPage = () => {
                 // Thực hiện signOut để xóa hết session NextAuth
                 await signOut({ redirect: false })
                 
-                // Redirect về trang đăng nhập
-                router.push(appConfig.unAuthenticatedEntryPath)
+                // Redirect về trang chủ thay vì sign-in page
+                router.push('/')
             } catch (error) {
                 console.error('Error during complete logout:', error)
-                // Fallback: force redirect anyway
-                window.location.href = appConfig.unAuthenticatedEntryPath
+                // Fallback: force redirect về trang chủ
+                window.location.href = '/'
             }
         }
         
@@ -55,7 +55,7 @@ const ForceLogoutPage = () => {
     // Hiển thị một thông báo loading trong khi chờ
     return (
         <div className="flex flex-col items-center justify-center min-h-screen">
-            <p>Your session has expired. Redirecting to sign-in page...</p>
+            <p>Your session has expired. Redirecting to home page...</p>
         </div>
     )
 }

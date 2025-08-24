@@ -23,13 +23,15 @@ const AxiosResponseIntrceptorErrorCallback = async (error) => {
             
             // Force complete sign out and clear NextAuth session
             await signOut({ 
-                callbackUrl: appConfig.unAuthenticatedEntryPath,
-                redirect: true 
+                redirect: false 
             })
+            
+            // Redirect về trang chủ thay vì sign-in page
+            window.location.href = '/'
         } catch (signOutError) {
             console.error('Error during signOut:', signOutError)
-            // Fallback: manual redirect
-            window.location.href = appConfig.unAuthenticatedEntryPath
+            // Fallback: redirect về trang chủ
+            window.location.href = '/'
         }
         
         // Still reject the promise so components can handle the error appropriately

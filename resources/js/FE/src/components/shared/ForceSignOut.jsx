@@ -11,7 +11,7 @@ const ForceSignOut = () => {
         if (typeof window !== 'undefined') {
             disconnectEcho()
         }
-        signOut({ callbackUrl: appConfig.unAuthenticatedEntryPath })
+        signOut({ redirect: false })
     }, [])
 
     return null // Component này không render gì cả
