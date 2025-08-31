@@ -13,6 +13,7 @@ import LayoutBase from '@/components//template/LayoutBase'
 import classNames from '@/utils/classNames'
 import useScrollTop from '@/utils/hooks/useScrollTop'
 import { LAYOUT_FRAMELESS_SIDE } from '@/constants/theme.constant'
+import HeaderBalanceSection from '@/components/template/HeaderBalanceSection'
 
 const FrameLessSide = ({ children }) => {
     const { isSticky } = useScrollTop()
@@ -95,6 +96,7 @@ const FrameLessSide = ({ children }) => {
                             }
                             headerEnd={
                                 <>
+                                    <HeaderBalanceSection />
                                     <LanguageSelector />
                                     <Notification />
                                     <SidePanel />

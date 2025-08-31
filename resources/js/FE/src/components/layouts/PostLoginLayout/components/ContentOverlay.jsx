@@ -13,6 +13,7 @@ import RealtimeStatus from '@/components/template/RealtimeStatus'
 import classNames from '@/utils/classNames'
 import useScrollTop from '@/utils/hooks/useScrollTop'
 import { LAYOUT_CONTENT_OVERLAY } from '@/constants/theme.constant'
+import HeaderBalanceSection from '@/components/template/HeaderBalanceSection'
 
 const ContentOverlay = ({ children }) => {
     const { isSticky } = useScrollTop()
@@ -110,6 +111,7 @@ const ContentOverlay = ({ children }) => {
                         headerMiddle={<HorizontalNav />}
                         headerEnd={
                             <>
+                                <HeaderBalanceSection />
                                 <Search />
                                 <LanguageSelector />
                                 <RealtimeStatus />

@@ -3,7 +3,7 @@ import {
     NAV_ITEM_TYPE_TITLE,
     NAV_ITEM_TYPE_ITEM,
 } from '@/constants/navigation.constant'
-import { ADMIN } from '@/constants/roles.constant'
+import { ADMIN, USER } from '@/constants/roles.constant'
 
 const managementNavigationConfig = [
     {
@@ -13,7 +13,7 @@ const managementNavigationConfig = [
         translateKey: 'nav.management.management',
         icon: 'management',
         type: NAV_ITEM_TYPE_TITLE,
-        authority: [ADMIN],
+        authority: [ADMIN, USER],
         meta: {
             horizontalMenu: {
                 layout: 'columns',
@@ -79,8 +79,7 @@ const managementNavigationConfig = [
                 translateKey: 'nav.conceptsProxyManagement.proxyManagement',
                 icon: 'connection',
                 type: NAV_ITEM_TYPE_ITEM,
-                authority: [ADMIN],
-                permissions: ['proxies.view'],
+                authority: [ADMIN, USER],
                 meta: {
                     description: {
                         translateKey: 'nav.conceptsProxyManagement.proxyManagementDesc',

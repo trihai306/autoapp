@@ -29,8 +29,7 @@ const conceptsNavigationConfig = [
                 translateKey: 'nav.conceptsTransactionManagement.transactionManagement',
                 icon: 'accountActivityLogs',
                 type: NAV_ITEM_TYPE_ITEM,
-                authority: [ADMIN],
-                permissions: ['transactions.view'],
+                authority: [ADMIN, USER],
                 meta: {
                     description: {
                         translateKey: 'nav.conceptsTransactionManagement.transactionManagementDesc',
@@ -46,8 +45,7 @@ const conceptsNavigationConfig = [
                 translateKey: 'nav.conceptsAccountTaskManagement.accountTaskManagement',
                 icon: 'task',
                 type: NAV_ITEM_TYPE_ITEM,
-                authority: [ADMIN],
-                permissions: ['account-tasks.view'],
+                authority: [ADMIN, USER],
                 meta: {
                     description: {
                         translateKey: 'nav.conceptsAccountTaskManagement.accountTaskManagementDesc',
@@ -63,8 +61,7 @@ const conceptsNavigationConfig = [
                 translateKey: 'nav.conceptsTiktokAccountManagement.tiktokAccountManagement',
                 icon: 'userManagement',
                 type: NAV_ITEM_TYPE_ITEM,
-                authority: [ADMIN],
-                permissions: ['tiktok-accounts.view'],
+                authority: [ADMIN, USER],
                 meta: {
                     description: {
                         translateKey: 'nav.conceptsTiktokAccountManagement.tiktokAccountManagementDesc',
@@ -81,7 +78,6 @@ const conceptsNavigationConfig = [
                 icon: 'deviceManagement',
                 type: NAV_ITEM_TYPE_ITEM,
                 authority: [ADMIN, USER],
-                permissions: ['devices.view'],
                 meta: {
                     description: {
                         translateKey: 'nav.conceptsDeviceManagement.deviceManagementDesc',
@@ -97,9 +93,7 @@ const conceptsNavigationConfig = [
                 translateKey: 'nav.conceptsContentManagement.contentManagement',
                 icon: 'fileManager',
                 type: NAV_ITEM_TYPE_ITEM,
-                authority: [ADMIN],
-                permissions: ['content-groups.view', 'contents.view'],
-                requireAll: false,
+                authority: [ADMIN, USER],
                 meta: {
                     description: {
                         translateKey: 'nav.conceptsContentManagement.contentManagementDesc',

@@ -52,16 +52,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/my-transactions', [TransactionController::class, 'getUserHistory']);
 
     // Transaction routes (Admin)
-    Route::get('transactions/stats', [TransactionController::class, 'stats'])
-        ->middleware('permission:transactions.view');
-    Route::apiResource('transactions', TransactionController::class)->except(['store', 'update'])
-        ->middleware('permission:transactions.view');
-    Route::post('transactions/{transaction}/approve', [TransactionController::class, 'approve'])
-        ->middleware('permission:transactions.approve');
-    Route::post('transactions/{transaction}/reject', [TransactionController::class, 'reject'])
-        ->middleware('permission:transactions.reject');
-    Route::post('transactions/bulk-delete', [TransactionController::class, 'bulkDelete'])
-        ->middleware('permission:transactions.bulk-operations');
+    Route::get('transactions/stats', [TransactionController::class, 'stats']);
+    Route::apiResource('transactions', TransactionController::class)->except(['store', 'update']);
+    Route::post('transactions/{transaction}/approve', [TransactionController::class, 'approve']);
+    Route::post('transactions/{transaction}/reject', [TransactionController::class, 'reject']);
+    Route::post('transactions/bulk-delete', [TransactionController::class, 'bulkDelete']);
 
     // Notification routes (User)
     Route::get('/my-notifications', [NotificationController::class, 'getUserNotifications']);
@@ -100,112 +95,69 @@ Route::middleware('auth:sanctum')->group(function () {
         ->middleware('permission:users.bulk-operations');
 
     // Interaction Scenarios, Scripts, and Tasks
-    Route::apiResource('interaction-scenarios', InteractionScenarioController::class)
-        ->middleware('permission:interaction-scenarios.view');
-    Route::apiResource('scenario-scripts', ScenarioScriptController::class)
-        ->middleware('permission:scenario-scripts.view');
-    Route::apiResource('account-tasks', AccountTaskController::class)
-        ->middleware('permission:account-tasks.view');
+    Route::apiResource('interaction-scenarios', InteractionScenarioController::class);
+    Route::apiResource('scenario-scripts', ScenarioScriptController::class);
+    Route::apiResource('account-tasks', AccountTaskController::class);
     
     // Account tasks recent activities
-    Route::post('account-tasks/recent-activities', [AccountTaskController::class, 'getRecentActivities'])
-        ->middleware('permission:account-tasks.view');
+    Route::post('account-tasks/recent-activities', [AccountTaskController::class, 'getRecentActivities']);
     
 
     
     // Device specific routes (must come before resource routes)
-    Route::post('devices/bulk-delete', [DeviceController::class, 'bulkDelete'])
-        ->middleware('permission:devices.delete');
-    Route::post('devices/bulk-update-status', [DeviceController::class, 'bulkUpdateStatus'])
-        ->middleware('permission:devices.edit');
-    Route::get('devices/stats', [DeviceController::class, 'stats'])
-        ->middleware('permission:devices.view');
-    Route::get('devices/recent-activities', [DeviceController::class, 'recentActivities'])
-        ->middleware('permission:devices.view');
-    Route::post('devices/import', [DeviceController::class, 'import'])
-        ->middleware('permission:devices.create');
-    Route::get('devices/{device}/connected-accounts', [DeviceController::class, 'getConnectedAccounts'])
-        ->middleware('permission:devices.view');
+    Route::post('devices/bulk-delete', [DeviceController::class, 'bulkDelete']);
+    Route::post('devices/bulk-update-status', [DeviceController::class, 'bulkUpdateStatus']);
+    Route::get('devices/stats', [DeviceController::class, 'stats']);
+    Route::get('devices/recent-activities', [DeviceController::class, 'recentActivities']);
+    Route::post('devices/import', [DeviceController::class, 'import']);
+    Route::get('devices/{device}/connected-accounts', [DeviceController::class, 'getConnectedAccounts']);
     
     // Device resource routes (must come after specific routes)
-    Route::apiResource('devices', DeviceController::class)
-        ->middleware('permission:devices.view');
-    Route::get('tiktok-accounts/stats', [\App\Http\Controllers\Api\TiktokAccountController::class, 'stats'])
-        ->middleware('permission:tiktok-accounts.view');
-    Route::get('tiktok-accounts/task-analysis', [\App\Http\Controllers\Api\TiktokAccountController::class, 'taskAnalysis'])
-        ->middleware('permission:tiktok-accounts.view');
-    Route::get('tiktok-accounts/recent-activities', [\App\Http\Controllers\Api\TiktokAccountController::class, 'recentActivities'])
-        ->middleware('permission:tiktok-accounts.view');
-    Route::get('tiktok-accounts/{tiktokAccount}/activity-history', [\App\Http\Controllers\Api\TiktokAccountController::class, 'activityHistory'])
-        ->middleware('permission:tiktok-accounts.view');
+    Route::apiResource('devices', DeviceController::class);
+    Route::get('tiktok-accounts/stats', [\App\Http\Controllers\Api\TiktokAccountController::class, 'stats']);
+    Route::get('tiktok-accounts/task-analysis', [\App\Http\Controllers\Api\TiktokAccountController::class, 'taskAnalysis']);
+    Route::get('tiktok-accounts/recent-activities', [\App\Http\Controllers\Api\TiktokAccountController::class, 'recentActivities']);
+    Route::get('tiktok-accounts/{tiktokAccount}/activity-history', [\App\Http\Controllers\Api\TiktokAccountController::class, 'activityHistory']);
     // 2FA management routes for TikTok accounts
-    Route::post('tiktok-accounts/{tiktokAccount}/enable-2fa', [\App\Http\Controllers\Api\TiktokAccountController::class, 'enable2FA'])
-        ->middleware('permission:tiktok-accounts.edit');
-    Route::post('tiktok-accounts/{tiktokAccount}/disable-2fa', [\App\Http\Controllers\Api\TiktokAccountController::class, 'disable2FA'])
-        ->middleware('permission:tiktok-accounts.edit');
-    Route::post('tiktok-accounts/{tiktokAccount}/regenerate-backup-codes', [\App\Http\Controllers\Api\TiktokAccountController::class, 'regenerateBackupCodes'])
-        ->middleware('permission:tiktok-accounts.edit');
+    Route::post('tiktok-accounts/{tiktokAccount}/enable-2fa', [\App\Http\Controllers\Api\TiktokAccountController::class, 'enable2FA']);
+    Route::post('tiktok-accounts/{tiktokAccount}/disable-2fa', [\App\Http\Controllers\Api\TiktokAccountController::class, 'disable2FA']);
+    Route::post('tiktok-accounts/{tiktokAccount}/regenerate-backup-codes', [\App\Http\Controllers\Api\TiktokAccountController::class, 'regenerateBackupCodes']);
     
     // File upload and post creation routes for TikTok accounts
-    Route::post('tiktok-accounts/{tiktokAccount}/upload-file', [\App\Http\Controllers\Api\TiktokAccountController::class, 'uploadFile'])
-        ->middleware('permission:tiktok-accounts.edit');
-    Route::post('tiktok-accounts/{tiktokAccount}/create-post', [\App\Http\Controllers\Api\TiktokAccountController::class, 'createPost'])
-        ->middleware('permission:tiktok-accounts.edit');
-    Route::post('tiktok-accounts/{tiktokAccount}/update-avatar', [\App\Http\Controllers\Api\TiktokAccountController::class, 'updateAvatar'])
-        ->middleware('permission:tiktok-accounts.edit');
-    Route::apiResource('tiktok-accounts', \App\Http\Controllers\Api\TiktokAccountController::class)
-        ->middleware('permission:tiktok-accounts.view');
+    Route::post('tiktok-accounts/{tiktokAccount}/upload-file', [\App\Http\Controllers\Api\TiktokAccountController::class, 'uploadFile']);
+    Route::post('tiktok-accounts/{tiktokAccount}/create-post', [\App\Http\Controllers\Api\TiktokAccountController::class, 'createPost']);
+    Route::post('tiktok-accounts/{tiktokAccount}/update-avatar', [\App\Http\Controllers\Api\TiktokAccountController::class, 'updateAvatar']);
+    Route::apiResource('tiktok-accounts', \App\Http\Controllers\Api\TiktokAccountController::class);
     // Run linked scenario for a TikTok account -> create account tasks from scenario scripts
-    Route::post('tiktok-accounts/{tiktokAccount}/run-scenario', [\App\Http\Controllers\Api\TiktokAccountController::class, 'runScenario'])
-        ->middleware('permission:account-tasks.create');
-    Route::post('tiktok-accounts/bulk-delete', [\App\Http\Controllers\Api\TiktokAccountController::class, 'bulkDelete'])
-        ->middleware('permission:tiktok-accounts.bulk-operations');
-    Route::post('tiktok-accounts/bulk-update-status', [\App\Http\Controllers\Api\TiktokAccountController::class, 'bulkUpdateStatus'])
-        ->middleware('permission:tiktok-accounts.bulk-operations');
-    Route::post('tiktok-accounts/delete-pending-tasks', [\App\Http\Controllers\Api\TiktokAccountController::class, 'deletePendingTasks'])
-        ->middleware('permission:account-tasks.delete');
-    Route::post('tiktok-accounts/import', [\App\Http\Controllers\Api\TiktokAccountController::class, 'import'])
-        ->middleware('permission:tiktok-accounts.import');
+    Route::post('tiktok-accounts/{tiktokAccount}/run-scenario', [\App\Http\Controllers\Api\TiktokAccountController::class, 'runScenario']);
+    Route::post('tiktok-accounts/bulk-delete', [\App\Http\Controllers\Api\TiktokAccountController::class, 'bulkDelete']);
+    Route::post('tiktok-accounts/bulk-update-status', [\App\Http\Controllers\Api\TiktokAccountController::class, 'bulkUpdateStatus']);
+    Route::post('tiktok-accounts/delete-pending-tasks', [\App\Http\Controllers\Api\TiktokAccountController::class, 'deletePendingTasks']);
+    Route::post('tiktok-accounts/import', [\App\Http\Controllers\Api\TiktokAccountController::class, 'import']);
 
     // Proxy Management
-    Route::get('proxies/active', [ProxyController::class, 'getActiveProxies'])
-        ->middleware('permission:proxies.view');
-    Route::get('proxies/active-for-select', [ProxyController::class, 'getActiveProxiesForSelect'])
-        ->middleware('permission:proxies.view');
-    Route::get('proxies/stats', [ProxyController::class, 'stats'])
-        ->middleware('permission:proxies.view');
-    Route::post('proxies/bulk-delete', [ProxyController::class, 'bulkDelete'])
-        ->middleware('permission:proxies.delete');
-    Route::post('proxies/bulk-update-status', [ProxyController::class, 'bulkUpdateStatus'])
-        ->middleware('permission:proxies.edit');
-    Route::post('proxies/import', [ProxyController::class, 'import'])
-        ->middleware('permission:proxies.create');
-    Route::post('proxies/{proxy}/test-connection', [ProxyController::class, 'testConnection'])
-        ->middleware('permission:proxies.edit');
-    Route::get('proxies/{proxy}/full-url', [ProxyController::class, 'getFullUrl'])
-        ->middleware('permission:proxies.view');
-    Route::apiResource('proxies', ProxyController::class)
-        ->middleware('permission:proxies.view');
+    Route::get('proxies/active', [ProxyController::class, 'getActiveProxies']);
+    Route::get('proxies/active-for-select', [ProxyController::class, 'getActiveProxiesForSelect']);
+    Route::get('proxies/stats', [ProxyController::class, 'stats']);
+    Route::post('proxies/bulk-delete', [ProxyController::class, 'bulkDelete']);
+    Route::post('proxies/bulk-update-status', [ProxyController::class, 'bulkUpdateStatus']);
+    Route::post('proxies/import', [ProxyController::class, 'import']);
+    Route::post('proxies/{proxy}/test-connection', [ProxyController::class, 'testConnection']);
+    Route::get('proxies/{proxy}/full-url', [ProxyController::class, 'getFullUrl']);
+    Route::apiResource('proxies', ProxyController::class);
 
     // Content Management
-    Route::apiResource('content-groups', ContentGroupController::class)
-        ->middleware('permission:content-groups.view');
-    Route::post('content-groups/bulk-delete', [ContentGroupController::class, 'bulkDelete'])
-        ->middleware('permission:content-groups.bulk-operations');
-    Route::post('content-groups/bulk-update', [ContentGroupController::class, 'bulkUpdate'])
-        ->middleware('permission:content-groups.bulk-operations');
+    Route::apiResource('content-groups', ContentGroupController::class);
+    Route::post('content-groups/bulk-delete', [ContentGroupController::class, 'bulkDelete']);
+    Route::post('content-groups/bulk-update', [ContentGroupController::class, 'bulkUpdate']);
     Route::post('content-groups/{contentGroup}/remove-contents', [ContentGroupController::class, 'removeContents']);
     
     // Get contents by group
-    Route::get('content-groups/{groupId}/contents', [ContentController::class, 'getByGroup'])
-        ->middleware('permission:contents.view');
+    Route::get('content-groups/{groupId}/contents', [ContentController::class, 'getByGroup']);
     
-    Route::apiResource('contents', ContentController::class)
-        ->middleware('permission:contents.view');
-    Route::post('contents/bulk-delete', [ContentController::class, 'bulkDelete'])
-        ->middleware('permission:contents.bulk-operations');
-    Route::post('contents/bulk-update', [ContentController::class, 'bulkUpdate'])
-        ->middleware('permission:contents.bulk-operations');
+    Route::apiResource('contents', ContentController::class);
+    Route::post('contents/bulk-delete', [ContentController::class, 'bulkDelete']);
+    Route::post('contents/bulk-update', [ContentController::class, 'bulkUpdate']);
 
     // Analytics
     Route::get('/analytic/transactions', TransactionAnalyticController::class)

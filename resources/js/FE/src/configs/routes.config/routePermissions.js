@@ -28,44 +28,43 @@ const routePermissions = {
         roles: ['admin', 'super-admin'],
     },
 
-    // Transaction Management
+    // Transaction Management - Bỏ permission check
     '/concepts/transaction-management': {
-        permissions: ['transactions.view'],
+        permissions: [],
         roles: [],
     },
     '/concepts/transaction-management/transaction-list': {
-        permissions: ['transactions.view'],
+        permissions: [],
         roles: [],
     },
 
-    // TikTok Account Management
+    // TikTok Account Management - Bỏ permission check
     '/concepts/tiktok-account-management': {
-        permissions: ['tiktok-accounts.view'],
+        permissions: [],
         roles: [],
     },
     '/concepts/tiktok-account-management/account-list': {
-        permissions: ['tiktok-accounts.view'],
+        permissions: [],
         roles: [],
     },
 
-    // Content Management
+    // Content Management - Bỏ permission check
     '/concepts/content-management': {
-        permissions: ['content-groups.view', 'contents.view'],
+        permissions: [],
         roles: [],
-        requireAll: false, // User needs ANY of the permissions
     },
     '/concepts/content-management/content-groups': {
-        permissions: ['content-groups.view'],
+        permissions: [],
         roles: [],
     },
     '/concepts/content-management/contents': {
-        permissions: ['contents.view'],
+        permissions: [],
         roles: [],
     },
 
-    // Device Management
+    // Device Management - Bỏ permission check
     '/concepts/device-management': {
-        permissions: ['devices.view'],
+        permissions: [],
         roles: [],
     },
 
@@ -81,9 +80,9 @@ const routePermissions = {
         roles: [],
     },
 
-    // Account Tasks
+    // Account Tasks - Bỏ permission check
     '/concepts/account-tasks': {
-        permissions: ['account-tasks.view'],
+        permissions: [],
         roles: [],
     },
 

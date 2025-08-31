@@ -10,6 +10,7 @@ import SidePanel from '@/components//template/SidePanel'
 import LayoutBase from '@/components//template/LayoutBase'
 import RealtimeStatus from '@/components/template/RealtimeStatus'
 import { LAYOUT_STACKED_SIDE } from '@/constants/theme.constant'
+import HeaderBalanceSection from '@/components/template/HeaderBalanceSection'
 
 const StackedSide = ({ children }) => {
     return (
@@ -30,6 +31,7 @@ const StackedSide = ({ children }) => {
                         }
                         headerEnd={
                             <>
+                                <HeaderBalanceSection />
                                 <LanguageSelector />
                                 <RealtimeStatus />
                                 <Notification />

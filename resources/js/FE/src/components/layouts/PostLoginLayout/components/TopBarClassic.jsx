@@ -11,12 +11,9 @@ import HorizontalNav from '@/components/template/HorizontalNav'
 import LayoutBase from '@/components//template/LayoutBase'
 import RealtimeStatus from '@/components/template/RealtimeStatus'
 import { LAYOUT_TOP_BAR_CLASSIC } from '@/constants/theme.constant'
-import useCurrentSession from '@/utils/hooks/useCurrentSession'
-import Balance from '@/components/template/Balance'
+import HeaderBalanceSection from '@/components/template/HeaderBalanceSection'
 
 const TopBarClassic = ({ children }) => {
-    const { session } = useCurrentSession()
-
     return (
         <LayoutBase
             type={LAYOUT_TOP_BAR_CLASSIC}
@@ -36,7 +33,7 @@ const TopBarClassic = ({ children }) => {
                         headerMiddle={<HorizontalNav />}
                         headerEnd={
                             <>
-                                <Balance balance={session?.balance} />
+                                <HeaderBalanceSection />
                                 <Search />
                                 <LanguageSelector />
                                 <RealtimeStatus />

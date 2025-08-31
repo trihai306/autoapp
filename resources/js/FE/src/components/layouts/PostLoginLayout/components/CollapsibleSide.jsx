@@ -11,6 +11,7 @@ import SidePanel from '@/components//template/SidePanel'
 import LayoutBase from '@/components//template/LayoutBase'
 import RealtimeStatus from '@/components/template/RealtimeStatus'
 import { LAYOUT_COLLAPSIBLE_SIDE } from '@/constants/theme.constant'
+import HeaderBalanceSection from '@/components/template/HeaderBalanceSection'
 
 const CollapsibleSide = ({ children }) => {
     return (
@@ -32,6 +33,7 @@ const CollapsibleSide = ({ children }) => {
                         }
                         headerEnd={
                             <>
+                                <HeaderBalanceSection />
                                 <LanguageSelector />
                                 <RealtimeStatus />
                                 <Notification />

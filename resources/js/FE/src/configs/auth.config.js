@@ -28,7 +28,8 @@ export default {
                     if (user) {
                         console.log('✅ User authorized successfully:', { 
                             id: user.id, 
-                            email: user.email 
+                            email: user.email,
+                            balance: user.balance
                         })
                         return user
                     }
@@ -52,7 +53,8 @@ export default {
                 // Initial sign-in
                 console.log('🔄 JWT callback - Initial sign-in:', { 
                     userId: user.id, 
-                    email: user.email 
+                    email: user.email,
+                    balance: user.balance
                 })
                 
                 token.id = user.id
@@ -64,6 +66,7 @@ export default {
                 token.last_name = user.last_name
                 token.roles = user.roles || []
                 token.login_token = user.login_token
+                token.balance = user.balance || 0
                 token.permissions = user.permissions || { 
                     roles: [], 
                     permissions: [], 
@@ -85,7 +88,8 @@ export default {
             if (token) {
                 console.log('📋 Session callback - Setting user data:', { 
                     userId: token.id, 
-                    email: token.email 
+                    email: token.email,
+                    balance: token.balance
                 })
                 
                 session.user.id = token.id
@@ -99,6 +103,7 @@ export default {
                 session.user.roles = token.permissions?.roles || []
                 session.user.permissions = token.permissions?.permissions || []
                 session.user.permission_groups = token.permissions?.permission_groups || {}
+                session.balance = token.balance || 0
             } else {
                 console.log('❌ Session callback - No valid token')
             }
@@ -111,7 +116,8 @@ export default {
             console.log('✅ User signed in successfully:', { 
                 userId: user.id, 
                 email: user.email,
-                provider: account?.provider 
+                provider: account?.provider,
+                balance: user.balance
             })
         },
         async signOut({ session, token }) {
