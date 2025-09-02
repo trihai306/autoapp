@@ -60,10 +60,23 @@ class TransactionService
         });
     }
 
+    public function createTopupTransaction(User $user, float $amount, string $note): \App\Models\Transaction
+    {
+        // Create a pending topup transaction for tracking
+        return $this->transactionRepository->create([
+            'user_id' => $user->id,
+            'type' => 'deposit',
+            'amount' => $amount,
+            'description' => $note,
+            'status' => 'pending',
+        ]);
+    }
+
     public function getHistory(User $user, Request $request)
     {
         $query = $this->transactionRepository->getModel()->query()->where('user_id', $user->id);
 
+        // Always sort by created_at desc (newest first) unless explicitly overridden
         if (!$request->has('sort')) {
             $query->latest();
         }

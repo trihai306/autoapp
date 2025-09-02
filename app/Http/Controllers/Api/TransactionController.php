@@ -86,6 +86,9 @@ class TransactionController extends Controller
         // Generate a safe note/reference for bank transfer tracking
         $note = $validated['note'] ?? ('NAPTIEN-USER-' . $user->id);
 
+        // Create a pending transaction record for tracking
+        $transaction = $this->transactionService->createTopupTransaction($user, $amount, $note);
+
         // Static bank info (move to config or DB as needed)
         $bank = [
             'name' => 'Vietcombank',
@@ -111,6 +114,7 @@ class TransactionController extends Controller
         $qrBase64 = 'data:image/png;base64,' . base64_encode($qrPng);
 
         return response()->json([
+            'transaction_id' => $transaction->id,
             'amount' => $amount,
             'note' => $note,
             'bank' => $bank,

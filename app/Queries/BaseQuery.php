@@ -107,6 +107,9 @@ class BaseQuery
                     $this->builder->orderBy($field, $direction);
                 }
             }
+        } else {
+            // Default sort by created_at desc if no sort specified
+            $this->builder->latest();
         }
 
         return $this;
