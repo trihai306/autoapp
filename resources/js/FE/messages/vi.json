@@ -9,6 +9,12 @@
             "transactionAnalytic": "Phân tích giao dịch"
         },
         "concepts": "Khái niệm",
+        "dashboardGroup": "Bảng điều khiển",
+        "resourceManagementGroup": "Quản lý tài nguyên",
+        "conceptsServiceRegistration": "Đăng ký dịch vụ",
+        "conceptsFacebookAccountManagement": {
+            "facebookAccountManagement": "Quản lý tài khoản Facebook"
+        },
         "management": "Quản lý",
         "conceptsAi": {
             "ai": "Trí tuệ nhân tạo",
@@ -144,6 +150,7 @@
         "mail": "Thư",
         "chat": "Trò chuyện",
         "uiComponents": "Thành phần UI",
+        "topup": "Nạp tiền",
         "calendarDesc": "Lên lịch và các sự kiện",
         "fileManagerDesc": "Quản lý tệp",
         "mailDesc": "Quản lý email của bạn",

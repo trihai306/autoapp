@@ -9,6 +9,12 @@
             "transactionAnalytic": "Transaction Analytic"
         },
         "concepts": "Concepts",
+        "dashboardGroup": "Dashboard",
+        "resourceManagementGroup": "Resource Management",
+        "conceptsServiceRegistration": "Service Registration",
+        "conceptsFacebookAccountManagement": {
+            "facebookAccountManagement": "Facebook Account Management"
+        },
         "conceptsAi": {
             "ai": "AI",
             "chat": "Chat",
@@ -127,6 +133,7 @@
         "mail": "Mail",
         "chat": "Chat",
         "uiComponents": "UI Components",
+        "topup": "Top up",
         "calendarDesc": "Schedule and events",
         "fileManagerDesc": "File management",
         "mailDesc": "Manage your emails",

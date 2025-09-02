@@ -59,6 +59,30 @@ const TransactionService = {
             method: 'post',
         })
     },
+
+    /**
+     * Create topup intent to generate QR/text for bank transfer
+     * POST /api/topup-intent
+     */
+    createTopupIntent: async (data) => {
+        return ApiService.fetchDataWithAxios({
+            url: '/topup-intent',
+            method: 'post',
+            data,
+        })
+    },
+
+    /**
+     * Deposit (credit balance) after verified payment
+     * POST /api/deposit
+     */
+    deposit: async (data) => {
+        return ApiService.fetchDataWithAxios({
+            url: '/deposit',
+            method: 'post',
+            data,
+        })
+    },
 }
 
 export default TransactionService;

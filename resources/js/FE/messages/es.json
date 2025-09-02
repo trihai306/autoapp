@@ -8,6 +8,12 @@
             "marketing": "Marketing"
         },
         "concepts": "Conceptos",
+        "dashboardGroup": "Panel",
+        "resourceManagementGroup": "Gestión de Recursos",
+        "conceptsServiceRegistration": "Registro de Servicio",
+        "conceptsFacebookAccountManagement": {
+            "facebookAccountManagement": "Gestión de Cuentas de Facebook"
+        },
         "conceptsAi": {
             "ai": "IA",
             "chat": "Chat",
@@ -118,6 +124,7 @@
         "mail": "Correo",
         "chat": "Chat",
         "uiComponents": "Componentes de UI",
+        "topup": "Recargar",
         "calendarDesc": "Programación y eventos",
         "fileManagerDesc": "Gestión de archivos",
         "mailDesc": "Gestiona tus correos",

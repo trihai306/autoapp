@@ -43,6 +43,18 @@ const routePermissions = {
         permissions: [],
         roles: [],
     },
+
+    // Topup - Bỏ permission check
+    '/concepts/topup': {
+        permissions: [],
+        roles: [],
+    },
+
+    // Service Registration - Bỏ permission check
+    '/concepts/service-registration': {
+        permissions: [],
+        roles: [],
+    },
     '/concepts/tiktok-account-management/account-list': {
         permissions: [],
         roles: [],

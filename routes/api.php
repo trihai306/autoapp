@@ -48,6 +48,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Transaction routes (User)
     Route::post('/deposit', [TransactionController::class, 'deposit']);
+    Route::post('/topup-intent', [TransactionController::class, 'topupIntent']);
     Route::post('/withdrawal', [TransactionController::class, 'withdrawal']);
     Route::get('/my-transactions', [TransactionController::class, 'getUserHistory']);
 

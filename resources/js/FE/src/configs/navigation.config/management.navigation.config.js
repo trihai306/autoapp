@@ -22,6 +22,38 @@ const managementNavigationConfig = [
         },
         subMenu: [
             {
+                key: 'management.proxyManagement',
+                path: `${CONCEPTS_PREFIX_PATH}/proxy-management`,
+                title: 'Proxy Management',
+                translateKey: 'nav.conceptsProxyManagement.proxyManagement',
+                icon: 'connection',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [ADMIN, USER],
+                meta: {
+                    description: {
+                        translateKey: 'nav.conceptsProxyManagement.proxyManagementDesc',
+                        label: 'Manage proxy servers',
+                    },
+                },
+                subMenu: [],
+            },
+            {
+                key: 'management.transactionManagement',
+                path: `${CONCEPTS_PREFIX_PATH}/transaction-management`,
+                title: 'Transaction Management',
+                translateKey: 'nav.conceptsTransactionManagement.transactionManagement',
+                icon: 'accountActivityLogs',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [ADMIN, USER],
+                meta: {
+                    description: {
+                        translateKey: 'nav.conceptsTransactionManagement.transactionManagementDesc',
+                        label: 'Manage all transactions',
+                    },
+                },
+                subMenu: [],
+            },
+            {
                 key: 'management.userManagement',
                 path: `${CONCEPTS_PREFIX_PATH}/user-management`,
                 title: 'User Management',
@@ -68,22 +100,6 @@ const managementNavigationConfig = [
                     description: {
                         translateKey: 'nav.management.managementRoleManagement.roleManagementDesc',
                         label: 'Manage roles and permissions',
-                    },
-                },
-                subMenu: [],
-            },
-            {
-                key: 'management.proxyManagement',
-                path: `${CONCEPTS_PREFIX_PATH}/proxy-management`,
-                title: 'Proxy Management',
-                translateKey: 'nav.conceptsProxyManagement.proxyManagement',
-                icon: 'connection',
-                type: NAV_ITEM_TYPE_ITEM,
-                authority: [ADMIN, USER],
-                meta: {
-                    description: {
-                        translateKey: 'nav.conceptsProxyManagement.proxyManagementDesc',
-                        label: 'Manage proxy servers',
                     },
                 },
                 subMenu: [],

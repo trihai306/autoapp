@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Dedoc\Scramble\Attributes\QueryParameter;
 use App\Exceptions\InsufficientFundsException;
 use Dedoc\Scramble\Attributes\Group;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 /**
  * @authenticated
@@ -52,6 +53,70 @@ class TransactionController extends Controller
         );
 
         return response()->json($transaction, 201);
+    }
+
+    /**
+     * Create a topup intent (QR payload)
+     *
+     * This does NOT change balance. It returns bank transfer information and a QR payload
+     * that the FE can render (e.g., VietQR or custom text). After bank postsbacks/webhook,
+     * you can call deposit() to actually credit the balance.
+     *
+     * @response {
+     *   "amount": 200000,
+     *   "note": "NAPTIEN-USER-1",
+     *   "bank": {
+     *     "name": "Vietcombank",
+     *     "account_name": "CONG TY ABC",
+     *     "account_number": "0123456789"
+     *   },
+     *   "qr_text": "VCB|0123456789|CONG TY ABC|200000|NAPTIEN-USER-1"
+     * }
+     */
+    public function topupIntent(Request $request)
+    {
+        $validated = $request->validate([
+            'amount' => 'required|numeric|min:1000',
+            'note' => 'nullable|string|max:255',
+        ]);
+
+        $amount = (float) $validated['amount'];
+        $user = Auth::user();
+
+        // Generate a safe note/reference for bank transfer tracking
+        $note = $validated['note'] ?? ('NAPTIEN-USER-' . $user->id);
+
+        // Static bank info (move to config or DB as needed)
+        $bank = [
+            'name' => 'Vietcombank',
+            'account_name' => 'CONG TY ABC',
+            'account_number' => '0123456789',
+        ];
+
+        // Simple QR payload text (can be replaced with VietQR string)
+        $qrText = sprintf(
+            'VCB|%s|%s|%s|%s',
+            $bank['account_number'],
+            $bank['account_name'],
+            number_format($amount, 0, '', ''),
+            $note
+        );
+
+        // Generate QR image (PNG, base64) using simplesoftwareio/simple-qrcode
+        // FE có thể ưu tiên dùng ảnh này nếu không tự render QR
+        $qrPng = QrCode::format('png')
+            ->size(280)
+            ->margin(1)
+            ->generate($qrText);
+        $qrBase64 = 'data:image/png;base64,' . base64_encode($qrPng);
+
+        return response()->json([
+            'amount' => $amount,
+            'note' => $note,
+            'bank' => $bank,
+            'qr_text' => $qrText,
+            'qr_image_base64' => $qrBase64,
+        ]);
     }
 
     /**
