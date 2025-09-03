@@ -148,6 +148,73 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the service package subscriptions for the user.
+     */
+    public function servicePackageSubscriptions(): HasMany
+    {
+        return $this->hasMany(UserServicePackage::class);
+    }
+
+    /**
+     * Get the active service package subscriptions for the user.
+     */
+    public function activeServicePackageSubscriptions(): HasMany
+    {
+        return $this->hasMany(UserServicePackage::class)
+                    ->where('status', UserServicePackage::STATUS_ACTIVE)
+                    ->where('expires_at', '>', now());
+    }
+
+    /**
+     * Get the current active service package for the user.
+     */
+    public function currentServicePackage(): ?UserServicePackage
+    {
+        return $this->activeServicePackageSubscriptions()
+                    ->with('servicePackage')
+                    ->orderBy('expires_at', 'desc')
+                    ->first();
+    }
+
+    /**
+     * Check if user has active service package.
+     */
+    public function hasActiveServicePackage(): bool
+    {
+        return $this->activeServicePackageSubscriptions()->exists();
+    }
+
+    /**
+     * Check if user has sufficient balance.
+     */
+    public function hasSufficientBalance(float $amount): bool
+    {
+        return $this->balance >= $amount;
+    }
+
+    /**
+     * Deduct balance from user.
+     */
+    public function deductBalance(float $amount): bool
+    {
+        if (!$this->hasSufficientBalance($amount)) {
+            return false;
+        }
+
+        $this->balance -= $amount;
+        return $this->save();
+    }
+
+    /**
+     * Add balance to user.
+     */
+    public function addBalance(float $amount): bool
+    {
+        $this->balance += $amount;
+        return $this->save();
+    }
+
+    /**
      * Check if the user has a login token.
      *
      * @return bool

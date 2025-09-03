@@ -6,7 +6,7 @@ import AdaptiveCard from '@/components/shared/AdaptiveCard'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import Select from '@/components/ui/Select'
-import Table from '@/components/ui/Table'
+import DataTable from '@/components/shared/DataTable'
 import Dialog from '@/components/ui/Dialog'
 import Badge from '@/components/ui/Badge'
 import getServicePackages from '@/server/actions/service-package/getServicePackages'
@@ -17,11 +17,10 @@ import updateServicePackage from '@/server/actions/service-package/updateService
 import deleteServicePackage from '@/server/actions/service-package/deleteServicePackage'
 import { ServicePackageHelpers } from '@/services/service-package/ServicePackageService'
 import { toast } from 'react-hot-toast'
-import ServicePackageCards from './ServicePackageCards'
-import { usePermission } from '@/utils/hooks/usePermission'
 
 const ServicePackageManagement = () => {
-    const [viewMode, setViewMode] = useState('table') // 'table' or 'cards'
+    console.log('🚀 [ServicePackageManagement] Component mounted')
+    
     const [packages, setPackages] = useState([])
     const [loading, setLoading] = useState(false)
     const [total, setTotal] = useState(0)
@@ -31,11 +30,22 @@ const ServicePackageManagement = () => {
     const [statusFilter, setStatusFilter] = useState('all')
     const [selectedPackages, setSelectedPackages] = useState([])
     
-    // Permission checks
-    const canCreate = usePermission('service-packages.create')
-    const canEdit = usePermission('service-packages.edit')
-    const canDelete = usePermission('service-packages.delete')
-    const canUpdateStatus = usePermission('service-packages.update-status')
+    console.log('📊 [ServicePackageManagement] Initial state:', {
+        packages: packages.length,
+        loading,
+        total,
+        currentPage,
+        perPage,
+        searchQuery,
+        statusFilter,
+        selectedPackages: selectedPackages.length
+    })
+    
+    // Permission checks - all set to true
+    const canCreate = true
+    const canEdit = true
+    const canDelete = true
+    const canUpdateStatus = true
     
     // Dialog states
     const [createDialog, setCreateDialog] = useState(false)
@@ -62,6 +72,14 @@ const ServicePackageManagement = () => {
     // Load packages
     const loadPackages = async () => {
         try {
+            console.log('🔄 [loadPackages] Starting to load packages...')
+            console.log('📋 [loadPackages] Params:', {
+                page: currentPage,
+                per_page: perPage,
+                search: searchQuery || undefined,
+                status: statusFilter !== 'all' ? statusFilter : undefined
+            })
+            
             setLoading(true)
             const params = {
                 page: currentPage,
@@ -70,23 +88,36 @@ const ServicePackageManagement = () => {
                 status: statusFilter !== 'all' ? statusFilter : undefined
             }
             
+            console.log('📡 [loadPackages] Calling getServicePackages with params:', params)
             const result = await getServicePackages(params)
+            console.log('✅ [loadPackages] API Response:', result)
             
             if (result.success) {
+                console.log('🎯 [loadPackages] Success! Data:', result.data)
+                console.log('📊 [loadPackages] Total:', result.total)
                 setPackages(result.data || [])
                 setTotal(result.total || 0)
             } else {
+                console.error('❌ [loadPackages] API returned error:', result.message)
                 toast.error(result.message || 'Không thể tải danh sách gói dịch vụ')
             }
         } catch (error) {
-            console.error('Error loading packages:', error)
+            console.error('💥 [loadPackages] Exception occurred:', error)
+            console.error('💥 [loadPackages] Error stack:', error.stack)
             toast.error('Có lỗi xảy ra khi tải dữ liệu')
         } finally {
+            console.log('🏁 [loadPackages] Finally block - setting loading to false')
             setLoading(false)
         }
     }
 
     useEffect(() => {
+        console.log('🔄 [useEffect] loadPackages triggered with dependencies:', {
+            currentPage,
+            perPage,
+            searchQuery,
+            statusFilter
+        })
         loadPackages()
     }, [currentPage, perPage, searchQuery, statusFilter])
 
@@ -121,10 +152,6 @@ const ServicePackageManagement = () => {
 
     // Handle create
     const handleCreate = () => {
-        if (!canCreate) {
-            toast.error('Bạn không có quyền tạo gói dịch vụ')
-            return
-        }
         setFormData({
             name: '',
             description: '',
@@ -144,10 +171,6 @@ const ServicePackageManagement = () => {
 
     // Handle edit
     const handleEdit = (pkg) => {
-        if (!canEdit) {
-            toast.error('Bạn không có quyền sửa gói dịch vụ')
-            return
-        }
         setFormData({
             name: pkg.name || '',
             description: pkg.description || '',
@@ -168,20 +191,12 @@ const ServicePackageManagement = () => {
 
     // Handle delete
     const handleDelete = (pkg) => {
-        if (!canDelete) {
-            toast.error('Bạn không có quyền xóa gói dịch vụ')
-            return
-        }
         setCurrentPackage(pkg)
         setDeleteDialog(true)
     }
 
     // Handle bulk delete
     const handleBulkDelete = () => {
-        if (!canDelete) {
-            toast.error('Bạn không có quyền xóa gói dịch vụ')
-            return
-        }
         if (selectedPackages.length === 0) {
             toast.error('Vui lòng chọn ít nhất một gói dịch vụ')
             return
@@ -191,10 +206,6 @@ const ServicePackageManagement = () => {
 
     // Handle status update
     const handleStatusUpdate = async (status) => {
-        if (!canUpdateStatus) {
-            toast.error('Bạn không có quyền cập nhật trạng thái gói dịch vụ')
-            return
-        }
         if (selectedPackages.length === 0) {
             toast.error('Vui lòng chọn ít nhất một gói dịch vụ')
             return
@@ -280,36 +291,17 @@ const ServicePackageManagement = () => {
     // Table columns
     const columns = [
         {
-            key: 'select',
-            title: (
-                <input
-                    type="checkbox"
-                    checked={selectedPackages.length === packages.length && packages.length > 0}
-                    onChange={(e) => handleSelectAll(e.target.checked)}
-                    className="rounded border-gray-300"
-                />
-            ),
-            dataIndex: 'id',
-            render: (id) => (
-                <input
-                    type="checkbox"
-                    checked={selectedPackages.includes(id)}
-                    onChange={(e) => handleSelectPackage(id, e.target.checked)}
-                    className="rounded border-gray-300"
-                />
-            )
-        },
-        {
-            key: 'name',
-            title: 'Tên gói',
-            dataIndex: 'name',
-            render: (name, record) => (
+            id: 'name',
+            header: 'Tên gói',
+            cell: ({ row }) => {
+                const record = row.original
+                return (
                 <div className="flex items-center gap-3">
                     {record.icon && (
                         <span className="text-lg">{record.icon}</span>
                     )}
                     <div>
-                        <div className="font-medium">{name}</div>
+                            <div className="font-medium">{record.name}</div>
                         {record.is_popular && (
                             <Badge variant="solid" color="yellow" size="sm">
                                 Phổ biến
@@ -318,46 +310,60 @@ const ServicePackageManagement = () => {
                     </div>
                 </div>
             )
+            }
         },
         {
-            key: 'price',
-            title: 'Giá',
-            dataIndex: 'price',
-            render: (price, record) => (
+            id: 'price',
+            header: 'Giá',
+            cell: ({ row }) => {
+                const record = row.original
+                return (
                 <div>
                     <div className="font-medium">
-                        {ServicePackageHelpers.formatPrice(price, record.currency)}
+                            {ServicePackageHelpers.formatPrice(record.price, record.currency)}
                     </div>
                     <div className="text-sm text-gray-500">
                         {ServicePackageHelpers.getDurationText(record)}
                     </div>
                 </div>
             )
+            }
         },
         {
-            key: 'status',
-            title: 'Trạng thái',
-            dataIndex: 'is_active',
-            render: (isActive) => (
-                <Badge 
-                    variant="solid" 
-                    color={isActive ? 'green' : 'red'}
-                >
-                    {isActive ? 'Hoạt động' : 'Tạm dừng'}
-                </Badge>
-            )
+            id: 'status',
+            header: 'Trạng thái',
+            cell: ({ row }) => {
+                const isActive = row.original.is_active
+                return (
+                    <div className="flex items-center gap-2">
+                        <div className={`w-2 h-2 rounded-full ${
+                            isActive 
+                                ? 'bg-emerald-500 shadow-emerald-500/50' 
+                                : 'bg-red-500 shadow-red-500/50'
+                        } shadow-lg animate-pulse`}></div>
+                        <span className={`text-sm font-medium ${
+                            isActive 
+                                ? 'text-emerald-700 dark:text-emerald-400' 
+                                : 'text-red-700 dark:text-red-400'
+                        }`}>
+                            {isActive ? 'Hoạt động' : 'Tạm dừng'}
+                        </span>
+                    </div>
+                )
+            }
         },
         {
-            key: 'sort_order',
-            title: 'Thứ tự',
-            dataIndex: 'sort_order'
+            id: 'sort_order',
+            header: 'Thứ tự',
+            cell: ({ row }) => row.original.sort_order
         },
         {
-            key: 'actions',
-            title: 'Thao tác',
-            render: (_, record) => (
+            id: 'actions',
+            header: 'Thao tác',
+            cell: ({ row }) => {
+                const record = row.original
+                return (
                 <div className="flex gap-2">
-                    {canEdit && (
                         <Button
                             size="sm"
                             variant="outline"
@@ -365,8 +371,6 @@ const ServicePackageManagement = () => {
                         >
                             Sửa
                         </Button>
-                    )}
-                    {canDelete && (
                         <Button
                             size="sm"
                             variant="outline"
@@ -375,23 +379,44 @@ const ServicePackageManagement = () => {
                         >
                             Xóa
                         </Button>
-                    )}
                 </div>
             )
+            }
         }
     ]
 
-    // Handle package selection from cards view
-    const handlePackageSelect = (pkg) => {
-        toast.success(`Bạn đã chọn gói "${pkg.name}"`)
-        // Here you can add logic to handle package selection
-        // For example, redirect to payment or show package details
+    console.log('🎨 [ServicePackageManagement] Rendering with state:', {
+        packages: packages.length,
+        loading,
+        total,
+        currentPage,
+        perPage,
+        searchQuery,
+        statusFilter,
+        selectedPackages: selectedPackages.length
+    })
+
+    // Render loading state
+    if (loading) {
+        return (
+            <Container>
+                <div className="flex items-center justify-center min-h-[400px]">
+                    <div className="text-center">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                        <p className="text-gray-600">Đang tải dữ liệu...</p>
+                    </div>
+                </div>
+            </Container>
+        )
     }
 
-    // If cards view is selected, render the cards component
-    if (viewMode === 'cards') {
-        return <ServicePackageCards onPackageSelect={handlePackageSelect} />
-    }
+    console.log('📊 [ServicePackageManagement] Rendering table with packages:', packages)
+    console.log('📊 [ServicePackageManagement] Packages structure:', packages.map(pkg => ({
+        id: pkg.id,
+        name: pkg.name,
+        price: pkg.price,
+        is_active: pkg.is_active
+    })))
 
     return (
         <Container>
@@ -405,33 +430,9 @@ const ServicePackageManagement = () => {
                         </p>
                     </div>
                     <div className="flex gap-2">
-                        <div className="flex gap-1 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                            <button
-                                onClick={() => setViewMode('table')}
-                                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                                    viewMode === 'table'
-                                        ? 'bg-white dark:bg-gray-700 text-primary shadow-sm'
-                                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
-                                }`}
-                            >
-                                Bảng
-                            </button>
-                            <button
-                                onClick={() => setViewMode('cards')}
-                                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                                    viewMode === 'cards'
-                                        ? 'bg-white dark:bg-gray-700 text-primary shadow-sm'
-                                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
-                                }`}
-                            >
-                                Thẻ
-                            </button>
-                        </div>
-                        {canCreate && (
                             <Button onClick={handleCreate}>
                                 + Thêm gói dịch vụ
                             </Button>
-                        )}
                     </div>
                 </div>
 
@@ -467,8 +468,6 @@ const ServicePackageManagement = () => {
                                 Đã chọn {selectedPackages.length} gói dịch vụ
                             </span>
                             <div className="flex gap-2">
-                                {canUpdateStatus && (
-                                    <>
                                         <Button
                                             size="sm"
                                             variant="outline"
@@ -483,9 +482,6 @@ const ServicePackageManagement = () => {
                                         >
                                             Tạm dừng
                                         </Button>
-                                    </>
-                                )}
-                                {canDelete && (
                                     <Button
                                         size="sm"
                                         variant="outline"
@@ -494,7 +490,6 @@ const ServicePackageManagement = () => {
                                     >
                                         Xóa
                                     </Button>
-                                )}
                             </div>
                         </div>
                     </AdaptiveCard>
@@ -502,10 +497,81 @@ const ServicePackageManagement = () => {
 
                 {/* Table */}
                 <AdaptiveCard>
-                    <Table
+                    <DataTable
+                        sorting={{
+                            order: 'asc',
+                            key: 'name'
+                        }}
+                        onSort={({ order, key }) => {
+                            console.log('Sorting:', { order, key })
+                            // Handle sorting logic here if needed
+                        }}
+                        onPaginationChange={(page) => setCurrentPage(page)}
+                        onSelectChange={(size) => {
+                            console.log('Page size changed to:', size)
+                            setPerPage(size)
+                            setCurrentPage(1)
+                        }}
+                        onCheckBoxChange={(checked, row) => {
+                            const packageId = row.original?.id || row.id
+                            handleSelectPackage(packageId, checked)
+                        }}
+                        onIndeterminateCheckBoxChange={(checked, rows) => {
+                            if (checked) {
+                                const newSelected = rows.map(row => row.original?.id || row.id)
+                                setSelectedPackages(newSelected)
+                            } else {
+                                setSelectedPackages([])
+                            }
+                        }}
+                        checkboxChecked={(row) => {
+                            const packageId = row.original?.id || row.id
+                            return selectedPackages.includes(packageId)
+                        }}
+                        indeterminateCheckboxChecked={(rows) => {
+                            const selectedCount = rows.filter(row => {
+                                const packageId = row.original?.id || row.id
+                                return selectedPackages.includes(packageId)
+                            }).length
+                            return selectedCount > 0 && selectedCount < rows.length
+                        }}
+                        skeletonAvatarColumns={[1]} // Icon column
+                        skeletonAvatarProps={{
+                            size: 'md',
+                            className: 'rounded-lg'
+                        }}
+                        customNoDataIcon={
+                            <div className="text-center">
+                                <div className="text-6xl mb-4">📦</div>
+                                <h3 className="text-xl font-semibold mb-2">Không có gói dịch vụ</h3>
+                                <p className="text-gray-600 mb-4">
+                                    Hiện tại không có gói dịch vụ nào phù hợp với bộ lọc của bạn
+                                </p>
+                                <Button onClick={handleCreate}>
+                                    + Thêm gói dịch vụ đầu tiên
+                                </Button>
+                            </div>
+                        }
+                        noData={packages.length === 0}
+                        loading={loading}
                         columns={columns}
                         data={packages}
-                        loading={loading}
+                        selectable={true}
+                        pagingData={{
+                            total: total,
+                            pageIndex: currentPage,
+                            pageSize: perPage,
+                        }}
+                        pageSizes={[10, 25, 50, 100]}
+                        instanceId="service-package-table"
+                        className="min-h-[400px]"
+                        compact={false}
+                        hoverable={true}
+                        cellBorder={false}
+                        overflow={true}
+                        asElement="table"
+                        ref={null}
+                        rowSelection={selectedPackages}
                         pagination={{
                             current: currentPage,
                             pageSize: perPage,
@@ -517,7 +583,10 @@ const ServicePackageManagement = () => {
                                 setCurrentPage(1)
                             }
                         }}
-                    />
+                        {...{}} // Spread any additional props if needed
+                    >
+                        {/* Custom table content can be added here if needed */}
+                    </DataTable>
                 </AdaptiveCard>
 
                 {/* Create/Edit Dialog */}

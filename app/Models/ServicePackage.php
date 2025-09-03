@@ -70,6 +70,24 @@ class ServicePackage extends Model
     }
 
     /**
+     * Relationship với UserServicePackage (subscriptions)
+     */
+    public function userSubscriptions(): HasMany
+    {
+        return $this->hasMany(UserServicePackage::class);
+    }
+
+    /**
+     * Relationship với active UserServicePackage subscriptions
+     */
+    public function activeSubscriptions(): HasMany
+    {
+        return $this->hasMany(UserServicePackage::class)
+                    ->where('status', UserServicePackage::STATUS_ACTIVE)
+                    ->where('expires_at', '>', now());
+    }
+
+    /**
      * Scope để lấy các gói đang hoạt động
      */
     public function scopeActive($query)

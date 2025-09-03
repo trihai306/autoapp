@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\ContentGroupController;
 use App\Http\Controllers\Api\ContentController;
 use App\Http\Controllers\Api\ProxyController;
 use App\Http\Controllers\Api\ServicePackageController;
+use App\Http\Controllers\Api\ServicePackagePaymentController;
 use App\Http\Controllers\RealtimeTestController;
 use App\Http\Controllers\Api\PrivateUserController;
 use Illuminate\Support\Facades\Broadcast;
@@ -173,6 +174,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/service-packages/bulk-update-status', [ServicePackageController::class, 'bulkUpdateStatus']);
     Route::get('/service-packages/search', [ServicePackageController::class, 'search']);
     Route::apiResource('service-packages', ServicePackageController::class);
+
+    // Service Package Payment routes
+    Route::post('/service-packages/purchase', [ServicePackagePaymentController::class, 'purchase']);
+    Route::get('/service-packages/my-subscriptions', [ServicePackagePaymentController::class, 'getUserSubscriptions']);
+    Route::get('/service-packages/current-subscription', [ServicePackagePaymentController::class, 'getCurrentSubscription']);
+    Route::post('/service-packages/extend', [ServicePackagePaymentController::class, 'extendSubscription']);
+    Route::post('/service-packages/cancel', [ServicePackagePaymentController::class, 'cancelSubscription']);
 
 });
 
