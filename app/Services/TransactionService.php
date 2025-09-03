@@ -114,9 +114,11 @@ class TransactionService
                     throw new InsufficientFundsException('Insufficient funds at time of approval.');
                 }
                 $user->decrement('balance', $transaction->amount);
+            } elseif ($transaction->type === 'deposit') {
+                // Duyệt nạp tiền: cộng số dư cho người dùng
+                $user = $transaction->user;
+                $user->increment('balance', $transaction->amount);
             }
-            
-            // In a real app, you would handle other transaction types like 'deposit' here if they need approval.
 
             $this->transactionRepository->update($transaction, ['status' => 'completed']);
             return $transaction->fresh();
