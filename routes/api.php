@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\DeviceController;
 use App\Http\Controllers\Api\ContentGroupController;
 use App\Http\Controllers\Api\ContentController;
 use App\Http\Controllers\Api\ProxyController;
+use App\Http\Controllers\Api\ServicePackageController;
 use App\Http\Controllers\RealtimeTestController;
 use App\Http\Controllers\Api\PrivateUserController;
 use Illuminate\Support\Facades\Broadcast;
@@ -164,6 +165,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/analytic/transactions', TransactionAnalyticController::class)
         ->middleware('permission:analytics.transactions');
 
+    // Service Package Management
+    Route::get('/service-packages/popular', [ServicePackageController::class, 'popular']);
+    Route::post('/service-packages/compare', [ServicePackageController::class, 'compare']);
+    Route::apiResource('service-packages', ServicePackageController::class);
 
 });
 
