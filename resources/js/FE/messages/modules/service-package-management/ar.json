@@ -1,0 +1,106 @@
+{
+    "servicePackageManagement": {
+        "title": "إدارة حزم الخدمات",
+        "subtitle": "إدارة حزم الخدمات والميزات",
+        "addNew": "إضافة حزمة جديدة",
+        "refresh": "تحديث",
+        "quickSearch": "البحث السريع في الحزم...",
+        "columns": "الأعمدة",
+        "stats": {
+            "total": "المجموع",
+            "active": "نشط",
+            "inactive": "غير نشط",
+            "popular": "شائع",
+            "free": "مجاني",
+            "paid": "مدفوع"
+        },
+        "table": {
+            "name": "اسم الحزمة",
+            "description": "الوصف",
+            "price": "السعر",
+            "currency": "العملة",
+            "duration": "المدة",
+            "status": "الحالة",
+            "popular": "شائع",
+            "sortOrder": "ترتيب الفرز",
+            "actions": "الإجراءات"
+        },
+        "status": {
+            "active": "نشط",
+            "inactive": "غير نشط"
+        },
+        "form": {
+            "createTitle": "إنشاء حزمة خدمة جديدة",
+            "editTitle": "تعديل حزمة الخدمة",
+            "nameLabel": "اسم الحزمة",
+            "namePlaceholder": "أدخل اسم الحزمة",
+            "descriptionLabel": "الوصف",
+            "descriptionPlaceholder": "أدخل وصف الحزمة",
+            "priceLabel": "السعر",
+            "pricePlaceholder": "أدخل السعر",
+            "currencyLabel": "العملة",
+            "currencyPlaceholder": "اختر العملة",
+            "durationDaysLabel": "المدة (بالأيام)",
+            "durationDaysPlaceholder": "أدخل المدة بالأيام",
+            "durationMonthsLabel": "المدة (بالشهور)",
+            "durationMonthsPlaceholder": "أدخل المدة بالشهور",
+            "durationYearsLabel": "المدة (بالسنوات)",
+            "durationYearsPlaceholder": "أدخل المدة بالسنوات",
+            "isActiveLabel": "حالة النشاط",
+            "isPopularLabel": "حزمة شائعة",
+            "sortOrderLabel": "ترتيب الفرز",
+            "sortOrderPlaceholder": "أدخل ترتيب الفرز",
+            "iconLabel": "الأيقونة",
+            "iconPlaceholder": "أدخل الأيقونة (رموز تعبيرية أو نص)",
+            "colorLabel": "اللون",
+            "colorPlaceholder": "اختر اللون",
+            "cancel": "إلغاء",
+            "save": "حفظ",
+            "saving": "جاري الحفظ...",
+            "update": "تحديث"
+        },
+        "bulkAction": {
+            "selected": "تم تحديد {count} حزمة",
+            "delete": "حذف",
+            "activate": "تفعيل",
+            "deactivate": "إلغاء التفعيل",
+            "clear": "مسح التحديد"
+        },
+        "bulkDeleteConfirm": {
+            "title": "تأكيد الحذف",
+            "content": "هل أنت متأكد من أنك تريد حذف {count} حزمة محددة؟",
+            "cancel": "إلغاء",
+            "delete": "حذف"
+        },
+        "deleteConfirm": {
+            "title": "تأكيد الحذف",
+            "content": "هل أنت متأكد من أنك تريد حذف هذه الحزمة؟",
+            "confirmText": "حذف"
+        },
+        "messages": {
+            "created": "تم إنشاء حزمة الخدمة بنجاح",
+            "updated": "تم تحديث حزمة الخدمة بنجاح",
+            "deleted": "تم حذف حزمة الخدمة بنجاح",
+            "bulkDeleted": "تم حذف {count} حزمة بنجاح",
+            "statusUpdated": "تم تحديث حالة الحزمة بنجاح",
+            "error": "حدث خطأ"
+        },
+        "validation": {
+            "nameRequired": "اسم الحزمة مطلوب",
+            "priceRequired": "السعر مطلوب",
+            "priceNumeric": "يجب أن يكون السعر رقماً"
+        },
+        "viewMode": {
+            "table": "جدول",
+            "cards": "بطاقات"
+        },
+        "filters": {
+            "all": "الكل",
+            "active": "نشط",
+            "inactive": "غير نشط",
+            "free": "مجاني",
+            "paid": "مدفوع",
+            "popular": "شائع"
+        }
+    }
+}

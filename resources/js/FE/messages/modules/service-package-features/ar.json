@@ -1,0 +1,101 @@
+{
+    "servicePackageFeatures": {
+        "title": "ميزات حزم الخدمات",
+        "subtitle": "إدارة الميزات لحزم الخدمات",
+        "selectPackage": "اختر الحزمة",
+        "selectPackagePlaceholder": "اختر حزمة خدمة...",
+        "addNew": "إضافة ميزة جديدة",
+        "bulkCreate": "إنشاء بالجملة",
+        "refresh": "تحديث",
+        "quickSearch": "البحث السريع في الميزات...",
+        "columns": "الأعمدة",
+        "stats": {
+            "total": "المجموع",
+            "included": "مشمول",
+            "excluded": "غير مشمول",
+            "feature": "ميزة",
+            "limit": "حد",
+            "benefit": "فائدة"
+        },
+        "table": {
+            "name": "اسم الميزة",
+            "description": "الوصف",
+            "type": "النوع",
+            "value": "القيمة",
+            "unit": "الوحدة",
+            "included": "مشمول",
+            "sortOrder": "ترتيب الفرز",
+            "actions": "الإجراءات"
+        },
+        "types": {
+            "feature": "ميزة",
+            "limit": "حد",
+            "benefit": "فائدة",
+            "restriction": "قيود",
+            "addon": "إضافة"
+        },
+        "form": {
+            "createTitle": "إنشاء ميزة جديدة",
+            "editTitle": "تعديل الميزة",
+            "bulkCreateTitle": "إنشاء الميزات بالجملة",
+            "nameLabel": "اسم الميزة",
+            "namePlaceholder": "أدخل اسم الميزة",
+            "descriptionLabel": "الوصف",
+            "descriptionPlaceholder": "أدخل وصف الميزة",
+            "typeLabel": "النوع",
+            "typePlaceholder": "اختر نوع الميزة",
+            "valueLabel": "القيمة",
+            "valuePlaceholder": "أدخل القيمة (مثل: 100، غير محدود)",
+            "unitLabel": "الوحدة",
+            "unitPlaceholder": "أدخل الوحدة (مثل: حسابات، جيجابايت، مرات)",
+            "isIncludedLabel": "مشمول في الحزمة",
+            "sortOrderLabel": "ترتيب الفرز",
+            "sortOrderPlaceholder": "أدخل ترتيب الفرز",
+            "iconLabel": "الأيقونة",
+            "iconPlaceholder": "أدخل الأيقونة (رموز تعبيرية أو نص)",
+            "bulkFeaturesLabel": "قائمة الميزات",
+            "bulkFeaturesPlaceholder": "أدخل الميزات، واحدة في كل سطر. التنسيق: الاسم | القيمة | الوحدة",
+            "bulkFeaturesExample": "إدارة الحسابات | 10 | حسابات\nالتخزين | 5 | جيجابايت\nالدعم 24/7 | غير محدود | \nالوصول إلى API | 1000 | طلبات/يوم",
+            "cancel": "إلغاء",
+            "save": "حفظ",
+            "saving": "جاري الحفظ...",
+            "update": "تحديث",
+            "create": "إنشاء الميزات"
+        },
+        "bulkAction": {
+            "selected": "تم تحديد {count} ميزة",
+            "delete": "حذف",
+            "clear": "مسح التحديد"
+        },
+        "bulkDeleteConfirm": {
+            "title": "تأكيد الحذف",
+            "content": "هل أنت متأكد من أنك تريد حذف {count} ميزة محددة؟",
+            "cancel": "إلغاء",
+            "delete": "حذف"
+        },
+        "deleteConfirm": {
+            "title": "تأكيد الحذف",
+            "content": "هل أنت متأكد من أنك تريد حذف هذه الميزة؟",
+            "confirmText": "حذف"
+        },
+        "messages": {
+            "created": "تم إنشاء الميزة بنجاح",
+            "updated": "تم تحديث الميزة بنجاح",
+            "deleted": "تم حذف الميزة بنجاح",
+            "bulkCreated": "تم إنشاء {count} ميزة بنجاح",
+            "bulkDeleted": "تم حذف {count} ميزة بنجاح",
+            "error": "حدث خطأ"
+        },
+        "validation": {
+            "nameRequired": "اسم الميزة مطلوب",
+            "typeRequired": "نوع الميزة مطلوب",
+            "bulkFeaturesRequired": "قائمة الميزات مطلوبة"
+        },
+        "emptyState": {
+            "noPackageSelected": "لم يتم اختيار حزمة",
+            "noPackageSelectedDesc": "يرجى اختيار حزمة خدمة لإدارة الميزات",
+            "noFeatures": "لا توجد ميزات",
+            "noFeaturesDesc": "هذه الحزمة لا تحتوي على ميزات بعد. أضف بعض الميزات للبدء."
+        }
+    }
+}

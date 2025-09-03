@@ -212,4 +212,131 @@ class ServicePackageController extends Controller
             'message' => 'So sánh gói dịch vụ được tải thành công'
         ]);
     }
+
+    /**
+     * Lấy thống kê gói dịch vụ
+     */
+    public function stats(): JsonResponse
+    {
+        $stats = [
+            'total' => ServicePackage::count(),
+            'active' => ServicePackage::active()->count(),
+            'popular' => ServicePackage::popular()->count(),
+            'free' => ServicePackage::where('price', 0)->count(),
+            'paid' => ServicePackage::where('price', '>', 0)->count(),
+            'by_duration' => [
+                'days' => ServicePackage::whereNotNull('duration_days')->count(),
+                'months' => ServicePackage::whereNotNull('duration_months')->count(),
+                'years' => ServicePackage::whereNotNull('duration_years')->count(),
+                'unlimited' => ServicePackage::whereNull('duration_days')
+                    ->whereNull('duration_months')
+                    ->whereNull('duration_years')
+                    ->count(),
+            ],
+            'price_range' => [
+                'min' => ServicePackage::min('price'),
+                'max' => ServicePackage::max('price'),
+                'avg' => ServicePackage::avg('price'),
+            ]
+        ];
+
+        return response()->json([
+            'success' => true,
+            'data' => $stats,
+            'message' => 'Thống kê gói dịch vụ được tải thành công'
+        ]);
+    }
+
+    /**
+     * Xóa nhiều gói dịch vụ
+     */
+    public function bulkDelete(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer|exists:service_packages,id'
+        ]);
+
+        $deletedCount = ServicePackage::whereIn('id', $validated['ids'])->delete();
+
+        return response()->json([
+            'success' => true,
+            'data' => ['deleted_count' => $deletedCount],
+            'message' => "Đã xóa {$deletedCount} gói dịch vụ thành công"
+        ]);
+    }
+
+    /**
+     * Cập nhật trạng thái nhiều gói dịch vụ
+     */
+    public function bulkUpdateStatus(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer|exists:service_packages,id',
+            'status' => 'required|boolean'
+        ]);
+
+        $updatedCount = ServicePackage::whereIn('id', $validated['ids'])
+            ->update(['is_active' => $validated['status']]);
+
+        return response()->json([
+            'success' => true,
+            'data' => ['updated_count' => $updatedCount],
+            'message' => "Đã cập nhật trạng thái {$updatedCount} gói dịch vụ thành công"
+        ]);
+    }
+
+    /**
+     * Tìm kiếm gói dịch vụ
+     */
+    public function search(Request $request): JsonResponse
+    {
+        $query = $request->input('q', '');
+        $filters = $request->only(['min_price', 'max_price', 'duration_type', 'popular', 'active']);
+
+        $packages = ServicePackage::with('features')
+            ->when($query, function ($q) use ($query) {
+                return $q->where(function ($queryBuilder) use ($query) {
+                    $queryBuilder->where('name', 'like', "%{$query}%")
+                        ->orWhere('description', 'like', "%{$query}%");
+                });
+            })
+            ->when(isset($filters['min_price']), function ($q) use ($filters) {
+                return $q->where('price', '>=', $filters['min_price']);
+            })
+            ->when(isset($filters['max_price']), function ($q) use ($filters) {
+                return $q->where('price', '<=', $filters['max_price']);
+            })
+            ->when(isset($filters['duration_type']), function ($q) use ($filters) {
+                $durationType = $filters['duration_type'];
+                switch ($durationType) {
+                    case 'days':
+                        return $q->whereNotNull('duration_days');
+                    case 'months':
+                        return $q->whereNotNull('duration_months');
+                    case 'years':
+                        return $q->whereNotNull('duration_years');
+                    case 'unlimited':
+                        return $q->whereNull('duration_days')
+                            ->whereNull('duration_months')
+                            ->whereNull('duration_years');
+                }
+            })
+            ->when(isset($filters['popular']), function ($q) use ($filters) {
+                return $q->where('is_popular', $filters['popular']);
+            })
+            ->when(isset($filters['active']), function ($q) use ($filters) {
+                return $q->where('is_active', $filters['active']);
+            })
+            ->active()
+            ->ordered()
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $packages,
+            'message' => 'Kết quả tìm kiếm gói dịch vụ'
+        ]);
+    }
 }

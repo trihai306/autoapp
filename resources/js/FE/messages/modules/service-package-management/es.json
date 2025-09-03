@@ -1,0 +1,106 @@
+{
+    "servicePackageManagement": {
+        "title": "Gestión de Paquetes de Servicio",
+        "subtitle": "Gestionar paquetes de servicio y características",
+        "addNew": "Agregar Nuevo Paquete",
+        "refresh": "Actualizar",
+        "quickSearch": "Búsqueda rápida de paquetes...",
+        "columns": "Columnas",
+        "stats": {
+            "total": "Total",
+            "active": "Activo",
+            "inactive": "Inactivo",
+            "popular": "Popular",
+            "free": "Gratis",
+            "paid": "De pago"
+        },
+        "table": {
+            "name": "Nombre del Paquete",
+            "description": "Descripción",
+            "price": "Precio",
+            "currency": "Moneda",
+            "duration": "Duración",
+            "status": "Estado",
+            "popular": "Popular",
+            "sortOrder": "Orden de Clasificación",
+            "actions": "Acciones"
+        },
+        "status": {
+            "active": "Activo",
+            "inactive": "Inactivo"
+        },
+        "form": {
+            "createTitle": "Crear Nuevo Paquete de Servicio",
+            "editTitle": "Editar Paquete de Servicio",
+            "nameLabel": "Nombre del Paquete",
+            "namePlaceholder": "Ingrese el nombre del paquete",
+            "descriptionLabel": "Descripción",
+            "descriptionPlaceholder": "Ingrese la descripción del paquete",
+            "priceLabel": "Precio",
+            "pricePlaceholder": "Ingrese el precio",
+            "currencyLabel": "Moneda",
+            "currencyPlaceholder": "Seleccione la moneda",
+            "durationDaysLabel": "Duración (Días)",
+            "durationDaysPlaceholder": "Ingrese la duración en días",
+            "durationMonthsLabel": "Duración (Meses)",
+            "durationMonthsPlaceholder": "Ingrese la duración en meses",
+            "durationYearsLabel": "Duración (Años)",
+            "durationYearsPlaceholder": "Ingrese la duración en años",
+            "isActiveLabel": "Estado Activo",
+            "isPopularLabel": "Paquete Popular",
+            "sortOrderLabel": "Orden de Clasificación",
+            "sortOrderPlaceholder": "Ingrese el orden de clasificación",
+            "iconLabel": "Icono",
+            "iconPlaceholder": "Ingrese el icono (emoji o texto)",
+            "colorLabel": "Color",
+            "colorPlaceholder": "Seleccione el color",
+            "cancel": "Cancelar",
+            "save": "Guardar",
+            "saving": "Guardando...",
+            "update": "Actualizar"
+        },
+        "bulkAction": {
+            "selected": "{count} paquetes seleccionados",
+            "delete": "Eliminar",
+            "activate": "Activar",
+            "deactivate": "Desactivar",
+            "clear": "Limpiar Selección"
+        },
+        "bulkDeleteConfirm": {
+            "title": "Confirmar Eliminación",
+            "content": "¿Estás seguro de que quieres eliminar {count} paquetes seleccionados?",
+            "cancel": "Cancelar",
+            "delete": "Eliminar"
+        },
+        "deleteConfirm": {
+            "title": "Confirmar Eliminación",
+            "content": "¿Estás seguro de que quieres eliminar este paquete?",
+            "confirmText": "Eliminar"
+        },
+        "messages": {
+            "created": "Paquete de servicio creado exitosamente",
+            "updated": "Paquete de servicio actualizado exitosamente",
+            "deleted": "Paquete de servicio eliminado exitosamente",
+            "bulkDeleted": "Se eliminaron exitosamente {count} paquetes",
+            "statusUpdated": "Estado del paquete actualizado exitosamente",
+            "error": "Ocurrió un error"
+        },
+        "validation": {
+            "nameRequired": "El nombre del paquete es requerido",
+            "priceRequired": "El precio es requerido",
+            "priceNumeric": "El precio debe ser un número"
+        },
+        "viewMode": {
+            "table": "Tabla",
+            "cards": "Tarjetas"
+        },
+        "filters": {
+            "all": "Todos",
+            "active": "Activo",
+            "inactive": "Inactivo",
+            "free": "Gratis",
+            "paid": "De pago",
+            "popular": "Popular"
+        }
+    }
+}

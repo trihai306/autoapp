@@ -186,18 +186,7 @@ const RoleForm = ({ mode = 'add', role, onClose }) => {
     const [forceUpdate, setForceUpdate] = useState(0);
     const triggerUpdate = () => setForceUpdate(prev => prev + 1);
 
-    // Debug when role prop changes
-    useEffect(() => {
-        console.log('🔍 RoleForm - Role prop changed:', role);
-        if (role) {
-            console.log('🔍 RoleForm - Role details:', {
-                id: role.id,
-                name: role.name,
-                permissions: role.permissions,
-                permissionsCount: role.permissions?.length || 0
-            });
-        }
-    }, [role]);
+
 
     // Fetch permissions with pagination
     const fetchPermissions = async (page = 1, search = '') => {
@@ -212,14 +201,12 @@ const RoleForm = ({ mode = 'add', role, onClose }) => {
             if (response.success) {
                 setPermissions(response.list || [])
                 setTotalPermissions(response.total || 0)
-                // console.log(`Loaded ${response.list?.length || 0} permissions (page ${page}/${Math.ceil((response.total || 0) / perPage)})`)
+
             } else {
-                console.error('Failed to fetch permissions:', response.message)
                 setPermissions([])
                 setTotalPermissions(0)
             }
         } catch (error) {
-            console.error('Error fetching permissions:', error)
             setPermissions([])
             setTotalPermissions(0)
         } finally {
@@ -236,7 +223,7 @@ const RoleForm = ({ mode = 'add', role, onClose }) => {
                     setAllPermissions(response.list || [])
                 }
             } catch (error) {
-                console.error('Error loading all permissions:', error)
+                // Error loading all permissions
             }
         }
         loadAllPermissions()
@@ -266,34 +253,23 @@ const RoleForm = ({ mode = 'add', role, onClose }) => {
 
     useEffect(() => {
         if (role && allPermissions.length > 0) {
-            console.log('🔍 RoleForm - Setting form data for role:', role);
-            console.log('🔍 RoleForm - Role permissions:', role.permissions);
-            console.log('🔍 RoleForm - All permissions loaded:', allPermissions.length);
-            
             // Check if role has permissions data
             if (role.permissions && Array.isArray(role.permissions)) {
                 const permissionIds = role.permissions.map(p => {
                     // Handle both cases: permission object with id, or just permission name
                     if (typeof p === 'object' && p.id) {
-                        console.log('📌 Found permission with ID:', p.id, p.name);
                         return p.id;
                     } else if (typeof p === 'string') {
                         // Find permission by name in allPermissions
                         const found = allPermissions.find(ap => ap.name === p);
-                        console.log('📌 Finding permission by name:', p, found ? `Found ID: ${found.id}` : 'Not found');
                         return found?.id;
                     } else if (p.name) {
                         // Permission object with name but no id
                         const found = allPermissions.find(ap => ap.name === p.name);
-                        console.log('📌 Finding permission by object name:', p.name, found ? `Found ID: ${found.id}` : 'Not found');
                         return found?.id;
                     }
-                    console.log('⚠️ Unknown permission format:', p);
                     return null;
                 }).filter(Boolean);
-                
-                console.log('✅ RoleForm - Mapped permission IDs:', permissionIds);
-                console.log('✅ RoleForm - Setting form data:', { name: role.name, permissions: permissionIds });
                 
                 reset({ 
                     name: role.name, 
@@ -302,7 +278,6 @@ const RoleForm = ({ mode = 'add', role, onClose }) => {
                 
                 // Force update the form values to ensure selectedPermissions is updated
                 setTimeout(() => {
-                    console.log('🔄 RoleForm - Force updating form after reset');
                     reset({ 
                         name: role.name, 
                         permissions: permissionIds
@@ -311,49 +286,26 @@ const RoleForm = ({ mode = 'add', role, onClose }) => {
                     triggerUpdate();
                 }, 100);
             } else {
-                console.log('⚠️ RoleForm - No permissions data found in role');
                 reset({ 
                     name: role.name, 
                     permissions: []
                 });
             }
         } else if (!role) {
-            console.log('🔄 RoleForm - Resetting form for new role');
             reset({ name: '', permissions: [] });
-        } else {
-            console.log('⏳ RoleForm - Waiting for permissions to load...', { 
-                hasRole: !!role, 
-                allPermissionsCount: allPermissions.length 
-            });
         }
     }, [role, allPermissions, reset])
 
     // Additional effect to ensure form reset when mode changes
     useEffect(() => {
-        console.log('🔄 RoleForm - Mode changed:', mode);
         if (mode === 'add') {
-            console.log('🔄 RoleForm - Resetting for add mode');
             reset({ name: '', permissions: [] });
         }
     }, [mode, reset]);
 
-    // Effect to reset form when role changes but allPermissions is not ready yet
-    useEffect(() => {
-        if (mode === 'edit' && role && allPermissions.length === 0) {
-            console.log('⏳ RoleForm - Role available but permissions not loaded yet');
-        }
-    }, [mode, role, allPermissions]);
 
-    // Effect to monitor form values changes
-    useEffect(() => {
-        const subscription = watch((value, { name }) => {
-            if (name === 'permissions') {
-                console.log('🔄 RoleForm - Form permissions field changed:', value.permissions);
-                console.log('🔄 RoleForm - New permissions count:', value.permissions?.length || 0);
-            }
-        });
-        return () => subscription.unsubscribe();
-    }, [watch]);
+
+
 
     const onSubmit = async (values) => {
         try {
@@ -367,12 +319,16 @@ const RoleForm = ({ mode = 'add', role, onClose }) => {
                 return
             }
 
+            // Map permission IDs to permission names
+            const permissionNames = values.permissions.map(id => {
+                const permission = allPermissions.find(p => p.id === id);
+                return permission?.name;
+            }).filter(Boolean);
+
             const data = {
                 name: values.name,
-                permissions: values.permissions.map(id => allPermissions.find(p => p.id === id)?.name).filter(Boolean)
+                permissions: permissionNames
             };
-
-            // console.log('Submitting role data:', data); // Debug log
 
             let result
             if (mode === 'add') {
@@ -380,6 +336,7 @@ const RoleForm = ({ mode = 'add', role, onClose }) => {
             } else {
                 result = await updateRole(role.id, data)
             }
+            
             if (result.success) {
                 toast.push(
                     <Notification title="Success" type="success" closable>
@@ -391,7 +348,7 @@ const RoleForm = ({ mode = 'add', role, onClose }) => {
             } else {
                 toast.push(
                     <Notification title="Error" type="danger" closable>
-                        {result.message}
+                        {result.message || 'Có lỗi xảy ra khi lưu vai trò'}
                     </Notification>
                 )
             }

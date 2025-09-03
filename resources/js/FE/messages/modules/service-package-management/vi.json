@@ -1,0 +1,106 @@
+{
+    "servicePackageManagement": {
+        "title": "Quản lý gói dịch vụ",
+        "subtitle": "Quản lý các gói dịch vụ và tính năng",
+        "addNew": "Thêm gói mới",
+        "refresh": "Làm mới",
+        "quickSearch": "Tìm kiếm nhanh gói dịch vụ...",
+        "columns": "Cột",
+        "stats": {
+            "total": "Tổng",
+            "active": "Hoạt động",
+            "inactive": "Không hoạt động",
+            "popular": "Phổ biến",
+            "free": "Miễn phí",
+            "paid": "Trả phí"
+        },
+        "table": {
+            "name": "Tên gói",
+            "description": "Mô tả",
+            "price": "Giá",
+            "currency": "Tiền tệ",
+            "duration": "Thời hạn",
+            "status": "Trạng thái",
+            "popular": "Phổ biến",
+            "sortOrder": "Thứ tự",
+            "actions": "Thao tác"
+        },
+        "status": {
+            "active": "Hoạt động",
+            "inactive": "Không hoạt động"
+        },
+        "form": {
+            "createTitle": "Tạo gói dịch vụ mới",
+            "editTitle": "Chỉnh sửa gói dịch vụ",
+            "nameLabel": "Tên gói",
+            "namePlaceholder": "Nhập tên gói",
+            "descriptionLabel": "Mô tả",
+            "descriptionPlaceholder": "Nhập mô tả gói",
+            "priceLabel": "Giá",
+            "pricePlaceholder": "Nhập giá",
+            "currencyLabel": "Tiền tệ",
+            "currencyPlaceholder": "Chọn tiền tệ",
+            "durationDaysLabel": "Thời hạn (Ngày)",
+            "durationDaysPlaceholder": "Nhập thời hạn theo ngày",
+            "durationMonthsLabel": "Thời hạn (Tháng)",
+            "durationMonthsPlaceholder": "Nhập thời hạn theo tháng",
+            "durationYearsLabel": "Thời hạn (Năm)",
+            "durationYearsPlaceholder": "Nhập thời hạn theo năm",
+            "isActiveLabel": "Trạng thái hoạt động",
+            "isPopularLabel": "Gói phổ biến",
+            "sortOrderLabel": "Thứ tự sắp xếp",
+            "sortOrderPlaceholder": "Nhập thứ tự sắp xếp",
+            "iconLabel": "Biểu tượng",
+            "iconPlaceholder": "Nhập biểu tượng (emoji hoặc text)",
+            "colorLabel": "Màu sắc",
+            "colorPlaceholder": "Chọn màu sắc",
+            "cancel": "Hủy",
+            "save": "Lưu",
+            "saving": "Đang lưu...",
+            "update": "Cập nhật"
+        },
+        "bulkAction": {
+            "selected": "Đã chọn {count} gói",
+            "delete": "Xóa",
+            "activate": "Kích hoạt",
+            "deactivate": "Tạm dừng",
+            "clear": "Bỏ chọn"
+        },
+        "bulkDeleteConfirm": {
+            "title": "Xác nhận xóa",
+            "content": "Bạn có chắc chắn muốn xóa {count} gói đã chọn?",
+            "cancel": "Hủy",
+            "delete": "Xóa"
+        },
+        "deleteConfirm": {
+            "title": "Xác nhận xóa",
+            "content": "Bạn có chắc chắn muốn xóa gói này?",
+            "confirmText": "Xóa"
+        },
+        "messages": {
+            "created": "Tạo gói dịch vụ thành công",
+            "updated": "Cập nhật gói dịch vụ thành công",
+            "deleted": "Xóa gói dịch vụ thành công",
+            "bulkDeleted": "Đã xóa thành công {count} gói",
+            "statusUpdated": "Cập nhật trạng thái gói thành công",
+            "error": "Đã xảy ra lỗi"
+        },
+        "validation": {
+            "nameRequired": "Tên gói là bắt buộc",
+            "priceRequired": "Giá là bắt buộc",
+            "priceNumeric": "Giá phải là số"
+        },
+        "viewMode": {
+            "table": "Bảng",
+            "cards": "Thẻ"
+        },
+        "filters": {
+            "all": "Tất cả",
+            "active": "Hoạt động",
+            "inactive": "Không hoạt động",
+            "free": "Miễn phí",
+            "paid": "Trả phí",
+            "popular": "Phổ biến"
+        }
+    }
+}

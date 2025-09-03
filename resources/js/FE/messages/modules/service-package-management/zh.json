@@ -1,0 +1,106 @@
+{
+    "servicePackageManagement": {
+        "title": "服务包管理",
+        "subtitle": "管理服务包和功能",
+        "addNew": "添加新包",
+        "refresh": "刷新",
+        "quickSearch": "快速搜索包...",
+        "columns": "列",
+        "stats": {
+            "total": "总计",
+            "active": "活跃",
+            "inactive": "非活跃",
+            "popular": "热门",
+            "free": "免费",
+            "paid": "付费"
+        },
+        "table": {
+            "name": "包名称",
+            "description": "描述",
+            "price": "价格",
+            "currency": "货币",
+            "duration": "持续时间",
+            "status": "状态",
+            "popular": "热门",
+            "sortOrder": "排序",
+            "actions": "操作"
+        },
+        "status": {
+            "active": "活跃",
+            "inactive": "非活跃"
+        },
+        "form": {
+            "createTitle": "创建新服务包",
+            "editTitle": "编辑服务包",
+            "nameLabel": "包名称",
+            "namePlaceholder": "输入包名称",
+            "descriptionLabel": "描述",
+            "descriptionPlaceholder": "输入包描述",
+            "priceLabel": "价格",
+            "pricePlaceholder": "输入价格",
+            "currencyLabel": "货币",
+            "currencyPlaceholder": "选择货币",
+            "durationDaysLabel": "持续时间（天）",
+            "durationDaysPlaceholder": "输入天数",
+            "durationMonthsLabel": "持续时间（月）",
+            "durationMonthsPlaceholder": "输入月数",
+            "durationYearsLabel": "持续时间（年）",
+            "durationYearsPlaceholder": "输入年数",
+            "isActiveLabel": "活跃状态",
+            "isPopularLabel": "热门包",
+            "sortOrderLabel": "排序",
+            "sortOrderPlaceholder": "输入排序",
+            "iconLabel": "图标",
+            "iconPlaceholder": "输入图标（表情符号或文本）",
+            "colorLabel": "颜色",
+            "colorPlaceholder": "选择颜色",
+            "cancel": "取消",
+            "save": "保存",
+            "saving": "保存中...",
+            "update": "更新"
+        },
+        "bulkAction": {
+            "selected": "已选择 {count} 个包",
+            "delete": "删除",
+            "activate": "激活",
+            "deactivate": "停用",
+            "clear": "清除选择"
+        },
+        "bulkDeleteConfirm": {
+            "title": "确认删除",
+            "content": "您确定要删除 {count} 个选中的包吗？",
+            "cancel": "取消",
+            "delete": "删除"
+        },
+        "deleteConfirm": {
+            "title": "确认删除",
+            "content": "您确定要删除这个包吗？",
+            "confirmText": "删除"
+        },
+        "messages": {
+            "created": "服务包创建成功",
+            "updated": "服务包更新成功",
+            "deleted": "服务包删除成功",
+            "bulkDeleted": "成功删除 {count} 个包",
+            "statusUpdated": "包状态更新成功",
+            "error": "发生错误"
+        },
+        "validation": {
+            "nameRequired": "包名称是必需的",
+            "priceRequired": "价格是必需的",
+            "priceNumeric": "价格必须是数字"
+        },
+        "viewMode": {
+            "table": "表格",
+            "cards": "卡片"
+        },
+        "filters": {
+            "all": "全部",
+            "active": "活跃",
+            "inactive": "非活跃",
+            "free": "免费",
+            "paid": "付费",
+            "popular": "热门"
+        }
+    }
+}

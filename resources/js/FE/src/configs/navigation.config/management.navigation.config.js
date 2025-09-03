@@ -104,6 +104,40 @@ const managementNavigationConfig = [
                 },
                 subMenu: [],
             },
+            {
+                key: 'management.servicePackageManagement',
+                path: `${CONCEPTS_PREFIX_PATH}/service-package-management`,
+                title: 'Service Package Management',
+                translateKey: 'nav.management.managementServicePackageManagement.servicePackageManagement',
+                icon: 'products',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [ADMIN],
+                permissions: ['service-packages.view'],
+                meta: {
+                    description: {
+                        translateKey: 'nav.management.managementServicePackageManagement.servicePackageManagementDesc',
+                        label: 'Manage service packages and features',
+                    },
+                },
+                subMenu: [],
+            },
+            {
+                key: 'management.servicePackageFeatures',
+                path: `${CONCEPTS_PREFIX_PATH}/service-package-features`,
+                title: 'Service Package Features',
+                translateKey: 'nav.management.managementServicePackageFeatures.servicePackageFeatures',
+                icon: 'uiDataDisplayTag',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [ADMIN],
+                permissions: ['service-package-features.view'],
+                meta: {
+                    description: {
+                        translateKey: 'nav.management.managementServicePackageFeatures.servicePackageFeaturesDesc',
+                        label: 'Manage features for service packages',
+                    },
+                },
+                subMenu: [],
+            },
         ],
     },
 ]

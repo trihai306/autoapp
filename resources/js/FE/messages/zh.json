@@ -263,6 +263,33 @@
             "sharedComponentDoc": "共享组件",
             "utilsDoc": "工具",
             "changeLog": "更新日志"
+        },
+        "management": {
+            "management": "管理",
+            "managementUserManagement": {
+                "userManagement": "用户管理",
+                "userManagementDesc": "管理用户和权限"
+            },
+            "managementPermissionManagement": {
+                "permissionManagement": "权限管理",
+                "permissionManagementDesc": "管理权限"
+            },
+            "managementRoleManagement": {
+                "roleManagement": "角色管理",
+                "roleManagementDesc": "管理角色和权限"
+            },
+            "managementServicePackageManagement": {
+                "servicePackageManagement": "服务包管理",
+                "servicePackageManagementDesc": "管理服务包和功能"
+            },
+            "managementServicePackageFeatures": {
+                "servicePackageFeatures": "服务包功能",
+                "servicePackageFeaturesDesc": "管理服务包的功能"
+            },
+            "conceptsProxyManagement": {
+                "proxyManagement": "代理管理",
+                "proxyManagementDesc": "管理代理服务器"
+            }
         }
     }
 }

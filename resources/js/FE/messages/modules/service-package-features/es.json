@@ -1,0 +1,101 @@
+{
+    "servicePackageFeatures": {
+        "title": "Características de Paquetes de Servicio",
+        "subtitle": "Gestionar características para paquetes de servicio",
+        "selectPackage": "Seleccionar Paquete",
+        "selectPackagePlaceholder": "Elige un paquete de servicio...",
+        "addNew": "Agregar Nueva Característica",
+        "bulkCreate": "Crear en Lote",
+        "refresh": "Actualizar",
+        "quickSearch": "Búsqueda rápida de características...",
+        "columns": "Columnas",
+        "stats": {
+            "total": "Total",
+            "included": "Incluido",
+            "excluded": "Excluido",
+            "feature": "Característica",
+            "limit": "Límite",
+            "benefit": "Beneficio"
+        },
+        "table": {
+            "name": "Nombre de la Característica",
+            "description": "Descripción",
+            "type": "Tipo",
+            "value": "Valor",
+            "unit": "Unidad",
+            "included": "Incluido",
+            "sortOrder": "Orden de Clasificación",
+            "actions": "Acciones"
+        },
+        "types": {
+            "feature": "Característica",
+            "limit": "Límite",
+            "benefit": "Beneficio",
+            "restriction": "Restricción",
+            "addon": "Complemento"
+        },
+        "form": {
+            "createTitle": "Crear Nueva Característica",
+            "editTitle": "Editar Característica",
+            "bulkCreateTitle": "Crear Características en Lote",
+            "nameLabel": "Nombre de la Característica",
+            "namePlaceholder": "Ingrese el nombre de la característica",
+            "descriptionLabel": "Descripción",
+            "descriptionPlaceholder": "Ingrese la descripción de la característica",
+            "typeLabel": "Tipo",
+            "typePlaceholder": "Seleccione el tipo de característica",
+            "valueLabel": "Valor",
+            "valuePlaceholder": "Ingrese el valor (ej: 100, ilimitado)",
+            "unitLabel": "Unidad",
+            "unitPlaceholder": "Ingrese la unidad (ej: cuentas, GB, veces)",
+            "isIncludedLabel": "Incluido en el Paquete",
+            "sortOrderLabel": "Orden de Clasificación",
+            "sortOrderPlaceholder": "Ingrese el orden de clasificación",
+            "iconLabel": "Icono",
+            "iconPlaceholder": "Ingrese el icono (emoji o texto)",
+            "bulkFeaturesLabel": "Lista de Características",
+            "bulkFeaturesPlaceholder": "Ingrese características, una por línea. Formato: Nombre | Valor | Unidad",
+            "bulkFeaturesExample": "Gestión de Cuentas | 10 | cuentas\nAlmacenamiento | 5 | GB\nSoporte 24/7 | ilimitado | \nAcceso API | 1000 | solicitudes/día",
+            "cancel": "Cancelar",
+            "save": "Guardar",
+            "saving": "Guardando...",
+            "update": "Actualizar",
+            "create": "Crear Características"
+        },
+        "bulkAction": {
+            "selected": "{count} características seleccionadas",
+            "delete": "Eliminar",
+            "clear": "Limpiar Selección"
+        },
+        "bulkDeleteConfirm": {
+            "title": "Confirmar Eliminación",
+            "content": "¿Estás seguro de que quieres eliminar {count} características seleccionadas?",
+            "cancel": "Cancelar",
+            "delete": "Eliminar"
+        },
+        "deleteConfirm": {
+            "title": "Confirmar Eliminación",
+            "content": "¿Estás seguro de que quieres eliminar esta característica?",
+            "confirmText": "Eliminar"
+        },
+        "messages": {
+            "created": "Característica creada exitosamente",
+            "updated": "Característica actualizada exitosamente",
+            "deleted": "Característica eliminada exitosamente",
+            "bulkCreated": "Se crearon exitosamente {count} características",
+            "bulkDeleted": "Se eliminaron exitosamente {count} características",
+            "error": "Ocurrió un error"
+        },
+        "validation": {
+            "nameRequired": "El nombre de la característica es requerido",
+            "typeRequired": "El tipo de característica es requerido",
+            "bulkFeaturesRequired": "La lista de características es requerida"
+        },
+        "emptyState": {
+            "noPackageSelected": "Ningún Paquete Seleccionado",
+            "noPackageSelectedDesc": "Por favor selecciona un paquete de servicio para gestionar características",
+            "noFeatures": "Sin Características",
+            "noFeaturesDesc": "Este paquete no tiene características aún. Agrega algunas características para comenzar."
+        }
+    }
+}

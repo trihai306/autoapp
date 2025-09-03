@@ -168,6 +168,10 @@ Route::middleware('auth:sanctum')->group(function () {
     // Service Package Management
     Route::get('/service-packages/popular', [ServicePackageController::class, 'popular']);
     Route::post('/service-packages/compare', [ServicePackageController::class, 'compare']);
+    Route::get('/service-packages/stats', [ServicePackageController::class, 'stats']);
+    Route::post('/service-packages/bulk-delete', [ServicePackageController::class, 'bulkDelete']);
+    Route::post('/service-packages/bulk-update-status', [ServicePackageController::class, 'bulkUpdateStatus']);
+    Route::get('/service-packages/search', [ServicePackageController::class, 'search']);
     Route::apiResource('service-packages', ServicePackageController::class);
 
 });

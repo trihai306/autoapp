@@ -1,0 +1,101 @@
+{
+    "servicePackageFeatures": {
+        "title": "服务包功能",
+        "subtitle": "管理服务包的功能",
+        "selectPackage": "选择包",
+        "selectPackagePlaceholder": "选择一个服务包...",
+        "addNew": "添加新功能",
+        "bulkCreate": "批量创建",
+        "refresh": "刷新",
+        "quickSearch": "快速搜索功能...",
+        "columns": "列",
+        "stats": {
+            "total": "总计",
+            "included": "包含",
+            "excluded": "不包含",
+            "feature": "功能",
+            "limit": "限制",
+            "benefit": "好处"
+        },
+        "table": {
+            "name": "功能名称",
+            "description": "描述",
+            "type": "类型",
+            "value": "值",
+            "unit": "单位",
+            "included": "包含",
+            "sortOrder": "排序",
+            "actions": "操作"
+        },
+        "types": {
+            "feature": "功能",
+            "limit": "限制",
+            "benefit": "好处",
+            "restriction": "限制",
+            "addon": "附加"
+        },
+        "form": {
+            "createTitle": "创建新功能",
+            "editTitle": "编辑功能",
+            "bulkCreateTitle": "批量创建功能",
+            "nameLabel": "功能名称",
+            "namePlaceholder": "输入功能名称",
+            "descriptionLabel": "描述",
+            "descriptionPlaceholder": "输入功能描述",
+            "typeLabel": "类型",
+            "typePlaceholder": "选择功能类型",
+            "valueLabel": "值",
+            "valuePlaceholder": "输入值（例如：100，无限制）",
+            "unitLabel": "单位",
+            "unitPlaceholder": "输入单位（例如：账户，GB，次数）",
+            "isIncludedLabel": "包含在包中",
+            "sortOrderLabel": "排序",
+            "sortOrderPlaceholder": "输入排序",
+            "iconLabel": "图标",
+            "iconPlaceholder": "输入图标（表情符号或文本）",
+            "bulkFeaturesLabel": "功能列表",
+            "bulkFeaturesPlaceholder": "输入功能，每行一个。格式：名称 | 值 | 单位",
+            "bulkFeaturesExample": "账户管理 | 10 | 账户\n存储 | 5 | GB\n24/7 支持 | 无限制 | \nAPI 访问 | 1000 | 请求/天",
+            "cancel": "取消",
+            "save": "保存",
+            "saving": "保存中...",
+            "update": "更新",
+            "create": "创建功能"
+        },
+        "bulkAction": {
+            "selected": "已选择 {count} 个功能",
+            "delete": "删除",
+            "clear": "清除选择"
+        },
+        "bulkDeleteConfirm": {
+            "title": "确认删除",
+            "content": "您确定要删除 {count} 个选中的功能吗？",
+            "cancel": "取消",
+            "delete": "删除"
+        },
+        "deleteConfirm": {
+            "title": "确认删除",
+            "content": "您确定要删除这个功能吗？",
+            "confirmText": "删除"
+        },
+        "messages": {
+            "created": "功能创建成功",
+            "updated": "功能更新成功",
+            "deleted": "功能删除成功",
+            "bulkCreated": "成功创建 {count} 个功能",
+            "bulkDeleted": "成功删除 {count} 个功能",
+            "error": "发生错误"
+        },
+        "validation": {
+            "nameRequired": "功能名称是必需的",
+            "typeRequired": "功能类型是必需的",
+            "bulkFeaturesRequired": "功能列表是必需的"
+        },
+        "emptyState": {
+            "noPackageSelected": "未选择包",
+            "noPackageSelectedDesc": "请选择一个服务包来管理功能",
+            "noFeatures": "无功能",
+            "noFeaturesDesc": "此包还没有功能。添加一些功能来开始。"
+        }
+    }
+}

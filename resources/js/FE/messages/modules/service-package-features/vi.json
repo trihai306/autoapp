@@ -1,0 +1,101 @@
+{
+    "servicePackageFeatures": {
+        "title": "Tính năng gói dịch vụ",
+        "subtitle": "Quản lý tính năng cho gói dịch vụ",
+        "selectPackage": "Chọn gói dịch vụ",
+        "selectPackagePlaceholder": "Chọn một gói dịch vụ...",
+        "addNew": "Thêm tính năng mới",
+        "bulkCreate": "Tạo hàng loạt",
+        "refresh": "Làm mới",
+        "quickSearch": "Tìm kiếm nhanh tính năng...",
+        "columns": "Cột",
+        "stats": {
+            "total": "Tổng",
+            "included": "Bao gồm",
+            "excluded": "Không bao gồm",
+            "feature": "Tính năng",
+            "limit": "Giới hạn",
+            "benefit": "Lợi ích"
+        },
+        "table": {
+            "name": "Tên tính năng",
+            "description": "Mô tả",
+            "type": "Loại",
+            "value": "Giá trị",
+            "unit": "Đơn vị",
+            "included": "Bao gồm",
+            "sortOrder": "Thứ tự",
+            "actions": "Thao tác"
+        },
+        "types": {
+            "feature": "Tính năng",
+            "limit": "Giới hạn",
+            "benefit": "Lợi ích",
+            "restriction": "Hạn chế",
+            "addon": "Bổ sung"
+        },
+        "form": {
+            "createTitle": "Tạo tính năng mới",
+            "editTitle": "Chỉnh sửa tính năng",
+            "bulkCreateTitle": "Tạo tính năng hàng loạt",
+            "nameLabel": "Tên tính năng",
+            "namePlaceholder": "Nhập tên tính năng",
+            "descriptionLabel": "Mô tả",
+            "descriptionPlaceholder": "Nhập mô tả tính năng",
+            "typeLabel": "Loại",
+            "typePlaceholder": "Chọn loại tính năng",
+            "valueLabel": "Giá trị",
+            "valuePlaceholder": "Nhập giá trị (ví dụ: 100, unlimited)",
+            "unitLabel": "Đơn vị",
+            "unitPlaceholder": "Nhập đơn vị (ví dụ: accounts, GB, times)",
+            "isIncludedLabel": "Bao gồm trong gói",
+            "sortOrderLabel": "Thứ tự sắp xếp",
+            "sortOrderPlaceholder": "Nhập thứ tự sắp xếp",
+            "iconLabel": "Biểu tượng",
+            "iconPlaceholder": "Nhập biểu tượng (emoji hoặc text)",
+            "bulkFeaturesLabel": "Danh sách tính năng",
+            "bulkFeaturesPlaceholder": "Nhập tính năng, mỗi dòng một tính năng. Format: Tên | Giá trị | Đơn vị",
+            "bulkFeaturesExample": "Quản lý tài khoản | 10 | accounts\nLưu trữ | 5 | GB\nHỗ trợ 24/7 | unlimited | \nTruy cập API | 1000 | requests/day",
+            "cancel": "Hủy",
+            "save": "Lưu",
+            "saving": "Đang lưu...",
+            "update": "Cập nhật",
+            "create": "Tạo tính năng"
+        },
+        "bulkAction": {
+            "selected": "Đã chọn {count} tính năng",
+            "delete": "Xóa",
+            "clear": "Bỏ chọn"
+        },
+        "bulkDeleteConfirm": {
+            "title": "Xác nhận xóa",
+            "content": "Bạn có chắc chắn muốn xóa {count} tính năng đã chọn?",
+            "cancel": "Hủy",
+            "delete": "Xóa"
+        },
+        "deleteConfirm": {
+            "title": "Xác nhận xóa",
+            "content": "Bạn có chắc chắn muốn xóa tính năng này?",
+            "confirmText": "Xóa"
+        },
+        "messages": {
+            "created": "Tạo tính năng thành công",
+            "updated": "Cập nhật tính năng thành công",
+            "deleted": "Xóa tính năng thành công",
+            "bulkCreated": "Đã tạo thành công {count} tính năng",
+            "bulkDeleted": "Đã xóa thành công {count} tính năng",
+            "error": "Đã xảy ra lỗi"
+        },
+        "validation": {
+            "nameRequired": "Tên tính năng là bắt buộc",
+            "typeRequired": "Loại tính năng là bắt buộc",
+            "bulkFeaturesRequired": "Danh sách tính năng là bắt buộc"
+        },
+        "emptyState": {
+            "noPackageSelected": "Chưa chọn gói",
+            "noPackageSelectedDesc": "Vui lòng chọn một gói dịch vụ để quản lý tính năng",
+            "noFeatures": "Không có tính năng",
+            "noFeaturesDesc": "Gói này chưa có tính năng nào. Hãy thêm một số tính năng để bắt đầu."
+        }
+    }
+}

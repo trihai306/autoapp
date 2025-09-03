@@ -270,6 +270,33 @@
             "sharedComponentDoc": "Componente Compartido",
             "utilsDoc": "Utilidades",
             "changeLog": "Registro de Cambios"
+        },
+        "management": {
+            "management": "Gestión",
+            "managementUserManagement": {
+                "userManagement": "Gestión de Usuarios",
+                "userManagementDesc": "Gestionar usuarios y permisos"
+            },
+            "managementPermissionManagement": {
+                "permissionManagement": "Gestión de Permisos",
+                "permissionManagementDesc": "Gestionar permisos"
+            },
+            "managementRoleManagement": {
+                "roleManagement": "Gestión de Roles",
+                "roleManagementDesc": "Gestionar roles y permisos"
+            },
+            "managementServicePackageManagement": {
+                "servicePackageManagement": "Gestión de Paquetes de Servicio",
+                "servicePackageManagementDesc": "Gestionar paquetes de servicio y características"
+            },
+            "managementServicePackageFeatures": {
+                "servicePackageFeatures": "Características de Paquetes de Servicio",
+                "servicePackageFeaturesDesc": "Gestionar características para paquetes de servicio"
+            },
+            "conceptsProxyManagement": {
+                "proxyManagement": "Gestión de Proxy",
+                "proxyManagementDesc": "Gestionar servidores proxy"
+            }
         }
     }
 }

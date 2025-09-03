@@ -311,8 +311,16 @@
                 "roleManagement": "Quản lý vai trò",
                 "roleManagementDesc": "Quản lý vai trò và quyền hạn"
             },
-            "managementProxyManagement": {
-                "proxyManagement": "Quản lý Proxy",
+            "managementServicePackageManagement": {
+                "servicePackageManagement": "Quản lý gói dịch vụ",
+                "servicePackageManagementDesc": "Quản lý gói dịch vụ và tính năng"
+            },
+            "managementServicePackageFeatures": {
+                "servicePackageFeatures": "Tính năng gói dịch vụ",
+                "servicePackageFeaturesDesc": "Quản lý tính năng cho gói dịch vụ"
+            },
+            "conceptsProxyManagement": {
+                "proxyManagement": "Quản lý proxy",
                 "proxyManagementDesc": "Quản lý máy chủ proxy"
             }
         }

@@ -294,10 +294,18 @@
                 "roleManagement": "Role Management",
                 "roleManagementDesc": "Manage roles and permissions"
             },
-                    "conceptsProxyManagement": {
-            "proxyManagement": "Proxy Management",
-            "proxyManagementDesc": "Manage proxy servers"
-        }
+            "managementServicePackageManagement": {
+                "servicePackageManagement": "Service Package Management",
+                "servicePackageManagementDesc": "Manage service packages and features"
+            },
+            "managementServicePackageFeatures": {
+                "servicePackageFeatures": "Service Package Features",
+                "servicePackageFeaturesDesc": "Manage features for service packages"
+            },
+            "conceptsProxyManagement": {
+                "proxyManagement": "Proxy Management",
+                "proxyManagementDesc": "Manage proxy servers"
+            }
         }
     },
     "deviceManagement": {

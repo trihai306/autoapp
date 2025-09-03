@@ -35,8 +35,6 @@ export const useRoleListStore = create((set, get) => ({
     setRoleList: (roleList) => set(() => ({ roleList })),
     setInitialLoading: (payload) => set(() => ({ initialLoading: payload })),
     openForm: async (mode, role) => {
-        console.log('🔍 RoleListStore - openForm called:', { mode, role });
-        
         if (mode === 'edit' && role?.id) {
             // Set loading state
             set(() => ({ 
@@ -52,8 +50,7 @@ export const useRoleListStore = create((set, get) => ({
                 const { default: getRole } = await import('@/server/actions/user/getRole')
                 const response = await getRole(role.id)
                 
-                if (response.success) {
-                    console.log('✅ RoleListStore - Fetched role details:', response.data);
+                if (response.success && response.data) {
                     set(() => ({ 
                         isFormOpen: true, 
                         formMode: mode, 
@@ -61,7 +58,6 @@ export const useRoleListStore = create((set, get) => ({
                         isFormLoading: false
                     }))
                 } else {
-                    console.error('❌ RoleListStore - Failed to fetch role details:', response.message);
                     // Fallback to basic role data
                     set(() => ({ 
                         isFormOpen: true, 
@@ -71,7 +67,6 @@ export const useRoleListStore = create((set, get) => ({
                     }))
                 }
             } catch (error) {
-                console.error('❌ RoleListStore - Error fetching role details:', error);
                 // Fallback to basic role data
                 set(() => ({ 
                     isFormOpen: true, 
@@ -91,7 +86,6 @@ export const useRoleListStore = create((set, get) => ({
         }
     },
     closeForm: () => {
-        console.log('🔍 RoleListStore - closeForm called');
         set(() => ({ isFormOpen: false, selectedRoleForForm: null }))
     },
 }))

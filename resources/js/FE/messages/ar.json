@@ -259,6 +259,33 @@
             "sharedComponentDoc": "المكون المشترك",
             "utilsDoc": "الأدوات",
             "changeLog": "سجل التغييرات"
+        },
+        "management": {
+            "management": "الإدارة",
+            "managementUserManagement": {
+                "userManagement": "إدارة المستخدمين",
+                "userManagementDesc": "إدارة المستخدمين والأذونات"
+            },
+            "managementPermissionManagement": {
+                "permissionManagement": "إدارة الأذونات",
+                "permissionManagementDesc": "إدارة الأذونات"
+            },
+            "managementRoleManagement": {
+                "roleManagement": "إدارة الأدوار",
+                "roleManagementDesc": "إدارة الأدوار والأذونات"
+            },
+            "managementServicePackageManagement": {
+                "servicePackageManagement": "إدارة حزم الخدمات",
+                "servicePackageManagementDesc": "إدارة حزم الخدمات والميزات"
+            },
+            "managementServicePackageFeatures": {
+                "servicePackageFeatures": "ميزات حزم الخدمات",
+                "servicePackageFeaturesDesc": "إدارة الميزات لحزم الخدمات"
+            },
+            "conceptsProxyManagement": {
+                "proxyManagement": "إدارة البروكسي",
+                "proxyManagementDesc": "إدارة خوادم البروكسي"
+            }
         }
     }
 }
