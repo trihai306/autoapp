@@ -8,7 +8,10 @@ import Badge from '@/components/ui/Badge'
 import { useState, useEffect } from 'react'
 import TransactionService from '@/services/transaction/TransactionService'
 import { apiGetServicePackages, ServicePackageHelpers } from '@/services/service-package/ServicePackageService'
+import purchaseServicePackage from '@/server/actions/service-package/purchaseServicePackage'
 import { toast } from 'react-hot-toast'
+import useBalance from '@/utils/hooks/useBalance'
+import { apiGetProfile } from '@/services/auth/AuthService'
 
 const ServiceCard = ({ pkg, onOrder }) => {
     if (!pkg) return null
@@ -108,6 +111,7 @@ const ServiceRegistration = () => {
     const [amount, setAmount] = useState(200000)
     const [qrLoading, setQrLoading] = useState(false)
     const [qrPayload, setQrPayload] = useState(null)
+    const { refreshBalance } = useBalance()
     
     // Load service packages from API
     const loadPackages = async () => {
@@ -172,36 +176,40 @@ const ServiceRegistration = () => {
     
     const handleCreatePayment = async () => {
         try {
+            console.log('💰 [DEBUG] Starting payment process...')
+            console.log('📦 [DEBUG] Order dialog service:', orderDialog.service)
+            
             setQrLoading(true)
             
-            // Gọi API mua gói dịch vụ
-            const response = await fetch('/api/service-packages/purchase', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
-                },
-                body: JSON.stringify({
-                    service_package_id: orderDialog.service.id,
-                    payment_method: 'balance',
-                    notes: `Mua gói dịch vụ: ${orderDialog.service.name}`
-                })
-            })
+            const paymentData = {
+                service_package_id: orderDialog.service.id,
+                payment_method: 'balance',
+                notes: `Mua gói dịch vụ: ${orderDialog.service.name}`
+            }
             
-            const result = await response.json()
+            console.log('📡 [DEBUG] Calling purchaseServicePackage with data:', paymentData)
+            
+            // Sử dụng server action để mua gói dịch vụ
+            const result = await purchaseServicePackage(paymentData)
+            
+            console.log('✅ [DEBUG] purchaseServicePackage result:', result)
             
             if (result.success) {
+                console.log('🎉 [DEBUG] Payment successful!')
                 toast.success('Mua gói dịch vụ thành công!')
                 setOrderDialog({ open: false, service: null })
                 setQrPayload(null)
                 // Reload packages để cập nhật trạng thái
                 loadPackages()
+                // Refresh balance để cập nhật số dư trong header
+                refreshBalance()
+                // NextAuth sẽ tự động cập nhật profile khi reload trang
             } else {
+                console.log('❌ [DEBUG] Payment failed:', result.message)
                 toast.error(result.message || 'Không thể mua gói dịch vụ')
             }
         } catch (e) {
-            console.error('Payment error:', e)
+            console.error('💥 [DEBUG] Payment error:', e)
             toast.error('Có lỗi xảy ra khi thanh toán')
         } finally {
             setQrLoading(false)

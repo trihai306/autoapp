@@ -346,7 +346,7 @@ const ServicePackageManagement = () => {
                                 ? 'text-emerald-700 dark:text-emerald-400' 
                                 : 'text-red-700 dark:text-red-400'
                         }`}>
-                            {isActive ? 'Hoạt động' : 'Tạm dừng'}
+                    {isActive ? 'Hoạt động' : 'Tạm dừng'}
                         </span>
                     </div>
                 )
