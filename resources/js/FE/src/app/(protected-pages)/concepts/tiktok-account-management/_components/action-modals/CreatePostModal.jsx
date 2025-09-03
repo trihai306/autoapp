@@ -6,6 +6,7 @@ import Input from '@/components/ui/Input'
 import Checkbox from '@/components/ui/Checkbox'
 import { apiCreatePost } from '@/services/tiktok-account/TiktokAccountService'
 import { toast } from '@/components/ui/toast'
+import Notification from '@/components/ui/Notification'
 
 const CreatePostModal = ({ isOpen, onClose, action, onSave, accountId }) => {
     // Initialize config based on JSON schema for Create Post Form
@@ -114,14 +115,14 @@ const CreatePostModal = ({ isOpen, onClose, action, onSave, accountId }) => {
     const handleSave = async () => {
         if (!accountId) {
             toast.push(
-                <div className="text-red-600">Vui lòng chọn tài khoản TikTok</div>
+                <Notification type="danger" title="Lỗi">Vui lòng chọn tài khoản TikTok</Notification>
             )
             return
         }
 
         if (config.uploaded_files.length === 0) {
             toast.push(
-                <div className="text-red-600">Vui lòng chọn file để đăng</div>
+                <Notification type="danger" title="Lỗi">Vui lòng chọn file để đăng</Notification>
             )
             return
         }
@@ -153,7 +154,7 @@ const CreatePostModal = ({ isOpen, onClose, action, onSave, accountId }) => {
             
             if (response.success) {
                 toast.push(
-                    <div className="text-green-600">Tạo bài viết thành công và đã đưa vào hàng đợi!</div>
+                    <Notification type="success" title="Thành công">Bài viết đã được tạo và đưa vào hàng đợi</Notification>
                 )
 
                 // Nếu có onSave callback (cho scenario script), vẫn gọi nó
@@ -194,13 +195,13 @@ const CreatePostModal = ({ isOpen, onClose, action, onSave, accountId }) => {
                 onClose()
             } else {
                 toast.push(
-                    <div className="text-red-600">{response.message || 'Có lỗi xảy ra khi tạo bài viết'}</div>
+                    <Notification type="danger" title="Lỗi">{response.message || 'Không thể tạo bài viết'}</Notification>
                 )
             }
         } catch (error) {
             console.error('Error creating post:', error)
             toast.push(
-                <div className="text-red-600">Có lỗi xảy ra khi tạo bài viết</div>
+                <Notification type="danger" title="Lỗi">Không thể tạo bài viết</Notification>
             )
         } finally {
             setIsLoading(false)

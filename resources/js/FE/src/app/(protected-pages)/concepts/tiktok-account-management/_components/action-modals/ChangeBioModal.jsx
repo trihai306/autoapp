@@ -4,6 +4,7 @@ import Dialog from '@/components/ui/Dialog'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import Checkbox from '@/components/ui/Checkbox'
+import { toast } from '@/components/ui/toast'
 
 const ChangeBioModal = ({ isOpen, onClose, action, onSave }) => {
     // Initialize config based on JSON schema for Change Bio Form
@@ -68,10 +69,16 @@ const ChangeBioModal = ({ isOpen, onClose, action, onSave }) => {
                     }
                 }
                 await onSave(action, saveData)
+                toast.push(
+                    <div className="text-green-600">Lưu cấu hình thành công</div>
+                )
                 // Reset form sau khi lưu thành công
                 resetForm()
             } catch (error) {
                 console.error('Error saving change bio config:', error)
+                toast.push(
+                    <div className="text-red-600">Lưu cấu hình thất bại</div>
+                )
             } finally {
                 setIsLoading(false)
             }

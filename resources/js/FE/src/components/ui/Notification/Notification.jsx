@@ -15,7 +15,6 @@ const Notification = (props) => {
         style,
         ref,
         title,
-        triggerByToast,
         type,
         width = 350,
         ...rest
@@ -30,13 +29,11 @@ const Notification = (props) => {
             setDisplay('hiding')
             onClose?.(e)
             clear()
-            if (!triggerByToast) {
-                setTimeout(() => {
-                    setDisplay('hide')
-                }, 400)
-            }
+            setTimeout(() => {
+                setDisplay('hide')
+            }, 400)
         },
-        [onClose, clear, triggerByToast],
+        [onClose, clear],
     )
 
     const notificationClass = classNames('notification', className)

@@ -6,6 +6,7 @@ import Input from '@/components/ui/Input'
 import Checkbox from '@/components/ui/Checkbox'
 import { apiUpdateAvatar } from '@/services/tiktok-account/TiktokAccountService'
 import { toast } from '@/components/ui/toast'
+import Notification from '@/components/ui/Notification'
 
 const UpdateAvatarModal = ({ isOpen, onClose, action, onSave, accountId }) => {
     // Initialize config based on JSON schema for Update Avatar Form
@@ -86,14 +87,14 @@ const UpdateAvatarModal = ({ isOpen, onClose, action, onSave, accountId }) => {
     const handleSave = async () => {
         if (!accountId) {
             toast.push(
-                <div className="text-red-600">Vui lòng chọn tài khoản TikTok</div>
+                <Notification type="danger" title="Lỗi">Vui lòng chọn tài khoản TikTok</Notification>
             )
             return
         }
 
         if (config.uploaded_files.length === 0) {
             toast.push(
-                <div className="text-red-600">Vui lòng chọn ảnh đại diện</div>
+                <Notification type="danger" title="Lỗi">Vui lòng chọn ảnh đại diện</Notification>
             )
             return
         }
@@ -110,7 +111,7 @@ const UpdateAvatarModal = ({ isOpen, onClose, action, onSave, accountId }) => {
             
             if (response.success) {
                 toast.push(
-                    <div className="text-green-600">Cập nhật ảnh đại diện thành công!</div>
+                    <Notification type="success" title="Thành công">Ảnh đại diện đã được cập nhật</Notification>
                 )
 
                 // Nếu có onSave callback (cho scenario script), vẫn gọi nó
@@ -132,13 +133,13 @@ const UpdateAvatarModal = ({ isOpen, onClose, action, onSave, accountId }) => {
                 onClose()
             } else {
                 toast.push(
-                    <div className="text-red-600">{response.message || 'Có lỗi xảy ra khi cập nhật ảnh đại diện'}</div>
+                    <Notification type="danger" title="Lỗi">{response.message || 'Không thể cập nhật ảnh đại diện'}</Notification>
                 )
             }
         } catch (error) {
             console.error('Error updating avatar:', error)
             toast.push(
-                <div className="text-red-600">Có lỗi xảy ra khi cập nhật ảnh đại diện</div>
+                <Notification type="danger" title="Lỗi">Không thể cập nhật ảnh đại diện</Notification>
             )
         } finally {
             setIsLoading(false)

@@ -6,6 +6,7 @@ import Input from '@/components/ui/Input'
 import Select from '@/components/ui/Select'
 import Switcher from '@/components/ui/Switcher'
 import Checkbox from '@/components/ui/Checkbox'
+import { toast } from '@/components/ui/toast'
 
 const FriendVideoInteractionModal = ({ 
     isOpen, 
@@ -322,9 +323,15 @@ const FriendVideoInteractionModal = ({
                     }
                 }
                 await onSave(action, saveData)
+                toast.push(
+                    <div className="text-green-600">Lưu cấu hình thành công</div>
+                )
                 resetForm()
             } catch (error) {
                 console.error('Error saving friend video interaction config:', error)
+                toast.push(
+                    <div className="text-red-600">Lưu cấu hình thất bại</div>
+                )
             } finally {
                 setIsLoading(false)
             }

@@ -4,6 +4,7 @@ import Dialog from '@/components/ui/Dialog'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import Switcher from '@/components/ui/Switcher'
+import { toast } from '@/components/ui/toast'
 
 const NotificationModal = ({ isOpen, onClose, action, onSave }) => {
     // Initialize config based on JSON schema for Notification Form
@@ -86,10 +87,16 @@ const NotificationModal = ({ isOpen, onClose, action, onSave }) => {
                     }
                 }
                 await onSave(action, saveData)
+                toast.push(
+                    <div className="text-green-600">Lưu cấu hình thành công</div>
+                )
                 // Reset form sau khi lưu thành công
                 resetForm()
             } catch (error) {
                 console.error('Error saving notification config:', error)
+                toast.push(
+                    <div className="text-red-600">Lưu cấu hình thất bại</div>
+                )
             } finally {
                 setIsLoading(false)
             }

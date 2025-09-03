@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import Dialog from '@/components/ui/Dialog'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
+import { toast } from '@/components/ui/toast'
 
 const FollowBackModal = ({ isOpen, onClose, action, onSave }) => {
     const initialConfig = {
@@ -64,10 +65,16 @@ const FollowBackModal = ({ isOpen, onClose, action, onSave }) => {
                     }
                 }
                 await onSave(action, saveData)
+                toast.push(
+                    <div className="text-green-600">Lưu cấu hình thành công</div>
+                )
                 // Reset form sau khi lưu thành công
                 resetForm()
             } catch (error) {
                 console.error('Error saving follow back config:', error)
+                toast.push(
+                    <div className="text-red-600">Lưu cấu hình thất bại</div>
+                )
             } finally {
                 setIsLoading(false)
             }

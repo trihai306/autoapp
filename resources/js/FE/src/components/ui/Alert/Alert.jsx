@@ -58,7 +58,6 @@ const Alert = (props) => {
         onClose,
         ref,
         showIcon = false,
-        triggerByToast = false,
         ...rest
     } = props
 
@@ -81,11 +80,9 @@ const Alert = (props) => {
         setDisplay('hiding')
         onClose?.(e)
         clear()
-        if (!triggerByToast) {
-            setTimeout(() => {
-                setDisplay('hide')
-            }, 400)
-        }
+        setTimeout(() => {
+            setDisplay('hide')
+        }, 400)
     }
 
     const renderClose = () => {
@@ -112,7 +109,7 @@ const Alert = (props) => {
         !title ? 'font-semibold' : '',
         closable ? 'justify-between' : '',
         closable && !title ? 'items-center' : '',
-        !triggerByToast && 'rounded-xl',
+        'rounded-xl',
         className,
     )
 

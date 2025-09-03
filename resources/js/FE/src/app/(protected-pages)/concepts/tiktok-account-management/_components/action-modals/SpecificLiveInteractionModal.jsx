@@ -6,6 +6,7 @@ import Input from '@/components/ui/Input'
 import Select from '@/components/ui/Select'
 import Switcher from '@/components/ui/Switcher'
 import Checkbox from '@/components/ui/Checkbox'
+import { toast } from '@/components/ui/toast'
 
 const SpecificLiveInteractionModal = ({ 
     isOpen, 
@@ -360,10 +361,16 @@ const SpecificLiveInteractionModal = ({
                     }
                 }
                 await onSave(action, saveData)
+                toast.push(
+                    <div className="text-green-600">Lưu cấu hình thành công</div>
+                )
                 // Reset form sau khi lưu thành công
                 resetForm()
             } catch (error) {
                 console.error('Error saving specific live interaction config:', error)
+                toast.push(
+                    <div className="text-red-600">Lưu cấu hình thất bại</div>
+                )
             } finally {
                 setIsLoading(false)
             }

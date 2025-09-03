@@ -92,7 +92,6 @@ const ToastWrapper = (props) => {
     })
 
     const toastProps = {
-        triggerByToast: true,
         ...rest,
     }
 
