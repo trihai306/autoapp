@@ -311,7 +311,7 @@ const EditAccountModal = ({
 
                 {/* Content */}
                 <div className="flex-1 p-6 pb-32 overflow-y-auto bg-gray-50 dark:bg-gray-900 min-h-0 max-h-[calc(90vh-140px)]">
-                    <Tabs value={activeTab} onValueChange={setActiveTab} defaultValue="account" variant="pill" className="w-full">
+                    <Tabs value={activeTab} onChange={setActiveTab} defaultValue="account" variant="pill" className="w-full">
                         <Tabs.TabList className="mb-4 flex flex-wrap items-center gap-2">
                             <Tabs.TabNav
                                 value="account"
