@@ -55,6 +55,7 @@ const EditAccountModal = ({
     })
     
     const [isLoading, setIsLoading] = useState(false)
+    const [activeTab, setActiveTab] = useState('account')
     const [errors, setErrors] = useState({})
     const [showPassword, setShowPassword] = useState(false)
     const [proxies, setProxies] = useState([])
@@ -151,23 +152,24 @@ const EditAccountModal = ({
     const validateForm = () => {
         const newErrors = {}
         
-        // Required fields validation
-        if (!formData.username.trim()) {
-            newErrors.username = t('validation.usernameRequired')
-        } else if (!/^[a-zA-Z0-9._]+$/.test(formData.username)) {
-            newErrors.username = t('validation.usernameInvalid')
+        // Validate theo tab hiện tại
+        if (activeTab === 'account') {
+            if (!formData.username.trim()) {
+                newErrors.username = t('validation.usernameRequired')
+            } else if (!/^[a-zA-Z0-9._]+$/.test(formData.username)) {
+                newErrors.username = t('validation.usernameInvalid')
+            }
+            if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+                newErrors.email = t('validation.emailInvalid')
+            }
+            if (formData.phone_number && !/^\+?[\d\s-()]+$/.test(formData.phone_number)) {
+                newErrors.phone_number = t('validation.phoneInvalid')
+            }
         }
-        
-        if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-            newErrors.email = t('validation.emailInvalid')
-        }
-        
-        if (formData.phone_number && !/^\+?[\d\s-()]+$/.test(formData.phone_number)) {
-            newErrors.phone_number = t('validation.phoneInvalid')
-        }
-        
-        if (formData.proxy_port && (isNaN(formData.proxy_port) || formData.proxy_port < 1 || formData.proxy_port > 65535)) {
-            newErrors.proxy_port = t('validation.portInvalid')
+        if (activeTab === 'security') {
+            if (formData.proxy_port && (isNaN(formData.proxy_port) || formData.proxy_port < 1 || formData.proxy_port > 65535)) {
+                newErrors.proxy_port = t('validation.portInvalid')
+            }
         }
         
         setErrors(newErrors)
@@ -182,64 +184,59 @@ const EditAccountModal = ({
         if (onSave && !isLoading) {
             setIsLoading(true)
             try {
-                // Prepare data for saving - only include non-empty fields
-                const saveData = {}
-                
-                // Always include username as it's required
-                if (formData.username && formData.username.trim()) {
-                    saveData.username = formData.username.trim()
-                }
-                
-                // Only include other fields if they have values
-                if (formData.display_name && formData.display_name.trim()) {
-                    saveData.display_name = formData.display_name.trim()
-                }
-                if (formData.nickname && formData.nickname.trim()) {
-                    saveData.nickname = formData.nickname.trim()
-                }
-                if (formData.email && formData.email.trim()) {
-                    saveData.email = formData.email.trim()
-                }
-                if (formData.phone_number && formData.phone_number.trim()) {
-                    saveData.phone_number = formData.phone_number.trim()
-                }
-                if (formData.password && formData.password.trim()) {
-                    saveData.password = formData.password.trim()
-                }
-                if (formData.status) {
-                    saveData.status = formData.status
-                }
-                if (formData.notes && formData.notes.trim()) {
-                    saveData.notes = formData.notes.trim()
-                }
-                if (formData.proxy_id && formData.proxy_id.toString().trim()) {
-                    saveData.proxy_id = parseInt(formData.proxy_id)
-                }
-                if (formData.device_info && formData.device_info.trim()) {
-                    saveData.device_info = formData.device_info.trim()
-                }
-                if (formData.device_id && formData.device_id.toString().trim()) {
-                    saveData.device_id = parseInt(formData.device_id)
-                }
-                if (formData.scenario_id && formData.scenario_id.toString().trim()) {
-                    saveData.scenario_id = parseInt(formData.scenario_id)
-                }
-                
-                // Handle two_factor_enabled
-                saveData.two_factor_enabled = formData.two_factor_enabled
-                
-                // Handle two_factor_backup_codes (send as array)
-                if (Array.isArray(formData.two_factor_backup_codes) && formData.two_factor_backup_codes.length > 0) {
-                    saveData.two_factor_backup_codes = formData.two_factor_backup_codes
-                } else if (typeof formData.two_factor_backup_codes === 'string' && formData.two_factor_backup_codes.trim() !== '') {
-                    saveData.two_factor_backup_codes = [formData.two_factor_backup_codes.trim()]
-                } else {
-                    saveData.two_factor_backup_codes = []
-                }
-                
-                // Handle array fields
-                if (formData.tags && Array.isArray(formData.tags) && formData.tags.length > 0) {
-                    saveData.tags = formData.tags.filter(tag => tag && tag.trim())
+                // Chuẩn bị dữ liệu theo tab đang mở
+                let saveData = {}
+                if (activeTab === 'account') {
+                    if (formData.username && formData.username.trim()) {
+                        saveData.username = formData.username.trim()
+                    }
+                    if (formData.display_name && formData.display_name.trim()) {
+                        saveData.display_name = formData.display_name.trim()
+                    }
+                    if (formData.nickname && formData.nickname.trim()) {
+                        saveData.nickname = formData.nickname.trim()
+                    }
+                    if (formData.email && formData.email.trim()) {
+                        saveData.email = formData.email.trim()
+                    }
+                    if (formData.phone_number && formData.phone_number.trim()) {
+                        saveData.phone_number = formData.phone_number.trim()
+                    }
+                    if (formData.password && formData.password.trim()) {
+                        saveData.password = formData.password.trim()
+                    }
+                    if (formData.status) {
+                        saveData.status = formData.status
+                    }
+                } else if (activeTab === 'device') {
+                    if (formData.device_id && formData.device_id.toString().trim()) {
+                        saveData.device_id = parseInt(formData.device_id)
+                    }
+                    if (formData.scenario_id && formData.scenario_id.toString().trim()) {
+                        saveData.scenario_id = parseInt(formData.scenario_id)
+                    }
+                } else if (activeTab === 'security') {
+                    if (formData.proxy_id && formData.proxy_id.toString().trim()) {
+                        saveData.proxy_id = parseInt(formData.proxy_id)
+                    }
+                    // Two factor
+                    saveData.two_factor_enabled = formData.two_factor_enabled
+                    if (Array.isArray(formData.two_factor_backup_codes) && formData.two_factor_backup_codes.length > 0) {
+                        saveData.two_factor_backup_codes = formData.two_factor_backup_codes
+                    } else if (typeof formData.two_factor_backup_codes === 'string' && formData.two_factor_backup_codes.trim() !== '') {
+                        saveData.two_factor_backup_codes = [formData.two_factor_backup_codes.trim()]
+                    } else {
+                        saveData.two_factor_backup_codes = []
+                    }
+                    if (formData.device_info && formData.device_info.trim()) {
+                        saveData.device_info = formData.device_info.trim()
+                    }
+                    if (formData.notes && formData.notes.trim()) {
+                        saveData.notes = formData.notes.trim()
+                    }
+                    if (formData.tags && Array.isArray(formData.tags) && formData.tags.length > 0) {
+                        saveData.tags = formData.tags.filter(tag => tag && tag.trim())
+                    }
                 }
 
                 // Send the prepared data to the API
@@ -314,7 +311,7 @@ const EditAccountModal = ({
 
                 {/* Content */}
                 <div className="flex-1 p-6 pb-32 overflow-y-auto bg-gray-50 dark:bg-gray-900 min-h-0 max-h-[calc(90vh-140px)]">
-                    <Tabs defaultValue="account" variant="pill" className="w-full">
+                    <Tabs value={activeTab} onValueChange={setActiveTab} defaultValue="account" variant="pill" className="w-full">
                         <Tabs.TabList className="mb-4 flex flex-wrap items-center gap-2">
                             <Tabs.TabNav
                                 value="account"
