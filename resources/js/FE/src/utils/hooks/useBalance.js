@@ -4,7 +4,7 @@ import useCurrentSession from './useCurrentSession'
 import { apiGetProfile } from '@/services/auth/AuthService'
 
 const useBalance = () => {
-    const { session } = useCurrentSession()
+    const { session, refreshSession } = useCurrentSession()
     const [balance, setBalance] = useState(session?.balance || 0)
     const [isLoading, setIsLoading] = useState(false)
 
@@ -21,9 +21,15 @@ const useBalance = () => {
 
         setIsLoading(true)
         try {
-            const profile = await apiGetProfile()
-            if (profile?.balance !== undefined) {
-                setBalance(profile.balance)
+            // Sử dụng refreshSession từ context để cập nhật cả session và balance
+            if (refreshSession) {
+                await refreshSession()
+            } else {
+                // Fallback: gọi API trực tiếp
+                const profile = await apiGetProfile()
+                if (profile?.balance !== undefined) {
+                    setBalance(profile.balance)
+                }
             }
         } catch (error) {
             console.error('Failed to refresh balance:', error)

@@ -1,6 +1,6 @@
 export default {
     // Link Zalo của bạn - thay đổi thành link thực tế
-    ZALO_LINK: 'https://zalo.me/your-zalo-id',
+    ZALO_LINK: 'https://zalo.me/0876288883',
     
     // Tên hiển thị cho Zalo
     ZALO_NAME: 'Liên hệ Zalo',

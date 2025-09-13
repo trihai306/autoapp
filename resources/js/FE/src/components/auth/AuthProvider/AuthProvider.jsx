@@ -14,6 +14,32 @@ const AuthProvider = (props) => {
         setCurrentSession(session)
     }, [session])
 
+    // Hàm để refresh session từ API
+    const refreshSession = async () => {
+        if (!currentSession?.accessToken) return
+
+        try {
+            console.log('🔄 [DEBUG] Refreshing session from API...')
+            const profile = await apiGetProfile()
+            
+            setCurrentSession((prev) => {
+                if (!prev) return prev
+                return {
+                    ...prev,
+                    user: {
+                        ...prev.user,
+                        // Ghép dữ liệu hồ sơ mới vào user hiện tại
+                        ...profile,
+                    },
+                    balance: profile?.balance ?? prev.balance,
+                }
+            })
+            console.log('✅ [DEBUG] Session refreshed successfully')
+        } catch (error) {
+            console.warn('Could not refresh user profile from API:', error)
+        }
+    }
+
     // Sau khi có accessToken, gọi Laravel API để lấy hồ sơ mới nhất
     useEffect(() => {
         if (!currentSession?.accessToken) return
@@ -50,7 +76,7 @@ const AuthProvider = (props) => {
     return (
         /** since the next auth useSession hook was triggering mutliple re-renders, hence we are using the our custom session provider and we still included the next auth session provider, incase we need to use any client hooks from next auth */
         <NextAuthSessionProvider session={currentSession} refetchOnWindowFocus={false}>
-            <SessionContext.Provider value={currentSession}>
+            <SessionContext.Provider value={{ ...currentSession, refreshSession }}>
                 {children}
             </SessionContext.Provider>
         </NextAuthSessionProvider>

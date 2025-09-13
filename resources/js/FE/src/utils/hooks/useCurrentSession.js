@@ -9,6 +9,7 @@ const useCurrentSession = () => {
             expires: '',
             user: {},
         },
+        refreshSession: context?.refreshSession,
     }
 }
 

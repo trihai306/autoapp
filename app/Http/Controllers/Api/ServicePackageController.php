@@ -7,9 +7,48 @@ use App\Models\ServicePackage;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 class ServicePackageController extends Controller
 {
+    /**
+     * Thêm thông tin subscription của user vào danh sách packages
+     */
+    private function addUserSubscriptionInfo($packages)
+    {
+        if (!Auth::check()) {
+            return $packages;
+        }
+
+        $user = Auth::user();
+        $userSubscriptions = $user->servicePackageSubscriptions()
+            ->where('status', 'active')
+            ->where('expires_at', '>', now())
+            ->get()
+            ->keyBy('service_package_id');
+
+        return $packages->map(function ($package) use ($userSubscriptions) {
+            $subscription = $userSubscriptions->get($package->id);
+            
+            $package->user_subscription = $subscription ? [
+                'id' => $subscription->id,
+                'status' => $subscription->status,
+                'started_at' => $subscription->started_at,
+                'expires_at' => $subscription->expires_at,
+                'amount_paid' => $subscription->amount_paid,
+                'currency' => $subscription->currency,
+                'payment_method' => $subscription->payment_method,
+                'days_remaining' => $subscription->days_remaining,
+                'remaining_percentage' => $subscription->remaining_percentage,
+                'is_active' => $subscription->isActive(),
+                'is_expired' => $subscription->isExpired(),
+            ] : null;
+            
+            $package->is_purchased = $subscription !== null;
+            
+            return $package;
+        });
+    }
     /**
      * Display a listing of the resource.
      */
@@ -55,6 +94,9 @@ class ServicePackageController extends Controller
         }
 
         $packages = $query->get();
+
+        // Thêm thông tin subscription của user
+        $packages = $this->addUserSubscriptionInfo($packages);
 
         return response()->json([
             'success' => true,
@@ -111,6 +153,11 @@ class ServicePackageController extends Controller
                 'message' => 'Gói dịch vụ không tồn tại'
             ], 404);
         }
+
+        // Thêm thông tin subscription của user
+        $packages = collect([$package]);
+        $packages = $this->addUserSubscriptionInfo($packages);
+        $package = $packages->first();
 
         return response()->json([
             'success' => true,
@@ -182,6 +229,9 @@ class ServicePackageController extends Controller
             ->popular()
             ->ordered()
             ->get();
+
+        // Thêm thông tin subscription của user
+        $packages = $this->addUserSubscriptionInfo($packages);
 
         return response()->json([
             'success' => true,
@@ -332,6 +382,9 @@ class ServicePackageController extends Controller
             ->active()
             ->ordered()
             ->get();
+
+        // Thêm thông tin subscription của user
+        $packages = $this->addUserSubscriptionInfo($packages);
 
         return response()->json([
             'success' => true,
