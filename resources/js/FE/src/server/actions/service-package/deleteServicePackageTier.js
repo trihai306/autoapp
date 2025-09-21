@@ -1,34 +1,24 @@
 'use server'
 
-import { apiRequest } from '@/utils/api'
+import { apiDeleteServicePackageTier } from '@/services/service-package/ServicePackageService'
+import { withAuthCheck } from '@/utils/withAuthCheck'
+import { handleServerActionError } from '@/utils/serverActionErrorHandler'
 
+/**
+ * Server Action to delete a service package tier.
+ */
 export default async function deleteServicePackageTier(id) {
-    try {
-        const response = await apiRequest(`/api/service-package-tiers/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-
-        if (!response.ok) {
-            const errorData = await response.json()
-            throw new Error(errorData.message || 'Failed to delete service package tier')
+    return withAuthCheck(async () => {
+        try {
+            const response = await apiDeleteServicePackageTier(id)
+            return {
+                success: true,
+                data: response.data,
+                message: response.message || 'Service package tier deleted successfully'
+            }
+        } catch (error) {
+            console.error('❌ [deleteServicePackageTier] Error:', error)
+            return handleServerActionError(error, 'Failed to delete service package tier')
         }
-
-        const result = await response.json()
-        
-        return {
-            success: true,
-            data: result.data,
-            message: result.message || 'Service package tier deleted successfully'
-        }
-    } catch (error) {
-        console.error('Error deleting service package tier:', error)
-        return {
-            success: false,
-            data: null,
-            message: error.message || 'Failed to delete service package tier'
-        }
-    }
+    })
 }

@@ -1,6 +1,6 @@
-import ServicePackageManagement from './_components/ServicePackageManagement'
+import ServicePackageManagementSimple from './_components/ServicePackageManagementSimple'
 
-// Simple page component without permission wrapper for now
+// Page component với cấu trúc đơn giản và dễ sử dụng
 export default function Page() {
-    return <ServicePackageManagement />
+    return <ServicePackageManagementSimple />
 }

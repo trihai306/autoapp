@@ -318,6 +318,132 @@ export const ServicePackageHelpers = {
     }
 }
 
+// ===== SERVICE PACKAGE CATEGORIES =====
+
+// Get all service package categories
+export async function apiGetServicePackageCategories(params = {}) {
+    return ApiService.fetchDataWithAxios({
+        url: '/service-package-categories',
+        method: 'get',
+        params,
+    })
+}
+
+// Get a single service package category
+export async function apiGetServicePackageCategory(id) {
+    return ApiService.fetchDataWithAxios({
+        url: `/service-package-categories/${id}`,
+        method: 'get',
+    })
+}
+
+// Create a new service package category
+export async function apiCreateServicePackageCategory(data) {
+    return ApiService.fetchDataWithAxios({
+        url: '/service-package-categories',
+        method: 'post',
+        data,
+    })
+}
+
+// Update a service package category
+export async function apiUpdateServicePackageCategory(id, data) {
+    return ApiService.fetchDataWithAxios({
+        url: `/service-package-categories/${id}`,
+        method: 'put',
+        data,
+    })
+}
+
+// Delete a service package category
+export async function apiDeleteServicePackageCategory(id) {
+    return ApiService.fetchDataWithAxios({
+        url: `/service-package-categories/${id}`,
+        method: 'delete',
+    })
+}
+
+// Get packages by category
+export async function apiGetServicePackagesByCategory(categoryId, params = {}) {
+    return ApiService.fetchDataWithAxios({
+        url: `/service-package-categories/${categoryId}/packages`,
+        method: 'get',
+        params,
+    })
+}
+
+// ===== SERVICE PACKAGE TIERS =====
+
+// Get all service package tiers
+export async function apiGetServicePackageTiers(params = {}) {
+    return ApiService.fetchDataWithAxios({
+        url: '/service-package-tiers',
+        method: 'get',
+        params,
+    })
+}
+
+// Get a single service package tier
+export async function apiGetServicePackageTier(id) {
+    return ApiService.fetchDataWithAxios({
+        url: `/service-package-tiers/${id}`,
+        method: 'get',
+    })
+}
+
+// Create a new service package tier
+export async function apiCreateServicePackageTier(data) {
+    return ApiService.fetchDataWithAxios({
+        url: '/service-package-tiers',
+        method: 'post',
+        data,
+    })
+}
+
+// Update a service package tier
+export async function apiUpdateServicePackageTier(id, data) {
+    return ApiService.fetchDataWithAxios({
+        url: `/service-package-tiers/${id}`,
+        method: 'put',
+        data,
+    })
+}
+
+// Delete a service package tier
+export async function apiDeleteServicePackageTier(id) {
+    return ApiService.fetchDataWithAxios({
+        url: `/service-package-tiers/${id}`,
+        method: 'delete',
+    })
+}
+
+// Get tiers by package
+export async function apiGetServicePackageTiersByPackage(packageId, params = {}) {
+    return ApiService.fetchDataWithAxios({
+        url: `/service-packages/${packageId}/tiers`,
+        method: 'get',
+        params,
+    })
+}
+
+// Bulk create service package tiers
+export async function apiBulkCreateServicePackageTiers(data) {
+    return ApiService.fetchDataWithAxios({
+        url: '/service-package-tiers/bulk',
+        method: 'post',
+        data,
+    })
+}
+
+// Bulk delete service package tiers
+export async function apiBulkDeleteServicePackageTiers(ids) {
+    return ApiService.fetchDataWithAxios({
+        url: '/service-package-tiers/bulk-delete',
+        method: 'post',
+        data: { ids },
+    })
+}
+
 export default {
     apiGetServicePackages,
     apiGetServicePackage,
@@ -335,5 +461,21 @@ export default {
     apiGetServicePackageStats,
     apiBulkDeleteServicePackages,
     apiBulkUpdateServicePackageStatus,
+    // Categories
+    apiGetServicePackageCategories,
+    apiGetServicePackageCategory,
+    apiCreateServicePackageCategory,
+    apiUpdateServicePackageCategory,
+    apiDeleteServicePackageCategory,
+    apiGetServicePackagesByCategory,
+    // Tiers
+    apiGetServicePackageTiers,
+    apiGetServicePackageTier,
+    apiCreateServicePackageTier,
+    apiUpdateServicePackageTier,
+    apiDeleteServicePackageTier,
+    apiGetServicePackageTiersByPackage,
+    apiBulkCreateServicePackageTiers,
+    apiBulkDeleteServicePackageTiers,
     ServicePackageHelpers
 }

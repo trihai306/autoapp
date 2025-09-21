@@ -10,16 +10,17 @@ import DataTable from '@/components/shared/DataTable'
 import Dialog from '@/components/ui/Dialog'
 import Badge from '@/components/ui/Badge'
 import Tabs from '@/components/ui/Tabs'
+import Breadcrumb from '@/components/ui/Breadcrumb'
 import { 
-    getServicePackages,
     getServicePackageCategories,
+    getServicePackages,
     getServicePackageTiers,
-    createServicePackage,
-    updateServicePackage,
-    deleteServicePackage,
     createServicePackageCategory,
     updateServicePackageCategory,
     deleteServicePackageCategory,
+    createServicePackage,
+    updateServicePackage,
+    deleteServicePackage,
     createServicePackageTier,
     updateServicePackageTier,
     deleteServicePackageTier
@@ -27,16 +28,25 @@ import {
 import { toast } from 'react-hot-toast'
 
 const ServicePackageManagement = () => {
-    const [activeTab, setActiveTab] = useState('packages')
-    const [packages, setPackages] = useState([])
+    // Navigation state
+    const [currentView, setCurrentView] = useState('categories') // categories, packages, tiers
+    const [selectedCategory, setSelectedCategory] = useState(null)
+    const [selectedPackage, setSelectedPackage] = useState(null)
+    
+    // Data state
     const [categories, setCategories] = useState([])
+    const [packages, setPackages] = useState([])
     const [tiers, setTiers] = useState([])
     const [loading, setLoading] = useState(false)
     const [total, setTotal] = useState(0)
+    
+    // Pagination state
     const [currentPage, setCurrentPage] = useState(1)
     const [perPage, setPerPage] = useState(10)
     const [searchQuery, setSearchQuery] = useState('')
     const [statusFilter, setStatusFilter] = useState('all')
+    
+    // Selection state
     const [selectedItems, setSelectedItems] = useState([])
     
     // Dialog states
@@ -47,25 +57,38 @@ const ServicePackageManagement = () => {
     
     // Form states
     const [formData, setFormData] = useState({
-        category_id: '',
+        // Category fields
         name: '',
         description: '',
+        icon: '',
+        color: '#3B82F6',
+        is_active: true,
+        sort_order: 0,
+        settings: {},
+        
+        // Package fields
+        category_id: '',
         duration_type: 'months',
         duration_value: 1,
         platform: '',
-        is_active: true,
+        platform_settings: {},
         is_popular: false,
-        sort_order: 0,
-        icon: '',
-        color: '#3B82F6'
+        features: [],
+        limits: [],
+        
+        // Tier fields
+        service_package_id: '',
+        device_limit: 5,
+        price: 0,
+        currency: 'VND',
+        features: [],
+        limits: []
     })
 
-    // Load data based on active tab
-    const loadData = async () => {
+    // Load categories
+    const loadCategories = async () => {
         try {
             setLoading(true)
-            let result
-            
             const params = {
                 page: currentPage,
                 per_page: perPage,
@@ -73,70 +96,148 @@ const ServicePackageManagement = () => {
                 status: statusFilter !== 'all' ? statusFilter : undefined
             }
             
-            switch (activeTab) {
-                case 'packages':
-                    result = await getServicePackages(params)
-                    break
-                case 'categories':
-                    result = await getServicePackageCategories(params)
-                    break
-                case 'tiers':
-                    result = await getServicePackageTiers(params)
-                    break
-                default:
-                    return
-            }
+            const result = await getServicePackageCategories(params)
             
             if (result.success) {
-                setPackages(result.data || [])
+                setCategories(result.data || [])
                 setTotal(result.total || 0)
             } else {
-                toast.error(result.message || 'Không thể tải dữ liệu')
+                toast.error(result.message || 'Không thể tải danh sách danh mục')
             }
         } catch (error) {
-            console.error('Error loading data:', error)
+            console.error('Error loading categories:', error)
             toast.error('Có lỗi xảy ra khi tải dữ liệu')
         } finally {
             setLoading(false)
         }
     }
 
-    // Load categories for dropdown
-    const loadCategories = async () => {
+    // Load packages for selected category
+    const loadPackages = async () => {
+        if (!selectedCategory) return
+        
         try {
-            const result = await getServicePackageCategories({ per_page: 100 })
+            setLoading(true)
+            const params = {
+                page: currentPage,
+                per_page: perPage,
+                search: searchQuery || undefined,
+                status: statusFilter !== 'all' ? statusFilter : undefined,
+                category_id: selectedCategory.id
+            }
+            
+            const result = await getServicePackages(params)
+            
             if (result.success) {
-                setCategories(result.data || [])
+                setPackages(result.data || [])
+                setTotal(result.total || 0)
+            } else {
+                toast.error(result.message || 'Không thể tải danh sách gói dịch vụ')
             }
         } catch (error) {
-            console.error('Error loading categories:', error)
+            console.error('Error loading packages:', error)
+            toast.error('Có lỗi xảy ra khi tải dữ liệu')
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    // Load tiers for selected package
+    const loadTiers = async () => {
+        if (!selectedPackage) return
+        
+        try {
+            setLoading(true)
+            const params = {
+                page: currentPage,
+                per_page: perPage,
+                search: searchQuery || undefined,
+                status: statusFilter !== 'all' ? statusFilter : undefined,
+                service_package_id: selectedPackage.id
+            }
+            
+            const result = await getServicePackageTiers(params)
+            
+            if (result.success) {
+                setTiers(result.data || [])
+                setTotal(result.total || 0)
+            } else {
+                toast.error(result.message || 'Không thể tải danh sách cấp độ')
+            }
+        } catch (error) {
+            console.error('Error loading tiers:', error)
+            toast.error('Có lỗi xảy ra khi tải dữ liệu')
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    // Load data based on current view
+    const loadData = async () => {
+        switch (currentView) {
+            case 'categories':
+                await loadCategories()
+                break
+            case 'packages':
+                await loadPackages()
+                break
+            case 'tiers':
+                await loadTiers()
+                break
         }
     }
 
     useEffect(() => {
         loadData()
-    }, [activeTab, currentPage, perPage, searchQuery, statusFilter])
+    }, [currentView, currentPage, perPage, searchQuery, statusFilter, selectedCategory, selectedPackage])
 
-    useEffect(() => {
-        loadCategories()
-    }, [])
+    // Navigation handlers
+    const handleCategorySelect = (category) => {
+        setSelectedCategory(category)
+        setSelectedPackage(null)
+        setCurrentView('packages')
+        setCurrentPage(1)
+        setSearchQuery('')
+    }
 
-    // Handle search
+    const handlePackageSelect = (packageItem) => {
+        setSelectedPackage(packageItem)
+        setCurrentView('tiers')
+        setCurrentPage(1)
+        setSearchQuery('')
+    }
+
+    const handleBackToCategories = () => {
+        setSelectedCategory(null)
+        setSelectedPackage(null)
+        setCurrentView('categories')
+        setCurrentPage(1)
+        setSearchQuery('')
+    }
+
+    const handleBackToPackages = () => {
+        setSelectedPackage(null)
+        setCurrentView('packages')
+        setCurrentPage(1)
+        setSearchQuery('')
+    }
+
+    // Search and filter handlers
     const handleSearch = (value) => {
         setSearchQuery(value)
         setCurrentPage(1)
     }
 
-    // Handle status filter
     const handleStatusFilter = (value) => {
         setStatusFilter(value)
         setCurrentPage(1)
     }
 
-    // Handle selection
+    // Selection handlers
     const handleSelectAll = (checked) => {
+        const currentData = getCurrentData()
         if (checked) {
-            setSelectedItems(packages.map(item => item.id))
+            setSelectedItems(Array.isArray(currentData) ? currentData.map(item => item.id) : [])
         } else {
             setSelectedItems([])
         }
@@ -150,50 +251,80 @@ const ServicePackageManagement = () => {
         }
     }
 
-    // Handle create
+    // Get current data based on view
+    const getCurrentData = () => {
+        switch (currentView) {
+            case 'categories':
+                return categories
+            case 'packages':
+                return packages
+            case 'tiers':
+                return tiers
+            default:
+                return []
+        }
+    }
+
+    // CRUD handlers
     const handleCreate = () => {
-        setFormData({
-            category_id: '',
+        const defaultFormData = {
             name: '',
             description: '',
+            icon: '',
+            color: '#3B82F6',
+            is_active: true,
+            sort_order: 0,
+            settings: {},
+            category_id: selectedCategory?.id || '',
             duration_type: 'months',
             duration_value: 1,
             platform: '',
-            is_active: true,
+            platform_settings: {},
             is_popular: false,
-            sort_order: 0,
-            icon: '',
-            color: '#3B82F6'
-        })
+            features: [],
+            limits: [],
+            service_package_id: selectedPackage?.id || '',
+            device_limit: 5,
+            price: 0,
+            currency: 'VND'
+        }
+        
+        setFormData(defaultFormData)
         setCreateDialog(true)
     }
 
-    // Handle edit
     const handleEdit = (item) => {
         setFormData({
-            category_id: item.category_id || '',
             name: item.name || '',
             description: item.description || '',
+            icon: item.icon || '',
+            color: item.color || '#3B82F6',
+            is_active: item.is_active ?? true,
+            sort_order: item.sort_order || 0,
+            settings: item.settings || {},
+            category_id: item.category_id || selectedCategory?.id || '',
             duration_type: item.duration_type || 'months',
             duration_value: item.duration_value || 1,
             platform: item.platform || '',
-            is_active: item.is_active ?? true,
+            platform_settings: item.platform_settings || {},
             is_popular: item.is_popular ?? false,
-            sort_order: item.sort_order || 0,
-            icon: item.icon || '',
-            color: item.color || '#3B82F6'
+            features: item.features || [],
+            limits: item.limits || [],
+            service_package_id: item.service_package_id || selectedPackage?.id || '',
+            device_limit: item.device_limit || 5,
+            price: item.price || 0,
+            currency: item.currency || 'VND'
         })
         setCurrentItem(item)
         setEditDialog(true)
     }
 
-    // Handle delete
     const handleDelete = (item) => {
         setCurrentItem(item)
         setDeleteDialog(true)
     }
 
-    // Handle form submit
+    // Form submit handler
     const handleFormSubmit = async (e) => {
         e.preventDefault()
         
@@ -202,12 +333,12 @@ const ServicePackageManagement = () => {
             let result
             
             if (createDialog) {
-                switch (activeTab) {
-                    case 'packages':
-                        result = await createServicePackage(formData)
-                        break
+                switch (currentView) {
                     case 'categories':
                         result = await createServicePackageCategory(formData)
+                        break
+                    case 'packages':
+                        result = await createServicePackage(formData)
                         break
                     case 'tiers':
                         result = await createServicePackageTier(formData)
@@ -216,12 +347,12 @@ const ServicePackageManagement = () => {
                         return
                 }
             } else {
-                switch (activeTab) {
-                    case 'packages':
-                        result = await updateServicePackage(currentItem.id, formData)
-                        break
+                switch (currentView) {
                     case 'categories':
                         result = await updateServicePackageCategory(currentItem.id, formData)
+                        break
+                    case 'packages':
+                        result = await updateServicePackage(currentItem.id, formData)
                         break
                     case 'tiers':
                         result = await updateServicePackageTier(currentItem.id, formData)
@@ -247,18 +378,18 @@ const ServicePackageManagement = () => {
         }
     }
 
-    // Handle delete confirm
+    // Delete confirm handler
     const handleDeleteConfirm = async () => {
         try {
             setLoading(true)
             let result
             
-            switch (activeTab) {
-                case 'packages':
-                    result = await deleteServicePackage(currentItem.id)
-                    break
+            switch (currentView) {
                 case 'categories':
                     result = await deleteServicePackageCategory(currentItem.id)
+                    break
+                case 'packages':
+                    result = await deleteServicePackage(currentItem.id)
                     break
                 case 'tiers':
                     result = await deleteServicePackageTier(currentItem.id)
@@ -282,7 +413,7 @@ const ServicePackageManagement = () => {
         }
     }
 
-    // Get columns based on active tab
+    // Get columns based on current view
     const getColumns = () => {
         const baseColumns = [
             {
@@ -342,6 +473,24 @@ const ServicePackageManagement = () => {
                     const record = row.original
                     return (
                         <div className="flex gap-2">
+                            {currentView === 'categories' && (
+                                <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => handleCategorySelect(record)}
+                                >
+                                    Xem gói
+                                </Button>
+                            )}
+                            {currentView === 'packages' && (
+                                <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => handlePackageSelect(record)}
+                                >
+                                    Xem cấp độ
+                                </Button>
+                            )}
                             <Button
                                 size="sm"
                                 variant="outline"
@@ -363,17 +512,9 @@ const ServicePackageManagement = () => {
             }
         ]
 
-        if (activeTab === 'packages') {
+        if (currentView === 'packages') {
             return [
                 ...baseColumns.slice(0, 1), // name
-                {
-                    id: 'category',
-                    header: 'Danh mục',
-                    cell: ({ row }) => {
-                        const category = categories.find(cat => cat.id === row.original.category_id)
-                        return category ? category.name : 'N/A'
-                    }
-                },
                 {
                     id: 'duration',
                     header: 'Thời hạn',
@@ -389,11 +530,16 @@ const ServicePackageManagement = () => {
                         return 'Không giới hạn'
                     }
                 },
+                {
+                    id: 'platform',
+                    header: 'Platform',
+                    cell: ({ row }) => row.original.platform || 'N/A'
+                },
                 ...baseColumns.slice(1) // status, sort_order, actions
             ]
         }
 
-        if (activeTab === 'tiers') {
+        if (currentView === 'tiers') {
             return [
                 ...baseColumns.slice(0, 1), // name
                 {
@@ -419,11 +565,67 @@ const ServicePackageManagement = () => {
         return baseColumns
     }
 
-    const tabs = [
-        { key: 'packages', label: 'Gói dịch vụ' },
-        { key: 'categories', label: 'Danh mục' },
-        { key: 'tiers', label: 'Cấp độ' }
-    ]
+    // Get breadcrumb items
+    const getBreadcrumbItems = () => {
+        const items = [
+            { label: 'Danh mục', onClick: handleBackToCategories }
+        ]
+        
+        if (selectedCategory) {
+            items.push({ 
+                label: selectedCategory.name, 
+                onClick: currentView === 'tiers' ? handleBackToPackages : undefined 
+            })
+        }
+        
+        if (selectedPackage) {
+            items.push({ label: selectedPackage.name })
+        }
+        
+        return items
+    }
+
+    // Get current title
+    const getCurrentTitle = () => {
+        switch (currentView) {
+            case 'categories':
+                return 'Quản lý danh mục gói dịch vụ'
+            case 'packages':
+                return `Gói dịch vụ - ${selectedCategory?.name || ''}`
+            case 'tiers':
+                return `Cấp độ - ${selectedPackage?.name || ''}`
+            default:
+                return 'Quản lý gói dịch vụ'
+        }
+    }
+
+    // Get current description
+    const getCurrentDescription = () => {
+        switch (currentView) {
+            case 'categories':
+                return 'Quản lý các danh mục gói dịch vụ (Facebook, Instagram, TikTok, ...)'
+            case 'packages':
+                return `Quản lý các gói dịch vụ trong danh mục ${selectedCategory?.name || ''}`
+            case 'tiers':
+                return `Quản lý các cấp độ trong gói ${selectedPackage?.name || ''}`
+            default:
+                return 'Quản lý hệ thống gói dịch vụ'
+        }
+    }
+
+    // Get add button text
+    const getAddButtonText = () => {
+        switch (currentView) {
+            case 'categories':
+                return '+ Thêm danh mục'
+            case 'packages':
+                return '+ Thêm gói dịch vụ'
+            case 'tiers':
+                return '+ Thêm cấp độ'
+            default:
+                return '+ Thêm'
+        }
+    }
 
     return (
         <Container>
@@ -431,31 +633,35 @@ const ServicePackageManagement = () => {
                 {/* Header */}
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-2xl font-bold">Quản lý gói dịch vụ</h1>
+                        <h1 className="text-2xl font-bold">{getCurrentTitle()}</h1>
                         <p className="text-gray-600 dark:text-gray-400">
-                            Quản lý danh mục, gói dịch vụ và cấp độ
+                            {getCurrentDescription()}
                         </p>
                     </div>
                     <div className="flex gap-2">
+                        {(currentView === 'packages' || currentView === 'tiers') && (
+                            <Button
+                                variant="outline"
+                                onClick={currentView === 'tiers' ? handleBackToPackages : handleBackToCategories}
+                            >
+                                ← Quay lại
+                            </Button>
+                        )}
                         <Button onClick={handleCreate}>
-                            + Thêm {activeTab === 'packages' ? 'gói dịch vụ' : activeTab === 'categories' ? 'danh mục' : 'cấp độ'}
+                            {getAddButtonText()}
                         </Button>
                     </div>
                 </div>
 
-                {/* Tabs */}
-                <Tabs
-                    value={activeTab}
-                    onChange={setActiveTab}
-                    tabs={tabs}
-                />
+                {/* Breadcrumb */}
+                <Breadcrumb items={getBreadcrumbItems()} />
 
                 {/* Filters */}
                 <AdaptiveCard>
                     <div className="flex flex-col sm:flex-row gap-4">
                         <div className="flex-1">
                             <Input
-                                placeholder={`Tìm kiếm ${activeTab === 'packages' ? 'gói dịch vụ' : activeTab === 'categories' ? 'danh mục' : 'cấp độ'}...`}
+                                placeholder={`Tìm kiếm ${currentView === 'categories' ? 'danh mục' : currentView === 'packages' ? 'gói dịch vụ' : 'cấp độ'}...`}
                                 value={searchQuery}
                                 onChange={(e) => handleSearch(e.target.value)}
                             />
@@ -478,7 +684,7 @@ const ServicePackageManagement = () => {
                 <AdaptiveCard>
                     <DataTable
                         columns={getColumns()}
-                        data={packages}
+                        data={getCurrentData()}
                         loading={loading}
                         selectable={true}
                         pagingData={{
@@ -522,13 +728,13 @@ const ServicePackageManagement = () => {
                                     Hiện tại không có dữ liệu nào phù hợp với bộ lọc của bạn
                                 </p>
                                 <Button onClick={handleCreate}>
-                                    + Thêm {activeTab === 'packages' ? 'gói dịch vụ' : activeTab === 'categories' ? 'danh mục' : 'cấp độ'} đầu tiên
+                                    + Thêm {currentView === 'categories' ? 'danh mục' : currentView === 'packages' ? 'gói dịch vụ' : 'cấp độ'} đầu tiên
                                 </Button>
                             </div>
                         }
-                        noData={packages.length === 0}
+                        noData={Array.isArray(getCurrentData()) && getCurrentData().length === 0}
                         pageSizes={[10, 25, 50, 100]}
-                        instanceId={`${activeTab}-table`}
+                        instanceId={`${currentView}-table`}
                         className="min-h-[400px]"
                     />
                 </AdaptiveCard>
@@ -544,28 +750,11 @@ const ServicePackageManagement = () => {
                 >
                     <form onSubmit={handleFormSubmit} className="p-6 space-y-4">
                         <h3 className="text-lg font-semibold">
-                            {createDialog ? `Thêm ${activeTab === 'packages' ? 'gói dịch vụ' : activeTab === 'categories' ? 'danh mục' : 'cấp độ'}` : `Sửa ${activeTab === 'packages' ? 'gói dịch vụ' : activeTab === 'categories' ? 'danh mục' : 'cấp độ'}`}
+                            {createDialog ? `Thêm ${currentView === 'categories' ? 'danh mục' : currentView === 'packages' ? 'gói dịch vụ' : 'cấp độ'}` : `Sửa ${currentView === 'categories' ? 'danh mục' : currentView === 'packages' ? 'gói dịch vụ' : 'cấp độ'}`}
                         </h3>
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {activeTab === 'packages' && (
-                                <div>
-                                    <label className="block text-sm font-medium mb-1">
-                                        Danh mục *
-                                    </label>
-                                    <Select
-                                        value={formData.category_id}
-                                        onChange={(value) => setFormData({...formData, category_id: value})}
-                                        options={categories.map(cat => ({
-                                            value: cat.id.toString(),
-                                            label: cat.name
-                                        }))}
-                                        placeholder="Chọn danh mục"
-                                        required
-                                    />
-                                </div>
-                            )}
-                            
+                            {/* Common fields */}
                             <div>
                                 <label className="block text-sm font-medium mb-1">
                                     Tên *
@@ -578,7 +767,43 @@ const ServicePackageManagement = () => {
                                 />
                             </div>
                             
-                            {activeTab === 'packages' && (
+                            <div>
+                                <label className="block text-sm font-medium mb-1">
+                                    Thứ tự sắp xếp
+                                </label>
+                                <Input
+                                    type="number"
+                                    value={formData.sort_order}
+                                    onChange={(e) => setFormData({...formData, sort_order: Number(e.target.value)})}
+                                    placeholder="0"
+                                    min="0"
+                                />
+                            </div>
+                            
+                            <div>
+                                <label className="block text-sm font-medium mb-1">
+                                    Icon
+                                </label>
+                                <Input
+                                    value={formData.icon}
+                                    onChange={(e) => setFormData({...formData, icon: e.target.value})}
+                                    placeholder="📱, 🎯, ⭐"
+                                />
+                            </div>
+                            
+                            <div>
+                                <label className="block text-sm font-medium mb-1">
+                                    Màu sắc
+                                </label>
+                                <Input
+                                    type="color"
+                                    value={formData.color}
+                                    onChange={(e) => setFormData({...formData, color: e.target.value})}
+                                />
+                            </div>
+
+                            {/* Package specific fields */}
+                            {currentView === 'packages' && (
                                 <>
                                     <div>
                                         <label className="block text-sm font-medium mb-1">
@@ -620,8 +845,9 @@ const ServicePackageManagement = () => {
                                     </div>
                                 </>
                             )}
-                            
-                            {activeTab === 'tiers' && (
+
+                            {/* Tier specific fields */}
+                            {currentView === 'tiers' && (
                                 <>
                                     <div>
                                         <label className="block text-sm font-medium mb-1">
@@ -648,43 +874,23 @@ const ServicePackageManagement = () => {
                                             min="0"
                                         />
                                     </div>
+                                    
+                                    <div>
+                                        <label className="block text-sm font-medium mb-1">
+                                            Tiền tệ
+                                        </label>
+                                        <Select
+                                            value={formData.currency}
+                                            onChange={(value) => setFormData({...formData, currency: value})}
+                                            options={[
+                                                { value: 'VND', label: 'VND' },
+                                                { value: 'USD', label: 'USD' },
+                                                { value: 'EUR', label: 'EUR' }
+                                            ]}
+                                        />
+                                    </div>
                                 </>
                             )}
-                            
-                            <div>
-                                <label className="block text-sm font-medium mb-1">
-                                    Thứ tự sắp xếp
-                                </label>
-                                <Input
-                                    type="number"
-                                    value={formData.sort_order}
-                                    onChange={(e) => setFormData({...formData, sort_order: Number(e.target.value)})}
-                                    placeholder="0"
-                                    min="0"
-                                />
-                            </div>
-                            
-                            <div>
-                                <label className="block text-sm font-medium mb-1">
-                                    Icon
-                                </label>
-                                <Input
-                                    value={formData.icon}
-                                    onChange={(e) => setFormData({...formData, icon: e.target.value})}
-                                    placeholder="fas fa-star"
-                                />
-                            </div>
-                            
-                            <div>
-                                <label className="block text-sm font-medium mb-1">
-                                    Màu sắc
-                                </label>
-                                <Input
-                                    type="color"
-                                    value={formData.color}
-                                    onChange={(e) => setFormData({...formData, color: e.target.value})}
-                                />
-                            </div>
                         </div>
                         
                         <div>
@@ -711,15 +917,17 @@ const ServicePackageManagement = () => {
                                 <span className="text-sm">Hoạt động</span>
                             </label>
                             
-                            <label className="flex items-center gap-2">
-                                <input
-                                    type="checkbox"
-                                    checked={formData.is_popular}
-                                    onChange={(e) => setFormData({...formData, is_popular: e.target.checked})}
-                                    className="rounded border-gray-300"
-                                />
-                                <span className="text-sm">Phổ biến</span>
-                            </label>
+                            {(currentView === 'packages' || currentView === 'tiers') && (
+                                <label className="flex items-center gap-2">
+                                    <input
+                                        type="checkbox"
+                                        checked={formData.is_popular}
+                                        onChange={(e) => setFormData({...formData, is_popular: e.target.checked})}
+                                        className="rounded border-gray-300"
+                                    />
+                                    <span className="text-sm">Phổ biến</span>
+                                </label>
+                            )}
                         </div>
                         
                         <div className="flex justify-end gap-2 pt-4">
@@ -752,7 +960,7 @@ const ServicePackageManagement = () => {
                     <div className="p-6">
                         <h3 className="text-lg font-semibold mb-4">Xác nhận xóa</h3>
                         <p className="text-gray-600 dark:text-gray-400 mb-6">
-                            Bạn có chắc chắn muốn xóa {activeTab === 'packages' ? 'gói dịch vụ' : activeTab === 'categories' ? 'danh mục' : 'cấp độ'} "{currentItem?.name}"?
+                            Bạn có chắc chắn muốn xóa {currentView === 'categories' ? 'danh mục' : currentView === 'packages' ? 'gói dịch vụ' : 'cấp độ'} "{currentItem?.name}"?
                         </p>
                         <div className="flex justify-end gap-2">
                             <Button

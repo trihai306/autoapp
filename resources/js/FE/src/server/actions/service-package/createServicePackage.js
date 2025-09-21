@@ -20,12 +20,7 @@ export default async function createServicePackage(data) {
                 }
             }
 
-            if (data.price === undefined || data.price === null || data.price < 0) {
-                return {
-                    success: false,
-                    message: 'Giá gói dịch vụ không hợp lệ'
-                }
-            }
+            // Bỏ validation price vì giá được quản lý ở tiers
 
             const response = await apiCreateServicePackage(data)
             

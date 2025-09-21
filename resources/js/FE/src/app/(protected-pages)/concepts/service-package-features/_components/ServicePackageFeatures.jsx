@@ -62,7 +62,7 @@ const ServicePackageFeatures = () => {
     // Handle package selection
     const handlePackageSelect = (packageId) => {
         setSelectedPackageId(packageId)
-        const selectedPkg = packages.find(pkg => pkg.id.toString() === packageId)
+        const selectedPkg = Array.isArray(packages) ? packages.find(pkg => pkg.id.toString() === packageId) : null
         setSelectedPackage(selectedPkg)
     }
 
@@ -111,10 +111,10 @@ const ServicePackageFeatures = () => {
                                 value={selectedPackageId}
                                 onChange={handlePackageSelect}
                                 placeholder="Chọn gói dịch vụ..."
-                                options={packages.map(pkg => ({
+                                options={Array.isArray(packages) ? packages.map(pkg => ({
                                     value: pkg.id.toString(),
                                     label: pkg.name
-                                }))}
+                                })) : []}
                                 loading={loading}
                             />
                         </div>

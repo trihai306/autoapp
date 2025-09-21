@@ -429,7 +429,7 @@ const ServiceRegistration = () => {
                     )}
 
                     {/* Packages Grid */}
-                    {!loading && packages.length > 0 && (
+                    {!loading && Array.isArray(packages) && packages.length > 0 && (
                         <div className="relative">
                             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 items-stretch">
                                 {packages.map((pkg, index) => (
@@ -450,7 +450,7 @@ const ServiceRegistration = () => {
                 )}
 
                     {/* No Packages */}
-                    {!loading && packages.length === 0 && (
+                    {!loading && Array.isArray(packages) && packages.length === 0 && (
                         <div className="text-center py-20">
                             <div className="relative">
                                 <div className="w-32 h-32 mx-auto mb-8 relative">

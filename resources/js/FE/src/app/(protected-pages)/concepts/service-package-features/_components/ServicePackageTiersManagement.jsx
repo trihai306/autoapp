@@ -78,7 +78,7 @@ const ServicePackageTiersManagement = ({
     // Handle selection
     const handleSelectAll = (checked) => {
         if (checked) {
-            setSelectedTiers(tiers.map(tier => tier.id))
+            setSelectedTiers(Array.isArray(tiers) ? tiers.map(tier => tier.id) : [])
         } else {
             setSelectedTiers([])
         }
@@ -208,7 +208,7 @@ const ServicePackageTiersManagement = ({
             title: (
                 <input
                     type="checkbox"
-                    checked={selectedTiers.length === tiers.length && tiers.length > 0}
+                    checked={Array.isArray(tiers) && selectedTiers.length === tiers.length && tiers.length > 0}
                     onChange={(e) => handleSelectAll(e.target.checked)}
                     className="rounded border-gray-300"
                 />
