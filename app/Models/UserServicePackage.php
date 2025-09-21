@@ -169,7 +169,8 @@ class UserServicePackage extends Model
         float $amountPaid,
         string $currency = 'VND',
         $transactionId = null,
-        ?string $paymentMethod = null
+        ?string $paymentMethod = null,
+        $tierId = null
     ): self {
         $package = ServicePackage::findOrFail($servicePackageId);
         $now = now();
