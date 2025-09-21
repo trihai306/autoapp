@@ -90,7 +90,7 @@ class ServicePackagePaymentController extends Controller
                 $servicePackage->id,
                 $request->price,
                 'VND', // Mặc định VND
-                $transaction->id,
+                (int) $transaction->id,
                 $request->payment_method
             );
 
