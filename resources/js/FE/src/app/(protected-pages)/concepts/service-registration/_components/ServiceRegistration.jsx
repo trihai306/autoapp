@@ -384,12 +384,6 @@ const ServiceRegistration = () => {
             })
             
             console.log('✅ Tiers API Response:', result)
-            console.log('🔍 Tier data details:', result.data)
-            if (result.data && result.data.length > 0) {
-            console.log('🔍 First tier details:', result.data[0])
-            console.log('🔍 Tier price:', result.data[0].price, 'Type:', typeof result.data[0].price)
-            console.log('🔍 Tier device_limit:', result.data[0].device_limit, 'Type:', typeof result.data[0].device_limit)
-            }
             
             if (result && result.data) {
                 setTiers(result.data)
