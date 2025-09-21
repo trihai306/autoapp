@@ -7,7 +7,14 @@ import Dialog from '@/components/ui/Dialog'
 import Badge from '@/components/ui/Badge'
 import { useState, useEffect } from 'react'
 import TransactionService from '@/services/transaction/TransactionService'
-import { apiGetServicePackages, ServicePackageHelpers } from '@/services/service-package/ServicePackageService'
+import { 
+    apiGetServicePackages, 
+    apiGetServicePackageCategories,
+    apiGetServicePackageTiersByPackage,
+    apiGetServicePackagesByCategory,
+    apiGetServicePackagesWithTiersByCategory,
+    ServicePackageHelpers 
+} from '@/services/service-package/ServicePackageService'
 import purchaseServicePackage from '@/server/actions/service-package/purchaseServicePackage'
 import { toast } from 'react-hot-toast'
 import useBalance from '@/utils/hooks/useBalance'
@@ -27,351 +34,496 @@ import {
     HiOutlineCube as Cube,
     HiOutlineRocketLaunch as Rocket,
     HiOutlineFire as Fire,
-    HiOutlineBadgeCheck as Crown
+    HiOutlineBadgeCheck as Crown,
+    HiOutlineX as X,
+    HiOutlineDeviceMobile as Phone,
+    HiOutlineDesktopComputer as Desktop,
+    HiOutlineServer as Server,
+    HiOutlineGlobe as Globe
 } from 'react-icons/hi'
 
-const ServiceCard = ({ pkg, onOrder, index }) => {
-    if (!pkg) return null
-    
-    const isActive = ServicePackageHelpers.isActive(pkg)
-    const isPopular = ServicePackageHelpers.isPopular(pkg)
-    const isFree = ServicePackageHelpers.isFree(pkg)
-    
-    // Kiểm tra xem user đã mua gói này chưa (từ API)
-    const hasPurchased = pkg.is_purchased || false
-    const currentSubscription = pkg.user_subscription || null
-    
-    const getCardGradient = () => {
-        if (isPopular) return 'from-yellow-50 via-orange-50 to-red-50 dark:from-yellow-900/20 dark:via-orange-900/20 dark:to-red-900/20'
-        if (isFree) return 'from-emerald-50 via-green-50 to-teal-50 dark:from-emerald-900/20 dark:via-green-900/20 dark:to-teal-900/20'
-        return 'from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-900/20 dark:via-indigo-900/20 dark:to-purple-900/20'
+// Software Card Component
+const SoftwareCard = ({ category, onClick }) => {
+    const getSoftwareInfo = (name) => {
+        const lowerName = name.toLowerCase()
+        if (lowerName.includes('facebook')) {
+            return {
+                title: 'Facebook Automation',
+                subtitle: 'Lionsoftware',
+                requirement: 'Phone ROM LineageOS + LSPosed',
+                linkApp: 'Facebook',
+                linkColor: 'bg-blue-600 hover:bg-blue-700',
+                icon: (
+                    <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                ),
+                features: [
+                    'Quản lý đồng thời nhiều tài khoản',
+                    'Tăng tương tác trên trang cá nhân hoặc fanpage',
+                    'Kiếm tiền Traodoituongtac.com'
+                ],
+                comingSoon: true
+            }
+        }
+        if (lowerName.includes('tiktok')) {
+            return {
+                title: 'TikTok Automation',
+                subtitle: 'Lionsoftware',
+                requirement: 'Phone ROM gốc',
+                linkApp: 'TikTok',
+                linkColor: 'bg-black hover:bg-gray-800',
+                icon: (
+                    <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                    </svg>
+                ),
+                features: [
+                    'Quản lý đồng thời nhiều tài khoản',
+                    'Tăng tương tác trên trang cá nhân hoặc fanpage',
+                    'Kiếm tiền Traodoituongtac.com'
+                ],
+                comingSoon: false
+            }
+        }
+        if (lowerName.includes('instagram')) {
+            return {
+                title: 'Instagram Automation',
+                subtitle: 'Lionsoftware',
+                requirement: 'Phone ROM LineageOS + LSPosed',
+                linkApp: 'Instagram',
+                linkColor: 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600',
+                icon: (
+                    <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                    </svg>
+                ),
+                features: [
+                    'Quản lý đồng thời nhiều tài khoản',
+                    'Tăng tương tác trên trang cá nhân hoặc fanpage',
+                    'Kiếm tiền Traodoituongtac.com'
+                ],
+                comingSoon: true
+            }
+        }
+        return {
+            title: `${name} Automation`,
+            subtitle: 'Lionsoftware',
+            requirement: 'Phone ROM gốc',
+            linkApp: name,
+            linkColor: 'bg-gray-600 hover:bg-gray-700',
+            icon: <Cube className="w-8 h-8" />,
+            features: [
+                'Quản lý đồng thời nhiều tài khoản',
+                'Tăng tương tác trên trang cá nhân hoặc fanpage',
+                'Kiếm tiền Traodoituongtac.com'
+            ],
+            comingSoon: false
+        }
     }
-    
-    const getBorderColor = () => {
-        if (isPopular) return 'border-yellow-200 dark:border-yellow-700'
-        if (isFree) return 'border-emerald-200 dark:border-emerald-700'
-        return 'border-blue-200 dark:border-blue-700'
-    }
+
+    const softwareInfo = getSoftwareInfo(category.name)
+
+    return (
+        <div className="bg-white rounded-xl border border-gray-200 hover:border-gray-300 hover:shadow-lg transition-all duration-200 p-6">
+            {/* Header */}
+            <div className="text-center mb-6">
+                <p className="text-sm text-gray-500 mb-4">
+                    Yêu cầu: {softwareInfo.requirement}
+                </p>
+            </div>
+
+            {/* Icon and Title */}
+            <div className="text-center mb-6">
+                <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center rounded-full bg-gray-50 text-gray-600">
+                    {softwareInfo.icon}
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-1">
+                    {softwareInfo.title}
+                </h3>
+                <p className="text-sm text-gray-500">
+                    {softwareInfo.subtitle}
+                </p>
+            </div>
+
+            {/* Link App Button */}
+            <div className="text-center mb-6">
+                <button className={`${softwareInfo.linkColor} text-white px-6 py-2 rounded-lg font-medium transition-colors`}>
+                    {softwareInfo.linkApp}
+                </button>
+            </div>
+
+            {/* Features */}
+            <div className="space-y-3 mb-6">
+                {softwareInfo.features.map((feature, index) => (
+                    <div key={index} className="flex items-start gap-3">
+                        <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <CheckCircle className="w-3 h-3 text-white" />
+                        </div>
+                        <span className="text-sm text-gray-700 leading-relaxed">
+                            {feature}
+                            {index === 2 && softwareInfo.comingSoon && (
+                                <span className="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                    COMING SOON
+                                </span>
+                            )}
+                        </span>
+                    </div>
+                ))}
+            </div>
+
+            {/* Order Button */}
+            <button 
+                onClick={onClick}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200"
+            >
+                Đặt hàng ngay
+            </button>
+        </div>
+    )
+}
+
+// Tier Card Component
+const TierCard = ({ tier, onPurchase, isPurchased }) => {
+    const isPopular = tier.is_popular
+    const isActive = tier.is_active
     
     return (
-        <div className={`group relative overflow-hidden rounded-3xl border-2 p-8 flex flex-col h-full bg-gradient-to-br ${getCardGradient()} ${getBorderColor()} transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/20 ${
-            !isActive ? 'opacity-60 grayscale' : ''
-        }`}>
-            {/* Animated Background */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+        <div className={`relative overflow-hidden rounded-xl border-2 p-6 bg-gradient-to-br transition-all duration-300 hover:scale-105 ${
+            isPopular 
+                ? 'border-yellow-300 bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20' 
+                : 'border-gray-200 dark:border-gray-700 bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900'
+        } ${!isActive ? 'opacity-60 grayscale' : ''}`}>
             
             {/* Popular Badge */}
             {isPopular && (
-                <div className="absolute -top-3 -right-3 z-10">
-                    <div className="relative">
-                        <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full blur-sm"></div>
-                        <Badge variant="solid" color="yellow" size="sm" className="relative bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold shadow-lg animate-pulse">
+                <div className="absolute -top-2 -right-2 z-10">
+                    <Badge variant="solid" color="yellow" size="sm" className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold shadow-lg">
                             <Star className="w-3 h-3 mr-1" />
                             Phổ biến
                     </Badge>
-                    </div>
                 </div>
             )}
             
             {/* Status Badge */}
-            <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold w-fit ${
+            <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold w-fit mb-4 ${
                 isActive 
                     ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' 
                     : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
             }`}>
-                <div className={`w-2 h-2 rounded-full ${isActive ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`}></div>
-                {isActive ? 'Đang hoạt động' : 'Tạm dừng'}
+                <div className={`w-2 h-2 rounded-full ${isActive ? 'bg-emerald-500' : 'bg-red-500'}`}></div>
+                {isActive ? 'Hoạt động' : 'Tạm dừng'}
             </div>
             
-            {/* Package Icon & Info */}
-            <div className="flex items-start gap-6 mb-6">
-                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br from-white/90 to-white/60 dark:from-gray-800/90 dark:to-gray-800/60 flex items-center justify-center shadow-xl backdrop-blur-sm border border-white/30 flex-shrink-0 relative overflow-hidden ${
-                    isPopular ? 'animate-bounce' : ''
-                }`}>
-                    {/* Background Pattern */}
-                    <div className={`absolute inset-0 rounded-2xl ${
-                        isPopular 
-                            ? 'bg-gradient-to-br from-yellow-500/10 to-orange-500/10' 
-                            : isFree 
-                            ? 'bg-gradient-to-br from-emerald-500/10 to-green-500/10'
-                            : 'bg-gradient-to-br from-blue-500/10 to-purple-500/10'
-                    }`}></div>
-                    
-                    {/* Icon with better styling */}
-                    <div className="relative z-10">
-                        {pkg.icon ? (
-                            <div className="text-2xl">{pkg.icon}</div>
-                        ) : (
-                            <div className="relative">
-                                {isPopular ? (
-                                    <div className="relative">
-                                        <Crown className="w-7 h-7 text-yellow-600 dark:text-yellow-400" />
-                                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full animate-pulse"></div>
-                                    </div>
-                                ) : isFree ? (
-                                    <div className="relative">
-                                        <Gift className="w-7 h-7 text-emerald-600 dark:text-emerald-400" />
-                                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-emerald-400 to-green-500 rounded-full animate-pulse"></div>
-                                    </div>
-                                ) : (
-                                    <div className="relative">
-                                        <Cube className="w-7 h-7 text-blue-600 dark:text-blue-400" />
-                                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full animate-pulse"></div>
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                    </div>
-                    
-                    {/* Decorative elements */}
-                    <div className="absolute top-1 right-1 w-2 h-2 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full opacity-60"></div>
-                    <div className="absolute bottom-1 left-1 w-1.5 h-1.5 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full opacity-40"></div>
-                </div>
-                <div className="flex-1 min-w-0">
-                    <h4 className="font-bold text-2xl text-gray-900 dark:text-gray-100 mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
-                        {pkg.name}
-                    </h4>
-                    <div className="flex items-center gap-2 flex-wrap">
-                        <Clock className="w-4 h-4 text-gray-500 flex-shrink-0" />
-                        <span className="text-sm text-gray-600 dark:text-gray-400">Thời hạn:</span>
-                        <span className="px-3 py-1 rounded-full bg-white/60 dark:bg-gray-800/60 text-sm font-medium backdrop-blur-sm">
-                            {pkg ? ServicePackageHelpers.getDurationText(pkg) : 'Không xác định'}
-                        </span>
-                        {hasPurchased && currentSubscription && (
-                            <span className="px-3 py-1 rounded-full bg-gradient-to-r from-emerald-500 to-green-600 text-white text-xs font-medium">
-                                <CheckCircle className="w-3 h-3 mr-1 inline" />
-                                Hết hạn: {new Date(currentSubscription.expires_at).toLocaleDateString('vi-VN')}
+            {/* Tier Info */}
+            <div className="mb-4">
+                <h4 className="font-bold text-lg text-gray-900 dark:text-gray-100 mb-2">
+                    {tier.name}
+                </h4>
+                
+                {tier.description && (
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
+                        {tier.description}
+                    </p>
+                )}
+                
+                {/* Device Limit */}
+                <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-3">
+                    <Phone className="w-4 h-4" />
+                    <span>
+                        {tier.device_limit === -1 ? 'Không giới hạn thiết bị' : `${tier.device_limit} thiết bị`}
                             </span>
-                        )}
-                    </div>
                 </div>
             </div>
             
-            {/* Price Section */}
-            <div className="text-center py-6 bg-white/40 dark:bg-gray-800/40 rounded-2xl backdrop-blur-sm border border-white/20">
-                <div className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 mb-2">
-                    {pkg ? ServicePackageHelpers.formatPrice(pkg.price, pkg.currency) : '0 ₫'}
+            {/* Price */}
+            <div className="text-center py-4 bg-white/60 dark:bg-gray-800/60 rounded-lg backdrop-blur-sm border border-white/20 mb-4">
+                <div className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+                    {tier.price ? new Intl.NumberFormat('vi-VN', {
+                        style: 'currency',
+                        currency: tier.currency || 'VND'
+                    }).format(tier.price) : 'Liên hệ'}
                 </div>
-                {isFree && (
-                    <div className="inline-flex items-center gap-1 text-sm text-emerald-600 font-bold bg-emerald-100 dark:bg-emerald-900/30 px-3 py-1 rounded-full">
+                {tier.price === 0 && (
+                    <div className="inline-flex items-center gap-1 text-sm text-emerald-600 font-bold bg-emerald-100 dark:bg-emerald-900/30 px-3 py-1 rounded-full mt-2">
                         <Gift className="w-4 h-4" />
                         Miễn phí
                     </div>
                 )}
             </div>
             
-            {/* Content Section - Flexible height */}
-            <div className="flex-1 flex flex-col">
-            {/* Description */}
-            {pkg.description && (
-                    <div className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4 line-clamp-3">
-                    {pkg.description}
-                </div>
-            )}
-            
-            {/* Features */}
-            {pkg.features && pkg.features.length > 0 && (
-                    <div className="space-y-3 flex-1">
-                        <h5 className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                            <Sparkles className="w-4 h-4 text-blue-500" />
-                            Tính năng nổi bật
-                        </h5>
-                        <div className="space-y-2">
-                            {pkg.features.slice(0, 4).map((feature, i) => (
-                                <div key={i} className="flex items-start gap-3 group/feature">
-                                    <div className="w-5 h-5 rounded-full bg-gradient-to-r from-emerald-400 to-green-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                        <CheckCircle className="w-3 h-3 text-white" />
-                                    </div>
-                                    <span className="text-sm text-gray-700 dark:text-gray-300 group-hover/feature:text-gray-900 dark:group-hover/feature:text-gray-100 transition-colors line-clamp-2">
-                                        {feature.name || feature}
-                                    </span>
-                                </div>
-                            ))}
-                            {pkg.features.length > 4 && (
-                                <div className="text-xs text-gray-500 dark:text-gray-400 ml-8">
-                                    +{pkg.features.length - 4} tính năng khác
-                                </div>
-                            )}
-                        </div>
-                </div>
-            )}
-            </div>
-            
-            {/* Order Button */}
-            <div className="mt-auto">
-                {hasPurchased ? (
+            {/* Purchase Button */}
                     <Button 
                         variant="solid" 
-                        disabled
-                        className="w-full h-12 text-lg font-bold rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 text-white cursor-not-allowed shadow-lg animate-pulse"
-                    >
-                        <span className="flex items-center justify-center gap-2">
-                            <CheckCircle className="w-5 h-5 animate-bounce" />
-                            <span className="animate-pulse">Đã mua dịch vụ</span>
-                        </span>
-                    </Button>
-                ) : (
-                <Button 
-                    variant="solid" 
-                    onClick={() => onOrder(pkg)}
-                    disabled={!isActive}
-                        className={`w-full h-12 text-lg font-bold rounded-xl transition-all duration-300 ${
-                            isPopular 
+                onClick={() => onPurchase(tier)}
+                disabled={!isActive || isPurchased}
+                className={`w-full h-10 text-sm font-bold rounded-lg transition-all duration-300 ${
+                    isPurchased
+                        ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white cursor-not-allowed'
+                        : isPopular 
                                 ? 'bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 shadow-lg hover:shadow-yellow-500/25' 
-                                : isFree
-                                ? 'bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 shadow-lg hover:shadow-emerald-500/25'
                                 : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 shadow-lg hover:shadow-blue-500/25'
                         } ${
-                            !isActive ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'
+                    !isActive ? 'opacity-50 cursor-not-allowed' : ''
                         }`}
                     >
-                        {isActive ? (
+                {isPurchased ? (
                             <span className="flex items-center justify-center gap-2">
-                                <Lightning className="w-5 h-5" />
-                                Đặt hàng ngay
+                        <CheckCircle className="w-4 h-4" />
+                        Đã mua
                             </span>
                         ) : (
                             <span className="flex items-center justify-center gap-2">
-                                <Settings className="w-5 h-5" />
-                                Tạm dừng
+                        <Lightning className="w-4 h-4" />
+                        Mua ngay
                             </span>
                         )}
                 </Button>
-                )}
-            </div>
         </div>
     )
 }
 
 const ServiceRegistration = () => {
+    // State management
+    const [categories, setCategories] = useState([])
     const [packages, setPackages] = useState([])
+    const [tiers, setTiers] = useState([])
     const [loading, setLoading] = useState(false)
-    const [orderDialog, setOrderDialog] = useState({ open: false, service: null })
-    const [amount, setAmount] = useState(200000)
-    const [qrLoading, setQrLoading] = useState(false)
-    const [qrPayload, setQrPayload] = useState(null)
+    const [modalOpen, setModalOpen] = useState(false)
+    const [selectedCategory, setSelectedCategory] = useState(null)
+    const [selectedPackage, setSelectedPackage] = useState(null)
+    const [activeTab, setActiveTab] = useState(0) // 0: monthly, 1: yearly
+    const [purchaseLoading, setPurchaseLoading] = useState(false)
+    const [purchasedTiers, setPurchasedTiers] = useState(new Set())
+    const [pricingData, setPricingData] = useState([])
     const { refreshBalance } = useBalance()
     
-    // Load service packages from API
-    const loadPackages = async () => {
+    // Load categories from API
+    const loadCategories = async () => {
         try {
             setLoading(true)
-            console.log('🔄 Loading packages...')
+            console.log('🔄 Loading categories...')
             
-            const params = {
-                per_page: 50, // Load all packages
-                active: true, // Only show active packages
-                sort_by: 'sort_order', // Sort by sort_order
-                sort_direction: 'asc' // Ascending order
-            }
+            const result = await apiGetServicePackageCategories({ 
+                per_page: 50,
+                active: true 
+            })
             
-            console.log('📡 Calling API with params:', params)
-            const result = await apiGetServicePackages(params)
-            console.log('✅ API Response:', result)
+            console.log('✅ Categories API Response:', result)
             
             if (result && result.data) {
-                // Sort packages: popular first, then by sort_order, then by price
-                const sortedPackages = result.data.sort((a, b) => {
-                    if (ServicePackageHelpers.isPopular(a) && !ServicePackageHelpers.isPopular(b)) return -1
-                    if (!ServicePackageHelpers.isPopular(a) && ServicePackageHelpers.isPopular(b)) return 1
-                    
-                    if (a.sort_order !== b.sort_order) return a.sort_order - b.sort_order
-                    
-                    return a.price - b.price
-                })
-                
-                console.log('📦 Sorted packages:', sortedPackages)
-                setPackages(sortedPackages)
+                // Check if data is nested in result.data.data (like packages)
+                const categoriesData = result.data?.data || result.data || []
+                console.log('📦 Categories data:', categoriesData)
+                setCategories(categoriesData)
             } else {
-                console.log('⚠️ No data received, setting empty array')
-                setPackages([])
+                console.log('⚠️ No categories data received')
+                setCategories([])
             }
         } catch (error) {
-            console.error('❌ Error loading packages:', error)
-            const errorMessage = error.message || 'Không thể tải danh sách gói dịch vụ'
-            toast.error(`❌ ${errorMessage}`, {
+            console.error('❌ Error loading categories:', error)
+            toast.error('Không thể tải danh sách danh mục', {
                 duration: 4000,
                 icon: '⚠️'
             })
-            setPackages([])
+            setCategories([])
         } finally {
             setLoading(false)
         }
     }
     
-    useEffect(() => {
-        loadPackages()
-    }, [])
-
-    const handleOrder = (pkg) => {
-        setOrderDialog({ open: true, service: pkg })
-        setQrPayload(null)
-        setAmount(pkg.price || 200000)
-    }
-    
-    const handleClose = () => {
-        setOrderDialog({ open: false, service: null })
-        setQrPayload(null)
-        setQrLoading(false)
-    }
-
-    const buildQrUrl = (text) => `https://chart.googleapis.com/chart?cht=qr&chs=280x280&chld=M|0&chl=${encodeURIComponent(text)}`
-    
-    const handleCreatePayment = async () => {
+    // Load packages for selected category
+    const loadPackagesForCategory = async (categoryId) => {
         try {
-            console.log('💰 [DEBUG] Starting payment process...')
-            console.log('📦 [DEBUG] Order dialog service:', orderDialog.service)
+            console.log('🔄 Loading packages for category:', categoryId)
             
-            setQrLoading(true)
+            const result = await apiGetServicePackagesByCategory(categoryId, {
+                per_page: 50,
+                active: true,
+                sort_by: 'sort_order',
+                sort_direction: 'asc'
+            })
             
-            const paymentData = {
-                service_package_id: orderDialog.service.id,
-                payment_method: 'balance',
-                notes: `Mua gói dịch vụ: ${orderDialog.service.name}`
+            console.log('✅ Packages API Response:', result)
+            
+            if (result && result.data) {
+                const packages = result.data
+                setPackages(packages)
+                
+                // Reset selected package and tiers when loading new category
+                setSelectedPackage(null)
+                setTiers([])
+            } else {
+                setPackages([])
+                setSelectedPackage(null)
+                setTiers([])
+            }
+        } catch (error) {
+            console.error('❌ Error loading packages:', error)
+            toast.error('Không thể tải danh sách gói dịch vụ', {
+                duration: 4000,
+                icon: '⚠️'
+            })
+            setPackages([])
+            setSelectedPackage(null)
+            setTiers([])
+        }
+    }
+    
+    // Load tiers for selected package
+    const loadTiersForPackage = async (packageId) => {
+        try {
+            console.log('🔄 Loading tiers for package:', packageId)
+            
+            // Try alternative API endpoint
+            const result = await apiGetServicePackageTiersByPackage(packageId, {
+                per_page: 50,
+                active: true,
+                sort_by: 'sort_order',
+                sort_direction: 'asc'
+            })
+            
+            console.log('✅ Tiers API Response:', result)
+            console.log('🔍 Tier data details:', result.data)
+            if (result.data && result.data.length > 0) {
+            console.log('🔍 First tier details:', result.data[0])
+            console.log('🔍 Tier price:', result.data[0].price, 'Type:', typeof result.data[0].price)
+            console.log('🔍 Tier device_limit:', result.data[0].device_limit, 'Type:', typeof result.data[0].device_limit)
             }
             
-            console.log('📡 [DEBUG] Calling purchaseServicePackage with data:', paymentData)
+            if (result && result.data) {
+                setTiers(result.data)
+            } else {
+                setTiers([])
+            }
+        } catch (error) {
+            console.error('❌ Error loading tiers:', error)
             
-            // Sử dụng server action để mua gói dịch vụ
+            // Fallback: create mock tiers for testing
+            console.log('🔄 Creating mock tiers for testing...')
+            const mockTiers = [
+                {
+                    id: 1,
+                    name: 'Basic',
+                    description: 'Gói cơ bản cho người mới bắt đầu',
+                    device_limit: 5,
+                    price: 100000,
+                    currency: 'VND',
+                    is_popular: false,
+                    is_active: true,
+                    sort_order: 1
+                },
+                {
+                    id: 2,
+                    name: 'Pro',
+                    description: 'Gói chuyên nghiệp với nhiều tính năng',
+                    device_limit: 20,
+                    price: 300000,
+                    currency: 'VND',
+                    is_popular: true,
+                    is_active: true,
+                    sort_order: 2
+                },
+                {
+                    id: 3,
+                    name: 'Enterprise',
+                    description: 'Gói doanh nghiệp không giới hạn',
+                    device_limit: -1,
+                    price: 500000,
+                    currency: 'VND',
+                    is_popular: false,
+                    is_active: true,
+                    sort_order: 3
+                }
+            ]
+            
+            setTiers(mockTiers)
+            
+            toast.error('Không thể tải cấp độ từ server, hiển thị dữ liệu mẫu', {
+                duration: 4000,
+                icon: '⚠️'
+            })
+        }
+    }
+    
+    useEffect(() => {
+        loadCategories()
+    }, [])
+
+    // Handle category click
+    const handleCategoryClick = async (category) => {
+        setSelectedCategory(category)
+        setModalOpen(true)
+        await loadPackagesForCategory(category.id)
+    }
+
+    
+    // Handle package tab click
+    const handlePackageTabClick = async (pkg) => {
+        setSelectedPackage(pkg)
+        await loadTiersForPackage(pkg.id)
+    }
+    
+    // Handle tier purchase
+    const handleTierPurchase = async (tier) => {
+        try {
+            setPurchaseLoading(true)
+            console.log('💰 Starting tier purchase:', tier)
+            
+            const paymentData = {
+                service_package_id: selectedPackage.id,
+                tier_id: tier.id,
+                price: parseFloat(tier.price) || 0,
+                payment_method: 'balance',
+                notes: `Mua cấp độ ${tier.device_limit === -1 ? 'Không giới hạn' : `${tier.device_limit} thiết bị`} cho gói ${selectedPackage.name}`
+            }
+            
+            console.log('📡 Calling purchaseServicePackage with data:', paymentData)
+            
             const result = await purchaseServicePackage(paymentData)
             
-            console.log('✅ [DEBUG] purchaseServicePackage result:', result)
+            console.log('✅ Purchase result:', result)
             
             if (result.success) {
-                console.log('🎉 [DEBUG] Payment successful!')
-                toast.success('🎉 Mua gói dịch vụ thành công! Bạn có thể sử dụng ngay.', {
+                toast.success('🎉 Mua cấp độ thành công! Bạn có thể sử dụng ngay.', {
                     duration: 5000,
                     icon: '✅'
                 })
-                setOrderDialog({ open: false, service: null })
-                setQrPayload(null)
                 
-                // Cập nhật balance trước khi reload packages
-                console.log('💰 [DEBUG] Refreshing balance...')
+                // Add to purchased tiers
+                setPurchasedTiers(prev => new Set([...prev, tier.id]))
+                
+                // Refresh balance
                 await refreshBalance()
                 
-                // Reload packages để cập nhật trạng thái
-                console.log('📦 [DEBUG] Reloading packages...')
-                await loadPackages()
+                // Reload tiers to update status
+                await loadTiersForPackage(selectedPackage.id)
                 
-                console.log('✅ [DEBUG] All updates completed!')
             } else {
-                console.log('❌ [DEBUG] Payment failed:', result.message)
-                toast.error(result.message || 'Không thể mua gói dịch vụ', {
+                toast.error(result.message || 'Không thể mua cấp độ', {
                     duration: 4000,
                     icon: '❌'
                 })
             }
-        } catch (e) {
-            console.error('💥 [DEBUG] Payment error:', e)
-            const errorMessage = e.message || 'Có lỗi xảy ra khi thanh toán'
-            toast.error(`❌ ${errorMessage}`, {
+        } catch (error) {
+            console.error('💥 Purchase error:', error)
+            toast.error('Có lỗi xảy ra khi mua cấp độ', {
                 duration: 5000,
                 icon: '⚠️'
             })
         } finally {
-            setQrLoading(false)
+            setPurchaseLoading(false)
         }
+    }
+    
+    // Close modal
+    const handleCloseModal = () => {
+        setModalOpen(false)
+        setSelectedCategory(null)
+        setSelectedPackage(null)
+        setActiveTab(0)
+        setPackages([])
+        setTiers([])
     }
 
     return (
@@ -392,11 +544,11 @@ const ServiceRegistration = () => {
                             </div>
                             
                             <h1 className="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 mb-6 leading-tight">
-                        Đăng ký gói dịch vụ
+                            Danh sách phần mềm
                     </h1>
                             
-                            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
-                                Chọn gói dịch vụ phù hợp với nhu cầu của bạn và trải nghiệm những tính năng tuyệt vời
+                        <p className="text-xl text-gray-600 dark:text-gray-400 max-w-4xl mx-auto leading-relaxed">
+                            Lionsoftware là giải pháp phù hợp cho cá nhân hoặc doanh nghiệp muốn xây dựng hệ thống tự động hóa để tiếp cận khách hàng trên các nền tảng mạng xã hội.
                             </p>
                             
                             {/* Stats */}
@@ -424,24 +576,23 @@ const ServiceRegistration = () => {
                                 <div className="w-16 h-16 border-4 border-blue-200 dark:border-blue-800 rounded-full animate-spin border-t-blue-600 dark:border-t-blue-400 mx-auto"></div>
                                 <div className="absolute inset-0 w-16 h-16 border-4 border-transparent rounded-full animate-ping border-t-blue-400 mx-auto"></div>
                             </div>
-                            <p className="mt-6 text-lg text-gray-600 dark:text-gray-400 font-medium">Đang tải gói dịch vụ...</p>
+                        <p className="mt-6 text-lg text-gray-600 dark:text-gray-400 font-medium">Đang tải danh mục dịch vụ...</p>
                         </div>
                     )}
 
-                    {/* Packages Grid */}
-                    {!loading && Array.isArray(packages) && packages.length > 0 && (
+                {/* Software Cards Grid */}
+            {!loading && Array.isArray(categories) && categories.length > 0 && (
                         <div className="relative">
-                            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 items-stretch">
-                                {packages.map((pkg, index) => (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {categories.map((category, index) => (
                                     <div 
-                                        key={pkg.id}
-                                        className="animate-fade-in-up flex"
+                                    key={category.id}
+                                    className="animate-fade-in-up"
                                         style={{ animationDelay: `${index * 100}ms` }}
                                     >
-                                        <ServiceCard
-                                            pkg={pkg}
-                                            onOrder={handleOrder}
-                                            index={index}
+                                    <SoftwareCard
+                                        category={category}
+                                        onClick={() => handleCategoryClick(category)}
                                         />
                                     </div>
                             ))}
@@ -449,8 +600,8 @@ const ServiceRegistration = () => {
                         </div>
                 )}
 
-                    {/* No Packages */}
-                    {!loading && Array.isArray(packages) && packages.length === 0 && (
+                {/* No Categories */}
+                {!loading && Array.isArray(categories) && categories.length === 0 && (
                         <div className="text-center py-20">
                             <div className="relative">
                                 <div className="w-32 h-32 mx-auto mb-8 relative">
@@ -459,14 +610,12 @@ const ServiceRegistration = () => {
                                         <Gift className="w-16 h-16 text-gray-400" />
                                     </div>
                                 </div>
-                                <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Không có gói dịch vụ</h3>
+                            <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Không có danh mục</h3>
                                 <p className="text-gray-600 dark:text-gray-400 max-w-md mx-auto mb-6">
-                                    Hiện tại không có gói dịch vụ nào khả dụng. Vui lòng quay lại sau.
+                                Hiện tại không có danh mục dịch vụ nào khả dụng. Vui lòng quay lại sau.
                                 </p>
                                 <Button 
-                                    onClick={() => {
-                                        loadPackages()
-                                    }}
+                                onClick={loadCategories}
                                     className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors"
                                 >
                                     Thử lại
@@ -476,184 +625,180 @@ const ServiceRegistration = () => {
                 )}
             </div>
 
-            <Dialog isOpen={orderDialog.open} onClose={handleClose} width={600} className="z-[100]">
-                <div className="relative overflow-hidden">
-                    {/* Background Gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900"></div>
+            {/* Service Modal */}
+            <Dialog isOpen={modalOpen} onClose={handleCloseModal} width="95vw" maxWidth="1400px" className="z-[100]">
+                <div className="relative overflow-hidden max-h-[90vh]">
+                    {/* Background */}
+                    <div className="absolute inset-0 bg-gray-50 dark:bg-gray-900"></div>
                     
-                    <div className="relative z-10 p-8">
+                    <div className="relative z-10">
                         {/* Header */}
-                        <div className="text-center mb-8">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-sm font-semibold mb-4">
-                                <Heart className="w-4 h-4" />
-                                Xác nhận đặt hàng
+                        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+                            <div>
+                                <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                                    {selectedCategory?.name}
+                                </h3>
+                                <p className="text-gray-600 dark:text-gray-400">
+                                    {selectedCategory?.description}
+                                </p>
                             </div>
-                            <h4 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-                                Bạn đang chọn gói
-                            </h4>
-                            <p className="text-lg text-blue-600 dark:text-blue-400 font-semibold">
-                                {orderDialog.service?.name}
-                            </p>
+                            <Button
+                                variant="outline"
+                                onClick={handleCloseModal}
+                                className="p-2"
+                            >
+                                <X className="w-5 h-5" />
+                            </Button>
                         </div>
 
-                    {!qrPayload && (
-                        <>
-                            {/* Package Info */}
-                                <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl border border-white/20 p-6 mb-6 shadow-lg">
-                                    <div className="flex items-start gap-4 mb-4">
-                                    {orderDialog.service?.icon && (
-                                            <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 flex items-center justify-center text-2xl shadow-md">
-                                            {orderDialog.service.icon}
+                        {/* Package Tabs */}
+                        <div className="p-6 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                            <div className="flex items-center justify-between mb-4">
+                                <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                                    Chọn gói dịch vụ
+                                </h4>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-sm text-gray-600 dark:text-gray-400">Tiền tệ:</span>
+                                    <select className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+                                        <option value="VND">VND</option>
+                                        <option value="USD">USD</option>
+                                    </select>
+                                            </div>
+                                    </div>
+                            
+                            {packages.length > 0 ? (
+                                <div className="flex flex-wrap gap-2">
+                                    {packages.map((pkg, index) => (
+                                        <button
+                                            key={pkg.id}
+                                            onClick={() => handlePackageTabClick(pkg)}
+                                            className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                                                selectedPackage?.id === pkg.id
+                                                    ? 'bg-blue-600 text-white shadow-sm'
+                                                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                                            }`}
+                                        >
+                                            {pkg.name}
+                                        </button>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="text-center py-4">
+                                    <p className="text-gray-500 dark:text-gray-400">Không có gói dịch vụ nào</p>
+                                        </div>
+                                )}
+                            </div>
+                            
+                        {/* Tiers Display */}
+                        <div className="p-6 max-h-[60vh] overflow-y-auto">
+                            {selectedPackage ? (
+                                        <div>
+                                    <div className="flex items-center gap-3 mb-6">
+                                        <div className="text-2xl">
+                                            {selectedPackage.icon || <Cube className="w-8 h-8" />}
+                                        </div>
+                                        <div>
+                                            <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                                                {selectedPackage.name}
+                                            </h4>
+                                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                                                {selectedPackage.description}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    {tiers.length > 0 ? (
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                            {tiers.map((tier, index) => {
+                                                // Calculate sale percentage (mock for now)
+                                                const salePercentage = [5, 10, 20, 20][index % 4]
+                                                
+                                                return (
+                                                    <div key={tier.id} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 relative hover:shadow-lg transition-shadow">
+                                                        {salePercentage > 0 && (
+                                                            <div className="absolute -top-3 -left-3">
+                                                                <span className="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                                                    Sale {salePercentage}%
+                                        </span>
+                            </div>
+                                                        )}
+                                                        
+                                                        <div className="text-center mb-6">
+                                                            <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                                                                {tier.name}
+                                                            </h4>
+                                                            <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
+                                                                {ServicePackageHelpers.getDurationText(tier)}
+                                                            </p>
+                                                            <div className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+                                                                {ServicePackageHelpers.formatPrice(tier.price, tier.currency)}
+                                                            </div>
+                                </div>
+                                
+                                                        <div className="space-y-3 mb-6">
+                                                            <div className="flex items-center gap-3">
+                                                                <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                                                                <span className="text-sm text-gray-700 dark:text-gray-300">
+                                                                    {tier.device_limit === -1 ? 'Không giới hạn' : `${tier.device_limit} thiết bị`}
+                                                                </span>
+                                                            </div>
+                                                            <div className="flex items-center gap-3">
+                                                                <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                                                                <span className="text-sm text-gray-700 dark:text-gray-300">Hỗ trợ chat 24/7</span>
+                                                            </div>
+                                                            <div className="flex items-center gap-3">
+                                                                <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                                                                <span className="text-sm text-gray-700 dark:text-gray-300">Tính năng không giới hạn</span>
+                            </div>
+                                                            <div className="flex items-center gap-3">
+                                                                <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                                                                <span className="text-sm text-gray-700 dark:text-gray-300">Cập nhật tính năng hàng ngày</span>
+                                    </div>
+                                </div>
+                                
+                                                        <button 
+                                                            onClick={() => handleTierPurchase(tier)}
+                                                            disabled={purchaseLoading || purchasedTiers.has(tier.id)}
+                                                            className={`w-full font-medium py-3 px-4 rounded-lg transition-colors ${
+                                                                purchasedTiers.has(tier.id)
+                                                                    ? 'bg-green-600 text-white cursor-not-allowed'
+                                                                    : 'bg-blue-600 hover:bg-blue-700 text-white'
+                                                            }`}
+                                                        >
+                                                            {purchasedTiers.has(tier.id) ? 'Đã mua' : 'Đặt hàng ngay'}
+                                                        </button>
+                                        </div>
+                                                )
+                                            })}
+                                        </div>
+                                    ) : (
+                                        <div className="text-center py-12">
+                                            <div className="text-gray-400 mb-4">
+                                                <Cube className="w-16 h-16 mx-auto" />
+                                        </div>
+                                            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                                                Không có cấp độ nào
+                                            </h3>
+                                            <p className="text-gray-500 dark:text-gray-400">
+                                                Gói dịch vụ này chưa có cấp độ nào
+                                            </p>
                                         </div>
                                     )}
-                                        <div className="flex-1">
-                                            <div className="font-bold text-xl text-gray-900 dark:text-gray-100 mb-2">
-                                                {orderDialog.service?.name}
-                                            </div>
-                                            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                                                <Clock className="w-4 h-4" />
-                                                <span>
-                                            {orderDialog.service ? ServicePackageHelpers.getDurationText(orderDialog.service) : 'Không xác định'}
-                                                </span>
-                                            </div>
+                                        </div>
+                            ) : (
+                                <div className="text-center py-12">
+                                    <div className="text-gray-400 mb-4">
+                                        <Cube className="w-16 h-16 mx-auto" />
                                     </div>
-                                </div>
-                                
-                                {orderDialog.service?.description && (
-                                        <p className="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">
-                                        {orderDialog.service.description}
+                                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                                        Chọn gói dịch vụ
+                                    </h3>
+                                    <p className="text-gray-500 dark:text-gray-400">
+                                        Vui lòng chọn một gói dịch vụ để xem các cấp độ
                                     </p>
-                                )}
-                                
-                                {orderDialog.service?.features && orderDialog.service.features.length > 0 && (
-                                        <div className="space-y-2">
-                                            <h5 className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                                                <Sparkles className="w-4 h-4 text-blue-500" />
-                                                Tính năng bao gồm
-                                            </h5>
-                                            <div className="grid grid-cols-1 gap-2">
-                                                {orderDialog.service.features.slice(0, 6).map((feature, i) => (
-                                                    <div key={i} className="flex items-center gap-2">
-                                                        <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                                                        <span className="text-sm text-gray-700 dark:text-gray-300">
-                                                            {feature.name || feature}
-                                                        </span>
-                                                    </div>
-                                                ))}
-                                                {orderDialog.service.features.length > 6 && (
-                                                    <div className="text-xs text-gray-500 dark:text-gray-400 ml-6">
-                                                        +{orderDialog.service.features.length - 6} tính năng khác
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                )}
-                            </div>
-                            
-                            {/* Price Display */}
-                                <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl p-6 mb-6 text-white">
-                                    <div className="flex items-center justify-between">
-                                        <div>
-                                            <div className="text-sm opacity-90">Tổng thanh toán</div>
-                                            <div className="text-3xl font-black">
-                                    {orderDialog.service ? ServicePackageHelpers.formatPrice(orderDialog.service.price || 0, orderDialog.service.currency || 'VND') : '0 ₫'}
-                                            </div>
-                                        </div>
-                                        <div className="text-right">
-                                            <div className="text-sm opacity-90">Phương thức</div>
-                                            <div className="text-lg font-semibold">Số dư tài khoản</div>
-                                        </div>
-                                    </div>
-                            </div>
-                            
-                                <div className="flex items-center justify-end gap-3">
-                                    <Button 
-                                        variant="outline" 
-                                        onClick={handleClose}
-                                        className="px-6 py-2"
-                                    >
-                                        Hủy bỏ
-                                    </Button>
-                                <Button 
-                                    variant="solid" 
-                                    loading={qrLoading} 
-                                    onClick={handleCreatePayment}
-                                        className="px-8 py-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 shadow-lg"
-                                >
-                                        <span className="flex items-center gap-2">
-                                            <Lightning className="w-4 h-4" />
-                                            Thanh toán ngay
-                                        </span>
-                                </Button>
-                            </div>
-                        </>
-                    )}
-
-                    {qrPayload && (
-                            <div className="space-y-6">
-                                <div className="text-center">
-                                    <h5 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
-                                        Quét mã QR để thanh toán
-                                    </h5>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                                        Sử dụng ứng dụng ngân hàng để quét mã QR bên dưới
-                                    </p>
-                                </div>
-                                
-                                <div className="flex justify-center">
-                                    <div className="relative">
-                                        <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl blur-sm"></div>
-                                        <div className="relative bg-white p-4 rounded-2xl">
-                                <img
-                                    src={buildQrUrl(qrPayload.qr_text || '')}
-                                    alt="QR Thanh toán"
-                                    className="w-64 h-64"
-                                />
-                            </div>
-                                    </div>
-                                </div>
-                                
-                                <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl border border-white/20 p-6">
-                                    <h6 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
-                                        <Shield className="w-4 h-4 text-blue-500" />
-                                        Thông tin thanh toán
-                                    </h6>
-                                    <div className="space-y-3">
-                                        <div className="flex justify-between">
-                                            <span className="text-sm text-gray-600 dark:text-gray-400">Ngân hàng:</span>
-                                            <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">{qrPayload.bank?.name}</span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span className="text-sm text-gray-600 dark:text-gray-400">Chủ TK:</span>
-                                            <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">{qrPayload.bank?.account_name}</span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span className="text-sm text-gray-600 dark:text-gray-400">Số TK:</span>
-                                            <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 font-mono">{qrPayload.bank?.account_number}</span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span className="text-sm text-gray-600 dark:text-gray-400">Số tiền:</span>
-                                            <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
-                                                {(qrPayload.amount || amount).toLocaleString('vi-VN')}đ
-                                            </span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span className="text-sm text-gray-600 dark:text-gray-400">Nội dung:</span>
-                                            <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 font-mono">{qrPayload.note}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div className="flex justify-center">
-                                    <Button 
-                                        onClick={handleClose}
-                                        className="px-8 py-2"
-                                    >
-                                        Đóng
-                                    </Button>
-                            </div>
                             </div>
                         )}
+                        </div>
                         </div>
                 </div>
             </Dialog>

@@ -22,6 +22,8 @@ class ServicePackagePaymentController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'service_package_id' => 'required|integer|exists:service_packages,id',
+            'tier_id' => 'required|integer|exists:service_package_tiers,id',
+            'price' => 'required|numeric|min:0',
             'payment_method' => 'nullable|string|max:255',
             'notes' => 'nullable|string|max:1000',
         ]);
@@ -49,11 +51,11 @@ class ServicePackagePaymentController extends Controller
             }
 
             // Kiểm tra số dư của user
-            if (!$user->hasSufficientBalance($servicePackage->price)) {
+            if (!$user->hasSufficientBalance($request->price)) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Số dư không đủ để mua gói dịch vụ này',
-                    'required_amount' => $servicePackage->price,
+                    'required_amount' => $request->price,
                     'current_balance' => $user->balance
                 ], 400);
             }
@@ -62,22 +64,23 @@ class ServicePackagePaymentController extends Controller
             $transaction = Transaction::create([
                 'user_id' => $user->id,
                 'type' => 'service_package_purchase',
-                'amount' => -$servicePackage->price, // Số âm vì là chi tiêu
-                'currency' => $servicePackage->currency,
+                'amount' => -$request->price, // Số âm vì là chi tiêu
+                'currency' => 'VND', // Mặc định VND
                 'status' => 'completed',
                 'description' => "Mua gói dịch vụ: {$servicePackage->name}",
                 'reference_id' => $servicePackage->id,
                 'reference_type' => ServicePackage::class,
                 'metadata' => [
                     'package_name' => $servicePackage->name,
-                    'package_price' => $servicePackage->price,
+                    'tier_id' => $request->tier_id,
+                    'tier_price' => $request->price,
                     'payment_method' => $request->payment_method,
                     'notes' => $request->notes,
                 ]
             ]);
 
             // Trừ tiền từ balance của user
-            if (!$user->deductBalance($servicePackage->price)) {
+            if (!$user->deductBalance($request->price)) {
                 throw new InsufficientFundsException('Không thể trừ tiền từ tài khoản');
             }
 

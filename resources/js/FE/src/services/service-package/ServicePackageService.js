@@ -372,6 +372,15 @@ export async function apiGetServicePackagesByCategory(categoryId, params = {}) {
     })
 }
 
+// Get packages with tiers by category
+export async function apiGetServicePackagesWithTiersByCategory(categoryId, params = {}) {
+    return ApiService.fetchDataWithAxios({
+        url: `/service-package-categories/${categoryId}/packages-with-tiers`,
+        method: 'get',
+        params,
+    })
+}
+
 // ===== SERVICE PACKAGE TIERS =====
 
 // Get all service package tiers
@@ -420,7 +429,7 @@ export async function apiDeleteServicePackageTier(id) {
 // Get tiers by package
 export async function apiGetServicePackageTiersByPackage(packageId, params = {}) {
     return ApiService.fetchDataWithAxios({
-        url: `/service-packages/${packageId}/tiers`,
+        url: `/service-package-tiers/package/${packageId}`,
         method: 'get',
         params,
     })
@@ -468,6 +477,7 @@ export default {
     apiUpdateServicePackageCategory,
     apiDeleteServicePackageCategory,
     apiGetServicePackagesByCategory,
+    apiGetServicePackagesWithTiersByCategory,
     // Tiers
     apiGetServicePackageTiers,
     apiGetServicePackageTier,
