@@ -258,8 +258,8 @@ class DeviceController extends Controller
             $result = $this->service->delete($device);
 
             if ($result) {
-                // Bắn event để refresh data table
-                event(new TiktokAccountTableReload('Thiết bị đã được xóa thành công', $device->user_id));
+                // Bỏ tính năng reload table khi xóa device
+                // event(new TiktokAccountTableReload('Thiết bị đã được xóa thành công', $device->user_id));
 
                 return response()->json([
                     'success' => true,

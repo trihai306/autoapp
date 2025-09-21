@@ -52,13 +52,13 @@ class DeviceService implements DeviceServiceInterface
 
     public function delete(Device $device): bool
     {
-        $userId = $device->user_id;
         $result = $this->deviceRepository->delete($device);
         
-        if ($result) {
-            // Dispatch event để làm mới bảng
-            event(new DeviceTableReload('Thiết bị đã được xóa', $userId));
-        }
+        // Bỏ tính năng reload table khi xóa device
+        // if ($result) {
+        //     // Dispatch event để làm mới bảng
+        //     event(new DeviceTableReload('Thiết bị đã được xóa', $userId));
+        // }
         
         return $result;
     }
