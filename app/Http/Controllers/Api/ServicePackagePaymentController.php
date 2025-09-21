@@ -88,8 +88,8 @@ class ServicePackagePaymentController extends Controller
             $subscription = UserServicePackage::createSubscription(
                 $user->id,
                 $servicePackage->id,
-                $servicePackage->price,
-                $servicePackage->currency,
+                $request->price,
+                'VND', // Mặc định VND
                 $transaction->id,
                 $request->payment_method
             );
