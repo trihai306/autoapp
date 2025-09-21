@@ -155,7 +155,10 @@ class ProxyController extends Controller
 
         $this->proxyService->delete($proxy);
 
-        return response()->json(null, 204);
+        return response()->json([
+            'success' => true,
+            'message' => 'Proxy deleted successfully'
+        ], 200);
     }
 
     /**

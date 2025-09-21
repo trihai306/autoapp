@@ -16,6 +16,7 @@ class UserServicePackage extends Model
     protected $fillable = [
         'user_id',
         'service_package_id',
+        'tier_id',
         'status',
         'started_at',
         'expires_at',
@@ -54,6 +55,14 @@ class UserServicePackage extends Model
     public function servicePackage(): BelongsTo
     {
         return $this->belongsTo(ServicePackage::class);
+    }
+
+    /**
+     * Relationship với ServicePackageTier
+     */
+    public function tier(): BelongsTo
+    {
+        return $this->belongsTo(ServicePackageTier::class, 'tier_id');
     }
 
     /**
@@ -159,6 +168,7 @@ class UserServicePackage extends Model
         int $servicePackageId,
         float $amountPaid,
         string $currency = 'VND',
+        ?int $tierId = null,
         ?int $transactionId = null,
         ?string $paymentMethod = null
     ): self {
@@ -167,12 +177,12 @@ class UserServicePackage extends Model
         
         // Tính thời gian hết hạn
         $expiresAt = $now->copy();
-        if ($package->duration_days) {
-            $expiresAt->addDays($package->duration_days);
-        } elseif ($package->duration_months) {
-            $expiresAt->addMonths($package->duration_months);
-        } elseif ($package->duration_years) {
-            $expiresAt->addYears($package->duration_years);
+        if ($package->duration_type === 'days') {
+            $expiresAt->addDays($package->duration_value);
+        } elseif ($package->duration_type === 'months') {
+            $expiresAt->addMonths($package->duration_value);
+        } elseif ($package->duration_type === 'years') {
+            $expiresAt->addYears($package->duration_value);
         } else {
             // Không giới hạn thời gian
             $expiresAt = null;
@@ -181,6 +191,7 @@ class UserServicePackage extends Model
         return self::create([
             'user_id' => $userId,
             'service_package_id' => $servicePackageId,
+            'tier_id' => $tierId,
             'status' => self::STATUS_ACTIVE,
             'started_at' => $now,
             'expires_at' => $expiresAt,
@@ -211,12 +222,12 @@ class UserServicePackage extends Model
         } else {
             // Gia hạn theo thời gian của gói
             $package = $this->servicePackage;
-            if ($package->duration_days) {
-                $newExpiresAt->addDays($package->duration_days);
-            } elseif ($package->duration_months) {
-                $newExpiresAt->addMonths($package->duration_months);
-            } elseif ($package->duration_years) {
-                $newExpiresAt->addYears($package->duration_years);
+            if ($package->duration_type === 'days') {
+                $newExpiresAt->addDays($package->duration_value);
+            } elseif ($package->duration_type === 'months') {
+                $newExpiresAt->addMonths($package->duration_value);
+            } elseif ($package->duration_type === 'years') {
+                $newExpiresAt->addYears($package->duration_value);
             }
         }
 

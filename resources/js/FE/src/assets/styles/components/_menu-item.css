@@ -7,7 +7,9 @@
     }
   
     &.menu-item-active {
-      @apply text-primary hover:text-primary;
+      @apply text-primary bg-primary-subtle hover:text-primary hover:bg-primary-subtle;
+      background-color: rgb(59 130 246 / 0.1) !important;
+      color: rgb(59 130 246) !important;
     }
   
     a {
@@ -44,7 +46,9 @@
       }
 
       &.menu-item-active {
-        @apply text-primary hover:text-primary;
+        @apply text-primary bg-primary-subtle hover:text-primary hover:bg-primary-subtle;
+        background-color: rgb(59 130 246 / 0.1) !important;
+        color: rgb(59 130 246) !important;
       } 
     }
 

@@ -17,7 +17,7 @@ import { useTranslations } from 'next-intl'
 const validationSchema = z.object({
     name: z.string().min(1, 'Name is required'),
     host: z.string().min(1, 'Host is required'),
-    port: z.number().min(1, 'Port is required'),
+    port: z.number().min(1, 'Port must be at least 1').max(65535, 'Port must be at most 65535'),
     type: z.string().min(1, 'Type is required'),
     status: z.string().min(1, 'Status is required'),
 });
@@ -122,7 +122,20 @@ const ProxyForm = ({ mode = 'add', proxy, onClose }) => {
                         <Controller name="host" control={control} render={({ field }) => <Input placeholder={t('form.hostPlaceholder')} {...field} />} />
                     </FormItem>
                     <FormItem label={t('form.portLabel')} invalid={Boolean(errors.port)} errorMessage={errors.port?.message}>
-                        <Controller name="port" control={control} render={({ field }) => <Input type="number" placeholder={t('form.portPlaceholder')} {...field} />} />
+                        <Controller 
+                            name="port" 
+                            control={control} 
+                            render={({ field }) => (
+                                <Input 
+                                    type="number" 
+                                    placeholder={t('form.portPlaceholder')} 
+                                    min="1"
+                                    max="65535"
+                                    step="1"
+                                    {...field} 
+                                />
+                            )} 
+                        />
                     </FormItem>
                 </div>
 

@@ -23,40 +23,31 @@ const ActionColumn = ({ onEdit, onDelete, onTest }) => {
     const t_test = useTranslations('proxy-management')
     
     return (
-        <div className="flex items-center justify-end gap-3">
+        <div className="flex items-center justify-end gap-2 min-w-[140px]">
             <Tooltip title={t_test('test.title')}>
-                <div
-                    className={`text-xl cursor-pointer select-none font-semibold text-blue-500`}
-                    role="button"
+                <button
+                    className={`text-xl cursor-pointer select-none font-semibold text-blue-500 hover:text-blue-600 transition-colors p-1 rounded hover:bg-blue-50`}
                     onClick={onTest}
                 >
                     <TbPlayerPlay />
-                </div>
+                </button>
             </Tooltip>
             <Tooltip title={t('table.edit')}>
-                <div
-                    className={`text-xl cursor-pointer select-none font-semibold`}
-                    role="button"
+                <button
+                    className={`text-xl cursor-pointer select-none font-semibold hover:text-gray-600 transition-colors p-1 rounded hover:bg-gray-50`}
                     onClick={onEdit}
                 >
                     <TbPencil />
-                </div>
+                </button>
             </Tooltip>
-            <ConfirmDialog
-                onConfirm={onDelete}
-                title={t_delete('deleteConfirm.title')}
-                content={t_delete('deleteConfirm.content')}
-                confirmText={t_delete('deleteConfirm.confirmText')}
-            >
-                <Tooltip title={t('table.delete')}>
-                    <div
-                        className={`text-xl cursor-pointer select-none font-semibold text-red-500`}
-                        role="button"
-                    >
-                        <TbTrash />
-                    </div>
-                </Tooltip>
-            </ConfirmDialog>
+            <Tooltip title={t('table.delete')}>
+                <button
+                    className={`text-xl cursor-pointer select-none font-semibold text-red-500 hover:text-red-600 transition-colors p-1 rounded hover:bg-red-50`}
+                    onClick={onDelete}
+                >
+                    <TbTrash />
+                </button>
+            </Tooltip>
         </div>
     )
 }
@@ -69,6 +60,7 @@ const ProxyListTable = ({
     const router = useRouter()
     const t = useTranslations('proxy-management.table')
     const tStatus = useTranslations('proxy-management.status')
+    const [deleteConfirm, setDeleteConfirm] = useState(null)
     const allColumns = [
         { header: t('name'), accessorKey: 'name' },
         { header: t('host'), accessorKey: 'host' },
@@ -89,7 +81,13 @@ const ProxyListTable = ({
     }
 
     const handleDelete = async (proxy) => {
-        const result = await deleteProxy(proxy.id)
+        setDeleteConfirm(proxy)
+    }
+
+    const confirmDelete = async () => {
+        if (!deleteConfirm) return
+        
+        const result = await deleteProxy(deleteConfirm.id)
         if (result.success) {
             toast.push(
                 <Notification title="Success" type="success" closable>
@@ -104,6 +102,7 @@ const ProxyListTable = ({
                 </Notification>
             )
         }
+        setDeleteConfirm(null)
     }
 
     const handleTest = async (proxy) => {
@@ -191,6 +190,8 @@ const ProxyListTable = ({
             const actionColumn = {
                 header: '',
                 id: 'action',
+                enableSorting: false,
+                enableHiding: false,
                 cell: (props) => (
                     <ActionColumn
                         onEdit={() => handleEdit(props.row.original)}
@@ -221,6 +222,18 @@ const ProxyListTable = ({
     return (
         <div>
             <ProxyListTableTools columns={columns} selectableColumns={allColumns} onColumnToggle={onColumnToggle} />
+            <style jsx>{`
+                .proxy-table :global(.action-column) {
+                    min-width: 140px !important;
+                    width: 140px !important;
+                }
+                .proxy-table :global(th:last-child),
+                .proxy-table :global(td:last-child) {
+                    min-width: 140px !important;
+                    width: 140px !important;
+                    text-align: right !important;
+                }
+            `}</style>
             <DataTable
                 selectable
                 columns={columns}
@@ -240,7 +253,28 @@ const ProxyListTable = ({
                 onSort={handleSort}
                 onCheckBoxChange={handleRowSelect}
                 onIndeterminateCheckBoxChange={handleAllRowSelect}
+                className="proxy-table"
             />
+            
+            {/* Delete Confirmation Dialog */}
+            <ConfirmDialog
+                isOpen={!!deleteConfirm}
+                type="danger"
+                title="Xác nhận xóa"
+                onClose={() => setDeleteConfirm(null)}
+                onRequestClose={() => setDeleteConfirm(null)}
+                onCancel={() => setDeleteConfirm(null)}
+                onConfirm={confirmDelete}
+                cancelText="Hủy"
+                confirmText="Xóa"
+                confirmButtonProps={{
+                    color: 'red-600'
+                }}
+            >
+                <p className="text-gray-600">
+                    Bạn có chắc chắn muốn xóa proxy "{deleteConfirm?.name}" không? Hành động này không thể hoàn tác.
+                </p>
+            </ConfirmDialog>
         </div>
     )
 }

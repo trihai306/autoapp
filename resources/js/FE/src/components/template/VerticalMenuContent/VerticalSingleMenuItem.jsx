@@ -83,7 +83,7 @@ const DefaultItem = (props) => {
                 key={nav.key} 
                 eventKey={nav.key} 
                 dotIndent={indent}
-                active={isActive ? 'true' : undefined}
+                isActive={isActive}
             >
                 <Link
                     href={nav.path}

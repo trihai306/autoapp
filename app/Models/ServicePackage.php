@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
@@ -12,14 +13,14 @@ class ServicePackage extends Model
     use HasFactory;
 
     protected $fillable = [
+        'category_id',
         'name',
         'slug',
         'description',
-        'price',
-        'currency',
-        'duration_days',
-        'duration_months',
-        'duration_years',
+        'duration_type',
+        'duration_value',
+        'platform',
+        'platform_settings',
         'is_active',
         'is_popular',
         'sort_order',
@@ -30,15 +31,13 @@ class ServicePackage extends Model
     ];
 
     protected $casts = [
-        'price' => 'decimal:2',
         'is_active' => 'boolean',
         'is_popular' => 'boolean',
+        'sort_order' => 'integer',
+        'duration_value' => 'integer',
         'features' => 'array',
         'limits' => 'array',
-        'duration_days' => 'integer',
-        'duration_months' => 'integer',
-        'duration_years' => 'integer',
-        'sort_order' => 'integer',
+        'platform_settings' => 'array',
     ];
 
     /**
@@ -62,7 +61,34 @@ class ServicePackage extends Model
     }
 
     /**
-     * Relationship với ServicePackageFeature
+     * Relationship với ServicePackageCategory
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(ServicePackageCategory::class, 'category_id');
+    }
+
+    /**
+     * Relationship với ServicePackageTier
+     */
+    public function tiers(): HasMany
+    {
+        return $this->hasMany(ServicePackageTier::class);
+    }
+
+    /**
+     * Relationship với active ServicePackageTier
+     */
+    public function activeTiers(): HasMany
+    {
+        return $this->hasMany(ServicePackageTier::class)
+                    ->where('is_active', true)
+                    ->orderBy('sort_order')
+                    ->orderBy('device_limit');
+    }
+
+    /**
+     * Relationship với ServicePackageFeature (giữ lại cho backward compatibility)
      */
     public function features(): HasMany
     {
@@ -88,7 +114,7 @@ class ServicePackage extends Model
     }
 
     /**
-     * Scope để lấy các gói đang hoạt động
+     * Scope để lấy các package đang hoạt động
      */
     public function scopeActive($query)
     {
@@ -96,7 +122,7 @@ class ServicePackage extends Model
     }
 
     /**
-     * Scope để lấy các gói phổ biến
+     * Scope để lấy các package phổ biến
      */
     public function scopePopular($query)
     {
@@ -108,7 +134,31 @@ class ServicePackage extends Model
      */
     public function scopeOrdered($query)
     {
-        return $query->orderBy('sort_order')->orderBy('price');
+        return $query->orderBy('sort_order')->orderBy('duration_value');
+    }
+
+    /**
+     * Scope để lấy package theo category
+     */
+    public function scopeByCategory($query, $categoryId)
+    {
+        return $query->where('category_id', $categoryId);
+    }
+
+    /**
+     * Scope để lấy package theo platform
+     */
+    public function scopeByPlatform($query, $platform)
+    {
+        return $query->where('platform', $platform);
+    }
+
+    /**
+     * Scope để lấy package theo duration type
+     */
+    public function scopeByDurationType($query, $durationType)
+    {
+        return $query->where('duration_type', $durationType);
     }
 
     /**
@@ -116,42 +166,152 @@ class ServicePackage extends Model
      */
     public function getDurationAttribute(): string
     {
-        if ($this->duration_years) {
-            return $this->duration_years . ' năm';
+        if ($this->duration_type === 'years') {
+            return $this->duration_value . ' năm';
         }
         
-        if ($this->duration_months) {
-            return $this->duration_months . ' tháng';
+        if ($this->duration_type === 'months') {
+            return $this->duration_value . ' tháng';
         }
         
-        if ($this->duration_days) {
-            return $this->duration_days . ' ngày';
+        if ($this->duration_type === 'days') {
+            return $this->duration_value . ' ngày';
         }
         
         return 'Không giới hạn';
     }
 
     /**
-     * Lấy giá đã format
+     * Lấy thời hạn sử dụng dưới dạng số ngày
      */
-    public function getFormattedPriceAttribute(): string
+    public function getDurationInDaysAttribute(): int
     {
-        return number_format($this->price, 0, ',', '.') . ' ' . $this->currency;
+        if ($this->duration_type === 'years') {
+            return $this->duration_value * 365;
+        }
+        
+        if ($this->duration_type === 'months') {
+            return $this->duration_value * 30;
+        }
+        
+        if ($this->duration_type === 'days') {
+            return $this->duration_value;
+        }
+        
+        return 0;
     }
 
     /**
-     * Kiểm tra xem gói có phải là gói miễn phí không
+     * Lấy giá thấp nhất từ các tiers
      */
-    public function isFree(): bool
+    public function getMinPriceAttribute(): ?float
     {
-        return $this->price == 0;
+        return $this->activeTiers()->min('price');
     }
 
     /**
-     * Kiểm tra xem gói có thời hạn không
+     * Lấy giá cao nhất từ các tiers
+     */
+    public function getMaxPriceAttribute(): ?float
+    {
+        return $this->activeTiers()->max('price');
+    }
+
+    /**
+     * Lấy giá đã format thấp nhất
+     */
+    public function getFormattedMinPriceAttribute(): string
+    {
+        $minPrice = $this->min_price;
+        if (!$minPrice) {
+            return 'Liên hệ';
+        }
+        
+        return number_format($minPrice, 0, ',', '.') . ' VND';
+    }
+
+    /**
+     * Lấy số lượng tiers
+     */
+    public function getTiersCountAttribute(): int
+    {
+        return $this->tiers()->count();
+    }
+
+    /**
+     * Lấy số lượng active tiers
+     */
+    public function getActiveTiersCountAttribute(): int
+    {
+        return $this->activeTiers()->count();
+    }
+
+    /**
+     * Lấy tier phổ biến nhất
+     */
+    public function getPopularTierAttribute(): ?ServicePackageTier
+    {
+        return $this->activeTiers()->where('is_popular', true)->first();
+    }
+
+    /**
+     * Lấy tier theo số lượng thiết bị
+     */
+    public function getTierByDeviceLimit(int $deviceLimit): ?ServicePackageTier
+    {
+        return $this->activeTiers()
+                    ->where('device_limit', '>=', $deviceLimit)
+                    ->orderBy('device_limit')
+                    ->first();
+    }
+
+    /**
+     * Kiểm tra xem package có tiers không
+     */
+    public function hasTiers(): bool
+    {
+        return $this->tiers()->exists();
+    }
+
+    /**
+     * Kiểm tra xem package có active tiers không
+     */
+    public function hasActiveTiers(): bool
+    {
+        return $this->activeTiers()->exists();
+    }
+
+    /**
+     * Kiểm tra xem package có thời hạn không
      */
     public function hasDuration(): bool
     {
-        return $this->duration_days || $this->duration_months || $this->duration_years;
+        return $this->duration_value > 0;
+    }
+
+    /**
+     * Lấy thông tin package đầy đủ với tiers
+     */
+    public function getFullInfoAttribute(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'slug' => $this->slug,
+            'description' => $this->description,
+            'duration' => $this->duration,
+            'duration_in_days' => $this->duration_in_days,
+            'platform' => $this->platform,
+            'platform_settings' => $this->platform_settings,
+            'is_active' => $this->is_active,
+            'is_popular' => $this->is_popular,
+            'min_price' => $this->min_price,
+            'max_price' => $this->max_price,
+            'formatted_min_price' => $this->formatted_min_price,
+            'tiers_count' => $this->tiers_count,
+            'active_tiers_count' => $this->active_tiers_count,
+            'category' => $this->category,
+            'tiers' => $this->activeTiers->map->full_info,
+        ];
     }
 }

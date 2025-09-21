@@ -20,6 +20,8 @@ use App\Http\Controllers\Api\ContentGroupController;
 use App\Http\Controllers\Api\ContentController;
 use App\Http\Controllers\Api\ProxyController;
 use App\Http\Controllers\Api\ServicePackageController;
+use App\Http\Controllers\Api\ServicePackageCategoryController;
+use App\Http\Controllers\Api\ServicePackageTierController;
 use App\Http\Controllers\Api\ServicePackagePaymentController;
 use App\Http\Controllers\RealtimeTestController;
 use App\Http\Controllers\Api\PrivateUserController;
@@ -173,7 +175,23 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/service-packages/bulk-delete', [ServicePackageController::class, 'bulkDelete']);
     Route::post('/service-packages/bulk-update-status', [ServicePackageController::class, 'bulkUpdateStatus']);
     Route::get('/service-packages/search', [ServicePackageController::class, 'search']);
+    Route::get('/service-packages/category/{id}/packages', [ServicePackageController::class, 'byCategory']);
+    Route::get('/service-packages/platform/{platform}', [ServicePackageController::class, 'byPlatform']);
+    Route::get('/service-packages/{id}/with-tiers', [ServicePackageController::class, 'withTiers']);
+    Route::post('/service-packages/{id}/recommend-tier', [ServicePackageController::class, 'recommendTier']);
     Route::apiResource('service-packages', ServicePackageController::class);
+
+    // Service Package Categories
+    Route::get('/service-package-categories/{id}/packages', [ServicePackageCategoryController::class, 'packages']);
+    Route::get('/service-package-categories/{id}/packages-with-tiers', [ServicePackageCategoryController::class, 'packagesWithTiers']);
+    Route::get('/service-package-categories/{id}/packages-by-platform/{platform}', [ServicePackageCategoryController::class, 'packagesByPlatform']);
+    Route::apiResource('service-package-categories', ServicePackageCategoryController::class);
+
+    // Service Package Tiers
+    Route::get('/service-package-tiers/package/{packageId}', [ServicePackageTierController::class, 'byPackage']);
+    Route::get('/service-package-tiers/device-limit/{deviceLimit}', [ServicePackageTierController::class, 'byDeviceLimit']);
+    Route::post('/service-package-tiers/recommend', [ServicePackageTierController::class, 'recommend']);
+    Route::apiResource('service-package-tiers', ServicePackageTierController::class);
 
     // Service Package Payment routes
     Route::post('/service-packages/purchase', [ServicePackagePaymentController::class, 'purchase']);

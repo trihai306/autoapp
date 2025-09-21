@@ -35,6 +35,12 @@ use App\Repositories\ContentRepositoryInterface;
 use App\Repositories\Eloquent\ContentRepository;
 use App\Repositories\ProxyRepositoryInterface;
 use App\Repositories\Eloquent\ProxyRepository;
+use App\Repositories\ServicePackageRepositoryInterface;
+use App\Repositories\Eloquent\ServicePackageRepository;
+use App\Repositories\ServicePackageCategoryRepositoryInterface;
+use App\Repositories\Eloquent\ServicePackageCategoryRepository;
+use App\Repositories\ServicePackageTierRepositoryInterface;
+use App\Repositories\Eloquent\ServicePackageTierRepository;
 use App\Services\Interfaces\DeviceServiceInterface;
 use App\Services\DeviceService;
 
@@ -61,6 +67,9 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ContentGroupRepositoryInterface::class, ContentGroupRepository::class);
         $this->app->bind(ContentRepositoryInterface::class, ContentRepository::class);
         $this->app->bind(ProxyRepositoryInterface::class, ProxyRepository::class);
+        $this->app->bind(ServicePackageRepositoryInterface::class, ServicePackageRepository::class);
+        $this->app->bind(ServicePackageCategoryRepositoryInterface::class, ServicePackageCategoryRepository::class);
+        $this->app->bind(ServicePackageTierRepositoryInterface::class, ServicePackageTierRepository::class);
         
         // Bind DeviceServiceInterface với DeviceService
         $this->app->bind(DeviceServiceInterface::class, DeviceService::class);
