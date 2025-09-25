@@ -48,6 +48,12 @@ let nextConfig = {
     
     // For SSL issues in development, we'll handle this differently
     // since env config is not allowed for NODE_TLS_REJECT_UNAUTHORIZED
+    
+    // Cấu hình tối ưu RAM - Build theo chế độ ít tốn RAM hơn
+    experimental: {
+        workerThreads: false,
+        cpus: 1
+    }
 };
 
 if (process.env.ANALYZE === 'true') {
