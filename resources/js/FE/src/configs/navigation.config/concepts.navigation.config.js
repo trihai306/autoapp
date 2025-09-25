@@ -1,6 +1,6 @@
 import { CONCEPTS_PREFIX_PATH } from '@/constants/route.constant'
 import {
-    NAV_ITEM_TYPE_TITLE,
+    NAV_ITEM_TYPE_COLLAPSE,
     NAV_ITEM_TYPE_ITEM,
 } from '@/constants/navigation.constant'
 import { ADMIN, USER } from '@/constants/roles.constant'
@@ -13,7 +13,7 @@ const conceptsNavigationConfig = [
         title: 'Bảng điều khiển',
         translateKey: 'nav.dashboardGroup',
         icon: 'concepts',
-        type: NAV_ITEM_TYPE_TITLE,
+        type: NAV_ITEM_TYPE_COLLAPSE,
         authority: [ADMIN, USER],
         meta: {
             horizontalMenu: {
@@ -65,7 +65,7 @@ const conceptsNavigationConfig = [
         title: 'Quản lý tài nguyên',
         translateKey: 'nav.resourceManagementGroup',
         icon: 'management',
-        type: NAV_ITEM_TYPE_TITLE,
+        type: NAV_ITEM_TYPE_COLLAPSE,
         authority: [ADMIN, USER],
         meta: {
             horizontalMenu: {
@@ -90,17 +90,6 @@ const conceptsNavigationConfig = [
                 path: `${CONCEPTS_PREFIX_PATH}/tiktok-account-management`,
                 title: 'Tài khoản TikTok',
                 translateKey: 'nav.conceptsTiktokAccountManagement.tiktokAccountManagement',
-                icon: 'userManagement',
-                type: NAV_ITEM_TYPE_ITEM,
-                authority: [ADMIN, USER],
-                meta: {},
-                subMenu: [],
-            },
-            {
-                key: 'concepts.facebookAccountManagement',
-                path: `${CONCEPTS_PREFIX_PATH}/facebook-account-management`,
-                title: 'Tài khoản Facebook',
-                translateKey: 'nav.conceptsFacebookAccountManagement.facebookAccountManagement',
                 icon: 'userManagement',
                 type: NAV_ITEM_TYPE_ITEM,
                 authority: [ADMIN, USER],

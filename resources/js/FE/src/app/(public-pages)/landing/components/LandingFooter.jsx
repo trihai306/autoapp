@@ -4,6 +4,7 @@ import AuroraBackground from './AuroraBackground'
 import { motion } from 'framer-motion'
 import { MODE_DARK, MODE_LIGHT } from '@/constants/theme.constant'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
 const LandingFooter = ({ mode }) => {
@@ -47,23 +48,16 @@ const LandingFooter = ({ mode }) => {
                 </div>
                 <div className="py-6 border-t border-gray-200 dark:border-gray-800">
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-4">
-                        <Link href="/">
-                            {mode === MODE_LIGHT && (
-                                <img
-                                    src="/img/logo/logo-light-full.png"
-                                    width={120}
-                                    height={40}
-                                    alt="logo"
-                                />
-                            )}
-                            {mode === MODE_DARK && (
-                                <img
-                                    src="/img/logo/logo-dark-full.png"
-                                    width={120}
-                                    height={40}
-                                    alt="logo"
-                                />
-                            )}
+                        <Link href="/" className="block">
+                            {/* Sử dụng logo SI85XhJA.png cho cả dark mode và light mode */}
+                            <Image
+                                src="/img/logo/SI85XhJA.png"
+                                width={100}
+                                height={32}
+                                alt="logo"
+                                className="h-8 w-auto object-contain transition-all duration-200 hover:scale-105 filter-none drop-shadow-sm"
+                                quality={95}
+                            />
                         </Link>
                         <p className="text-center">
                             Copyright © {year} Theme_Nate. All rights reserved.

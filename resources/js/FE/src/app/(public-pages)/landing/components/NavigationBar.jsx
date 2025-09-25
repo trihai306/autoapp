@@ -83,23 +83,17 @@ const Navigation = ({ toggleMode, mode }) => {
                         <NavList onTabClick={onDrawerClose} tabs={navMenu} />
                     </div>
                 </Drawer>
-                <Link href="/">
-                    {mode === 'light' && (
-                        <Image
-                            src="/img/logo/logo-light-full.png"
-                            width={120}
-                            height={40}
-                            alt="logo"
-                        />
-                    )}
-                    {mode === 'dark' && (
-                        <Image
-                            src="/img/logo/logo-dark-full.png"
-                            width={120}
-                            height={40}
-                            alt="logo"
-                        />
-                    )}
+                <Link href="/" className="block">
+                    {/* Sử dụng logo SI85XhJA.png cho cả dark mode và light mode */}
+                    <Image
+                        src="/img/logo/SI85XhJA.png"
+                        width={100}
+                        height={32}
+                        alt="logo"
+                        className="h-8 w-auto object-contain transition-all duration-200 hover:scale-105 filter-none drop-shadow-sm"
+                        quality={95}
+                        priority
+                    />
                 </Link>
                 <div className="lg:flex flex-row flex-1 absolute inset-0 hidden items-center justify-center text-sm text-zinc-600 font-medium hover:text-zinc-800 transition duration-200 [perspective:1000px] overflow-auto sm:overflow-visible no-visible-scrollbar">
                     <NavList tabs={navMenu} />

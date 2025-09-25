@@ -15,51 +15,31 @@ const Logo = (props) => {
         logoHeight,
     } = props
 
-    const width = logoWidth || (type === 'full' ? 120 : 40)
-    const height = logoHeight || (type === 'full' ? 40 : 40)
+    // Điều chỉnh kích thước logo cho phù hợp hơn
+    const width = logoWidth || (type === 'full' ? 40 : 32)
+    const height = logoHeight || (type === 'full' ? 32 : 32)
 
     return (
         <div className={classNames('logo', className)} style={style}>
-            {mode === 'light' && type === 'full' && (
-                <Image
-                    className={classNames(imgClass)}
-                    src={`${LOGO_SRC_PATH}logo-light-full.png`}
-                    alt={`${APP_NAME} logo`}
-                    width={width}
-                    height={height}
-                    priority
-                />
-            )}
-            {mode === 'light' && type === 'streamline' && (
-                <Image
-                    className={classNames(imgClass)}
-                    src={`${LOGO_SRC_PATH}logo-light-streamline.png`}
-                    alt={`${APP_NAME} logo`}
-                    width={width}
-                    height={height}
-                    priority
-                />
-            )}
-            {mode === 'dark' && type === 'full' && (
-                <Image
-                    className={classNames(imgClass)}
-                    src={`${LOGO_SRC_PATH}logo-dark-full.png`}
-                    alt={`${APP_NAME} logo`}
-                    width={width}
-                    height={height}
-                    priority
-                />
-            )}
-            {mode === 'dark' && type === 'streamline' && (
-                <Image
-                    className={classNames(imgClass)}
-                    src={`${LOGO_SRC_PATH}logo-dark-streamline.png`}
-                    alt={`${APP_NAME} logo`}
-                    width={width}
-                    height={height}
-                    priority
-                />
-            )}
+            {/* Sử dụng logo SI85XhJA.png cho cả dark mode và light mode */}
+            <Image
+                className={classNames(
+                    'object-contain transition-all duration-200 hover:scale-105',
+                    // CSS cho logo sắc nét và responsive
+                    'filter-none drop-shadow-sm',
+                    // Responsive sizing
+                    'w-auto h-auto max-w-full',
+                    imgClass
+                )}
+                src={`${LOGO_SRC_PATH}SI85XhJA.png`}
+                alt={`${APP_NAME} logo`}
+                width={width}
+                height={height}
+                priority
+                quality={95}
+                placeholder="blur"
+                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+            />
         </div>
     )
 }

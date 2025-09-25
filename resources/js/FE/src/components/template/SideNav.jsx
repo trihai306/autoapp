@@ -65,10 +65,16 @@ const SideNav = ({
                 style={{ height: HEADER_HEIGHT }}
             >
                 <Logo
-                    imgClass="max-h-10"
+                    imgClass={classNames(
+                        'object-contain transition-all duration-300',
+                        sideNavCollapse 
+                            ? 'h-6 w-auto' 
+                            : 'h-7 w-auto'
+                    )}
                     mode={mode || defaultMode}
                     type={sideNavCollapse ? 'streamline' : 'full'}
                     className={classNames(
+                        'flex items-center justify-center',
                         sideNavCollapse && 'ltr:ml-[11.5px] ltr:mr-[11.5px]',
                         sideNavCollapse
                             ? SIDE_NAV_CONTENT_GUTTER

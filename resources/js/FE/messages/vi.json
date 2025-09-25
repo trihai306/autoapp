@@ -12,10 +12,9 @@
         "dashboardGroup": "Bảng điều khiển",
         "resourceManagementGroup": "Quản lý tài nguyên",
         "conceptsServiceRegistration": "Đăng ký dịch vụ",
-        "conceptsFacebookAccountManagement": {
-            "facebookAccountManagement": "Quản lý tài khoản Facebook"
+        "management": {
+            "management": "Quản lý"
         },
-        "management": "Quản lý",
         "conceptsAi": {
             "ai": "Trí tuệ nhân tạo",
             "chat": "Trò chuyện",

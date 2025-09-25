@@ -12,8 +12,8 @@
         "dashboardGroup": "Dashboard",
         "resourceManagementGroup": "Resource Management",
         "conceptsServiceRegistration": "Service Registration",
-        "conceptsFacebookAccountManagement": {
-            "facebookAccountManagement": "Facebook Account Management"
+        "management": {
+            "management": "Management"
         },
         "conceptsAi": {
             "ai": "AI",

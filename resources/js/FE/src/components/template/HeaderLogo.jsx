@@ -7,9 +7,9 @@ const HeaderLogo = ({ mode }) => {
     const defaultMode = useTheme((state) => state.mode)
 
     return (
-        <Link href={appConfig.authenticatedEntryPath}>
+        <Link href={appConfig.authenticatedEntryPath} className="block">
             <Logo
-                imgClass="max-h-10"
+                imgClass="h-8 w-auto object-contain"
                 mode={mode || defaultMode}
                 className="hidden lg:block"
             />

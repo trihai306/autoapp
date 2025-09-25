@@ -48,7 +48,11 @@ const SpecificLiveInteractionModal = ({
         add_to_cart_rate: 100,
         add_to_cart_gap_from: 1,
         add_to_cart_gap_to: 3,
-        delete_comment_after_done: false
+        delete_comment_after_done: false,
+        enable_cart_interaction: true,
+        cart_interaction_rate: 100,
+        cart_interaction_gap_from: 5,
+        cart_interaction_gap_to: 10
     }
     
     const [config, setConfig] = useState(initialConfig)
@@ -357,7 +361,11 @@ const SpecificLiveInteractionModal = ({
                         add_to_cart_rate: config.add_to_cart_rate,
                         add_to_cart_gap_from: config.add_to_cart_gap_from,
                         add_to_cart_gap_to: config.add_to_cart_gap_to,
-                        delete_comment_after_done: config.delete_comment_after_done
+                        delete_comment_after_done: config.delete_comment_after_done,
+                        enable_cart_interaction: config.enable_cart_interaction,
+                        cart_interaction_rate: config.cart_interaction_rate,
+                        cart_interaction_gap_from: config.cart_interaction_gap_from,
+                        cart_interaction_gap_to: config.cart_interaction_gap_to
                     }
                 }
                 await onSave(action, saveData)
@@ -401,16 +409,16 @@ const SpecificLiveInteractionModal = ({
                 
                 {/* Content */}
                 <div className="p-4 flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900 min-h-0 max-h-[calc(85vh-120px)]">
-                    {/* Cấu hình cơ bản */}
-                    <div className="bg-white dark:bg-gray-800 rounded-lg p-5 mb-6 shadow-sm border border-gray-200 dark:border-gray-700">
+                    {/* 1. Cấu hình cơ bản */}
+                    <div className="bg-white dark:bg-gray-800 rounded-lg p-5 mb-4 shadow-sm border border-gray-200 dark:border-gray-700">
                         <h6 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
                             <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
-                            Cấu hình cơ bản
+                            1. Cấu hình cơ bản
                         </h6>
                         
-                        <div className="grid grid-cols-1 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Tên hành động
                                 </label>
                                 <Input
@@ -419,12 +427,12 @@ const SpecificLiveInteractionModal = ({
                                     className="bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600"
                                 />
                                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                    Đặt tên để dễ dáng nhận biết hành động này, không thể thay đổi.
+                                    Tên hành động không thể thay đổi
                                 </p>
                             </div>
                             
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     URL Live Stream <span className="text-red-500">*</span>
                                 </label>
                                 <Input
@@ -434,49 +442,54 @@ const SpecificLiveInteractionModal = ({
                                     className="border-gray-300 dark:border-gray-600"
                                 />
                                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                    Nhập URL của live stream TikTok mà bạn muốn tương tác.
+                                    URL live stream TikTok cần tương tác
                                 </p>
                             </div>
                         </div>
                     </div>
 
-                    {/* Thời gian xem */}
-                    <div className="bg-white dark:bg-gray-800 rounded-lg p-5 mb-6 shadow-sm border border-gray-200 dark:border-gray-700">
+                    {/* 2. Thời gian xem */}
+                    <div className="bg-white dark:bg-gray-800 rounded-lg p-5 mb-4 shadow-sm border border-gray-200 dark:border-gray-700">
                         <h6 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
                             <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                            Thời gian xem
+                            2. Thời gian xem
                         </h6>
                         
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                                Thời gian xem live (giây)
-                            </label>
-                            <div className="flex items-center gap-3 bg-gray-50 dark:bg-gray-700 rounded-lg p-3 w-fit">
-                                <Input
-                                    type="number"
-                                    min="1"
-                                    value={config.view_from}
-                                    onChange={(e) => handleInputChange('view_from', e.target.value)}
-                                    className="w-20 text-center border-gray-300 dark:border-gray-600"
-                                />
-                                <span className="text-gray-500 font-medium">-</span>
-                                <Input
-                                    type="number"
-                                    min="1"
-                                    value={config.view_to}
-                                    onChange={(e) => handleInputChange('view_to', e.target.value)}
-                                    className="w-20 text-center border-gray-300 dark:border-gray-600"
-                                />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Thời gian xem live (giây)
+                                </label>
+                                <div className="flex items-center gap-3 bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                                    <Input
+                                        type="number"
+                                        min="1"
+                                        value={config.view_from}
+                                        onChange={(e) => handleInputChange('view_from', e.target.value)}
+                                        className="w-20 text-center border-gray-300 dark:border-gray-600"
+                                    />
+                                    <span className="text-gray-500 font-medium">-</span>
+                                    <Input
+                                        type="number"
+                                        min="1"
+                                        value={config.view_to}
+                                        onChange={(e) => handleInputChange('view_to', e.target.value)}
+                                        className="w-20 text-center border-gray-300 dark:border-gray-600"
+                                    />
+                                </div>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                    Khoảng thời gian xem live stream
+                                </p>
                             </div>
                         </div>
                     </div>
 
-                    {/* Tương tác liên tục */}
-                    <div className="bg-white dark:bg-gray-800 rounded-lg p-5 mb-6 shadow-sm border border-gray-200 dark:border-gray-700">
+                    {/* 3. Tương tác liên tục */}
+                    <div className="bg-white dark:bg-gray-800 rounded-lg p-5 mb-4 shadow-sm border border-gray-200 dark:border-gray-700">
                         <div className="flex items-center justify-between mb-4">
                             <h6 className="font-semibold text-gray-900 dark:text-gray-100 flex items-center">
                                 <span className="w-2 h-2 bg-orange-500 rounded-full mr-2"></span>
-                                Tương tác liên tục
+                                3. Tương tác liên tục
                             </h6>
                             <Switcher
                                 checked={config.enable_continuous}
@@ -485,105 +498,101 @@ const SpecificLiveInteractionModal = ({
                         </div>
                         
                         {config.enable_continuous && (
-                            <div className="space-y-6">
-                                {/* Khoảng cách giữa các lần tương tác */}
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                                        Khoảng cách giữa các lần tương tác (giây)
-                                    </label>
-                                    <div className="flex items-center gap-3 bg-gray-50 dark:bg-gray-700 rounded-lg p-3 w-fit">
-                                        <Input
-                                            type="number"
-                                            min="1"
-                                            value={config.continuous_gap_from}
-                                            onChange={(e) => handleInputChange('continuous_gap_from', e.target.value)}
-                                            className="w-20 text-center border-gray-300 dark:border-gray-600"
-                                        />
-                                        <span className="text-gray-500 font-medium">-</span>
-                                        <Input
-                                            type="number"
-                                            min="1"
-                                            value={config.continuous_gap_to}
-                                            onChange={(e) => handleInputChange('continuous_gap_to', e.target.value)}
-                                            className="w-20 text-center border-gray-300 dark:border-gray-600"
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Like liên tục */}
-                                <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-4">
-                                    <div className="flex items-center justify-between mb-3">
-                                        <h6 className="font-medium text-gray-900 dark:text-gray-100">
-                                            Like liên tục
-                                        </h6>
-                                        <Switcher
-                                            checked={config.continuous_like_enable}
-                                            onChange={(checked) => handleSwitchChange('continuous_like_enable', checked)}
-                                        />
-                                    </div>
-                                    
-                                    {config.continuous_like_enable && (
-                                        <div>
-                                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">
-                                                Số lượng like mỗi lần
-                                            </label>
-                                            <div className="flex items-center gap-3 bg-gray-50 dark:bg-gray-700 rounded-lg p-3 w-fit">
-                                                <Input
-                                                    type="number"
-                                                    min="1"
-                                                    value={config.continuous_like_count_from}
-                                                    onChange={(e) => handleInputChange('continuous_like_count_from', e.target.value)}
-                                                    className="w-20 text-center border-gray-300 dark:border-gray-600 text-sm"
-                                                />
-                                                <span className="text-gray-500 text-sm">-</span>
-                                                <Input
-                                                    type="number"
-                                                    min="1"
-                                                    value={config.continuous_like_count_to}
-                                                    onChange={(e) => handleInputChange('continuous_like_count_to', e.target.value)}
-                                                    className="w-20 text-center border-gray-300 dark:border-gray-600 text-sm"
-                                                />
-                                            </div>
+                            <div className="space-y-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            Khoảng cách giữa các lần tương tác (giây)
+                                        </label>
+                                        <div className="flex items-center gap-3 bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                                            <Input
+                                                type="number"
+                                                min="1"
+                                                value={config.continuous_gap_from}
+                                                onChange={(e) => handleInputChange('continuous_gap_from', e.target.value)}
+                                                className="w-20 text-center border-gray-300 dark:border-gray-600"
+                                            />
+                                            <span className="text-gray-500 font-medium">-</span>
+                                            <Input
+                                                type="number"
+                                                min="1"
+                                                value={config.continuous_gap_to}
+                                                onChange={(e) => handleInputChange('continuous_gap_to', e.target.value)}
+                                                className="w-20 text-center border-gray-300 dark:border-gray-600"
+                                            />
                                         </div>
-                                    )}
+                                    </div>
                                 </div>
 
-                                {/* Comment liên tục */}
-                                <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-4">
-                                    <div className="flex items-center justify-between mb-3">
-                                        <h6 className="font-medium text-gray-900 dark:text-gray-100">
-                                            Comment liên tục
-                                        </h6>
-                                        <Switcher
-                                            checked={config.continuous_comment_enable}
-                                            onChange={(checked) => handleSwitchChange('continuous_comment_enable', checked)}
-                                        />
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {/* Like liên tục */}
+                                    <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-4">
+                                        <div className="flex items-center justify-between mb-3">
+                                            <h6 className="font-medium text-gray-900 dark:text-gray-100">Like liên tục</h6>
+                                            <Switcher
+                                                checked={config.continuous_like_enable}
+                                                onChange={(checked) => handleSwitchChange('continuous_like_enable', checked)}
+                                            />
+                                        </div>
+                                        
+                                        {config.continuous_like_enable && (
+                                            <div>
+                                                <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">
+                                                    Số lượng like mỗi lần
+                                                </label>
+                                                <div className="flex items-center gap-2 bg-gray-50 dark:bg-gray-700 rounded-lg p-2">
+                                                    <Input
+                                                        type="number"
+                                                        min="1"
+                                                        value={config.continuous_like_count_from}
+                                                        onChange={(e) => handleInputChange('continuous_like_count_from', e.target.value)}
+                                                        className="w-16 text-center border-gray-300 dark:border-gray-600 text-sm"
+                                                    />
+                                                    <span className="text-xs text-gray-500">-</span>
+                                                    <Input
+                                                        type="number"
+                                                        min="1"
+                                                        value={config.continuous_like_count_to}
+                                                        onChange={(e) => handleInputChange('continuous_like_count_to', e.target.value)}
+                                                        className="w-16 text-center border-gray-300 dark:border-gray-600 text-sm"
+                                                    />
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                                        Tự động comment liên tục trong live stream.
-                                    </p>
+
+                                    {/* Comment liên tục */}
+                                    <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-4">
+                                        <div className="flex items-center justify-between mb-3">
+                                            <h6 className="font-medium text-gray-900 dark:text-gray-100">Comment liên tục</h6>
+                                            <Switcher
+                                                checked={config.continuous_comment_enable}
+                                                onChange={(checked) => handleSwitchChange('continuous_comment_enable', checked)}
+                                            />
+                                        </div>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                                            Tự động comment liên tục trong live stream
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         )}
                     </div>
 
-                    {/* Hành động tùy chọn */}
-                    <div className="bg-white dark:bg-gray-800 rounded-lg p-5 shadow-sm border border-gray-200 dark:border-gray-700">
-                        <h6 className="font-semibold text-gray-900 dark:text-gray-100 mb-5 flex items-center">
+                    {/* 4. Hành động tương tác cơ bản */}
+                    <div className="bg-white dark:bg-gray-800 rounded-lg p-5 mb-4 shadow-sm border border-gray-200 dark:border-gray-700">
+                        <h6 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
                             <span className="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
-                            Hành động tùy chọn
+                            4. Hành động tương tác cơ bản
                         </h6>
                         
-                        {/* Grid layout cho các hành động */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             {/* Theo dõi streamer */}
                             <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:border-blue-300 dark:hover:border-blue-600 transition-colors">
                                 <div className="flex items-center justify-between mb-3">
                                     <div className="flex items-center gap-2">
                                         <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
-                                        <h6 className="font-medium text-gray-900 dark:text-gray-100">
-                                            Theo dõi streamer
-                                        </h6>
+                                        <h6 className="font-medium text-gray-900 dark:text-gray-100">Theo dõi</h6>
                                     </div>
                                     <Switcher
                                         checked={config.enable_follow}
@@ -592,41 +601,42 @@ const SpecificLiveInteractionModal = ({
                                 </div>
                                 
                                 {config.enable_follow && (
-                                    <div className="border-t border-gray-100 dark:border-gray-700 pt-3 space-y-3">
-                                        <div>
-                                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-                                                Tỷ lệ thực hiện (%)
-                                            </label>
-                                            <Input
-                                                type="number"
-                                                min="0"
-                                                max="100"
-                                                value={config.follow_rate}
-                                                onChange={(e) => handleInputChange('follow_rate', e.target.value)}
-                                                className="w-20 text-center text-sm"
-                                            />
-                                        </div>
-                                        
-                                        <div>
-                                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-                                                Chờ trước khi thực hiện (giây)
-                                            </label>
-                                            <div className="flex items-center gap-2">
+                                    <div className="space-y-3">
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <div>
+                                                <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                                                    Tỷ lệ (%)
+                                                </label>
                                                 <Input
                                                     type="number"
-                                                    min="1"
-                                                    value={config.follow_gap_from}
-                                                    onChange={(e) => handleInputChange('follow_gap_from', e.target.value)}
-                                                    className="w-16 text-center text-sm"
+                                                    min="0"
+                                                    max="100"
+                                                    value={config.follow_rate}
+                                                    onChange={(e) => handleInputChange('follow_rate', e.target.value)}
+                                                    className="w-full text-center text-sm"
                                                 />
-                                                <span className="text-xs text-gray-500">-</span>
-                                                <Input
-                                                    type="number"
-                                                    min="1"
-                                                    value={config.follow_gap_to}
-                                                    onChange={(e) => handleInputChange('follow_gap_to', e.target.value)}
-                                                    className="w-16 text-center text-sm"
-                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                                                    Chờ (giây)
+                                                </label>
+                                                <div className="flex items-center gap-1">
+                                                    <Input
+                                                        type="number"
+                                                        min="1"
+                                                        value={config.follow_gap_from}
+                                                        onChange={(e) => handleInputChange('follow_gap_from', e.target.value)}
+                                                        className="w-full text-center text-sm"
+                                                    />
+                                                    <span className="text-xs text-gray-500">-</span>
+                                                    <Input
+                                                        type="number"
+                                                        min="1"
+                                                        value={config.follow_gap_to}
+                                                        onChange={(e) => handleInputChange('follow_gap_to', e.target.value)}
+                                                        className="w-full text-center text-sm"
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -638,55 +648,51 @@ const SpecificLiveInteractionModal = ({
                                 <div className="flex items-center justify-between mb-3">
                                     <div className="flex items-center gap-2">
                                         <span className="w-1.5 h-1.5 bg-red-500 rounded-full"></span>
-                                        <h6 className="font-medium text-gray-900 dark:text-gray-100">
-                                            Thả tim
-                                        </h6>
+                                        <h6 className="font-medium text-gray-900 dark:text-gray-100">Thả tim</h6>
                                     </div>
                                     <Switcher
                                         checked={config.enable_emotion}
                                         onChange={(checked) => handleSwitchChange('enable_emotion', checked)}
                                     />
                                 </div>
-                                <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
-                                    Bày tỏ cảm xúc bằng cách thả tim trong live.
-                                </p>
                                 
                                 {config.enable_emotion && (
-                                    <div className="border-t border-gray-100 dark:border-gray-700 pt-3 space-y-3">
-                                        <div>
-                                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-                                                Tỷ lệ thực hiện (%)
-                                            </label>
-                                            <Input
-                                                type="number"
-                                                min="0"
-                                                max="100"
-                                                value={config.emotion_rate}
-                                                onChange={(e) => handleInputChange('emotion_rate', e.target.value)}
-                                                className="w-20 text-center text-sm"
-                                            />
-                                        </div>
-                                        
-                                        <div>
-                                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-                                                Chờ trước khi thực hiện (giây)
-                                            </label>
-                                            <div className="flex items-center gap-2">
+                                    <div className="space-y-3">
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <div>
+                                                <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                                                    Tỷ lệ (%)
+                                                </label>
                                                 <Input
                                                     type="number"
-                                                    min="1"
-                                                    value={config.emotion_gap_from}
-                                                    onChange={(e) => handleInputChange('emotion_gap_from', e.target.value)}
-                                                    className="w-16 text-center text-sm"
+                                                    min="0"
+                                                    max="100"
+                                                    value={config.emotion_rate}
+                                                    onChange={(e) => handleInputChange('emotion_rate', e.target.value)}
+                                                    className="w-full text-center text-sm"
                                                 />
-                                                <span className="text-xs text-gray-500">-</span>
-                                                <Input
-                                                    type="number"
-                                                    min="1"
-                                                    value={config.emotion_gap_to}
-                                                    onChange={(e) => handleInputChange('emotion_gap_to', e.target.value)}
-                                                    className="w-16 text-center text-sm"
-                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                                                    Chờ (giây)
+                                                </label>
+                                                <div className="flex items-center gap-1">
+                                                    <Input
+                                                        type="number"
+                                                        min="1"
+                                                        value={config.emotion_gap_from}
+                                                        onChange={(e) => handleInputChange('emotion_gap_from', e.target.value)}
+                                                        className="w-full text-center text-sm"
+                                                    />
+                                                    <span className="text-xs text-gray-500">-</span>
+                                                    <Input
+                                                        type="number"
+                                                        min="1"
+                                                        value={config.emotion_gap_to}
+                                                        onChange={(e) => handleInputChange('emotion_gap_to', e.target.value)}
+                                                        className="w-full text-center text-sm"
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -698,79 +704,75 @@ const SpecificLiveInteractionModal = ({
                                 <div className="flex items-center justify-between mb-3">
                                     <div className="flex items-center gap-2">
                                         <span className="w-1.5 h-1.5 bg-yellow-500 rounded-full"></span>
-                                        <h6 className="font-medium text-gray-900 dark:text-gray-100">
-                                            Thêm vào giỏ hàng
-                                        </h6>
+                                        <h6 className="font-medium text-gray-900 dark:text-gray-100">Thêm giỏ hàng</h6>
                                     </div>
                                     <Switcher
                                         checked={config.enable_add_to_cart}
                                         onChange={(checked) => handleSwitchChange('enable_add_to_cart', checked)}
                                     />
                                 </div>
-                                <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
-                                    Tự động thêm sản phẩm vào giỏ hàng khi có.
-                                </p>
                                 
                                 {config.enable_add_to_cart && (
-                                    <div className="border-t border-gray-100 dark:border-gray-700 pt-3 space-y-3">
-                                        <div>
-                                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-                                                Tỷ lệ thực hiện (%)
-                                            </label>
-                                            <Input
-                                                type="number"
-                                                min="0"
-                                                max="100"
-                                                value={config.add_to_cart_rate}
-                                                onChange={(e) => handleInputChange('add_to_cart_rate', e.target.value)}
-                                                className="w-20 text-center text-sm"
-                                            />
-                                        </div>
-                                        
-                                        <div>
-                                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-                                                Chờ trước khi thực hiện (giây)
-                                            </label>
-                                            <div className="flex items-center gap-2">
+                                    <div className="space-y-3">
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <div>
+                                                <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                                                    Tỷ lệ (%)
+                                                </label>
                                                 <Input
                                                     type="number"
-                                                    min="1"
-                                                    value={config.add_to_cart_gap_from}
-                                                    onChange={(e) => handleInputChange('add_to_cart_gap_from', e.target.value)}
-                                                    className="w-16 text-center text-sm"
+                                                    min="0"
+                                                    max="100"
+                                                    value={config.add_to_cart_rate}
+                                                    onChange={(e) => handleInputChange('add_to_cart_rate', e.target.value)}
+                                                    className="w-full text-center text-sm"
                                                 />
-                                                <span className="text-xs text-gray-500">-</span>
-                                                <Input
-                                                    type="number"
-                                                    min="1"
-                                                    value={config.add_to_cart_gap_to}
-                                                    onChange={(e) => handleInputChange('add_to_cart_gap_to', e.target.value)}
-                                                    className="w-16 text-center text-sm"
-                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                                                    Chờ (giây)
+                                                </label>
+                                                <div className="flex items-center gap-1">
+                                                    <Input
+                                                        type="number"
+                                                        min="1"
+                                                        value={config.add_to_cart_gap_from}
+                                                        onChange={(e) => handleInputChange('add_to_cart_gap_from', e.target.value)}
+                                                        className="w-full text-center text-sm"
+                                                    />
+                                                    <span className="text-xs text-gray-500">-</span>
+                                                    <Input
+                                                        type="number"
+                                                        min="1"
+                                                        value={config.add_to_cart_gap_to}
+                                                        onChange={(e) => handleInputChange('add_to_cart_gap_to', e.target.value)}
+                                                        className="w-full text-center text-sm"
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 )}
                             </div>
                         </div>
+                    </div>
 
-                        {/* Bình luận live - Full width */}
-                        <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:border-indigo-300 dark:hover:border-indigo-600 transition-colors">
-                            <div className="flex items-center justify-between mb-3">
-                                <div className="flex items-center gap-2">
-                                    <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span>
-                                    <h6 className="font-medium text-gray-900 dark:text-gray-100">
-                                        Bình luận live
-                                    </h6>
-                                </div>
-                                <Switcher
-                                    checked={config.enable_comment}
-                                    onChange={(checked) => handleSwitchChange('enable_comment', checked)}
-                                />
-                            </div>
-                            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                                Tự động bình luận trong live với nội dung soạn sẵn.
-                            </p>
+                    {/* 5. Bình luận live */}
+                    <div className="bg-white dark:bg-gray-800 rounded-lg p-5 mb-4 shadow-sm border border-gray-200 dark:border-gray-700">
+                        <div className="flex items-center justify-between mb-4">
+                            <h6 className="font-semibold text-gray-900 dark:text-gray-100 flex items-center">
+                                <span className="w-2 h-2 bg-indigo-500 rounded-full mr-2"></span>
+                                5. Bình luận live
+                            </h6>
+                            <Switcher
+                                checked={config.enable_comment}
+                                onChange={(checked) => handleSwitchChange('enable_comment', checked)}
+                            />
+                        </div>
+                        
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                            Tự động bình luận trong live với nội dung soạn sẵn.
+                        </p>
                             
                             {config.enable_comment && (
                                 <div className="border-t border-gray-100 dark:border-gray-700 pt-4">
@@ -868,6 +870,72 @@ const SpecificLiveInteractionModal = ({
                                 </div>
                             )}
                         </div>
+
+                    {/* 6. Tương tác giỏ hàng liên tục */}
+                    <div className="bg-white dark:bg-gray-800 rounded-lg p-5 shadow-sm border border-gray-200 dark:border-gray-700">
+                        <div className="flex items-center justify-between mb-4">
+                            <h6 className="font-semibold text-gray-900 dark:text-gray-100 flex items-center">
+                                <span className="w-2 h-2 bg-orange-500 rounded-full mr-2"></span>
+                                6. Tương tác giỏ hàng liên tục
+                            </h6>
+                            <Switcher
+                                checked={config.enable_cart_interaction}
+                                onChange={(checked) => handleSwitchChange('enable_cart_interaction', checked)}
+                            />
+                        </div>
+                        
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                            Tự động tương tác với giỏ hàng trong live stream chỉ định để tăng tương tác.
+                        </p>
+                        
+                        {config.enable_cart_interaction && (
+                            <div className="space-y-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            Tỷ lệ thực hiện (%)
+                                        </label>
+                                        <Input
+                                            type="number"
+                                            min="0"
+                                            max="100"
+                                            value={config.cart_interaction_rate}
+                                            onChange={(e) => handleInputChange('cart_interaction_rate', e.target.value)}
+                                            className="text-center"
+                                        />
+                                    </div>
+                                    
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            Chờ trước khi thực hiện (giây)
+                                        </label>
+                                        <div className="flex items-center gap-2">
+                                            <Input
+                                                type="number"
+                                                min="1"
+                                                value={config.cart_interaction_gap_from}
+                                                onChange={(e) => handleInputChange('cart_interaction_gap_from', e.target.value)}
+                                                className="w-full text-center"
+                                            />
+                                            <span className="text-gray-500">-</span>
+                                            <Input
+                                                type="number"
+                                                min="1"
+                                                value={config.cart_interaction_gap_to}
+                                                onChange={(e) => handleInputChange('cart_interaction_gap_to', e.target.value)}
+                                                className="w-full text-center"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div className="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                                    <p className="text-xs text-orange-600 dark:text-orange-400">
+                                        💡 Tính năng này sẽ tự động tương tác với giỏ hàng trong live stream chỉ định để tăng tương tác và thu hút người xem.
+                                    </p>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
 
