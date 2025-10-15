@@ -51,7 +51,7 @@ const actionCategories = [
         bgColor: 'bg-emerald-50',
         description: 'Các hành động đăng bài lên Facebook',
         actions: [
-            { id: 'post_to_timeline', name: 'Đăng bài lên tường', icon: <TbSend />, comingSoon: true, description: 'Đăng bài lên trang cá nhân' },
+            { id: 'post_to_timeline', name: 'Đăng bài lên tường', icon: <TbSend />, available: true, description: 'Đăng bài lên trang cá nhân' },
             { id: 'group_post_create', name: 'Đăng bài lên nhóm', icon: <TbSend />, available: true, description: 'Đăng bài theo mẫu vào nhiều nhóm' },
             { id: 'specific_post_create', name: 'Đăng bài chỉ định', icon: <TbArticle />, comingSoon: true, description: 'Đăng bài lên trang cá nhân/fanpage/nhóm chỉ định' },
             { id: 'spam_post', name: 'Spam bài viết', icon: <TbBell />, available: true, description: 'Spam bài viết theo mẫu' },
