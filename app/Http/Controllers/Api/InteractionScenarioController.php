@@ -34,12 +34,12 @@ class InteractionScenarioController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        
+
         // Nếu user là admin, hiển thị tất cả scenarios
         if ($user->hasRole('admin')) {
             return response()->json($this->interactionScenarioService->getAll($request));
         }
-        
+
         // Nếu không phải admin, chỉ hiển thị scenarios của user đó
         $request->merge(['user_id' => $user->id]);
         return response()->json($this->interactionScenarioService->getAll($request));
@@ -54,11 +54,12 @@ class InteractionScenarioController extends Controller
     public function store(Request $request)
     {
         $user = $request->user();
-        
+
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'platform' => 'required|in:tiktok,facebook',
             'shuffle_actions' => 'sometimes|boolean',
             'run_count' => 'sometimes|boolean',
             'from_count' => 'sometimes|integer|min:1',
@@ -86,7 +87,7 @@ class InteractionScenarioController extends Controller
     public function show(Request $request, InteractionScenario $interactionScenario)
     {
         $user = $request->user();
-        
+
         // Kiểm tra quyền: chỉ admin hoặc chủ sở hữu mới có thể xem
         if (!$user->hasRole('admin') && $interactionScenario->user_id != $user->id) {
             return response()->json(['message' => 'Unauthorized'], 403);
@@ -104,7 +105,7 @@ class InteractionScenarioController extends Controller
     public function update(Request $request, InteractionScenario $interactionScenario)
     {
         $user = $request->user();
-        
+
         // Kiểm tra quyền: chỉ admin hoặc chủ sở hữu mới có thể cập nhật
         if (!$user->hasRole('admin') && $interactionScenario->user_id != $user->id) {
             return response()->json(['message' => 'Unauthorized'], 403);
@@ -113,6 +114,7 @@ class InteractionScenarioController extends Controller
         $validated = $request->validate([
             'name' => 'sometimes|string|max:255',
             'description' => 'nullable|string',
+            'platform' => 'sometimes|in:tiktok,facebook',
             'shuffle_actions' => 'sometimes|boolean',
             'run_count' => 'sometimes|boolean',
             'from_count' => 'sometimes|integer|min:1',
@@ -135,7 +137,7 @@ class InteractionScenarioController extends Controller
     public function destroy(Request $request, InteractionScenario $interactionScenario)
     {
         $user = $request->user();
-        
+
         // Kiểm tra quyền: chỉ admin hoặc chủ sở hữu mới có thể xóa
         if (!$user->hasRole('admin') && $interactionScenario->user_id != $user->id) {
             return response()->json(['message' => 'Unauthorized'], 403);

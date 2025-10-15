@@ -39,12 +39,17 @@ Route::post('/login-with-token', [AuthController::class, 'loginWithToken']);
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
+    // Facebook interactions unified endpoint
+    Route::post('facebook-accounts/interactions/run', [\App\Http\Controllers\Api\FacebookAccountController::class, 'runInteractions']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/profile', [AuthController::class, 'getProfile']);
     Route::get('/profile/permissions', [AuthController::class, 'getUserPermissions']);
     Route::post('/profile/settings', [ProfileController::class, 'update']);
     Route::post('/profile/change-password', [ProfileController::class, 'changePassword']);
     Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar']);
+
+    // Generic file upload
+    Route::post('/files/upload', [\App\Http\Controllers\Api\FileController::class, 'upload']);
 
     // Settings routes
     Route::get('/settings', [SettingController::class, 'index']);
@@ -79,7 +84,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/ai-spending-history', [AISpendingHistoryController::class, 'getUserHistory']);
     Route::get('/ai-spending-history/feature', [AISpendingHistoryController::class, 'getFeatureHistory']);
     Route::get('/ai-spending-history/model', [AISpendingHistoryController::class, 'getModelHistory']);
-    
+
     // Roles, Permissions, and User Management
     Route::get('roles/stats', [RoleController::class, 'stats'])
         ->middleware('permission:roles.view');
@@ -103,12 +108,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('interaction-scenarios', InteractionScenarioController::class);
     Route::apiResource('scenario-scripts', ScenarioScriptController::class);
     Route::apiResource('account-tasks', AccountTaskController::class);
-    
+
     // Account tasks recent activities
     Route::post('account-tasks/recent-activities', [AccountTaskController::class, 'getRecentActivities']);
-    
 
-    
+
+
     // Device specific routes (must come before resource routes)
     Route::post('devices/bulk-delete', [DeviceController::class, 'bulkDelete']);
     Route::post('devices/bulk-update-status', [DeviceController::class, 'bulkUpdateStatus']);
@@ -116,9 +121,25 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('devices/recent-activities', [DeviceController::class, 'recentActivities']);
     Route::post('devices/import', [DeviceController::class, 'import']);
     Route::get('devices/{device}/connected-accounts', [DeviceController::class, 'getConnectedAccounts']);
-    
+
     // Device resource routes (must come after specific routes)
     Route::apiResource('devices', DeviceController::class);
+    // Facebook Accounts
+    Route::get('facebook-accounts/stats', [\App\Http\Controllers\Api\FacebookAccountController::class, 'stats']);
+    Route::post('facebook-accounts/import', [\App\Http\Controllers\Api\FacebookAccountController::class, 'import']);
+    Route::patch('facebook-accounts/{facebookAccount}/connection-type', [\App\Http\Controllers\Api\FacebookAccountController::class, 'updateConnectionType']);
+    Route::get('facebook-accounts/{facebookAccount}/activities', [\App\Http\Controllers\Api\FacebookAccountController::class, 'activityHistory']);
+    Route::post('facebook-accounts/connection-type/bulk', [\App\Http\Controllers\Api\FacebookAccountController::class, 'bulkUpdateConnectionType']);
+    Route::post('facebook-accounts/{facebookAccount}/run-scenario', [\App\Http\Controllers\Api\FacebookAccountController::class, 'runScenario']);
+    Route::post('facebook-accounts/{facebookAccount}/stop-tasks', [\App\Http\Controllers\Api\FacebookAccountController::class, 'stopTasks']);
+    Route::post('facebook-accounts/run-scenario/bulk', [\App\Http\Controllers\Api\FacebookAccountController::class, 'bulkRunScenario']);
+    Route::post('facebook-accounts/stop-tasks/bulk', [\App\Http\Controllers\Api\FacebookAccountController::class, 'bulkStopTasks']);
+        Route::get('facebook-accounts/{facebookAccount}/tasks', [\App\Http\Controllers\Api\FacebookAccountController::class, 'getAccountTasks']);
+        Route::get('facebook-accounts/{facebookAccount}/status', [\App\Http\Controllers\Api\FacebookAccountController::class, 'getAccountStatus']);
+        Route::get('facebook-accounts/tasks/all', [\App\Http\Controllers\Api\FacebookAccountController::class, 'getAllTasks']);
+        Route::get('facebook-accounts/status/all', [\App\Http\Controllers\Api\FacebookAccountController::class, 'getAllAccountsStatus']);
+        Route::get('facebook-accounts/batch-data', [\App\Http\Controllers\Api\FacebookAccountController::class, 'getBatchData']);
+    Route::apiResource('facebook-accounts', \App\Http\Controllers\Api\FacebookAccountController::class);
     Route::get('tiktok-accounts/stats', [\App\Http\Controllers\Api\TiktokAccountController::class, 'stats']);
     Route::get('tiktok-accounts/task-analysis', [\App\Http\Controllers\Api\TiktokAccountController::class, 'taskAnalysis']);
     Route::get('tiktok-accounts/recent-activities', [\App\Http\Controllers\Api\TiktokAccountController::class, 'recentActivities']);
@@ -127,7 +148,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('tiktok-accounts/{tiktokAccount}/enable-2fa', [\App\Http\Controllers\Api\TiktokAccountController::class, 'enable2FA']);
     Route::post('tiktok-accounts/{tiktokAccount}/disable-2fa', [\App\Http\Controllers\Api\TiktokAccountController::class, 'disable2FA']);
     Route::post('tiktok-accounts/{tiktokAccount}/regenerate-backup-codes', [\App\Http\Controllers\Api\TiktokAccountController::class, 'regenerateBackupCodes']);
-    
+
     // File upload and post creation routes for TikTok accounts
     Route::post('tiktok-accounts/{tiktokAccount}/upload-file', [\App\Http\Controllers\Api\TiktokAccountController::class, 'uploadFile']);
     Route::post('tiktok-accounts/{tiktokAccount}/create-post', [\App\Http\Controllers\Api\TiktokAccountController::class, 'createPost']);
@@ -156,10 +177,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('content-groups/bulk-delete', [ContentGroupController::class, 'bulkDelete']);
     Route::post('content-groups/bulk-update', [ContentGroupController::class, 'bulkUpdate']);
     Route::post('content-groups/{contentGroup}/remove-contents', [ContentGroupController::class, 'removeContents']);
-    
+
     // Get contents by group
     Route::get('content-groups/{groupId}/contents', [ContentController::class, 'getByGroup']);
-    
+
     Route::apiResource('contents', ContentController::class);
     Route::post('contents/bulk-delete', [ContentController::class, 'bulkDelete']);
     Route::post('contents/bulk-update', [ContentController::class, 'bulkUpdate']);

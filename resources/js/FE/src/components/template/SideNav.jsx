@@ -67,9 +67,9 @@ const SideNav = ({
                 <Logo
                     imgClass={classNames(
                         'object-contain transition-all duration-300',
-                        sideNavCollapse 
-                            ? 'h-6 w-auto' 
-                            : 'h-7 w-auto'
+                        sideNavCollapse
+                            ? 'h-7 w-auto max-w-[128px]'
+                            : 'h-8 md:h-9 w-auto max-w-[140px]'
                     )}
                     mode={mode || defaultMode}
                     type={sideNavCollapse ? 'streamline' : 'full'}

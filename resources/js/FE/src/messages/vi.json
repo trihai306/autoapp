@@ -16,5 +16,42 @@
       "deleteTasksSuccess": "đã xóa {count} tác vụ đang chờ",
       "errorStoppingAccounts": "Có lỗi xảy ra khi tạm khóa tài khoản"
     }
+  },
+  "facebookAccountManagement": {
+    "title": "Quản lý tài khoản Facebook",
+    "subtitle": "Theo dõi và quản lý các tài khoản Facebook",
+    "listTitle": "Danh sách tài khoản",
+    "columns": "Cột",
+    "actions": {
+      "refresh": "Làm mới",
+      "import": "Nhập tài khoản",
+      "edit": "Chỉnh sửa",
+      "toggle": "Chuyển kết nối"
+    },
+    "stats": {
+      "accounts": "Tài khoản",
+      "running": "Đang chạy",
+      "performance": "Hiệu suất"
+    },
+    "table": {
+      "username": "Username",
+      "email": "Email",
+      "status": "Trạng thái",
+      "connection": "Kết nối",
+      "noData": "Chưa có dữ liệu"
+    },
+    "pagination": {
+      "total": "Tổng:",
+      "page": "Trang",
+      "prev": "Trước",
+      "next": "Sau",
+      "perPage": "/trang"
+    }
+  }
+  ,
+  "nav": {
+    "conceptsFacebookAccountManagement": {
+      "facebookAccountManagement": "Tài khoản Facebook"
+    }
   }
 }

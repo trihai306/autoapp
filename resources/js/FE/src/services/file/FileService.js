@@ -8,3 +8,14 @@ export async function apiGetFiles(params) {
         params,
     })
 }
+
+export async function apiUploadFile(file) {
+    const formData = new FormData()
+    formData.append('file', file)
+    return ApiService.fetchDataWithAxios({
+        url: '/files/upload',
+        method: 'post',
+        headers: { 'Content-Type': 'multipart/form-data' },
+        data: formData,
+    })
+}

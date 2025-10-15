@@ -1,6 +1,6 @@
 const appConfig = {
     apiPrefix: '/api',
-    API_BASE_URL: 'https://api.lionsoftware.vn',
+    API_BASE_URL: 'https://autoapp.test',
     authenticatedEntryPath: '/concepts/tiktok-account-management',
     unAuthenticatedEntryPath: '/sign-in',
     locale: 'vi',

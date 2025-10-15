@@ -13,33 +13,33 @@ export default {
             },
             async authorize(credentials, req) {
                 try {
-                    console.log('🔐 NextAuth authorize called with:', { 
+                    console.log('🔐 NextAuth authorize called with:', {
                         login: credentials?.login,
-                        hasPassword: !!credentials?.password 
+                        hasPassword: !!credentials?.password
                     })
-                    
+
                     if (!credentials?.login || !credentials?.password) {
                         console.error('❌ Missing credentials')
                         return null
                     }
-                    
+
                     const user = await validateCredential(credentials)
-                    
+
                     if (user) {
-                        console.log('✅ User authorized successfully:', { 
-                            id: user.id, 
+                        console.log('✅ User authorized successfully:', {
+                            id: user.id,
                             email: user.email,
                             balance: user.balance
                         })
                         return user
                     }
-                    
+
                     console.log('❌ User authorization failed')
                     return null
-                    
+
                 } catch (error) {
                     console.error('❌ NextAuth authorize error:', error)
-                    
+
                     // Thay vì throw error, return null để NextAuth xử lý
                     // và trả về lỗi cụ thể cho client
                     return null
@@ -51,12 +51,12 @@ export default {
         async jwt({ token, user, account }) {
             if (user && account) {
                 // Initial sign-in
-                console.log('🔄 JWT callback - Initial sign-in:', { 
-                    userId: user.id, 
+                console.log('🔄 JWT callback - Initial sign-in:', {
+                    userId: user.id,
                     email: user.email,
                     balance: user.balance
                 })
-                
+
                 token.id = user.id
                 token.name = user.full_name || user.name
                 token.email = user.email
@@ -67,10 +67,10 @@ export default {
                 token.roles = user.roles || []
                 token.login_token = user.login_token
                 token.balance = user.balance || 0
-                token.permissions = user.permissions || { 
-                    roles: [], 
-                    permissions: [], 
-                    permission_groups: {} 
+                token.permissions = user.permissions || {
+                    roles: [],
+                    permissions: [],
+                    permission_groups: {}
                 }
                 token.accessTokenExpires = Date.now() + 24 * 60 * 60 * 1000 // 24 hours
             }
@@ -86,12 +86,6 @@ export default {
         },
         async session({ session, token }) {
             if (token) {
-                console.log('📋 Session callback - Setting user data:', { 
-                    userId: token.id, 
-                    email: token.email,
-                    balance: token.balance
-                })
-                
                 session.user.id = token.id
                 session.user.name = token.name
                 session.user.email = token.email
@@ -113,17 +107,17 @@ export default {
     // Thêm xử lý lỗi
     events: {
         async signIn({ user, account, profile, isNewUser }) {
-            console.log('✅ User signed in successfully:', { 
-                userId: user.id, 
+            console.log('✅ User signed in successfully:', {
+                userId: user.id,
                 email: user.email,
                 provider: account?.provider,
                 balance: user.balance
             })
         },
         async signOut({ session, token }) {
-            console.log('👋 User signed out:', { 
-                userId: token?.id, 
-                email: token?.email 
+            console.log('👋 User signed out:', {
+                userId: token?.id,
+                email: token?.email
             })
         },
         async error(error) {

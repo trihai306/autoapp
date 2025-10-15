@@ -96,6 +96,17 @@ const conceptsNavigationConfig = [
                 meta: {},
                 subMenu: [],
             },
+                {
+                key: 'concepts.facebookAccountManagement',
+                path: `${CONCEPTS_PREFIX_PATH}/facebook-account-management`,
+                title: 'Tài khoản Facebook',
+                translateKey: 'nav.conceptsFacebookAccountManagement.facebookAccountManagement',
+                icon: 'userManagement',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [ADMIN, USER],
+                meta: {},
+                subMenu: [],
+            },
         ],
     },
 ]

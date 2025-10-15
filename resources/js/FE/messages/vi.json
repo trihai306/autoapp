@@ -75,6 +75,10 @@
             "tiktokAccountManagement": "Quản lý tài khoản TikTok",
             "tiktokAccountManagementDesc": "Quản lý tài khoản TikTok"
         },
+        "conceptsFacebookAccountManagement": {
+            "facebookAccountManagement": "Quản lý tài khoản Facebook",
+            "facebookAccountManagementDesc": "Quản lý tài khoản Facebook"
+        },
         "conceptsDeviceManagement": {
             "deviceManagement": "Quản lý thiết bị",
             "deviceManagementDesc": "Quản lý thiết bị và theo dõi trạng thái"

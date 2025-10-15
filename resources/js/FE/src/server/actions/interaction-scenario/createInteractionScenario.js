@@ -14,24 +14,25 @@ export default async function createInteractionScenario(data) {
         try {
             // Get current user profile to get user_id
             const profile = await apiGetProfile()
-            
+
             if (!profile || !profile.id) {
                 return {
                     success: false,
                     message: "Unable to get current user information."
                 }
             }
-            
 
-            
+
+
             // Add user_id to the data
             const scenarioData = {
                 ...data,
-                user_id: profile.id
+                user_id: profile.id,
+                platform: data?.platform || 'tiktok'
             }
-            
 
-            
+
+
             const resp = await InteractionScenarioService.createInteractionScenario(scenarioData)
             return {
                 success: true,
@@ -40,7 +41,7 @@ export default async function createInteractionScenario(data) {
             }
         } catch (error) {
             console.error("Error creating interaction scenario:", error)
-            
+
             // Handle validation errors
             if (error?.response?.status === 422) {
                 console.error("Validation errors:", error.response.data)
@@ -51,7 +52,7 @@ export default async function createInteractionScenario(data) {
                     details: error.response.data
                 }
             }
-            
+
             // Handle authorization errors
             if (error?.response?.status === 403) {
                 return {
@@ -59,7 +60,7 @@ export default async function createInteractionScenario(data) {
                     message: "You don't have permission to create interaction scenarios."
                 }
             }
-            
+
             return {
                 success: false,
                 message: "An unexpected error occurred while creating the interaction scenario."

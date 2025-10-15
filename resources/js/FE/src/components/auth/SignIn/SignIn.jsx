@@ -27,8 +27,7 @@ const SignIn = ({
                 <Logo
                     type="streamline"
                     mode={mode}
-                    logoWidth={60}
-                    logoHeight={60}
+                    imgClass="h-12 md:h-14 w-auto max-w-[120px]"
                 />
             </div>
             <div className="mb-10">

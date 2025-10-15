@@ -17,6 +17,7 @@ class InteractionScenario extends Model
         'user_id',
         'name',
         'description',
+        'platform',
         'shuffle_actions',
         'run_count',
         'from_count',
@@ -38,6 +39,7 @@ class InteractionScenario extends Model
     public $filterable = [
         'user_id',
         'name',
+        'platform',
         'status',
         'shuffle_actions',
         'run_count',
@@ -51,6 +53,7 @@ class InteractionScenario extends Model
     public $sortable = [
         'id',
         'name',
+        'platform',
         'status',
         'created_at',
         'updated_at',

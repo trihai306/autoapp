@@ -15,6 +15,7 @@ class AccountTask extends Model
 
     protected $fillable = [
         'tiktok_account_id',
+        'facebook_account_id',
         'interaction_scenario_id',
         'device_id',
         'task_type',
@@ -47,6 +48,7 @@ class AccountTask extends Model
 
     public $filterable = [
         'tiktok_account_id',
+        'facebook_account_id',
         'interaction_scenario_id',
         'device_id',
         'task_type',
@@ -122,6 +124,11 @@ class AccountTask extends Model
     public function tiktokAccount(): BelongsTo
     {
         return $this->belongsTo(TiktokAccount::class, 'tiktok_account_id');
+    }
+
+    public function facebookAccount(): BelongsTo
+    {
+        return $this->belongsTo(FacebookAccount::class, 'facebook_account_id');
     }
 
     public function interactionScenario(): BelongsTo

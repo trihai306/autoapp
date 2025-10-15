@@ -25,7 +25,7 @@ const CollapsedItem = ({
         <AuthorityCheck userAuthority={userAuthority} authority={nav.authority} permissions={nav.permissions || []} requireAll={nav.requireAll}>
             {renderAsIcon ? (
                 <Tooltip
-                    title={t(nav.translateKey, nav.title)}
+                    title={t(nav.translateKey || '', nav.title)}
                     placement={direction === 'rtl' ? 'left' : 'right'}
                 >
                     {children}
@@ -66,7 +66,7 @@ const DefaultItem = (props) => {
         userAuthority,
         t,
     } = props
-    
+
     const pathname = usePathname()
     const [isActive, setIsActive] = useState(false)
 
@@ -79,9 +79,9 @@ const DefaultItem = (props) => {
 
     return (
         <AuthorityCheck userAuthority={userAuthority} authority={nav.authority} permissions={nav.permissions || []} requireAll={nav.requireAll}>
-            <MenuItem 
-                key={nav.key} 
-                eventKey={nav.key} 
+            <MenuItem
+                key={nav.key}
+                eventKey={nav.key}
                 dotIndent={indent}
                 isActive={isActive}
             >
@@ -98,7 +98,7 @@ const DefaultItem = (props) => {
                     }
                 >
                     {showIcon && <VerticalMenuIcon icon={nav.icon} />}
-                    {showTitle && <span>{t(nav.translateKey, nav.title)}</span>}
+                    {showTitle && <span>{t(nav.translateKey || '', nav.title)}</span>}
                 </Link>
             </MenuItem>
         </AuthorityCheck>

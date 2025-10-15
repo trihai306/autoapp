@@ -1,0 +1,40 @@
+{
+  "facebookAccountManagement": {
+    "title": "Facebook Account Management",
+    "subtitle": "Monitor and manage Facebook accounts",
+    "listTitle": "Account list",
+    "columns": "Columns",
+    "actions": {
+      "refresh": "Refresh",
+      "import": "Import accounts",
+      "edit": "Edit",
+      "toggle": "Toggle connection"
+    },
+    "stats": {
+      "accounts": "Accounts",
+      "running": "Running",
+      "performance": "Performance"
+    },
+    "table": {
+      "username": "Username",
+      "email": "Email",
+      "status": "Status",
+      "connection": "Connection",
+      "noData": "No data"
+    },
+    "pagination": {
+      "total": "Total:",
+      "page": "Page",
+      "prev": "Prev",
+      "next": "Next",
+      "perPage": "/page"
+    }
+  },
+  "nav": {
+    "conceptsFacebookAccountManagement": {
+      "facebookAccountManagement": "Facebook Accounts"
+    }
+  }
+}
+
+
