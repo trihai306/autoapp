@@ -185,12 +185,17 @@ const InteractionConfigModal = ({ isOpen, onClose, accountId }) => {
         }
     }
 
-    // Load scenario details with scripts
+    // Load scenario details with scripts (align response handling like Facebook)
     const loadScenarioDetails = async (scenarioId) => {
         setScenarioLoading(true)
         try {
-            const result = await getInteractionScenario(scenarioId)
-            setActions(Array.isArray(result?.scripts) ? result.scripts : (result?.scripts || []))
+            const response = await getInteractionScenario(scenarioId)
+            // Prefer { success, data: { scripts: [] } } shape; fallback to legacy { scripts: [] }
+            if (response?.success && response?.data) {
+                setActions(Array.isArray(response.data?.scripts) ? response.data.scripts : [])
+            } else {
+                setActions(Array.isArray(response?.scripts) ? response.scripts : (response?.scripts || []))
+            }
         } catch (error) {
             console.error('Error loading scenario details:', error)
             toast.push(

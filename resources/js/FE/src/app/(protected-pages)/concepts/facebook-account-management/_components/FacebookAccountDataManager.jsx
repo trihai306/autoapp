@@ -53,6 +53,7 @@ export const FacebookAccountDataProvider = ({ children }) => {
                 setError(response.message || 'Failed to fetch data')
             }
         } catch (error) {
+            console.error('❌ [FacebookAccountDataManager] fetchBatchData error:', error)
             setError(error.message || 'Failed to fetch data')
         } finally {
             setLoading(false)
@@ -64,13 +65,14 @@ export const FacebookAccountDataProvider = ({ children }) => {
     }
 
     const getProxyOptions = () => {
-        return [
+        const proxyOptions = [
             { value: '', label: 'Không dùng proxy' },
-            ...data.proxies.map(proxy => ({
+            ...(data.proxies || []).map(proxy => ({
                 value: String(proxy.value),
                 label: proxy.label
             }))
         ]
+        return proxyOptions
     }
 
     const refreshData = () => {
@@ -80,8 +82,17 @@ export const FacebookAccountDataProvider = ({ children }) => {
     // Auto-refresh every 30 seconds
     useEffect(() => {
         fetchBatchData()
+        const onBulkChanged = () => fetchBatchData()
+        if (typeof window !== 'undefined') {
+            window.addEventListener('facebook:bulk:changed', onBulkChanged)
+        }
         const interval = setInterval(fetchBatchData, 30000)
-        return () => clearInterval(interval)
+        return () => {
+            clearInterval(interval)
+            if (typeof window !== 'undefined') {
+                window.removeEventListener('facebook:bulk:changed', onBulkChanged)
+            }
+        }
     }, [])
 
     const value = {

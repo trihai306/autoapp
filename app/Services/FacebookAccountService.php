@@ -202,6 +202,39 @@ class FacebookAccountService
             'failed_count' => count($ids) - $updated,
         ];
     }
+
+    public function bulkRun($accountIds)
+    {
+        $successCount = 0;
+        $errors = [];
+
+        foreach ($accountIds as $accountId) {
+            try {
+                $account = FacebookAccount::find($accountId);
+                if ($account && $account->scenario_id) {
+                    // Create account task
+                    \App\Models\AccountTask::create([
+                        'facebook_account_id' => $accountId,
+                        'interaction_scenario_id' => $account->scenario_id,
+                        'task_type' => 'scenario',
+                        'status' => 'running',
+                        'started_at' => now(),
+                    ]);
+                    $successCount++;
+                } else {
+                    $errors[] = "Tài khoản ID {$accountId} không có kịch bản được gán";
+                }
+            } catch (\Exception $e) {
+                $errors[] = "Lỗi khi khởi chạy tài khoản ID {$accountId}: " . $e->getMessage();
+            }
+        }
+
+        return [
+            'success_count' => $successCount,
+            'total_count' => count($accountIds),
+            'errors' => $errors
+        ];
+    }
 }
 
 

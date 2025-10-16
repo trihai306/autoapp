@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\Proxy;
 use App\Queries\BaseQuery;
 use App\Repositories\ProxyRepositoryInterface;
+use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,7 +32,7 @@ class ProxyService
         if (!$request->has('sort')) {
             $query->latest();
         }
-        
+
         return BaseQuery::for($query, $request)->paginate();
     }
 
@@ -49,7 +51,7 @@ class ProxyService
         if (!$request->has('sort')) {
             $query->latest();
         }
-        
+
         return BaseQuery::for($query, $request)->paginate();
     }
 
@@ -143,33 +145,81 @@ class ProxyService
      */
     public function testConnection(Proxy $proxy): array
     {
+        $client = new Client([
+            'timeout' => 5,
+            'connect_timeout' => 3,
+            'http_errors' => false,
+        ]);
+
+        $proxyDsn = $proxy->full_url; // includes credentials if any
+
+        $start = microtime(true);
         try {
-            // Simulate proxy testing (you can implement actual proxy testing logic here)
-            $isWorking = rand(0, 1) === 1; // Random for demo
-            
-            if ($isWorking) {
-                $this->updateLastTested($proxy);
-                $this->update($proxy, ['status' => 'active']);
-                
+            $response = $client->get('https://api.ipify.org', [
+                RequestOptions::QUERY => ['format' => 'json'],
+                RequestOptions::PROXY => [
+                    'http' => $proxyDsn,
+                    'https' => $proxyDsn,
+                ],
+                RequestOptions::VERIFY => false,
+            ]);
+            $latencyMs = (int) round((microtime(true) - $start) * 1000);
+
+            $statusCode = $response->getStatusCode();
+            $body = json_decode((string) $response->getBody(), true);
+            $ip = $body['ip'] ?? null;
+
+            $this->updateLastTested($proxy);
+
+            if ($statusCode === 200 && !empty($ip)) {
+                $this->update($proxy, [
+                    'status' => 'active',
+                    'last_used_at' => now(),
+                    'latency_ms' => $latencyMs,
+                ]);
+
                 return [
                     'success' => true,
                     'message' => 'Proxy connection successful',
-                    'response_time' => rand(100, 500) . 'ms'
-                ];
-            } else {
-                $this->update($proxy, ['status' => 'error']);
-                
-                return [
-                    'success' => false,
-                    'message' => 'Proxy connection failed',
-                    'error' => 'Connection timeout'
+                    'data' => [
+                        'success' => true,
+                        'latency_ms' => $latencyMs,
+                        'ip' => $ip,
+                    ],
                 ];
             }
-        } catch (\Exception $e) {
+
+            // Non-200 or missing IP -> fail
+            $this->update($proxy, [
+                'status' => 'error',
+                'latency_ms' => null,
+            ]);
+
             return [
-                'success' => false,
-                'message' => 'Proxy test failed',
-                'error' => $e->getMessage()
+                'success' => true,
+                'message' => 'Proxy connection failed',
+                'data' => [
+                    'success' => false,
+                    'latency_ms' => null,
+                    'ip' => null,
+                ],
+            ];
+        } catch (\Throwable $e) {
+            // Timeout / DNS / auth errors
+            $this->updateLastTested($proxy);
+            $this->update($proxy, [
+                'status' => 'error',
+                'latency_ms' => null,
+            ]);
+
+            return [
+                'success' => true,
+                'message' => 'Proxy connection failed',
+                'data' => [
+                    'success' => false,
+                    'latency_ms' => null,
+                    'ip' => null,
+                ],
             ];
         }
     }
@@ -252,7 +302,7 @@ class ProxyService
     private function validateProxyData(array $data): array
     {
         $validated = [];
-        
+
         $validated['name'] = $data['name'] ?? 'Imported Proxy';
         $validated['host'] = $data['host'] ?? $data['ip'] ?? '';
         $validated['port'] = (int) ($data['port'] ?? 8080);

@@ -9,7 +9,6 @@ import Notification from '@/components/ui/Notification'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { useTranslations } from 'next-intl'
 
 const validationSchema = z.object({
     proxyList: z.string().min(1, 'Proxy list is required'),
@@ -17,13 +16,12 @@ const validationSchema = z.object({
 
 const ImportForm = ({ onClose }) => {
     const router = useRouter()
-    const t = useTranslations('proxy-management')
     const {
         control,
         handleSubmit,
         formState: { errors, isSubmitting },
     } = useForm({
-        defaultValues: { 
+        defaultValues: {
             proxyList: ''
         },
         resolver: zodResolver(validationSchema),
@@ -46,23 +44,23 @@ const ImportForm = ({ onClose }) => {
             const result = await importProxies({ proxies: proxyList })
             if (result.success) {
                 toast.push(
-                    <Notification title="Success" type="success" closable>
-                        {t('import.success', { count: result.data?.length || 0 })}
+                    <Notification title="Thành công" type="success" closable>
+                        {`Import thành công ${result.data?.length || 0} proxy`}
                     </Notification>
                 )
                 onClose()
                 router.refresh()
             } else {
                 toast.push(
-                    <Notification title="Error" type="danger" closable>
+                    <Notification title="Lỗi" type="danger" closable>
                         {result.message}
                     </Notification>
                 )
             }
         } catch (error) {
-                            toast.push(
-                    <Notification title="Error" type="danger" closable>
-                        {t('import.error')}
+                toast.push(
+                    <Notification title="Lỗi" type="danger" closable>
+                        Lỗi khi import
                     </Notification>
                 )
         }
@@ -71,25 +69,25 @@ const ImportForm = ({ onClose }) => {
     return (
         <Form onSubmit={handleSubmit(onSubmit)}>
             <FormContainer>
-                <h5 className="mb-4">{t('import.title')}</h5>
-                
-                <FormItem 
-                    label={t('import.title')} 
-                    invalid={Boolean(errors.proxyList)} 
+                <h5 className="mb-4">Import Proxy</h5>
+
+                <FormItem
+                    label="Import Proxy"
+                    invalid={Boolean(errors.proxyList)}
                     errorMessage={errors.proxyList?.message}
-                    extra={t('import.description')}
+                    extra="Nhập danh sách proxy theo định dạng: host:port:username:password (mỗi proxy một dòng)"
                 >
-                    <Controller 
-                        name="proxyList" 
-                        control={control} 
+                    <Controller
+                        name="proxyList"
+                        control={control}
                         render={({ field }) => (
-                            <Input 
+                            <Input
                                 textArea
-                                rows={10} 
-                                placeholder={t('import.placeholder')} 
-                                {...field} 
+                                rows={10}
+                                placeholder={"192.168.1.1:8080:user:pass\n192.168.1.2:8080\n192.168.1.3:8080:user2:pass2"}
+                                {...field}
                             />
-                        )} 
+                        )}
                     />
                 </FormItem>
 
@@ -99,14 +97,14 @@ const ImportForm = ({ onClose }) => {
                         className="mr-2"
                         onClick={onClose}
                     >
-                        {t('import.cancel')}
+                        Hủy
                     </Button>
                     <Button
                         variant="solid"
                         type="submit"
                         loading={isSubmitting}
                     >
-                        {isSubmitting ? t('import.importing') : t('import.import')}
+                        {isSubmitting ? 'Đang import...' : 'Import'}
                     </Button>
                 </div>
             </FormContainer>

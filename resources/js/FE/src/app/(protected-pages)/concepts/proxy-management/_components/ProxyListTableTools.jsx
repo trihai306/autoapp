@@ -12,19 +12,17 @@ import updateProxyStatus from '@/server/actions/proxy/updateProxyStatus'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
 import { useRouter } from 'next/navigation'
-import { useTranslations } from 'next-intl'
 
 const ProxyListBulkActionTools = () => {
     const router = useRouter()
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
     const selectedProxy = useProxyListStore((state) => state.selectedProxy)
     const setSelectAllProxy = useProxyListStore((state) => state.setSelectAllProxy)
-    const t = useTranslations('proxy-management')
-    const tConfirm = useTranslations('proxy-management')
+    const t = { selected: (c) => `Đã chọn ${c} mục`, delete: 'Xóa', activate: 'Kích hoạt', deactivate: 'Vô hiệu hóa', clear: 'Xóa lựa chọn' }
 
     const onBulkDelete = () => setShowDeleteConfirmation(true)
     const onClearSelection = () => setSelectAllProxy([])
-    
+
     const handleDeleteConfirm = async () => {
         const proxyIds = selectedProxy.map((p) => p.id)
         const result = await deleteProxies(proxyIds)
@@ -72,7 +70,7 @@ const ProxyListBulkActionTools = () => {
         <>
             <div className="flex flex-col items-start md:flex-row md:items-center gap-3">
                 <span className="font-semibold leading-9">
-                    {t('bulkAction.selected', { count: selectedProxy.length })}
+                    {t.selected(selectedProxy.length)}
                 </span>
                 <Button
                     size="sm"
@@ -81,7 +79,7 @@ const ProxyListBulkActionTools = () => {
                     icon={<TbTrash />}
                     onClick={onBulkDelete}
                 >
-                    {t('bulkAction.delete')}
+                    {t.delete}
                 </Button>
                 <Button
                     size="sm"
@@ -90,7 +88,7 @@ const ProxyListBulkActionTools = () => {
                     icon={<TbCheck />}
                     onClick={() => handleStatusUpdate('active')}
                 >
-                    {t('bulkAction.activate')}
+                    {t.activate}
                 </Button>
                 <Button
                     size="sm"
@@ -99,7 +97,7 @@ const ProxyListBulkActionTools = () => {
                     icon={<TbDeactivate />}
                     onClick={() => handleStatusUpdate('inactive')}
                 >
-                    {t('bulkAction.deactivate')}
+                    {t.deactivate}
                 </Button>
                 <Button
                     size="sm"
@@ -107,7 +105,7 @@ const ProxyListBulkActionTools = () => {
                     icon={<TbX />}
                     onClick={onClearSelection}
                 >
-                    {t('bulkAction.clear')}
+                    {t.clear}
                 </Button>
             </div>
             <Dialog
@@ -115,23 +113,23 @@ const ProxyListBulkActionTools = () => {
                 onClose={() => setShowDeleteConfirmation(false)}
                 onRequestClose={() => setShowDeleteConfirmation(false)}
             >
-                <h5 className="mb-4">{tConfirm('bulkDeleteConfirm.title')}</h5>
+                <h5 className="mb-4">Xác nhận xóa</h5>
                 <p>
-                    {tConfirm('bulkDeleteConfirm.content', { count: selectedProxy.length })}
+                    {`Bạn có chắc chắn muốn xóa ${selectedProxy.length} proxy đã chọn?`}
                 </p>
                 <div className="text-right mt-6">
                     <Button
                         className="ltr:mr-2 rtl:ml-2"
                         onClick={() => setShowDeleteConfirmation(false)}
                     >
-                        {tConfirm('bulkDeleteConfirm.cancel')}
+                        Hủy
                     </Button>
                     <Button
                         variant="solid"
                         color="red-600"
                         onClick={handleDeleteConfirm}
                     >
-                        {tConfirm('bulkDeleteConfirm.delete')}
+                        Xóa
                     </Button>
                 </div>
             </Dialog>

@@ -28,6 +28,9 @@ const SpecificPostInteractionModal = ({ isOpen, onClose, action, onSave }) => {
         doLike: true,
         doComment: true,
         doShare: false,
+        likeRatio: 0.6,
+        commentRatio: 0.3,
+        shareRatio: 0.1,
         actionName: 'Tương tác bài viết chỉ định',
     })
     const [saving, setSaving] = useState(false)
@@ -92,8 +95,6 @@ const SpecificPostInteractionModal = ({ isOpen, onClose, action, onSave }) => {
             .filter(Boolean)
 
         const config = {
-            type: 'specific_post_interaction',
-            name: form.actionName || 'Tương tác bài viết chỉ định',
             FacebookSpecificPostWorkflow: {
                 Config: {
                     postQuery: form.postQuery || '',
@@ -101,6 +102,7 @@ const SpecificPostInteractionModal = ({ isOpen, onClose, action, onSave }) => {
                     doComment: !!form.doComment,
                     doShare: !!form.doShare,
                     comments: Array.from(new Set(selectedComments)),
+                    randomize: true
                 }
             }
         }
@@ -134,6 +136,20 @@ const SpecificPostInteractionModal = ({ isOpen, onClose, action, onSave }) => {
                         <Checkbox checked={form.doLike} onChange={(c)=>setForm(p=>({ ...p, doLike: c }))}>Like</Checkbox>
                         <Checkbox checked={form.doComment} onChange={(c)=>setForm(p=>({ ...p, doComment: c }))}>Comment</Checkbox>
                         <Checkbox checked={form.doShare} onChange={(c)=>setForm(p=>({ ...p, doShare: c }))}>Share</Checkbox>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label className="block text-sm font-medium mb-1">Tỉ lệ Like</label>
+                            <Input type="number" step="0.1" value={form.likeRatio} onChange={(e)=>setForm(p=>({ ...p, likeRatio: Number(e.target.value)||0 }))} />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-1">Tỉ lệ Comment</label>
+                            <Input type="number" step="0.1" value={form.commentRatio} onChange={(e)=>setForm(p=>({ ...p, commentRatio: Number(e.target.value)||0 }))} />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-1">Tỉ lệ Share</label>
+                            <Input type="number" step="0.1" value={form.shareRatio} onChange={(e)=>setForm(p=>({ ...p, shareRatio: Number(e.target.value)||0 }))} />
+                        </div>
                     </div>
                 </div>
 

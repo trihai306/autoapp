@@ -5,23 +5,81 @@ import Badge from '@/components/ui/Badge'
 import { TbPlayerPlay, TbPlayerStop, TbRefresh, TbClock, TbCheck, TbX, TbAlertCircle } from 'react-icons/tb'
 import { useFacebookAccountData } from './FacebookAccountDataManager'
 import runFacebookAccountScenario from '@/server/actions/facebook-account/runFacebookAccountScenario'
+import Dialog from '@/components/ui/Dialog'
+import Select from '@/components/ui/Select'
+import { apiGetDevices } from '@/services/device/DeviceService'
 import stopFacebookAccountTasks from '@/server/actions/facebook-account/stopFacebookAccountTasks'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
 
 const FacebookAccountStatusToggle = ({ account, onStatusChange }) => {
     const [actionLoading, setActionLoading] = useState(false)
+    const [deviceModalOpen, setDeviceModalOpen] = useState(false)
+    const [devices, setDevices] = useState([])
+    const [selectedDeviceId, setSelectedDeviceId] = useState(account?.device?.id ? String(account.device.id) : '')
     const { getAccountStatus, refreshData } = useFacebookAccountData()
 
     const status = getAccountStatus(account.id)
+
+    const openDevicePickerIfNeeded = async () => {
+        if (status?.status === 'idle' || status?.status === 'pending') {
+            // Chọn thiết bị trước khi chạy
+            if (!selectedDeviceId) {
+                try {
+                    const res = await apiGetDevices({ per_page: 100 })
+                    const list = res?.data?.data || []
+                    setDevices(list.map(d => ({ value: String(d.id), label: d.name })))
+                } catch {}
+                setDeviceModalOpen(true)
+                return true
+            }
+        }
+        return false
+    }
+
+    const handleStartWithDevice = async () => {
+        setActionLoading(true)
+        try {
+            const result = await runFacebookAccountScenario(account.id, selectedDeviceId ? { device_id: Number(selectedDeviceId) } : {})
+            if (result.success) {
+                toast.push(
+                    <Notification title="Thành công" type="success">
+                        {result.message}
+                    </Notification>
+                )
+                await refreshData()
+                if (onStatusChange) onStatusChange()
+                setDeviceModalOpen(false)
+            } else {
+                toast.push(
+                    <Notification title="Lỗi" type="danger">
+                        {result.message}
+                    </Notification>
+                )
+            }
+        } catch (error) {
+            toast.push(
+                <Notification title="Lỗi" type="danger">
+                    {error.message}
+                </Notification>
+            )
+        } finally {
+            setActionLoading(false)
+        }
+    }
 
     const handleToggleAction = async () => {
         setActionLoading(true)
         try {
             let result
             if (status?.status === 'idle' || status?.status === 'pending') {
-                // Start scenario
-                result = await runFacebookAccountScenario(account.id)
+                // Start scenario with optional device
+                const needPicker = await openDevicePickerIfNeeded()
+                if (needPicker) {
+                    setActionLoading(false)
+                    return
+                }
+                result = await runFacebookAccountScenario(account.id, selectedDeviceId ? { device_id: Number(selectedDeviceId) } : {})
             } else {
                 // Stop tasks
                 result = await stopFacebookAccountTasks(account.id)
@@ -106,16 +164,34 @@ const FacebookAccountStatusToggle = ({ account, onStatusChange }) => {
     const buttonConfig = getButtonConfig()
 
     return (
-        <Button
-            variant={buttonConfig.variant}
-            size="sm"
-            className={`p-1 ${buttonConfig.className || ''}`}
-            onClick={handleToggleAction}
-            loading={actionLoading}
-            disabled={actionLoading}
-        >
-            {buttonConfig.icon}
-        </Button>
+        <>
+            <Button
+                variant={buttonConfig.variant}
+                size="sm"
+                className={`p-1 ${buttonConfig.className || ''}`}
+                onClick={handleToggleAction}
+                loading={actionLoading}
+                disabled={actionLoading}
+            >
+                {buttonConfig.icon}
+            </Button>
+
+            <Dialog isOpen={deviceModalOpen} onClose={() => setDeviceModalOpen(false)} onRequestClose={() => setDeviceModalOpen(false)} width={480}>
+                <div className="p-6 space-y-4">
+                    <h3 className="text-lg font-semibold">Chọn thiết bị để chạy</h3>
+                    <Select
+                        placeholder="Chọn thiết bị"
+                        options={[{ value: '', label: '— Không chỉ định (dùng mặc định tài khoản) —' }, ...devices]}
+                        value={selectedDeviceId ? { value: selectedDeviceId, label: devices.find(d => d.value === selectedDeviceId)?.label || 'Đang tải...' } : null}
+                        onChange={(opt) => setSelectedDeviceId(opt?.value || '')}
+                    />
+                    <div className="flex justify-end gap-2">
+                        <Button variant="default" onClick={() => setDeviceModalOpen(false)}>Hủy</Button>
+                        <Button variant="solid" onClick={handleStartWithDevice} loading={actionLoading} disabled={actionLoading}>Bắt đầu</Button>
+                    </div>
+                </div>
+            </Dialog>
+        </>
     )
 }
 

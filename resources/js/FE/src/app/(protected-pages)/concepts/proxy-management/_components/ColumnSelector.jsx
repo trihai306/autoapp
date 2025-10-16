@@ -3,11 +3,9 @@ import { useMemo } from 'react'
 import Dropdown from '@/components/ui/Dropdown'
 import Checkbox from '@/components/ui/Checkbox'
 import { TbColumnInsertRight } from 'react-icons/tb'
-import { useTranslations } from 'next-intl'
 
 const ColumnSelector = ({ columns = [], selectableColumns = [], onColumnToggle }) => {
-    const t = useTranslations('proxy-management')
-    
+
     const selectableColumn = useMemo(() => {
         return selectableColumns.map(column => ({
             ...column,
@@ -20,7 +18,7 @@ const ColumnSelector = ({ columns = [], selectableColumns = [], onColumnToggle }
             placement="bottom-end"
             renderTitle={
                 <div className="flex items-center gap-2 cursor-pointer select-none">
-                    <span>{t('columns')}</span>
+                    <span>{'Cột'}</span>
                     <TbColumnInsertRight />
                 </div>
             }

@@ -16,10 +16,10 @@ import getDevices from '@/server/actions/device/getDevices'
 import getInteractionScenarios from '@/server/actions/interaction-scenario/getInteractionScenarios'
 import getActiveProxies from '@/server/actions/proxy/getActiveProxies'
 import { useTranslations } from 'next-intl'
-import { 
-    TbAlertCircle, 
-    TbCircleCheck, 
-    TbInfoCircle, 
+import {
+    TbAlertCircle,
+    TbCircleCheck,
+    TbInfoCircle,
     TbX,
     TbFileText,
     TbUsers,
@@ -42,7 +42,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
     const [deviceMenuOpen, setDeviceMenuOpen] = useState(false)
     const [scenarioMenuOpen, setScenarioMenuOpen] = useState(false)
     const [proxyMenuOpen, setProxyMenuOpen] = useState(false)
-    
+
     // Enhanced validation states
     const [validationResults, setValidationResults] = useState({
         valid: [],
@@ -63,7 +63,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
                 setIsLoadingData(true)
                 const [devicesResponse, scenariosResponse] = await Promise.all([
                     getDevices({ per_page: 1000, page: 1 }), // Lấy tối đa 1000 devices
-                    getInteractionScenarios({ per_page: 1000, page: 1 }) // Lấy tối đa 1000 scenarios
+                    getInteractionScenarios({ per_page: 1000, page: 1, platform: 'tiktok' }) // Lấy tối đa 1000 scenarios TikTok
                 ])
 
 
@@ -71,7 +71,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
                 if (devicesResponse.success) {
                     // Handle multiple possible data structures
                     let deviceData = []
-                    
+
                     if (devicesResponse.data?.data && Array.isArray(devicesResponse.data.data)) {
                         deviceData = devicesResponse.data.data
                     } else if (devicesResponse.data && Array.isArray(devicesResponse.data)) {
@@ -81,7 +81,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
                     } else if (devicesResponse.data?.devices && Array.isArray(devicesResponse.data.devices)) {
                         deviceData = devicesResponse.data.devices
                     }
-                    
+
 
                     setDevices(deviceData)
                 } else {
@@ -96,7 +96,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
                 if (scenariosResponse.success) {
                     // Handle multiple possible data structures
                     let scenarioData = []
-                    
+
                     if (scenariosResponse.data?.data && Array.isArray(scenariosResponse.data.data)) {
                         scenarioData = scenariosResponse.data.data
                     } else if (scenariosResponse.data && Array.isArray(scenariosResponse.data)) {
@@ -106,7 +106,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
                     } else if (scenariosResponse.data?.scenarios && Array.isArray(scenariosResponse.data.scenarios)) {
                         scenarioData = scenariosResponse.data.scenarios
                     }
-                    
+
 
                     setScenarios(scenarioData)
                 } else {
@@ -121,7 +121,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
                 // Load proxies
                 try {
                     const proxiesResponse = await getActiveProxies()
-                    
+
                     if (proxiesResponse.success) {
                         setProxies(proxiesResponse.data)
                         setProxiesLoaded(true) // Set proxiesLoaded to true after successful load
@@ -147,7 +147,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
             loadData()
         }
     }, [isOpen, proxiesLoaded]) // Chỉ chạy khi isOpen hoặc proxiesLoaded thay đổi
-    
+
     // Form state
     const [formData, setFormData] = useState({
         accountList: '',
@@ -165,16 +165,16 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
         const parts = line.split('|')
         const errors = []
         const format = formData.format || 'new'
-        
+
         if (format === 'new') {
             // New format: UID|PASS|2FA|MAIL
             if (parts.length < 2) {
                 errors.push('Định dạng không đúng. Cần: UID|PASS|2FA|MAIL (2FA và MAIL tùy chọn)')
                 return { valid: false, errors, data: null }
             }
-            
+
             const [uid, password, twoFa, email] = parts.map(p => p.trim())
-            
+
             // Validate UID
             if (!uid || uid.length < 3) {
                 errors.push('UID phải có ít nhất 3 ký tự')
@@ -182,28 +182,28 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
             if (!/^[a-zA-Z0-9._]+$/.test(uid)) {
                 errors.push('UID chỉ được chứa chữ cái, số, dấu chấm và gạch dưới')
             }
-            
+
             // Validate password
             if (!password || password.length < 6) {
                 errors.push('Password phải có ít nhất 6 ký tự')
             }
-            
+
             // Validate email if provided
             const finalEmail = email || `${uid}@tiktok.com`
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
             if (email && !emailRegex.test(email)) {
                 errors.push('Email không hợp lệ')
             }
-            
+
             return {
                 valid: errors.length === 0,
                 errors,
-                data: { 
-                    username: uid, 
-                    email: finalEmail, 
-                    password, 
+                data: {
+                    username: uid,
+                    email: finalEmail,
+                    password,
                     two_fa: twoFa || null,
-                    phone_number: null 
+                    phone_number: null
                 }
             }
         } else {
@@ -212,9 +212,9 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
                 errors.push('Định dạng không đúng. Cần: username|email|password|phone_number (phone_number tùy chọn)')
                 return { valid: false, errors, data: null }
             }
-            
+
             const [username, email, password, phone_number] = parts.map(p => p.trim())
-            
+
             // Validate username
             if (!username || username.length < 3) {
                 errors.push('Username phải có ít nhất 3 ký tự')
@@ -222,18 +222,18 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
             if (!/^[a-zA-Z0-9._]+$/.test(username)) {
                 errors.push('Username chỉ được chứa chữ cái, số, dấu chấm và gạch dưới')
             }
-            
+
             // Validate email
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
             if (!email || !emailRegex.test(email)) {
                 errors.push('Email không hợp lệ')
             }
-            
+
             // Validate password
             if (!password || password.length < 6) {
                 errors.push('Mật khẩu phải có ít nhất 6 ký tự')
             }
-            
+
             // Validate phone number (optional)
             if (phone_number) {
                 const phoneRegex = /^[0-9+\-\s()]+$/
@@ -241,7 +241,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
                     errors.push('Số điện thoại không hợp lệ')
                 }
             }
-            
+
             return {
                 valid: errors.length === 0,
                 errors,
@@ -249,7 +249,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
             }
         }
     }
-    
+
     const validateAccountList = async (accountList) => {
         setIsValidating(true)
         const lines = accountList.split('\n').filter(line => line.trim() !== '')
@@ -259,17 +259,17 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
             duplicates: [],
             errors: []
         }
-        
+
         const seenUsernames = new Set()
         const seenEmails = new Set()
-        
+
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i].trim()
             if (!line) continue
-            
+
             const validation = validateAccountFormat(line)
             const lineNumber = i + 1
-            
+
             if (!validation.valid) {
                 results.invalid.push({
                     line: lineNumber,
@@ -278,9 +278,9 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
                 })
                 continue
             }
-            
+
             const { username, email } = validation.data
-            
+
             // Check for duplicates
             const duplicateErrors = []
             if (seenUsernames.has(username)) {
@@ -289,7 +289,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
             if (seenEmails.has(email)) {
                 duplicateErrors.push(`Email "${email}" đã tồn tại trong danh sách`)
             }
-            
+
             if (duplicateErrors.length > 0) {
                 results.duplicates.push({
                     line: lineNumber,
@@ -307,7 +307,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
                 seenEmails.add(email)
             }
         }
-        
+
         setValidationResults(results)
         setIsValidating(false)
         return results
@@ -318,7 +318,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
         const lines = value.split('\n').filter(line => line.trim() !== '')
         setAccountCount(lines.length)
         setFormData(prev => ({ ...prev, accountList: value }))
-        
+
         // Auto-validate if there's content
         if (value.trim()) {
             await validateAccountList(value)
@@ -353,7 +353,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
 
         // Validate before submitting
         const validation = await validateAccountList(formData.accountList)
-        
+
         if (validation.invalid.length > 0 || validation.duplicates.length > 0) {
             toast.push(
                 <Notification title="Lỗi validation" type="danger" closable>
@@ -363,7 +363,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
             setShowValidation(true)
             return
         }
-        
+
         if (validation.valid.length === 0) {
             toast.push(
                 <Notification title="Lỗi" type="danger" closable>
@@ -376,14 +376,14 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
         setIsSubmitting(true)
         try {
             const result = await importTiktokAccounts(formData)
-            
+
             if (result.success) {
                 toast.push(
                     <Notification title="Thành công" type="success" closable>
                         {result.message || `Đã import thành công ${validation.valid.length} tài khoản`}
                     </Notification>
                 )
-                
+
                 handleClose()
                 if (onSuccess) {
                     onSuccess()
@@ -455,7 +455,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
                 <div className="p-4 border-b border-gray-200 dark:border-gray-600 flex-shrink-0">
                     <h5 className="font-bold">{t('title')}</h5>
                 </div>
-                
+
                 <div className="p-4 flex-1 overflow-y-auto min-h-0 relative">
                     <div className="space-y-6">
                         {/* Danh sách tài khoản */}
@@ -474,7 +474,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
                             <Input
                                 textArea
                                 placeholder={
-                                    formData.format === 'new' 
+                                    formData.format === 'new'
                                         ? "user1|password123|ABCD1234|user1@example.com\nuser2|password456|EFGH5678|user2@example.com\nuser3|password789|IJKL9012"
                                         : "user1|user1@example.com|password123|0987654321\nuser2|user2@example.com|password456|0123456789"
                                 }
@@ -482,14 +482,14 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
                                 value={formData.accountList}
                                 onChange={(e) => handleAccountListChange(e.target.value)}
                                 className={`${
-                                    showValidation && validationResults.invalid.length > 0 
-                                        ? 'border-red-300 focus:border-red-500' 
+                                    showValidation && validationResults.invalid.length > 0
+                                        ? 'border-red-300 focus:border-red-500'
                                         : showValidation && validationResults.valid.length > 0
                                         ? 'border-green-300 focus:border-green-500'
                                         : ''
                                 }`}
                             />
-                            
+
                             {/* Validation Summary */}
                             {showValidation && (
                                 <div className="mt-3 space-y-2">
@@ -524,7 +524,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
                                     <TbAlertCircle className="w-4 h-4 text-red-500" />
                                     Chi tiết lỗi
                                 </h6>
-                                
+
                                 <div className="max-h-32 overflow-y-auto space-y-2 bg-red-50 dark:bg-red-900/10 rounded-lg p-3 border border-red-200 dark:border-red-800">
                                     {/* Invalid entries */}
                                     {validationResults.invalid.map((item, index) => (
@@ -539,7 +539,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
                                             </ul>
                                         </div>
                                     ))}
-                                    
+
                                     {/* Duplicate entries */}
                                     {validationResults.duplicates.map((item, index) => (
                                         <div key={`duplicate-${index}`} className="text-sm">
@@ -561,18 +561,18 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
                         <div>
                             <label className="form-label">Chọn định dạng nhập</label>
                             <div className="grid grid-cols-2 gap-4">
-                                <div 
+                                <div
                                     className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                                        formData.format === 'new' 
-                                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' 
+                                        formData.format === 'new'
+                                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                                             : 'border-gray-300 dark:border-gray-600 hover:border-gray-400'
                                     }`}
                                     onClick={() => handleInputChange('format', 'new')}
                                 >
                                     <div className="flex items-center gap-2 mb-2">
-                                        <input 
-                                            type="radio" 
-                                            checked={formData.format === 'new'} 
+                                        <input
+                                            type="radio"
+                                            checked={formData.format === 'new'}
                                             onChange={() => handleInputChange('format', 'new')}
                                             className="text-blue-600"
                                         />
@@ -590,19 +590,19 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
                                         </div>
                                     </div>
                                 </div>
-                                
-                                <div 
+
+                                <div
                                     className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                                        formData.format === 'legacy' 
-                                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' 
+                                        formData.format === 'legacy'
+                                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                                             : 'border-gray-300 dark:border-gray-600 hover:border-gray-400'
                                     }`}
                                     onClick={() => handleInputChange('format', 'legacy')}
                                 >
                                     <div className="flex items-center gap-2 mb-2">
-                                        <input 
-                                            type="radio" 
-                                            checked={formData.format === 'legacy'} 
+                                        <input
+                                            type="radio"
+                                            checked={formData.format === 'legacy'}
                                             onChange={() => handleInputChange('format', 'legacy')}
                                             className="text-blue-600"
                                         />
@@ -633,7 +633,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
                                     {t('enableRunningStatus')}
                                 </Checkbox>
                             </div>
-                            
+
                             <div>
                                 <Checkbox
                                     checked={formData.autoAssign}
@@ -651,7 +651,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
                             <div>
                                 <div className="flex items-center justify-between">
                                     <label className="form-label">
-                                        {t('selectDevice')} 
+                                        {t('selectDevice')}
                                         {!isLoadingData && (
                                             <span className="text-xs text-gray-500 ml-2">
                                                 ({devices.length} thiết bị)
@@ -693,9 +693,9 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
                                     <Select
                                         instanceId="import-accounts-device-select"
                                         placeholder={
-                                            isLoadingData 
-                                                ? "Đang tải..." 
-                                                : devices.length === 0 
+                                            isLoadingData
+                                                ? "Đang tải..."
+                                                : devices.length === 0
                                                     ? "Không có thiết bị nào"
                                                     : t('selectDevicePlaceholder')
                                         }
@@ -745,7 +745,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
                                                 setIsLoadingData(true)
                                                 const loadData = async () => {
                                                     try {
-                                                        const scenariosResponse = await getInteractionScenarios({ per_page: 1000, page: 1 })
+                                                        const scenariosResponse = await getInteractionScenarios({ per_page: 1000, page: 1, platform: 'tiktok' })
                                                         if (scenariosResponse.success) {
                                                             let scenarioData = []
                                                             if (scenariosResponse.data?.data && Array.isArray(scenariosResponse.data.data)) {
@@ -773,9 +773,9 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
                                     <Select
                                         instanceId="import-accounts-scenario-select"
                                         placeholder={
-                                            isLoadingData 
-                                                ? "Đang tải..." 
-                                                : scenarios.length === 0 
+                                            isLoadingData
+                                                ? "Đang tải..."
+                                                : scenarios.length === 0
                                                     ? "Không có kịch bản nào"
                                                     : t('selectScenarioPlaceholder')
                                         }
@@ -823,9 +823,9 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
                                     <Select
                                         instanceId="import-accounts-proxy-select"
                                         placeholder={
-                                            isLoadingData 
-                                                ? "Đang tải..." 
-                                                : proxies.length === 0 
+                                            isLoadingData
+                                                ? "Đang tải..."
+                                                : proxies.length === 0
                                                     ? "Không có proxy nào"
                                                     : t('selectProxyPlaceholder')
                                         }
@@ -912,7 +912,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
                             </div>
                         </div>
                     )}
-                    
+
                     <div className="flex flex-col sm:flex-row justify-end gap-2">
                         <Button
                             type="button"
@@ -936,7 +936,7 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
                             loading={isSubmitting}
                             onClick={onSubmit}
                             disabled={
-                                isSubmitting || 
+                                isSubmitting ||
                                 !formData.accountList.trim() ||
                                 (showValidation && (validationResults.invalid.length > 0 || validationResults.duplicates.length > 0)) ||
                                 (showValidation && validationResults.valid.length === 0)
@@ -952,4 +952,4 @@ const ImportAccountsModal = ({ isOpen, onClose, onSuccess }) => {
     )
 }
 
-export default ImportAccountsModal 
+export default ImportAccountsModal

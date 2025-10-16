@@ -54,10 +54,11 @@ export async function apiBulkUpdateFacebookAccountConnectionType(account_ids, co
     })
 }
 
-export async function apiRunFacebookAccountScenario(accountId) {
+export async function apiRunFacebookAccountScenario(accountId, data = {}) {
     return ApiService.fetchDataWithAxios({
         url: `/facebook-accounts/${accountId}/run-scenario`,
         method: 'post',
+        data,
     })
 }
 
@@ -70,7 +71,7 @@ export async function apiStopFacebookAccountTasks(accountId) {
 
 export async function apiBulkRunFacebookAccountScenario(accountIds) {
     return ApiService.fetchDataWithAxios({
-        url: '/facebook-accounts/run-scenario/bulk',
+        url: '/facebook-accounts/bulk-run',
         method: 'post',
         data: { account_ids: accountIds },
     })
@@ -131,4 +132,51 @@ export async function apiRunFacebookInteractions(data) {
     })
 }
 
+export async function apiDeleteFacebookAccount(accountId) {
+    return ApiService.fetchDataWithAxios({
+        url: `/facebook-accounts/${accountId}`,
+        method: 'delete',
+    })
+}
+
+// BULK APIs (backend endpoints per agreed plan)
+export async function apiBulkDeleteFacebookAccounts(ids = []) {
+    return ApiService.fetchDataWithAxios({
+        url: '/facebook-accounts/bulk/delete',
+        method: 'post',
+        data: { ids },
+    })
+}
+
+export async function apiBulkRunFacebookAccounts(ids = [], scenario_id, device_id = null) {
+    return ApiService.fetchDataWithAxios({
+        url: '/facebook-accounts/bulk/run',
+        method: 'post',
+        data: { ids, scenario_id, device_id },
+    })
+}
+
+export async function apiBulkStopFacebookAccountsScenario(ids = []) {
+    return ApiService.fetchDataWithAxios({
+        url: '/facebook-accounts/bulk/stop-scenario',
+        method: 'post',
+        data: { ids },
+    })
+}
+
+export async function apiBulkAssignScenarioToFacebookAccounts(ids = [], scenario_id) {
+    return ApiService.fetchDataWithAxios({
+        url: '/facebook-accounts/bulk/assign-scenario',
+        method: 'post',
+        data: { ids, scenario_id },
+    })
+}
+
+export async function apiBulkAssignDeviceToFacebookAccounts(ids = [], device_id) {
+    return ApiService.fetchDataWithAxios({
+        url: '/facebook-accounts/bulk/assign-device',
+        method: 'post',
+        data: { ids, device_id },
+    })
+}
 

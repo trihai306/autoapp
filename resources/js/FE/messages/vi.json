@@ -420,7 +420,11 @@
             "country": "Quốc gia",
             "lastUsed": "Lần cuối sử dụng",
             "edit": "Chỉnh sửa",
-            "delete": "Xóa"
+            "delete": "Xóa",
+            "test": {
+                "success": "Kiểm tra kết nối thành công",
+                "error": "Kiểm tra kết nối thất bại"
+            }
         },
         "status": {
             "active": "Hoạt động",

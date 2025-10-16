@@ -1,5 +1,5 @@
 'use client'
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Container from '@/components/shared/Container'
 import AdaptiveCard from '@/components/shared/AdaptiveCard'
@@ -7,6 +7,7 @@ import FacebookAccountListTable from './_components/FacebookAccountListTable'
 import FacebookAccountListPagination from './_components/FacebookAccountListPagination'
 import FacebookAccountListActionTools from './_components/FacebookAccountListActionTools'
 import FacebookDashboardHeader from './_components/FacebookDashboardHeader'
+import { FacebookAccountDataProvider } from './_components/FacebookAccountDataManager'
 import getFacebookAccounts from '@/server/actions/facebook-account/getFacebookAccounts'
 
 const FacebookAccountManagementClient = ({ data, params }) => {
@@ -14,6 +15,12 @@ const FacebookAccountManagementClient = ({ data, params }) => {
     const [isLoading, setIsLoading] = useState(false)
     const [list, setList] = useState(data?.list || [])
     const [total, setTotal] = useState(data?.total || 0)
+
+    // Đồng bộ lại dữ liệu khi props data thay đổi (sau router.refresh)
+    useEffect(() => {
+        setList(data?.list || [])
+        setTotal(data?.total || 0)
+    }, [data])
 
     const handleRefresh = useCallback(async () => {
         setIsLoading(true)
@@ -37,29 +44,31 @@ const FacebookAccountManagementClient = ({ data, params }) => {
     }, [params])
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-            <FacebookDashboardHeader
-                title={'Quản lý tài khoản Facebook'}
-                subtitle={'Theo dõi và quản lý các tài khoản Facebook'}
-                onRefresh={handleRefresh}
-                showActions
-            />
+        <FacebookAccountDataProvider>
+            <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+                <FacebookDashboardHeader
+                    title={'Quản lý tài khoản Facebook'}
+                    subtitle={'Theo dõi và quản lý các tài khoản Facebook'}
+                    onRefresh={handleRefresh}
+                    showActions
+                />
 
-            <Container className="py-6">
-                <div className="space-y-6">
-                    <AdaptiveCard className="overflow-hidden">
-                        <div className="p-4 lg:p-6">
-                            <h2 className="text-lg lg:text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Danh sách tài khoản</h2>
-                            <div className="mb-4">
-                                <FacebookAccountListActionTools onRefresh={handleRefresh} />
+                <Container className="py-6">
+                    <div className="space-y-6">
+                        <AdaptiveCard className="overflow-hidden">
+                            <div className="p-4 lg:p-6">
+                                <h2 className="text-lg lg:text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Danh sách tài khoản</h2>
+                                <div className="mb-4">
+                                    <FacebookAccountListActionTools onRefresh={handleRefresh} />
+                                </div>
+                                <FacebookAccountListTable list={list} />
                             </div>
-                            <FacebookAccountListTable list={list} />
-                        </div>
-                    </AdaptiveCard>
-                    <FacebookAccountListPagination total={total} page={parseInt(params.page) || 1} per_page={parseInt(params.per_page) || 10} />
-                </div>
-            </Container>
-        </div>
+                        </AdaptiveCard>
+                        <FacebookAccountListPagination total={total} page={parseInt(params.page) || 1} per_page={parseInt(params.per_page) || 10} />
+                    </div>
+                </Container>
+            </div>
+        </FacebookAccountDataProvider>
     )
 }
 

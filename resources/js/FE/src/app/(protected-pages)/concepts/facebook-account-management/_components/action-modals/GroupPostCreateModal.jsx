@@ -10,7 +10,7 @@ const GroupPostCreateModal = ({ isOpen, onClose, action, onSave }) => {
     const [form, setForm] = useState({
         actionName: 'Đăng bài lên nhóm',
         content: '',
-        groupUrl: '',
+        groupQueries: [], // array các link nhóm
         images: [], // [{name, path}]
         video: null, // {name, path}
     })
@@ -50,13 +50,10 @@ const GroupPostCreateModal = ({ isOpen, onClose, action, onSave }) => {
     const handleSave = () => {
         const type = inferType()
         const config = {
-            type: 'group_post_create',
-            name: form.actionName || 'Đăng bài lên nhóm',
-            FacebookPostWorkflow: {
+            FacebookGroupPostWorkflow: {
                 Config: {
-                    type,
+                    groupQueries: (form.groupQueries || []).map(s=>s.trim()).filter(Boolean),
                     content: form.content || null,
-                    groupUrl: form.groupUrl || null,
                     imagePaths: type === 'IMAGE' ? form.images.map(i=>i.path) : null,
                     videoPath: type === 'VIDEO' ? form.video?.path || null : null,
                 },
@@ -75,7 +72,16 @@ const GroupPostCreateModal = ({ isOpen, onClose, action, onSave }) => {
                 <div className="rounded-xl border border-gray-200 dark:border-gray-700 p-4 space-y-3">
                     <div className="text-sm font-semibold">Cấu hình cơ bản</div>
                     <Input placeholder="Tên hành động" value={form.actionName} onChange={(e)=>setForm(p=>({ ...p, actionName: e.target.value }))} />
-                    <Input placeholder="Đường link nhóm (URL)" value={form.groupUrl} onChange={(e)=>setForm(p=>({ ...p, groupUrl: e.target.value }))} />
+                    <Input
+                        textArea
+                        rows={4}
+                        placeholder={"Mỗi dòng một link nhóm\nhttps://www.facebook.com/groups/123\nhttps://www.facebook.com/groups/456"}
+                        value={(form.groupQueries || []).join('\n')}
+                        onChange={(e)=>{
+                            const lines = (e.target.value || '').split('\n').map(s=>s.trim()).filter(Boolean)
+                            setForm(p=>({ ...p, groupQueries: lines }))
+                        }}
+                    />
                     <Input textArea rows={4} placeholder="Nội dung văn bản" value={form.content} onChange={(e)=>setForm(p=>({ ...p, content: e.target.value }))} />
                 </div>
 

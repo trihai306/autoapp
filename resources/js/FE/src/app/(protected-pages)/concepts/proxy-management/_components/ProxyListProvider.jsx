@@ -17,7 +17,6 @@ const ProxyListProvider = ({ proxyList, stats, children }) => {
         setProxyList(proxyList)
         setStats(stats)
         setInitialLoading(false)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [proxyList, stats])
 
     return <>{children}</>

@@ -28,6 +28,7 @@ const NewsfeedInteractionModal = ({ isOpen, onClose, action, onSave }) => {
         maxPosts: 20,
         likeRatio: 0.6,
         commentRatio: 0.3,
+        shareRatio: 0.1,
         actionName: 'Tương tác Newsfeed',
     })
 
@@ -84,16 +85,22 @@ const NewsfeedInteractionModal = ({ isOpen, onClose, action, onSave }) => {
             .map(s => (s || '').trim())
             .filter(Boolean)
 
+        const toPercent = (val) => {
+            const num = Number(val)
+            if (Number.isNaN(num)) return 0
+            return num <= 1 ? Math.round(num * 100) : Math.round(num)
+        }
+
         const config = {
-            type: 'newsfeed_interaction',
-            name: form.actionName || 'Tương tác Newsfeed',
-            FacebookNewsfeedInteractionWorkflow: {
+            FacebookNewsFeedWorkflow: {
                 Config: {
-                    actions: form.actions,
-                    maxPosts: Number(form.maxPosts) || 0,
-                    likeRatio: Number(form.likeRatio) || 0,
-                    commentRatio: Number(form.commentRatio) || 0,
+                    postsToProcess: Number(form.maxPosts) || 0,
+                    maxDurationMinutes: 15,
+                    likeRatePercent: toPercent(form.likeRatio),
+                    commentRatePercent: toPercent(form.commentRatio),
+                    shareRatePercent: toPercent(form.shareRatio),
                     comments: Array.from(new Set(selectedComments)),
+                    mode: 'BY_POSTS'
                 }
             }
         }
@@ -124,6 +131,10 @@ const NewsfeedInteractionModal = ({ isOpen, onClose, action, onSave }) => {
                         <div>
                             <label className="block text-sm font-medium mb-1">Tỉ lệ Comment</label>
                             <Input type="number" step="0.1" value={form.commentRatio} onChange={(e)=>setForm(p=>({ ...p, commentRatio: Number(e.target.value)||0 }))} />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-1">Tỉ lệ Share</label>
+                            <Input type="number" step="0.1" value={form.shareRatio} onChange={(e)=>setForm(p=>({ ...p, shareRatio: Number(e.target.value)||0 }))} />
                         </div>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">

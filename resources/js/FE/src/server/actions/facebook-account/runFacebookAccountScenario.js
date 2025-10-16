@@ -3,10 +3,10 @@
 import { withAuthCheck } from '@/utils/withAuthCheck'
 import { apiRunFacebookAccountScenario } from '@/services/facebook-account/FacebookAccountService'
 
-export default async function runFacebookAccountScenario(accountId) {
+export default async function runFacebookAccountScenario(accountId, payload = {}) {
     return withAuthCheck(async () => {
         try {
-            const response = await apiRunFacebookAccountScenario(accountId)
+            const response = await apiRunFacebookAccountScenario(accountId, payload)
             return {
                 success: true,
                 data: response.data || null,

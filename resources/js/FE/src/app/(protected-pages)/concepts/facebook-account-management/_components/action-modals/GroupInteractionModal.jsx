@@ -24,9 +24,12 @@ const normalizeItemText = (item) => {
 
 const GroupInteractionModal = ({ isOpen, onClose, action, onSave }) => {
     const [form, setForm] = useState({
-        groupUrls: '',
+        groupUrls: [],
         actions: ['like','comment'],
         scrollDepth: 50,
+        likeRatio: 0.6,
+        commentRatio: 0.3,
+        shareRatio: 0.1,
         actionName: 'Tương tác nhóm',
     })
 
@@ -83,15 +86,23 @@ const GroupInteractionModal = ({ isOpen, onClose, action, onSave }) => {
             .map(s => (s || '').trim())
             .filter(Boolean)
 
+        const toPercent = (val) => {
+            const num = Number(val)
+            if (Number.isNaN(num)) return 0
+            return num <= 1 ? Math.round(num * 100) : Math.round(num)
+        }
+
         const config = {
-            type: 'group_interaction',
-            name: form.actionName || 'Tương tác nhóm',
             FacebookGroupInteractionWorkflow: {
                 Config: {
-                    groupUrls: (form.groupUrls || '').split('\n').map(s=>s.trim()).filter(Boolean),
-                    actions: form.actions,
-                    scrollDepth: Number(form.scrollDepth) || 0,
+                    groupUrls: (form.groupUrls || []).map(s=>s.trim()).filter(Boolean),
+                    postsToProcess: 10,
+                    maxDurationMinutes: 15,
+                    likeRatePercent: toPercent(form.likeRatio),
+                    commentRatePercent: toPercent(form.commentRatio),
+                    shareRatePercent: toPercent(form.shareRatio),
                     comments: Array.from(new Set(selectedComments)),
+                    mode: 'BY_POSTS'
                 }
             }
         }
@@ -112,12 +123,35 @@ const GroupInteractionModal = ({ isOpen, onClose, action, onSave }) => {
                     <Input placeholder="Tên hành động" value={form.actionName} onChange={(e)=>setForm(p=>({ ...p, actionName: e.target.value }))} />
                     <div>
                         <label className="block text-sm font-medium mb-1">Danh sách link nhóm (mỗi dòng một link)</label>
-                        <Input placeholder="https://www.facebook.com/groups/123\nhttps://www.facebook.com/groups/456" textArea rows={4} value={form.groupUrls} onChange={(e)=>setForm(p=>({ ...p, groupUrls: e.target.value }))} />
+                        <Input
+                            textArea
+                            rows={4}
+                            placeholder={"https://www.facebook.com/groups/123\nhttps://www.facebook.com/groups/456"}
+                            value={(form.groupUrls || []).join('\n')}
+                            onChange={(e)=>{
+                                const lines = (e.target.value || '').split('\n').map(s=>s.trim()).filter(Boolean)
+                                setForm(p=>({ ...p, groupUrls: lines }))
+                            }}
+                        />
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <Checkbox checked={form.actions.includes('like')} onChange={(c)=>setForm(p=>({ ...p, actions: c ? Array.from(new Set([...(p.actions||[]),'like'])) : (p.actions||[]).filter(a=>a!=='like') }))}>Like</Checkbox>
                         <Checkbox checked={form.actions.includes('comment')} onChange={(c)=>setForm(p=>({ ...p, actions: c ? Array.from(new Set([...(p.actions||[]),'comment'])) : (p.actions||[]).filter(a=>a!=='comment') }))}>Comment</Checkbox>
                         <Checkbox checked={form.actions.includes('share')} onChange={(c)=>setForm(p=>({ ...p, actions: c ? Array.from(new Set([...(p.actions||[]),'share'])) : (p.actions||[]).filter(a=>a!=='share') }))}>Share</Checkbox>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label className="block text-sm font-medium mb-1">Tỉ lệ Like</label>
+                            <Input type="number" step="0.1" value={form.likeRatio} onChange={(e)=>setForm(p=>({ ...p, likeRatio: Number(e.target.value)||0 }))} />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-1">Tỉ lệ Comment</label>
+                            <Input type="number" step="0.1" value={form.commentRatio} onChange={(e)=>setForm(p=>({ ...p, commentRatio: Number(e.target.value)||0 }))} />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-1">Tỉ lệ Share</label>
+                            <Input type="number" step="0.1" value={form.shareRatio} onChange={(e)=>setForm(p=>({ ...p, shareRatio: Number(e.target.value)||0 }))} />
+                        </div>
                     </div>
                     <div>
                         <label className="block text-sm font-medium mb-1">Độ sâu cuộn (%)</label>

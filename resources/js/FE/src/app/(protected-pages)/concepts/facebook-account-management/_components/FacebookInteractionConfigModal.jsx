@@ -195,9 +195,17 @@ const FacebookInteractionConfigModal = ({ isOpen, onClose, accountId }) => {
     const loadScenarioDetails = async (scenarioId) => {
         setScenarioLoading(true)
         try {
-            const result = await getInteractionScenario(scenarioId).data
-            // result là model scenario, không có success
-            setActions(Array.isArray(result?.scripts) ? result.scripts : [])
+            const response = await getInteractionScenario(scenarioId)
+            if (response.success && response.data) {
+                setActions(Array.isArray(response.data?.scripts) ? response.data.scripts : [])
+            } else {
+                console.error('❌ [Facebook] GET interaction-scenarios/:id failed:', response.message)
+                toast.push(
+                    <Notification title="Lỗi" type="danger" closable>
+                        {response.message || 'Có lỗi xảy ra khi tải chi tiết kịch bản'}
+                    </Notification>
+                )
+            }
         } catch (error) {
             console.error('❌ [Facebook] GET interaction-scenarios/:id error =', error?.response?.data || error)
             toast.push(
@@ -263,16 +271,8 @@ const FacebookInteractionConfigModal = ({ isOpen, onClose, accountId }) => {
         try {
             const result = await deleteInteractionScenario(deletingScenario.id)
             if (result.success) {
-                setScenarios(prev => prev.filter(s => s.id !== deletingScenario.id))
-                setActions(prev => prev.filter(a => a.scenario_id !== deletingScenario.id))
-                if (selectedScenario?.id === deletingScenario.id) {
-                    const remainingScenarios = scenarios.filter(s => s.id !== deletingScenario.id)
-                    const newSelected = remainingScenarios[0] || null
-                    setSelectedScenario(newSelected)
-                    if (newSelected?.id) {
-                        loadScenarioDetails(newSelected.id)
-                    }
-                }
+                // Reload scenarios to get fresh data from server
+                await loadScenarios()
                 toast.push(
                     <Notification title="Thành công" type="success" closable>
                         {t('toast.scenarioDeleted')}
@@ -317,14 +317,8 @@ const FacebookInteractionConfigModal = ({ isOpen, onClose, accountId }) => {
                     status: scenarioForm.status
                 })
                 if (result.success) {
-                    setScenarios(prev => prev.map(s =>
-                        s.id === editingScenario.id
-                            ? { ...s, name: scenarioForm.name, description: scenarioForm.description, status: scenarioForm.status }
-                            : s
-                    ))
-                    if (selectedScenario?.id === editingScenario.id) {
-                        setSelectedScenario(prev => ({ ...prev, name: scenarioForm.name, description: scenarioForm.description, status: scenarioForm.status }))
-                    }
+                    // Reload scenarios to get fresh data from server
+                    await loadScenarios()
                     toast.push(
                         <Notification title="Thành công" type="success" closable>
                             {t('toast.scenarioUpdated')}
@@ -484,7 +478,10 @@ const FacebookInteractionConfigModal = ({ isOpen, onClose, accountId }) => {
                 const scriptData = { script: JSON.stringify(config) }
                 const result = await updateScenarioScript(action.id, scriptData)
                 if (result.success) {
-                    setActions(prev => prev.map(a => a.id === action.id ? { ...a, script: scriptData.script } : a))
+                    // Reload scenario details to get fresh data from server
+                    if (selectedScenario?.id) {
+                        await loadScenarioDetails(selectedScenario.id)
+                    }
                     toast.push(
                         <Notification title="Thành công" type="success" closable>
                             Đã lưu cấu hình hành động
@@ -562,6 +559,26 @@ const FacebookInteractionConfigModal = ({ isOpen, onClose, accountId }) => {
         await saveActionConfig(action, config, setShowFriendVideoInteractionModal)
     }
 
+    // Facebook action handlers
+    const handleFbNewsfeedInteractionSave = async (action, config) => {
+        await saveActionConfig(action, config, setShowFbNewsfeedModal)
+    }
+    const handleFbSpecificPostInteractionSave = async (action, config) => {
+        await saveActionConfig(action, config, setShowFbSpecificPostInteractionModal)
+    }
+    const handleFbGroupInteractionSave = async (action, config) => {
+        await saveActionConfig(action, config, setShowFbGroupInteractionModal)
+    }
+    const handleFbGroupPostCreateSave = async (action, config) => {
+        await saveActionConfig(action, config, setShowFbGroupPostCreateModal)
+    }
+    const handleFbPostToTimelineSave = async (action, config) => {
+        await saveActionConfig(action, config, setShowFbPostToTimelineModal)
+    }
+    const handleFbSpecificPostCreateSave = async (action, config) => {
+        await saveActionConfig(action, config, setShowFbSpecificPostCreateModal)
+    }
+
     const handleDeleteAction = (action) => {
         setDeletingAction(action)
         setShowDeleteActionDialog(true)
@@ -573,7 +590,10 @@ const FacebookInteractionConfigModal = ({ isOpen, onClose, accountId }) => {
         try {
             const result = await deleteScenarioScript(deletingAction.id)
             if (result.success) {
-                setActions(prev => prev.filter(a => a.id !== deletingAction.id))
+                // Reload scenario details to get fresh data from server
+                if (selectedScenario?.id) {
+                    await loadScenarioDetails(selectedScenario.id)
+                }
                 toast.push(
                     <Notification title="Thành công" type="success" closable>
                         {t('toast.actionDeleted')}
@@ -825,17 +845,17 @@ const FacebookInteractionConfigModal = ({ isOpen, onClose, accountId }) => {
             {/* Action Config + various modals */}
             <ActionConfigModal isOpen={showActionConfigModal} onClose={() => { setShowActionConfigModal(false); setConfiguringAction(null) }} action={configuringAction} onSave={handleActionConfigSave} />
 
-            <NewsfeedInteractionModal isOpen={showFbNewsfeedModal} onClose={()=>{ setShowFbNewsfeedModal(false); setConfiguringAction(null) }} action={configuringAction} onSave={handleVideoInteractionSave} />
+            <NewsfeedInteractionModal isOpen={showFbNewsfeedModal} onClose={()=>{ setShowFbNewsfeedModal(false); setConfiguringAction(null) }} action={configuringAction} onSave={handleFbNewsfeedInteractionSave} />
 
-            <SpecificPostInteractionModal isOpen={showFbSpecificPostInteractionModal} onClose={()=>{ setShowFbSpecificPostInteractionModal(false); setConfiguringAction(null) }} action={configuringAction} onSave={handleSpecificVideoInteractionSave} />
+            <SpecificPostInteractionModal isOpen={showFbSpecificPostInteractionModal} onClose={()=>{ setShowFbSpecificPostInteractionModal(false); setConfiguringAction(null) }} action={configuringAction} onSave={handleFbSpecificPostInteractionSave} />
 
-            <GroupInteractionModal isOpen={showFbGroupInteractionModal} onClose={()=>{ setShowFbGroupInteractionModal(false); setConfiguringAction(null) }} action={configuringAction} onSave={handleVideoInteractionSave} />
+            <GroupInteractionModal isOpen={showFbGroupInteractionModal} onClose={()=>{ setShowFbGroupInteractionModal(false); setConfiguringAction(null) }} action={configuringAction} onSave={handleFbGroupInteractionSave} />
 
-            <GroupPostCreateModal isOpen={showFbGroupPostCreateModal} onClose={()=>{ setShowFbGroupPostCreateModal(false); setConfiguringAction(null) }} action={configuringAction} onSave={handleCreatePostSave} />
+            <GroupPostCreateModal isOpen={showFbGroupPostCreateModal} onClose={()=>{ setShowFbGroupPostCreateModal(false); setConfiguringAction(null) }} action={configuringAction} onSave={handleFbGroupPostCreateSave} />
 
-            <PostToTimelineModal isOpen={showFbPostToTimelineModal} onClose={()=>{ setShowFbPostToTimelineModal(false); setConfiguringAction(null) }} action={configuringAction} onSave={handleCreatePostSave} />
+            <PostToTimelineModal isOpen={showFbPostToTimelineModal} onClose={()=>{ setShowFbPostToTimelineModal(false); setConfiguringAction(null) }} action={configuringAction} onSave={handleFbPostToTimelineSave} />
 
-            <SpecificPostCreateModal isOpen={showFbSpecificPostCreateModal} onClose={()=>{ setShowFbSpecificPostCreateModal(false); setConfiguringAction(null) }} action={configuringAction} onSave={handleCreatePostSave} />
+            <SpecificPostCreateModal isOpen={showFbSpecificPostCreateModal} onClose={()=>{ setShowFbSpecificPostCreateModal(false); setConfiguringAction(null) }} action={configuringAction} onSave={handleFbSpecificPostCreateSave} />
 
             <FollowUserModal isOpen={showFollowUserModal} onClose={() => { setShowFollowUserModal(false); setConfiguringAction(null) }} action={configuringAction} onSave={handleFollowUserSave} />
 

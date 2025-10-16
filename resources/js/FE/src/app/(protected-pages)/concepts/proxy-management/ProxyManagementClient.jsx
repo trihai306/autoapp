@@ -9,7 +9,6 @@ import { useProxyListStore } from './_store/proxyListStore'
 import Dialog from '@/components/ui/Dialog'
 import ProxyForm from './_components/ProxyForm'
 import ImportForm from './_components/ImportForm'
-import { useTranslations } from 'next-intl'
 
 const ProxyManagementClient = ({ data, stats, params }) => {
     const isFormOpen = useProxyListStore((state) => state.isFormOpen)
@@ -20,7 +19,6 @@ const ProxyManagementClient = ({ data, stats, params }) => {
     const closeForm = useProxyListStore((state) => state.closeForm)
     const openImportForm = useProxyListStore((state) => state.openImportForm)
     const closeImportForm = useProxyListStore((state) => state.closeImportForm)
-    const t = useTranslations('proxy-management')
 
     return (
         <ProxyListProvider proxyList={data.list} stats={stats}>
@@ -28,9 +26,9 @@ const ProxyManagementClient = ({ data, stats, params }) => {
                 <AdaptiveCard>
                     <div className="flex flex-col gap-4">
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-                            <h3>{t('title')}</h3>
-                            <ProxyListActionTools 
-                                onAddNew={() => openForm('add')} 
+                            <h3>Quản lý Proxy</h3>
+                            <ProxyListActionTools
+                                onAddNew={() => openForm('add')}
                                 onImport={() => openImportForm()}
                             />
                         </div>
@@ -48,10 +46,10 @@ const ProxyManagementClient = ({ data, stats, params }) => {
                 onClose={closeForm}
                 onRequestClose={closeForm}
             >
-                <ProxyForm 
-                    mode={formMode} 
-                    proxy={selectedProxyForForm} 
-                    onClose={closeForm} 
+                <ProxyForm
+                    mode={formMode}
+                    proxy={selectedProxyForForm}
+                    onClose={closeForm}
                 />
             </Dialog>
             <Dialog

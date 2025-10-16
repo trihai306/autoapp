@@ -34,12 +34,12 @@ class DeviceController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        
-        // Nếu user là admin, hiển thị tất cả devices
-        if ($user->hasRole('admin')) {
+
+        // Nếu user là super-admin hoặc admin, hiển thị tất cả devices
+        if ($user->hasRole('super-admin') || $user->hasRole('admin')) {
             return response()->json($this->deviceService->getAll($request));
         }
-        
+
         // Nếu không phải admin, chỉ hiển thị devices của user đó
         $request->merge(['user_id' => $user->id]);
         return response()->json($this->deviceService->getAll($request));
@@ -53,7 +53,7 @@ class DeviceController extends Controller
     public function store(Request $request)
     {
         $user = $request->user();
-        
+
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
             'device_name' => 'required|string|max:255',
@@ -72,8 +72,8 @@ class DeviceController extends Controller
             'status' => 'sometimes|in:active,inactive,blocked',
         ]);
 
-        // Kiểm tra quyền: chỉ admin mới có thể tạo device cho user khác
-        if (!$user->hasRole('admin') && $validated['user_id'] != $user->id) {
+        // Kiểm tra quyền: chỉ super-admin hoặc admin mới có thể tạo device cho user khác
+        if (!($user->hasRole('super-admin') || $user->hasRole('admin')) && $validated['user_id'] != $user->id) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
@@ -91,9 +91,9 @@ class DeviceController extends Controller
     public function show(Request $request, Device $device)
     {
         $user = $request->user();
-        
-        // Kiểm tra quyền: chỉ admin hoặc chủ sở hữu mới có thể xem
-        if (!$user->hasRole('admin') && $device->user_id != $user->id) {
+
+        // Kiểm tra quyền: chỉ super-admin/admin hoặc chủ sở hữu mới có thể xem
+        if (!($user->hasRole('super-admin') || $user->hasRole('admin')) && $device->user_id != $user->id) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
@@ -109,9 +109,9 @@ class DeviceController extends Controller
     public function update(Request $request, Device $device)
     {
         $user = $request->user();
-        
-        // Kiểm tra quyền: chỉ admin hoặc chủ sở hữu mới có thể cập nhật
-        if (!$user->hasRole('admin') && $device->user_id != $user->id) {
+
+        // Kiểm tra quyền: chỉ super-admin/admin hoặc chủ sở hữu mới có thể cập nhật
+        if (!($user->hasRole('super-admin') || $user->hasRole('admin')) && $device->user_id != $user->id) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
@@ -145,9 +145,9 @@ class DeviceController extends Controller
     public function destroy(Request $request, Device $device)
     {
         $user = $request->user();
-        
-        // Kiểm tra quyền: chỉ admin hoặc chủ sở hữu mới có thể xóa
-        if (!$user->hasRole('admin') && $device->user_id != $user->id) {
+
+        // Kiểm tra quyền: chỉ super-admin/admin hoặc chủ sở hữu mới có thể xóa
+        if (!($user->hasRole('super-admin') || $user->hasRole('admin')) && $device->user_id != $user->id) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
@@ -165,17 +165,17 @@ class DeviceController extends Controller
     public function bulkDelete(Request $request)
     {
         $user = $request->user();
-        
+
         $validated = $request->validate([
             'ids' => 'required|array',
             'ids.*' => 'integer|exists:devices,id'
         ]);
 
         $devices = Device::whereIn('id', $validated['ids'])->get();
-        
+
         // Check permissions for each device
         foreach ($devices as $device) {
-            if (!$user->hasRole('admin') && $device->user_id != $user->id) {
+            if (!($user->hasRole('super-admin') || $user->hasRole('admin')) && $device->user_id != $user->id) {
                 return response()->json(['message' => 'Unauthorized to delete some devices'], 403);
             }
         }
@@ -196,7 +196,7 @@ class DeviceController extends Controller
     public function bulkUpdateStatus(Request $request)
     {
         $user = $request->user();
-        
+
         $validated = $request->validate([
             'ids' => 'required|array',
             'ids.*' => 'integer|exists:devices,id',
@@ -204,10 +204,10 @@ class DeviceController extends Controller
         ]);
 
         $devices = Device::whereIn('id', $validated['ids'])->get();
-        
+
         // Check permissions for each device
         foreach ($devices as $device) {
-            if (!$user->hasRole('admin') && $device->user_id != $user->id) {
+            if (!($user->hasRole('super-admin') || $user->hasRole('admin')) && $device->user_id != $user->id) {
                 return response()->json(['message' => 'Unauthorized to update some devices'], 403);
             }
         }
@@ -227,11 +227,11 @@ class DeviceController extends Controller
     public function stats(Request $request)
     {
         $user = $request->user();
-        
+
         $query = Device::query();
-        
-        // If not admin, only show user's devices
-        if (!$user->hasRole('admin')) {
+
+        // If not super-admin or admin, only show user's devices
+        if (!($user->hasRole('super-admin') || $user->hasRole('admin'))) {
             $query->where('user_id', $user->id);
         }
 
@@ -294,11 +294,11 @@ class DeviceController extends Controller
     public function recentActivities(Request $request)
     {
         $user = $request->user();
-        
+
         $query = Device::query()->with('user');
-        
-        // If not admin, only show user's devices
-        if (!$user->hasRole('admin')) {
+
+        // If not super-admin or admin, only show user's devices
+        if (!($user->hasRole('super-admin') || $user->hasRole('admin'))) {
             $query->where('user_id', $user->id);
         }
 
@@ -327,7 +327,7 @@ class DeviceController extends Controller
     public function import(Request $request)
     {
         $user = $request->user();
-        
+
         $validated = $request->validate([
             'devices' => 'required|array',
             'devices.*.device_name' => 'required|string|max:255',
@@ -386,9 +386,9 @@ class DeviceController extends Controller
     public function getConnectedAccounts(Request $request, Device $device)
     {
         $user = $request->user();
-        
-        // Kiểm tra quyền: chỉ admin hoặc chủ sở hữu mới có thể xem
-        if (!$user->hasRole('admin') && $device->user_id != $user->id) {
+
+        // Kiểm tra quyền: chỉ super-admin/admin hoặc chủ sở hữu mới có thể xem
+        if (!($user->hasRole('super-admin') || $user->hasRole('admin')) && $device->user_id != $user->id) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 

@@ -10,6 +10,7 @@ use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Http\Request;
 use App\Models\AccountTask;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 #[Group('Facebook Account Management')]
 class FacebookAccountController extends Controller
@@ -165,8 +166,35 @@ class FacebookAccountController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        $taskService = app(\App\Services\FacebookAccountTaskService::class);
-        $result = $taskService->runScenario($facebookAccount);
+        // Validate scenario and device
+        if (!$facebookAccount->scenario_id) {
+            return response()->json(['message' => 'Account has no linked scenario.'], 422);
+        }
+
+        $validated = $request->validate([
+            'device_id' => 'sometimes|exists:devices,id',
+        ]);
+        $deviceId = $validated['device_id'] ?? $facebookAccount->device_id;
+
+        // Check device has running task
+        if ($deviceId) {
+            $hasRunningTaskOnDevice = \App\Models\AccountTask::where('device_id', $deviceId)
+                ->where('status', 'running')
+                ->exists();
+            if ($hasRunningTaskOnDevice) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Thiết bị đang có task chạy, không tạo thêm task mới.'
+                ], 409);
+            }
+        }
+
+        $accountTaskService = app(\App\Services\AccountTaskService::class);
+        $result = $accountTaskService->createTasksFromScenarioForFacebook(
+            $facebookAccount,
+            $deviceId,
+            $user->id
+        );
 
         return response()->json($result);
     }
@@ -179,10 +207,42 @@ class FacebookAccountController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        $taskService = app(\App\Services\FacebookAccountTaskService::class);
-        $result = $taskService->stopAllTasks($facebookAccount);
+        try {
+            $pendingTasks = $facebookAccount->pendingTasks();
+            $runningTasks = $facebookAccount->runningTasks();
 
-        return response()->json($result);
+            $pendingCount = $pendingTasks->count();
+            $runningCount = $runningTasks->count();
+
+            // Xóa pending tasks
+            $pendingTasks->delete();
+
+            // Cập nhật running tasks thành cancelled
+            $runningTasks->update([
+                'status' => 'cancelled',
+                'completed_at' => now()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => "Đã dừng {$pendingCount} pending tasks và {$runningCount} running tasks",
+                'data' => [
+                    'cancelled_pending' => $pendingCount,
+                    'cancelled_running' => $runningCount
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Stop Facebook Account Tasks Error', [
+                'account_id' => $facebookAccount->id,
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Lỗi khi dừng tasks: ' . $e->getMessage()
+            ]);
+        }
     }
 
     public function bulkRunScenario(Request $request)
@@ -210,10 +270,50 @@ class FacebookAccountController extends Controller
             ], 403);
         }
 
-        $taskService = app(\App\Services\FacebookAccountTaskService::class);
-        $result = $taskService->bulkRunScenario($accountIds);
+        $accountTaskService = app(\App\Services\AccountTaskService::class);
+        $results = [];
+        $successCount = 0;
+        $errorCount = 0;
 
-        return response()->json($result);
+        foreach ($accountIds as $accountId) {
+            $account = FacebookAccount::find($accountId);
+            if (!$account) {
+                $results[] = [
+                    'account_id' => $accountId,
+                    'success' => false,
+                    'message' => 'Account không tồn tại'
+                ];
+                $errorCount++;
+                continue;
+            }
+
+            $result = $accountTaskService->createTasksFromScenarioForFacebook(
+                $account,
+                $account->device_id,
+                $user->id
+            );
+            $result['account_id'] = $accountId;
+            $result['username'] = $account->username;
+
+            $results[] = $result;
+
+            if ($result['success']) {
+                $successCount++;
+            } else {
+                $errorCount++;
+            }
+        }
+
+        return response()->json([
+            'success' => $successCount > 0,
+            'message' => "Đã xử lý {$successCount} thành công, {$errorCount} thất bại",
+            'data' => [
+                'total' => count($accountIds),
+                'success' => $successCount,
+                'error' => $errorCount,
+                'results' => $results
+            ]
+        ]);
     }
 
     public function bulkStopTasks(Request $request)
@@ -241,10 +341,76 @@ class FacebookAccountController extends Controller
             ], 403);
         }
 
-        $taskService = app(\App\Services\FacebookAccountTaskService::class);
-        $result = $taskService->bulkStopTasks($accountIds);
+        $results = [];
+        $successCount = 0;
+        $errorCount = 0;
 
-        return response()->json($result);
+        foreach ($accountIds as $accountId) {
+            $account = FacebookAccount::find($accountId);
+            if (!$account) {
+                $results[] = [
+                    'account_id' => $accountId,
+                    'success' => false,
+                    'message' => 'Account không tồn tại'
+                ];
+                $errorCount++;
+                continue;
+            }
+
+            try {
+                $pendingTasks = $account->pendingTasks();
+                $runningTasks = $account->runningTasks();
+
+                $pendingCount = $pendingTasks->count();
+                $runningCount = $runningTasks->count();
+
+                // Xóa pending tasks
+                $pendingTasks->delete();
+
+                // Cập nhật running tasks thành cancelled
+                $runningTasks->update([
+                    'status' => 'cancelled',
+                    'completed_at' => now()
+                ]);
+
+                $results[] = [
+                    'account_id' => $accountId,
+                    'username' => $account->username,
+                    'success' => true,
+                    'message' => "Đã dừng {$pendingCount} pending tasks và {$runningCount} running tasks",
+                    'data' => [
+                        'cancelled_pending' => $pendingCount,
+                        'cancelled_running' => $runningCount
+                    ]
+                ];
+                $successCount++;
+
+            } catch (\Exception $e) {
+                Log::error('Stop Facebook Account Tasks Error', [
+                    'account_id' => $accountId,
+                    'error' => $e->getMessage()
+                ]);
+
+                $results[] = [
+                    'account_id' => $accountId,
+                    'username' => $account->username,
+                    'success' => false,
+                    'message' => 'Lỗi khi dừng tasks: ' . $e->getMessage()
+                ];
+                $errorCount++;
+            }
+        }
+
+        return response()->json([
+            'success' => $successCount > 0,
+            'message' => "Đã dừng tasks cho {$successCount} accounts thành công, {$errorCount} thất bại",
+            'data' => [
+                'total' => count($accountIds),
+                'success' => $successCount,
+                'error' => $errorCount,
+                'results' => $results
+            ]
+        ]);
     }
 
     public function getAccountTasks(Request $request, FacebookAccount $facebookAccount)
@@ -453,6 +619,7 @@ class FacebookAccountController extends Controller
                 $q->with('interactionScenario')
                   ->orderBy('updated_at', 'desc');
             },
+            'interactionScenario',
             'proxy',
             'device'
         ]);
@@ -601,6 +768,375 @@ class FacebookAccountController extends Controller
             'success' => true,
             'created' => count($createdIds),
             'task_ids' => $createdIds,
+        ]);
+    }
+
+    public function assignScenario(Request $request, FacebookAccount $facebookAccount)
+    {
+        $user = $request->user();
+        // Only super-admin can assign scenarios to accounts with null user_id, or users can assign scenarios to their own accounts
+        if (!$user->hasRole('super-admin') && ($facebookAccount->user_id !== $user->id)) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $validated = $request->validate([
+            'scenario_id' => 'required|integer|exists:interaction_scenarios,id',
+        ]);
+
+        // Kiểm tra kịch bản có phải Facebook không
+        $scenario = \App\Models\InteractionScenario::find($validated['scenario_id']);
+        if (!$scenario || $scenario->platform !== 'facebook') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kịch bản không hợp lệ hoặc không phải kịch bản Facebook'
+            ], 400);
+        }
+
+        try {
+            // Update the account's scenario
+            $facebookAccount->update([
+                'scenario_id' => $validated['scenario_id']
+            ]);
+
+            // Load the scenario relationship
+            $facebookAccount->load('interactionScenario');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Đã gán kịch bản thành công',
+                'data' => [
+                    'account_id' => $facebookAccount->id,
+                    'scenario' => $facebookAccount->interactionScenario
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi gán kịch bản: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function stopScenario(Request $request, FacebookAccount $facebookAccount)
+    {
+        $user = $request->user();
+        // Only super-admin can stop scenarios for accounts with null user_id, or users can stop scenarios for their own accounts
+        if (!$user->hasRole('super-admin') && ($facebookAccount->user_id !== $user->id)) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        try {
+            // Stop all running tasks for this account
+            $facebookAccount->accountTasks()
+                ->where('status', 'running')
+                ->update([
+                    'status' => 'completed',
+                    'completed_at' => now()
+                ]);
+
+            // Remove scenario assignment
+            $facebookAccount->update([
+                'scenario_id' => null
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Đã dừng kịch bản thành công',
+                'data' => [
+                    'account_id' => $facebookAccount->id,
+                    'scenario_id' => null
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi dừng kịch bản: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function destroy(Request $request, FacebookAccount $facebookAccount)
+    {
+        $user = $request->user();
+        // Only super-admin can delete accounts with null user_id, or users can delete their own accounts
+        if (!$user->hasRole('super-admin') && ($facebookAccount->user_id !== $user->id)) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        try {
+            // Stop all running tasks for this account first
+            $facebookAccount->accountTasks()
+                ->where('status', 'running')
+                ->update([
+                    'status' => 'completed',
+                    'completed_at' => now()
+                ]);
+
+            // Delete all related tasks
+            $facebookAccount->accountTasks()->delete();
+
+            // Delete the account
+            $accountId = $facebookAccount->id;
+            $accountUsername = $facebookAccount->username;
+            $facebookAccount->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => "Đã xóa tài khoản {$accountUsername} thành công",
+                'data' => [
+                    'account_id' => $accountId,
+                    'deleted_at' => now()
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi xóa tài khoản: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function bulkRun(Request $request)
+    {
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'account_ids' => 'required|array',
+            'account_ids.*' => 'integer|exists:facebook_accounts,id',
+        ]);
+
+        try {
+            $accountIds = $validated['account_ids'];
+
+            // Check permissions for each account
+            if (!$user->hasRole('super-admin')) {
+                $userAccountIds = FacebookAccount::where('user_id', $user->id)->pluck('id')->toArray();
+                $unauthorizedIds = array_diff($accountIds, $userAccountIds);
+
+                if (!empty($unauthorizedIds)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Không có quyền truy cập một số tài khoản'
+                    ], 403);
+                }
+            }
+
+            // Start scenarios for all accounts
+            $successCount = 0;
+            $errors = [];
+
+            foreach ($accountIds as $accountId) {
+                try {
+                    $account = FacebookAccount::find($accountId);
+                    if ($account && $account->scenario_id) {
+                        // Create account task
+                        AccountTask::create([
+                            'facebook_account_id' => $accountId,
+                            'interaction_scenario_id' => $account->scenario_id,
+                            'task_type' => 'scenario',
+                            'status' => 'running',
+                            'started_at' => now(),
+                        ]);
+                        $successCount++;
+                    } else {
+                        $errors[] = "Tài khoản ID {$accountId} không có kịch bản được gán";
+                    }
+                } catch (\Exception $e) {
+                    $errors[] = "Lỗi khi khởi chạy tài khoản ID {$accountId}: " . $e->getMessage();
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => "Đã khởi chạy {$successCount}/" . count($accountIds) . " tài khoản",
+                'data' => [
+                    'success_count' => $successCount,
+                    'total_count' => count($accountIds),
+                    'errors' => $errors
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi khởi chạy tài khoản: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $validated = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer|exists:facebook_accounts,id',
+        ]);
+
+        $user = $request->user();
+        $ids = $validated['ids'];
+
+        if (!$user->hasRole('super-admin')) {
+            $ids = FacebookAccount::whereIn('id', $ids)
+                ->where('user_id', $user->id)
+                ->pluck('id')
+                ->toArray();
+        }
+
+        $success = 0; $errors = [];
+        foreach ($ids as $id) {
+            try {
+                /** @var FacebookAccount $acc */
+                $acc = FacebookAccount::find($id);
+                if (!$acc) { $errors[] = "{$id}: not found"; continue; }
+                // stop running tasks and delete all tasks
+                $acc->accountTasks()->where('status', 'running')->update(['status' => 'completed', 'completed_at' => now()]);
+                $acc->accountTasks()->delete();
+                $acc->delete();
+                $success++;
+            } catch (\Throwable $e) {
+                $errors[] = "{$id}: " . $e->getMessage();
+            }
+        }
+
+        return response()->json([
+            'success' => $success > 0,
+            'message' => "Đã xóa {$success}/" . count($validated['ids']) . " tài khoản",
+            'data' => [ 'success' => $success, 'total' => count($validated['ids']), 'errors' => $errors ],
+        ]);
+    }
+
+    public function bulkRunV2(Request $request)
+    {
+        $validated = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer|exists:facebook_accounts,id',
+            'scenario_id' => 'required|integer|exists:interaction_scenarios,id',
+            'device_id' => 'sometimes|nullable|integer|exists:devices,id',
+        ]);
+
+        $user = $request->user();
+        $ids = $validated['ids'];
+        $scenarioId = $validated['scenario_id'];
+        $deviceId = $validated['device_id'] ?? null;
+
+        if (!$user->hasRole('super-admin')) {
+            $ids = FacebookAccount::whereIn('id', $ids)
+                ->where('user_id', $user->id)
+                ->pluck('id')
+                ->toArray();
+        }
+
+        $success = 0; $errors = [];
+        $accountTaskService = app(\App\Services\AccountTaskService::class);
+        foreach ($ids as $id) {
+            try {
+                $acc = FacebookAccount::find($id);
+                if (!$acc) { $errors[] = "{$id}: not found"; continue; }
+                // assign scenario before run
+                $acc->update(['scenario_id' => $scenarioId]);
+                $result = $accountTaskService->createTasksFromScenarioForFacebook($acc, $deviceId ?: $acc->device_id, $user->id);
+                if (!empty($result['success'])) $success++; else $errors[] = "{$id}: " . ($result['message'] ?? 'failed');
+            } catch (\Throwable $e) {
+                $errors[] = "{$id}: " . $e->getMessage();
+            }
+        }
+
+        return response()->json([
+            'success' => $success > 0,
+            'message' => "Đã chạy {$success}/" . count($validated['ids']) . " tài khoản",
+            'data' => [ 'success' => $success, 'total' => count($validated['ids']), 'errors' => $errors ],
+        ]);
+    }
+
+    public function bulkStopScenario(Request $request)
+    {
+        $validated = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer|exists:facebook_accounts,id',
+        ]);
+        $user = $request->user();
+        $ids = $validated['ids'];
+        if (!$user->hasRole('super-admin')) {
+            $ids = FacebookAccount::whereIn('id', $ids)
+                ->where('user_id', $user->id)
+                ->pluck('id')
+                ->toArray();
+        }
+        $success = 0; $errors = [];
+        foreach ($ids as $id) {
+            try {
+                $acc = FacebookAccount::find($id);
+                if (!$acc) { $errors[] = "{$id}: not found"; continue; }
+                $acc->accountTasks()->where('status', 'running')->update(['status' => 'completed', 'completed_at' => now()]);
+                $acc->update(['scenario_id' => null]);
+                $success++;
+            } catch (\Throwable $e) { $errors[] = "{$id}: " . $e->getMessage(); }
+        }
+        return response()->json([
+            'success' => $success > 0,
+            'message' => "Đã dừng kịch bản cho {$success}/" . count($validated['ids']) . " tài khoản",
+            'data' => [ 'success' => $success, 'total' => count($validated['ids']), 'errors' => $errors ],
+        ]);
+    }
+
+    public function bulkAssignScenario(Request $request)
+    {
+        $validated = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer',
+            'scenario_id' => 'required|integer|exists:interaction_scenarios,id',
+        ]);
+        $user = $request->user();
+        $ids = $validated['ids'];
+        if (!$user->hasRole('super-admin')) {
+            $ids = FacebookAccount::whereIn('id', $ids)
+                ->where('user_id', $user->id)
+                ->pluck('id')
+                ->toArray();
+        }
+        $success = 0; $errors = [];
+        foreach ($ids as $id) {
+            try {
+                $acc = FacebookAccount::find($id);
+                if (!$acc) { $errors[] = "{$id}: not found"; continue; }
+                $acc->update(['scenario_id' => $validated['scenario_id']]);
+                $success++;
+            } catch (\Throwable $e) { $errors[] = "{$id}: " . $e->getMessage(); }
+        }
+        return response()->json([
+            'success' => $success > 0,
+            'message' => "Đã gán kịch bản cho {$success}/" . count($validated['ids']) . " tài khoản",
+            'data' => [ 'success' => $success, 'total' => count($validated['ids']), 'errors' => $errors ],
+        ]);
+    }
+
+    public function bulkAssignDevice(Request $request)
+    {
+        $validated = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer|exists:facebook_accounts,id',
+            'device_id' => 'required|integer|exists:devices,id',
+        ]);
+        $user = $request->user();
+        $ids = $validated['ids'];
+        if (!$user->hasRole('super-admin')) {
+            $ids = FacebookAccount::whereIn('id', $ids)
+                ->where('user_id', $user->id)
+                ->pluck('id')
+                ->toArray();
+        }
+        $success = 0; $errors = [];
+        foreach ($ids as $id) {
+            try {
+                $acc = FacebookAccount::find($id);
+                if (!$acc) { $errors[] = "{$id}: not found"; continue; }
+                $acc->update(['device_id' => $validated['device_id']]);
+                $success++;
+            } catch (\Throwable $e) { $errors[] = "{$id}: " . $e->getMessage(); }
+        }
+        return response()->json([
+            'success' => $success > 0,
+            'message' => "Đã gán thiết bị cho {$success}/" . count($validated['ids']) . " tài khoản",
+            'data' => [ 'success' => $success, 'total' => count($validated['ids']), 'errors' => $errors ],
         ]);
     }
 }

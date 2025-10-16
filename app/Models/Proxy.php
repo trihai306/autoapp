@@ -25,11 +25,13 @@ class Proxy extends Model
         'notes',
         'last_used_at',
         'last_tested_at',
+        'latency_ms',
     ];
 
     protected $casts = [
         'last_used_at' => 'datetime',
         'last_tested_at' => 'datetime',
+        'latency_ms' => 'integer',
     ];
 
     public $searchable = [

@@ -12,7 +12,6 @@ import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useEffect } from 'react'
-import { useTranslations } from 'next-intl'
 
 const validationSchema = z.object({
     name: z.string().min(1, 'Name is required'),
@@ -24,14 +23,13 @@ const validationSchema = z.object({
 
 const ProxyForm = ({ mode = 'add', proxy, onClose }) => {
     const router = useRouter()
-    const t = useTranslations('proxy-management')
     const {
         control,
         handleSubmit,
         reset,
         formState: { errors, isSubmitting },
     } = useForm({
-        defaultValues: { 
+        defaultValues: {
             name: '',
             host: '',
             port: 8080,
@@ -86,7 +84,7 @@ const ProxyForm = ({ mode = 'add', proxy, onClose }) => {
             }
             if (result.success) {
                 toast.push(
-                    <Notification title="Success" type="success" closable>
+                    <Notification title="Thành công" type="success" closable>
                         {result.message}
                     </Notification>
                 )
@@ -94,7 +92,7 @@ const ProxyForm = ({ mode = 'add', proxy, onClose }) => {
                 router.refresh()
             } else {
                 toast.push(
-                    <Notification title="Error" type="danger" closable>
+                    <Notification title="Lỗi" type="danger" closable>
                         {result.message}
                     </Notification>
                 )
@@ -111,50 +109,50 @@ const ProxyForm = ({ mode = 'add', proxy, onClose }) => {
     return (
         <Form onSubmit={handleSubmit(onSubmit)}>
             <FormContainer>
-                <h5 className="mb-4">{mode === 'add' ? t('form.createTitle') : t('form.editTitle')}</h5>
-                
-                <FormItem label={t('form.nameLabel')} invalid={Boolean(errors.name)} errorMessage={errors.name?.message}>
-                    <Controller name="name" control={control} render={({ field }) => <Input placeholder={t('form.namePlaceholder')} {...field} />} />
+                <h5 className="mb-4">{mode === 'add' ? 'Tạo Proxy mới' : 'Chỉnh sửa Proxy'}</h5>
+
+                <FormItem label={'Tên'} invalid={Boolean(errors.name)} errorMessage={errors.name?.message}>
+                    <Controller name="name" control={control} render={({ field }) => <Input placeholder={'Nhập tên proxy'} {...field} />} />
                 </FormItem>
 
                 <div className="grid grid-cols-2 gap-4">
-                    <FormItem label={t('form.hostLabel')} invalid={Boolean(errors.host)} errorMessage={errors.host?.message}>
-                        <Controller name="host" control={control} render={({ field }) => <Input placeholder={t('form.hostPlaceholder')} {...field} />} />
+                    <FormItem label={'Host'} invalid={Boolean(errors.host)} errorMessage={errors.host?.message}>
+                        <Controller name="host" control={control} render={({ field }) => <Input placeholder={'Nhập địa chỉ host'} {...field} />} />
                     </FormItem>
-                    <FormItem label={t('form.portLabel')} invalid={Boolean(errors.port)} errorMessage={errors.port?.message}>
-                        <Controller 
-                            name="port" 
-                            control={control} 
+                    <FormItem label={'Port'} invalid={Boolean(errors.port)} errorMessage={errors.port?.message}>
+                        <Controller
+                            name="port"
+                            control={control}
                             render={({ field }) => (
-                                <Input 
-                                    type="number" 
-                                    placeholder={t('form.portPlaceholder')} 
+                                <Input
+                                    type="number"
+                                    placeholder={'Nhập số port'}
                                     min="1"
                                     max="65535"
                                     step="1"
-                                    {...field} 
+                                    {...field}
                                 />
-                            )} 
+                            )}
                         />
                     </FormItem>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                    <FormItem label={t('form.usernameLabel')}>
-                        <Controller name="username" control={control} render={({ field }) => <Input placeholder={t('form.usernamePlaceholder')} {...field} />} />
+                    <FormItem label={'Tên đăng nhập'}>
+                        <Controller name="username" control={control} render={({ field }) => <Input placeholder={'Nhập tên đăng nhập (tùy chọn)'} {...field} />} />
                     </FormItem>
-                    <FormItem label={t('form.passwordLabel')}>
-                        <Controller name="password" control={control} render={({ field }) => <Input placeholder={t('form.passwordPlaceholder')} {...field} />} />
+                    <FormItem label={'Mật khẩu'}>
+                        <Controller name="password" control={control} render={({ field }) => <Input placeholder={'Nhập mật khẩu (tùy chọn)'} {...field} />} />
                     </FormItem>
                 </div>
 
                 {/* Removed username & password to simplify form */}
 
                 <div>
-                    <FormItem label={t('form.typeLabel')} invalid={Boolean(errors.type)} errorMessage={errors.type?.message}>
-                        <Controller 
-                            name="type" 
-                            control={control} 
+                    <FormItem label={'Loại'} invalid={Boolean(errors.type)} errorMessage={errors.type?.message}>
+                        <Controller
+                            name="type"
+                            control={control}
                             render={({ field }) => {
                                 const options = [
                                     { value: 'http', label: 'HTTP' },
@@ -168,10 +166,10 @@ const ProxyForm = ({ mode = 'add', proxy, onClose }) => {
                                         value={selected}
                                         onChange={(opt) => field.onChange(opt?.value)}
                                         options={options}
-                                        placeholder={t('form.typeLabel')}
+                                        placeholder={'Loại'}
                                     />
                                 )
-                            }} 
+                            }}
                         />
                     </FormItem>
                 </div>
@@ -184,14 +182,14 @@ const ProxyForm = ({ mode = 'add', proxy, onClose }) => {
                         className="mr-2"
                         onClick={onClose}
                     >
-                        {t('form.cancel')}
+                        Hủy
                     </Button>
                     <Button
                         variant="solid"
                         type="submit"
                         loading={isSubmitting}
                     >
-                        {isSubmitting ? t('form.saving') : t('form.save')}
+                        {isSubmitting ? 'Đang lưu...' : 'Lưu'}
                     </Button>
                 </div>
             </FormContainer>

@@ -20,11 +20,11 @@ import useAppendQueryParams from '@/utils/hooks/useAppendQueryParams'
 import { useRouter } from 'next/navigation'
 import Button from '@/components/ui/Button'
 import { useTiktokAccountTableReload } from '@/utils/hooks/useRealtime'
-import { 
-    TbEye, 
-    TbEdit, 
-    TbTrash, 
-    TbListCheck, 
+import {
+    TbEye,
+    TbEdit,
+    TbTrash,
+    TbListCheck,
     TbClock,
     TbX,
     TbPhone,
@@ -182,11 +182,11 @@ const ExpandedRowContent = ({ row }) => {
                     <div className="space-y-2 text-sm">
                         {row.proxy && (
                             <div className="flex items-center gap-2">
-                                <div 
+                                <div
                                     className={`w-3 h-3 rounded-full flex-shrink-0 ${
-                                        row.proxy.status === 'active' ? 'bg-green-500' : 
+                                        row.proxy.status === 'active' ? 'bg-green-500' :
                                         row.proxy.status === 'error' ? 'bg-red-500' : 'bg-gray-400'
-                                    }`} 
+                                    }`}
                                 />
                                 <span className="text-gray-600 dark:text-gray-400">Proxy:</span>
                                 <span className="text-gray-900 dark:text-gray-100">
@@ -288,7 +288,7 @@ const UserInfoColumn = ({ row, onViewDetail }) => {
 const ActionColumn = ({ row, onViewDetail, onViewTasks, onEdit, onDelete, onStart, onStop }) => {
     const t = useTranslations('tiktokAccountManagement.table')
     const hasPendingTasks = row.pending_tasks_count > 0
-    
+
     return (
         <div className="flex items-center gap-1">
             {/* Start/Stop Button */}
@@ -326,8 +326,8 @@ const ActionColumn = ({ row, onViewDetail, onViewTasks, onEdit, onDelete, onStar
             <Tooltip title={`Xem tasks ${row.pending_tasks_count > 0 ? `(${row.pending_tasks_count} pending)` : ''}`}>
                 <button
                     className={`p-2 rounded-lg transition-all duration-200 relative ${
-                        row.pending_tasks_count > 0 
-                            ? 'text-orange-600 hover:text-orange-700 hover:bg-orange-50 dark:hover:bg-orange-900/20' 
+                        row.pending_tasks_count > 0
+                            ? 'text-orange-600 hover:text-orange-700 hover:bg-orange-50 dark:hover:bg-orange-900/20'
                             : 'text-gray-600 hover:text-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800'
                     }`}
                     onClick={() => onViewTasks(row)}
@@ -368,7 +368,7 @@ const ActionColumn = ({ row, onViewDetail, onViewTasks, onEdit, onDelete, onStar
 const StatusColumn = ({ row }) => {
     const statusInfo = statusConfig[row.status] || statusConfig.inactive
     const StatusIcon = statusInfo.icon
-    
+
     return (
         <div className="flex items-center gap-2">
             <Badge className={`${statusInfo.color} flex items-center gap-1.5 px-2.5 py-1`}>
@@ -384,7 +384,7 @@ const TaskStatusColumn = ({ row }) => {
     const hasPendingTasks = row.pending_tasks_count > 0
     const taskInfo = hasPendingTasks ? taskStatusConfig.pending : taskStatusConfig.no_pending
     const TaskIcon = taskInfo.icon
-    
+
     return (
         <div className="flex items-center gap-2">
             <Badge className={`${taskInfo.color} flex items-center gap-1.5 px-2.5 py-1`}>
@@ -401,11 +401,11 @@ const TaskStatusColumn = ({ row }) => {
 const ContactColumn = ({ row, type }) => {
     const value = type === 'email' ? row.email : row.phone_number
     const Icon = type === 'email' ? TbMail : TbPhone
-    
+
     if (!value) {
         return <span className="text-gray-400 dark:text-gray-500">-</span>
     }
-    
+
     return (
         <div className="flex items-center gap-2">
             <Icon className="w-4 h-4 text-gray-400 dark:text-gray-500" />
@@ -422,19 +422,19 @@ const ProxyColumn = ({ row, onProxyChange }) => {
     const [proxies, setProxies] = useState([])
     const [loadingProxies, setLoadingProxies] = useState(false)
     const proxy = row.proxy
-    
+
     // Load proxies khi component mount
     useEffect(() => {
         loadProxies()
     }, [])
-    
+
     const loadProxies = async () => {
         try {
             setLoadingProxies(true)
             const { default: getActiveProxies } = await import('@/server/actions/proxy/getActiveProxies')
             const response = await getActiveProxies()
 
-            
+
             if (response.success && response.data && response.data.length > 0) {
                 // API trả về format: { value, label, data: { id, host, port, type, etc } }
                 const proxyOptions = response.data.map(proxy => ({
@@ -457,13 +457,13 @@ const ProxyColumn = ({ row, onProxyChange }) => {
             setLoadingProxies(false)
         }
     }
-    
+
     const handleProxyChange = async (newProxyId) => {
         if (!onProxyChange) return
-        
+
         // Không thay đổi nếu chọn cùng proxy hiện tại
         if (newProxyId === String(proxy?.id || '')) return
-        
+
         setIsChangingProxy(true)
         try {
             await onProxyChange(row.id, newProxyId)
@@ -473,7 +473,7 @@ const ProxyColumn = ({ row, onProxyChange }) => {
             setIsChangingProxy(false)
         }
     }
-    
+
     if (!proxy) {
         return (
             <div className="flex items-center gap-2">
@@ -492,11 +492,11 @@ const ProxyColumn = ({ row, onProxyChange }) => {
                             renderOption={(option) => (
                                 <div className="flex items-center gap-2 min-w-0 py-1">
                                     {option.value && (
-                                        <div 
+                                        <div
                                             className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                                                option.status === 'active' ? 'bg-green-500' : 
+                                                option.status === 'active' ? 'bg-green-500' :
                                                 option.status === 'error' ? 'bg-red-500' : 'bg-gray-400'
-                                            }`} 
+                                            }`}
                                         />
                                     )}
                                     <div className="flex-1 min-w-0">
@@ -521,10 +521,10 @@ const ProxyColumn = ({ row, onProxyChange }) => {
             </div>
         )
     }
-    
+
     // Hiển thị thông số proxy: host:port (type)
     const proxyInfo = `${proxy.host}:${proxy.port} (${proxy.type})`
-    
+
     // Màu sắc dựa trên trạng thái proxy
     const getStatusColor = (status) => {
         switch (status) {
@@ -538,7 +538,7 @@ const ProxyColumn = ({ row, onProxyChange }) => {
                 return 'bg-gray-400'
         }
     }
-    
+
     const getStatusTitle = (status) => {
         switch (status) {
             case 'active':
@@ -551,11 +551,11 @@ const ProxyColumn = ({ row, onProxyChange }) => {
                 return 'Proxy không xác định'
         }
     }
-    
+
     return (
         <div className="flex items-center gap-2">
-            <div 
-                className={`w-2 h-2 rounded-full flex-shrink-0 ${getStatusColor(proxy.status)}`} 
+            <div
+                className={`w-2 h-2 rounded-full flex-shrink-0 ${getStatusColor(proxy.status)}`}
                 title={getStatusTitle(proxy.status)}
             />
             <div className="flex-1 min-w-0 w-56">
@@ -572,11 +572,11 @@ const ProxyColumn = ({ row, onProxyChange }) => {
                         renderOption={(option) => (
                             <div className="flex items-center gap-2 min-w-0 py-1">
                                 {option.value && (
-                                    <div 
+                                    <div
                                         className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                                            option.status === 'active' ? 'bg-green-500' : 
+                                            option.status === 'active' ? 'bg-green-500' :
                                             option.status === 'error' ? 'bg-red-500' : 'bg-gray-400'
-                                        }`} 
+                                        }`}
                                     />
                                 )}
                                 <div className="flex-1 min-w-0">
@@ -614,7 +614,7 @@ const ProxyColumn = ({ row, onProxyChange }) => {
 const DeviceScenarioColumn = ({ row }) => {
     const deviceName = row.device?.name || row.device?.device_name || `Device #${row.device_id}`
     const scenarioName = row.interaction_scenario?.name || row.interactionScenario?.name || `Scenario #${row.scenario_id}`
-    
+
     return (
         <div className="space-y-2 min-w-[200px]">
             {row.device_id && (
@@ -654,9 +654,9 @@ const NotesColumn = ({ row }) => {
     if (!notes) {
         return <span className="text-gray-400 dark:text-gray-500">-</span>
     }
-    
+
     const truncated = notes.length > 50 ? notes.substring(0, 50) + '...' : notes
-    
+
     return (
         <Tooltip title={notes.length > 50 ? notes : undefined}>
             <span className="text-sm text-gray-900 dark:text-gray-100 cursor-help">
@@ -670,10 +670,10 @@ const NotesColumn = ({ row }) => {
 const DateColumn = ({ row, field = 'created_at' }) => {
     const date = row[field]
     if (!date) return <span className="text-gray-400 dark:text-gray-500">-</span>
-    
+
     const formattedDate = dayjs(date).format('DD/MM/YYYY')
     const relativeTime = dayjs(date).fromNow()
-    
+
     return (
         <div className="flex items-center gap-2">
             <TbCalendar className="w-4 h-4 text-gray-400 dark:text-gray-500" />
@@ -694,10 +694,10 @@ const TiktokAccountListTable = ({
     const router = useRouter()
     const t = useTranslations('tiktokAccountManagement.table')
     const tDetail = useTranslations('tiktokAccountManagement.detail')
-    
+
     // Realtime hook for table reload
     const { listenToTableReload, stopListeningToTableReload, debugEchoStatus } = useTiktokAccountTableReload()
-    
+
     // Enhanced column definitions with expanding feature
     const allColumns = [
         { header: 'Thông tin người dùng', accessorKey: 'user_info', sortable: true },
@@ -713,21 +713,21 @@ const TiktokAccountListTable = ({
     const [visibleColumns, setVisibleColumns] = useState([
         'user_info', 'proxy', 'task_status', 'device_scenario', 'created_at'
     ])
-    
+
     const [expandedRows, setExpandedRows] = useState(new Set())
     const [isDetailViewOpen, setIsDetailViewOpen] = useState(false)
     const [selectedTiktokAccountForDetail, setSelectedTiktokAccountForDetail] = useState(null)
-    
+
     // Edit modal states
     const [isEditModalOpen, setIsEditModalOpen] = useState(false)
     const [selectedAccountForEdit, setSelectedAccountForEdit] = useState(null)
-    
+
     // Data for edit modal
     const [devices, setDevices] = useState([])
     const [scenarios, setScenarios] = useState([])
     const [loadingDevices, setLoadingDevices] = useState(false)
     const [loadingScenarios, setLoadingScenarios] = useState(false)
-    
+
     // Dialog states
     const [showStopConfirmDialog, setShowStopConfirmDialog] = useState(false)
     const [showStartConfirmDialog, setShowStartConfirmDialog] = useState(false)
@@ -748,17 +748,17 @@ const TiktokAccountListTable = ({
 
     // Listen to realtime table reload events
     useEffect(() => {
-        
+
         // Debug Echo status first
         const echoStatus = debugEchoStatus();
-        
+
         const handleTableReload = (data) => {
-            
+
             // Call onRefresh to reload the table data
             if (onRefresh) {
                 onRefresh()
             }
-            
+
             // Show notification if message is provided
             if (data.message) {
                 // You can add toast notification here if needed
@@ -768,26 +768,26 @@ const TiktokAccountListTable = ({
         // Start listening to reload events (async)
         const setupListener = async () => {
             const result = await listenToTableReload(handleTableReload)
-            
+
             if (result && result.isRetry) {
                 // Set up a retry mechanism
                 const retryInterval = setInterval(async () => {
                     const retryResult = await result.retry()
-                    
+
                     if (retryResult && !retryResult.isRetry) {
                         clearInterval(retryInterval)
                     }
                 }, 3000) // Retry every 3 seconds
-                
+
                 // Cleanup retry interval on unmount
                 return () => {
                     clearInterval(retryInterval)
                 }
             }
         }
-        
+
         setupListener()
-        
+
         // Cleanup on unmount
         return () => {
             stopListeningToTableReload()
@@ -817,17 +817,17 @@ const TiktokAccountListTable = ({
         try {
             const { default: getDevices } = await import('@/server/actions/device/getDevices')
             const response = await getDevices({ per_page: 100 }) // Get all devices
-            
+
             if (response.success) {
                 // Check if data is in response.data.data (paginated) or response.data (direct)
                 const devicesData = response.data?.data || response.data || []
-                
+
                 const deviceOptions = devicesData.map((device, index) => {
-                    
+
                     // Handle different possible field names
                     const deviceName = device.device_name || device.name || device.deviceName || `Device ${device.id || index + 1}`
                     const deviceType = device.device_type || device.type || device.deviceType || 'Unknown'
-                    
+
                     return {
                         value: String(device.id ?? index),
                         label: `${deviceName} (${deviceType})`
@@ -850,10 +850,11 @@ const TiktokAccountListTable = ({
         setLoadingScenarios(true)
         try {
             const { default: getInteractionScenarios } = await import('@/server/actions/interaction-scenario/getInteractionScenarios')
-            const response = await getInteractionScenarios({ per_page: 100 })
-            
+            const response = await getInteractionScenarios({ per_page: 100, platform: 'tiktok' })
+
             if (response.success) {
-                const scenarioOptions = response.data.map(scenario => ({
+                const list = response.data?.data || response.data || []
+                const scenarioOptions = list.map(scenario => ({
                     value: String(scenario.id),
                     label: scenario.name
                 }))
@@ -883,11 +884,11 @@ const TiktokAccountListTable = ({
         try {
             const { default: updateTiktokAccount } = await import('@/server/actions/tiktok-account/updateTiktokAccount')
             const result = await updateTiktokAccount(accountId, accountData)
-            
+
             if (result.success) {
                 setDialogMessage(`Cập nhật thông tin tài khoản thành công!`)
                 setShowSuccessDialog(true)
-                
+
                 // Update selectedAccountForEdit with new data
                 if (selectedAccountForEdit) {
                     const updatedAccount = {
@@ -898,9 +899,9 @@ const TiktokAccountListTable = ({
                     }
                     setSelectedAccountForEdit(updatedAccount)
                 }
-                
+
                 handleCloseEditModal()
-                
+
                 // Refresh data
                 if (onRefresh) {
                     onRefresh()
@@ -923,9 +924,9 @@ const TiktokAccountListTable = ({
             const updateData = {
                 proxy_id: newProxyId ? parseInt(newProxyId) : null
             }
-            
+
             const result = await updateTiktokAccount(accountId, updateData)
-            
+
             if (result.success) {
                 // Show success notification
                 toast.push(
@@ -933,7 +934,7 @@ const TiktokAccountListTable = ({
                         Đã thay đổi proxy cho tài khoản thành công!
                     </Notification>
                 )
-                
+
                 // Refresh data
                 if (onRefresh) {
                     onRefresh()
@@ -1001,16 +1002,16 @@ const TiktokAccountListTable = ({
 
     const confirmStart = useCallback(async () => {
         if (!selectedAccountForAction) return
-        
+
         setIsProcessing(true)
         setShowStartConfirmDialog(false)
-        
+
         try {
             // Import the run scenario server action
             const { default: runTiktokAccountScenario } = await import('@/server/actions/tiktok-account/runTiktokAccountScenario')
-            
+
             const result = await runTiktokAccountScenario(selectedAccountForAction.id)
-            
+
             if (result.success) {
                 setDialogMessage(`Đã tạo tasks cho tài khoản ${selectedAccountForAction.username} theo kịch bản liên kết.`)
                 setShowSuccessDialog(true)
@@ -1034,14 +1035,14 @@ const TiktokAccountListTable = ({
 
     const confirmStop = useCallback(async () => {
         if (!selectedAccountForAction) return
-        
+
         setIsProcessing(true)
         setShowStopConfirmDialog(false)
-        
+
         try {
             let deletedTasksCount = 0
             let deleteErrorMessages = []
-            
+
             // First, delete all pending tasks
             try {
                 const { default: deletePendingTasks } = await import('@/server/actions/tiktok-account/deletePendingTasks')
@@ -1054,11 +1055,11 @@ const TiktokAccountListTable = ({
             } catch (error) {
                 deleteErrorMessages.push(`Lỗi khi xóa tasks: ${error.message}`)
             }
-            
+
             // Then, update account status to suspended
             const { default: updateTiktokAccountStatus } = await import('@/server/actions/tiktok-account/updateTiktokAccountStatus')
             const result = await updateTiktokAccountStatus([selectedAccountForAction.id], 'suspended')
-            
+
             if (result.success) {
                 let successMessage = `Tài khoản ${selectedAccountForAction.username} đã được dừng thành công!`
                 if (deletedTasksCount > 0) {
@@ -1075,7 +1076,7 @@ const TiktokAccountListTable = ({
                 setDialogMessage(`Không thể dừng tài khoản ${selectedAccountForAction.username}: ${result.message}`)
                 setShowErrorDialog(true)
             }
-            
+
             if (deleteErrorMessages.length > 0) {
                 console.error('Some tasks deletion failed:', deleteErrorMessages)
                 // Show warning if tasks deletion failed but account was suspended
@@ -1132,7 +1133,7 @@ const TiktokAccountListTable = ({
             setVisibleColumns([...visibleColumns, accessorKey])
         }
     }, [visibleColumns, setVisibleColumns])
-    
+
     const toggleRowExpansion = useCallback((rowId) => {
         const newExpandedRows = new Set(expandedRows)
         if (newExpandedRows.has(rowId)) {
@@ -1142,7 +1143,7 @@ const TiktokAccountListTable = ({
         }
         setExpandedRows(newExpandedRows)
     }, [expandedRows, setExpandedRows])
-    
+
     const columns = useMemo(
         () => {
             const baseColumns = [
@@ -1256,7 +1257,7 @@ const TiktokAccountListTable = ({
                     }
                 },
             ]
-            
+
             const actionColumn = {
                 header: 'Thao tác',
                 id: 'action',
@@ -1273,10 +1274,10 @@ const TiktokAccountListTable = ({
                 ),
             }
 
-            return [...baseColumns.filter(col => 
+            return [...baseColumns.filter(col =>
                 col.id === 'expander' || visibleColumns.includes(col.accessorKey)
             ), actionColumn]
-        }, 
+        },
         [visibleColumns, expandedRows, handleViewDetails, handleViewTasks, handleEdit, handleDelete, handleProxyChange, handleConnectionTypeUpdate, toggleRowExpansion],
     )
 
@@ -1318,9 +1319,9 @@ const TiktokAccountListTable = ({
     return (
         <div className="relative">
             <TiktokAccountListTableTools columns={columns} selectableColumns={allColumns} onColumnToggle={onColumnToggle} onRefresh={onRefresh} />
-            
 
-            
+
+
             <div className="overflow-x-auto" style={{ position: 'static' }}>
                 <Table className="relative" style={{ overflow: 'visible' }}>
                     <THead>
@@ -1450,7 +1451,7 @@ const TiktokAccountListTable = ({
                             </p>
                         </div>
                     </div>
-                    
+
                     <p className="text-gray-700 dark:text-gray-300 mb-6">
                         Bạn có chắc chắn muốn chạy kịch bản cho tài khoản{' '}
                         <span className="font-semibold text-gray-900 dark:text-gray-100">
@@ -1461,7 +1462,7 @@ const TiktokAccountListTable = ({
                             Hệ thống sẽ tạo tasks theo kịch bản đã liên kết với tài khoản này.
                         </small>
                     </p>
-                    
+
                     <div className="flex justify-end gap-3">
                         <Button
                             variant="default"
@@ -1504,7 +1505,7 @@ const TiktokAccountListTable = ({
                             </p>
                         </div>
                     </div>
-                    
+
                     <p className="text-gray-700 dark:text-gray-300 mb-6">
                         Bạn có chắc chắn muốn dừng tài khoản{' '}
                         <span className="font-semibold text-gray-900 dark:text-gray-100">
@@ -1512,7 +1513,7 @@ const TiktokAccountListTable = ({
                         </span>
                         ?
                     </p>
-                    
+
                     <div className="flex justify-end gap-3">
                         <Button
                             variant="default"
@@ -1605,11 +1606,11 @@ const TiktokAccountListTable = ({
                             </h3>
                         </div>
                     </div>
-                    
+
                     <p className="text-gray-700 dark:text-gray-300 mb-6">
                         {dialogMessage}
                     </p>
-                    
+
                     <div className="flex justify-end">
                         <Button
                             variant="solid"
@@ -1641,11 +1642,11 @@ const TiktokAccountListTable = ({
                             </h3>
                         </div>
                     </div>
-                    
+
                     <p className="text-gray-700 dark:text-gray-300 mb-6">
                         {dialogMessage}
                     </p>
-                    
+
                     <div className="flex justify-end">
                         <Button
                             variant="solid"
@@ -1675,4 +1676,4 @@ const TiktokAccountListTable = ({
     )
 }
 
-export default TiktokAccountListTable 
+export default TiktokAccountListTable

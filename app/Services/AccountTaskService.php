@@ -22,29 +22,29 @@ class AccountTaskService
     public function getAll(Request $request): LengthAwarePaginator
     {
         \Log::info('🔍 AccountTaskService::getAll - Request params:', $request->all());
-        
+
         $query = $this->accountTaskRepository->getModel()->query()
             ->with(['tiktokAccount' => function($q) {
                 $q->select('id', 'username', 'nickname', 'avatar_url');
             }])
             ->orderBy('created_at', 'desc'); // Sắp xếp từ mới nhất đến cũ nhất
-        
+
         // Áp dụng filter trực tiếp thay vì dùng BaseQuery.handle()
         if ($request->has('status') && !empty($request->input('status'))) {
             $query->where('status', $request->input('status'));
             \Log::info('🔍 AccountTaskService::getAll - Applied status filter:', ['status' => $request->input('status')]);
         }
-        
+
         if ($request->has('user_id') && !empty($request->input('user_id'))) {
             $query->whereHas('tiktokAccount', function($q) use ($request) {
                 $q->where('user_id', $request->input('user_id'));
             });
             \Log::info('🔍 AccountTaskService::getAll - Applied user_id filter:', ['user_id' => $request->input('user_id')]);
         }
-        
+
         $perPage = $request->input('per_page', 20);
         $result = $query->paginate($perPage);
-        
+
         \Log::info('📊 AccountTaskService::getAll - Query result:', [
             'total' => $result->total(),
             'per_page' => $perPage,
@@ -54,7 +54,7 @@ class AccountTaskService
             'first_item_tiktok_account_id' => $result->first() ? $result->first()->tiktok_account_id : null,
             'first_item_tiktok_account_loaded' => $result->first() ? ($result->first()->tiktokAccount ? 'YES' : 'NO') : null,
         ]);
-        
+
         // Log chi tiết task đầu tiên nếu có
         if ($result->first()) {
             $firstTask = $result->first();
@@ -68,7 +68,7 @@ class AccountTaskService
                 'tiktok_account_loaded' => $firstTask->tiktokAccount ? 'YES' : 'NO',
             ]);
         }
-        
+
         return $result;
     }
 
@@ -209,7 +209,7 @@ class AccountTaskService
             try {
                 $task = $this->accountTaskRepository->create($taskData);
                 $createdTasks[] = $task;
-                
+
                 // Dispatch event for real-time updates
                 if ($deviceId) {
                     // Lấy device thực tế để có device_id (mã máy)
@@ -219,9 +219,158 @@ class AccountTaskService
                         event(new TaskDispatchedToDevice($device->device_id));
                     }
                 }
-                
+
             } catch (\Exception $e) {
-                throw $e;   
+                throw $e;
+            }
+            $order++;
+        }
+
+        // Return complete payload for frontend
+        $completePayload = [
+            'account_username' => $account->username,
+            'scenario_name' => $scenario->name,
+            'device_id' => $deviceId,
+            'created_by' => $createdByUserId,
+            'scenario_scripts' => $scenarioScripts,
+        ];
+
+        return [
+            'success' => true,
+            'message' => 'Đã tạo task từ kịch bản thành công',
+            'data' => $completePayload,
+        ];
+    }
+
+    /**
+     * Create pending account tasks for given Facebook account from its linked scenario scripts.
+     * Returns a summary object with account info and scenario scripts used, similar to FE expectation.
+     */
+    public function createTasksFromScenarioForFacebook(\App\Models\FacebookAccount $account, ?int $deviceId, int $createdByUserId): array
+    {
+        // Load scenario with scripts
+        $scenario = $account->interactionScenario()->with('scripts')->first();
+        if (!$scenario) {
+            return [
+                'success' => false,
+                'message' => 'No linked scenario found for this account.',
+            ];
+        }
+
+        $scripts = $scenario->scripts;
+        if ($scripts->isEmpty()) {
+            return [
+                'success' => false,
+                'message' => 'Kịch bản không có kịch bản.',
+            ];
+        }
+
+        // Không tạo thêm task nếu thiết bị đang có task chạy
+        if ($deviceId) {
+            $hasRunningTaskOnDevice = AccountTask::where('device_id', $deviceId)
+                ->where('status', 'running')
+                ->exists();
+            if ($hasRunningTaskOnDevice) {
+                return [
+                    'success' => false,
+                    'message' => 'Thiết bị đang có task chạy, không tạo thêm task mới.',
+                ];
+            }
+        }
+
+        // Build the complete payload structure first
+        $scenarioScripts = $scripts->map(function($scriptModel, $idx) {
+            // Decode JSON string if needed
+            $scriptData = $scriptModel->script;
+            if (is_string($scriptData)) {
+                $scriptData = json_decode($scriptData, true) ?? [];
+            } else {
+                $scriptData = $scriptData ?? [];
+            }
+            $s = $scriptData;
+            $params = $s['parameters'] ?? $s;
+            return [
+                'id' => $scriptModel->id,
+                'type' => $s['type'] ?? ($s['task_type'] ?? 'unknown'),
+                'name' => $s['name'] ?? ($s['type'] ?? 'unknown'),
+                'description' => $s['description'] ?? null,
+                'order' => $scriptModel->order ?? ($idx + 1),
+                'is_active' => $s['is_active'] ?? true,
+                'delay_min' => $s['delay_min'] ?? null,
+                'delay_max' => $s['delay_max'] ?? null,
+                'parameters' => $params,
+                'success_count' => 0,
+                'failure_count' => 0,
+                'last_executed_at' => null,
+                'success_rate' => 0,
+            ];
+        })->values()->all();
+
+        $createdTasks = [];
+        $order = 1;
+        foreach ($scripts as $scriptModel) {
+            // Decode JSON string if needed
+            $scriptData = $scriptModel->script;
+            if (is_string($scriptData)) {
+                $scriptData = json_decode($scriptData, true) ?? [];
+            } else {
+                $scriptData = $scriptData ?? [];
+            }
+            $script = $scriptData;
+            $taskType = $script['type'] ?? ($script['task_type'] ?? 'unknown');
+
+            // Tạo payload cho mỗi task với chỉ 1 script
+            $singleScriptPayload = [
+                'account_username' => $account->username,
+                'scenario_name' => $scenario->name,
+                'device_id' => $deviceId,
+                'created_by' => $createdByUserId,
+                'scenario_scripts' => [
+                    [
+                        'id' => $scriptModel->id,
+                        'type' => $script['type'] ?? ($script['task_type'] ?? 'unknown'),
+                        'name' => $script['name'] ?? ($script['type'] ?? 'unknown'),
+                        'description' => $script['description'] ?? null,
+                        'order' => $scriptModel->order ?? $order,
+                        'is_active' => $script['is_active'] ?? true,
+                        'delay_min' => $script['delay_min'] ?? null,
+                        'delay_max' => $script['delay_max'] ?? null,
+                        'parameters' => $script['parameters'] ?? $script,
+                        'success_count' => 0,
+                        'failure_count' => 0,
+                        'last_executed_at' => null,
+                        'success_rate' => 0,
+                    ]
+                ],
+            ];
+
+            $taskData = [
+                'facebook_account_id' => $account->id,
+                'interaction_scenario_id' => $scenario->id,
+                'device_id' => $deviceId,
+                'task_type' => $taskType,
+                'parameters' => json_encode($singleScriptPayload), // Lưu chỉ 1 script
+                'priority' => 'medium',
+                'status' => 'pending',
+                'scheduled_at' => null,
+            ];
+
+            try {
+                $task = $this->accountTaskRepository->create($taskData);
+                $createdTasks[] = $task;
+
+                // Dispatch event for real-time updates
+                if ($deviceId) {
+                    // Lấy device thực tế để có device_id (mã máy)
+                    $device = \App\Models\Device::find($deviceId);
+                    if ($device && $device->device_id) {
+                        Log::info('Dispatching event for device: ' . $device->device_id);
+                        event(new TaskDispatchedToDevice($device->device_id));
+                    }
+                }
+
+            } catch (\Exception $e) {
+                throw $e;
             }
             $order++;
         }
@@ -287,11 +436,11 @@ class AccountTaskService
             // Transform data for frontend
             $activities = $tasks->getCollection()->map(function ($task) {
                 $parameters = json_decode($task->parameters, true) ?? [];
-                
+
                 // Get action details from parameters
                 $actionName = $parameters['name'] ?? $task->task_type;
                 $actionDetails = $this->getActionDetails($task->task_type, $parameters);
-                
+
                 return [
                     'id' => $task->id,
                     'account' => [
@@ -306,8 +455,8 @@ class AccountTaskService
                     'timestamp' => $task->created_at,
                     'started_at' => $task->started_at,
                     'completed_at' => $task->completed_at,
-                    'duration' => $task->started_at && $task->completed_at 
-                        ? $task->completed_at->diffInSeconds($task->started_at) 
+                    'duration' => $task->started_at && $task->completed_at
+                        ? $task->completed_at->diffInSeconds($task->started_at)
                         : 0,
                     'error_message' => $task->error_message,
                     'progress' => $task->status === 'running' ? $this->calculateProgress($task) : null
@@ -413,11 +562,11 @@ class AccountTaskService
         $now = now();
         $startTime = $task->started_at;
         $elapsed = $now->diffInSeconds($startTime);
-        
+
         // Estimate progress based on elapsed time (max 90% for running tasks)
         $estimatedDuration = 300; // 5 minutes default
         $progress = min(90, ($elapsed / $estimatedDuration) * 100);
-        
+
         return (int) $progress;
     }
 }

@@ -1,5 +1,5 @@
 'use client'
-import React, { useMemo } from 'react'
+import React, { useMemo, useRef } from 'react'
 import DataTable from '@/components/shared/DataTable'
 import FacebookConnectionTypeToggle from './FacebookConnectionTypeToggle'
 import Select from '@/components/ui/Select'
@@ -8,14 +8,19 @@ import { useState } from 'react'
 import { useFacebookAccountData } from './FacebookAccountDataManager'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Button from '@/components/ui/Button'
+import Dialog from '@/components/ui/Dialog'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
-import { TbEye, TbEdit, TbTrash, TbPlayerPlay, TbPlayerStop, TbList } from 'react-icons/tb'
+import { TbEye, TbEdit, TbTrash, TbPlayerPlay, TbPlayerStop, TbList, TbSettings, TbDeviceMobile } from 'react-icons/tb'
 import FacebookAccountViewModal from './FacebookAccountViewModal'
 import FacebookAccountEditModal from './FacebookAccountEditModal'
 import FacebookAccountTasksModal from './FacebookAccountTasksModal'
+import FacebookAccountScenarioModal from './FacebookAccountScenarioModal'
 import FacebookAccountStatusToggle from './FacebookAccountStatusToggle'
 import FacebookAccountStatusDisplayOptimized from './FacebookAccountStatusDisplayOptimized'
+import deleteFacebookAccount from '@/server/actions/facebook-account/deleteFacebookAccount'
+import FacebookAccountBulkActionBar from './FacebookAccountBulkActionBar'
+import { useFacebookAccountListStore } from '../_store'
 
 const FacebookAccountListTable = ({ list = [], total = 0, page = 1, per_page = 10 }) => {
     const router = useRouter()
@@ -25,8 +30,68 @@ const FacebookAccountListTable = ({ list = [], total = 0, page = 1, per_page = 1
     const [viewModalOpen, setViewModalOpen] = useState(false)
     const [editModalOpen, setEditModalOpen] = useState(false)
     const [tasksModalOpen, setTasksModalOpen] = useState(false)
+    const [scenarioModalOpen, setScenarioModalOpen] = useState(false)
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+    const [deletingAccount, setDeletingAccount] = useState(null)
+    const [isDeleting, setIsDeleting] = useState(false)
 
     const proxyOptions = getProxyOptions()
+
+    const dataTableRef = useRef(null)
+
+    const selectedFacebookAccount = useFacebookAccountListStore((state) => state.selectedFacebookAccount)
+    const setSelectedFacebookAccount = useFacebookAccountListStore((state) => state.setSelectedFacebookAccount)
+    const setSelectAllFacebookAccount = useFacebookAccountListStore((state) => state.setSelectAllFacebookAccount)
+
+    const checkboxChecked = (row) => selectedFacebookAccount.some((i) => i.id === row.id)
+    const indeterminateCheckboxChecked = (rows) => {
+        if (!Array.isArray(rows)) return false
+        if (rows.length === 0) return false
+        const all = rows.every((r) => selectedFacebookAccount.some((i) => i.id === r.original.id))
+        return all
+    }
+
+    const handleRowCheckBoxChange = (checked, row) => {
+        setSelectedFacebookAccount(checked, row)
+    }
+
+    const handleHeaderIndeterminateChange = (checked, rows) => {
+        const payload = checked ? rows.map((r) => r.original) : []
+        setSelectAllFacebookAccount(payload)
+    }
+
+    const handleDeleteAccount = async () => {
+        if (!deletingAccount) return
+
+        setIsDeleting(true)
+        try {
+            const result = await deleteFacebookAccount(deletingAccount.id)
+            if (result.success) {
+                toast.push(
+                    <Notification title="Thành công" type="success">
+                        {result.message}
+                    </Notification>
+                )
+                setDeleteModalOpen(false)
+                setDeletingAccount(null)
+                router.refresh()
+            } else {
+                toast.push(
+                    <Notification title="Lỗi" type="danger">
+                        {result.message}
+                    </Notification>
+                )
+            }
+        } catch (error) {
+            toast.push(
+                <Notification title="Lỗi" type="danger">
+                    {error.message || 'Có lỗi xảy ra khi xóa tài khoản'}
+                </Notification>
+            )
+        } finally {
+            setIsDeleting(false)
+        }
+    }
 
     const statusConfig = {
         active: {
@@ -53,33 +118,38 @@ const FacebookAccountListTable = ({ list = [], total = 0, page = 1, per_page = 1
 
     const columns = useMemo(() => [
         {
-            header: 'Username',
+            header: 'Tài khoản',
             accessorKey: 'username',
             enableSorting: true,
             cell: ({ row }) => (
-                <span className="text-gray-900 dark:text-gray-100">{row.original.username}</span>
+                <div className="flex flex-col">
+                    <span className="text-gray-900 dark:text-gray-100 font-medium">{row.original.username}</span>
+                    <span className="text-xs text-gray-600 dark:text-gray-400">{row.original.email || '-'}</span>
+                </div>
             ),
         },
         {
-            header: 'Email',
-            accessorKey: 'email',
-            enableSorting: true,
-            cell: ({ row }) => (
-                <span className="text-gray-700 dark:text-gray-300">{row.original.email || '-'}</span>
-            ),
-        },
-        {
-            header: 'Trạng thái',
-            accessorKey: 'status',
-            enableSorting: true,
+            header: 'Thiết bị & Kịch bản',
+            accessorKey: 'device_scenario',
+            minSize: 240,
+            enableSorting: false,
             cell: ({ row }) => {
-                const raw = String(row.original.status || '').toLowerCase()
-                const conf = statusConfig[raw] || {
-                    color: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400',
-                    label: row.original.status || 'Không xác định',
-                }
+                const account = row.original
+                const deviceName = account.device?.name || account.device?.device_name || '-'
+                const scenarioName = account.interaction_scenario?.name || account.interactionScenario?.name || '-'
                 return (
-                    <span className={`px-2 py-0.5 rounded text-xs ${conf.color}`}>{conf.label}</span>
+                    <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-2">
+                            <TbDeviceMobile className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                            <span className="text-sm text-gray-900 dark:text-gray-100 font-medium">{deviceName}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <TbSettings className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                            <span className="text-xs px-2 py-0.5 rounded bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-300">
+                                {scenarioName}
+                            </span>
+                        </div>
+                    </div>
                 )
             },
         },
@@ -119,11 +189,16 @@ const FacebookAccountListTable = ({ list = [], total = 0, page = 1, per_page = 1
                     setSelectedAccount(account)
                     setTasksModalOpen(true)
                 }
+                const onScenario = () => {
+                    setSelectedAccount(account)
+                    setScenarioModalOpen(true)
+                }
                 const handleStatusChange = () => {
                     router.refresh()
                 }
                 const onDelete = () => {
-                    toast.push(<Notification title="Thông báo" type="warning">Xóa tài khoản sẽ sớm có</Notification>)
+                    setDeletingAccount(account)
+                    setDeleteModalOpen(true)
                 }
 
                 return (
@@ -137,6 +212,9 @@ const FacebookAccountListTable = ({ list = [], total = 0, page = 1, per_page = 1
                         <Button variant="outline" size="sm" className="p-1" onClick={onTasks}>
                             <TbList className="w-4 h-4" />
                         </Button>
+                        <Button variant="outline" size="sm" className="p-1" onClick={onScenario}>
+                            <TbSettings className="w-4 h-4" />
+                        </Button>
                         <FacebookAccountStatusToggle
                             account={account}
                             onStatusChange={handleStatusChange}
@@ -148,7 +226,7 @@ const FacebookAccountListTable = ({ list = [], total = 0, page = 1, per_page = 1
                 )
             },
         },
-    ], [])
+    ], [proxyOptions])
 
     const handlePaginationChange = (nextPage) => {
         const params = new URLSearchParams(searchParams.toString())
@@ -166,7 +244,19 @@ const FacebookAccountListTable = ({ list = [], total = 0, page = 1, per_page = 1
 
     return (
         <>
+            {selectedFacebookAccount.length > 0 && (
+                <FacebookAccountBulkActionBar
+                    selected={selectedFacebookAccount}
+                    onDone={() => {
+                        // reset selection sau khi thao tác
+                        setSelectAllFacebookAccount([])
+                        dataTableRef.current?.resetSelected?.()
+                        router.refresh()
+                    }}
+                />
+            )}
             <DataTable
+                ref={dataTableRef}
                 columns={columns}
                 data={list}
                 pagingData={{ pageIndex: Number(page), pageSize: Number(per_page), total: Number(total) }}
@@ -175,6 +265,10 @@ const FacebookAccountListTable = ({ list = [], total = 0, page = 1, per_page = 1
                 noData={list.length === 0}
                 className="min-w-full"
                 selectable
+                checkboxChecked={checkboxChecked}
+                onCheckBoxChange={handleRowCheckBoxChange}
+                indeterminateCheckboxChecked={indeterminateCheckboxChecked}
+                onIndeterminateCheckBoxChange={handleHeaderIndeterminateChange}
             />
 
             {/* View Modal */}
@@ -201,6 +295,75 @@ const FacebookAccountListTable = ({ list = [], total = 0, page = 1, per_page = 1
                 onClose={() => setTasksModalOpen(false)}
                 account={selectedAccount}
             />
+
+            {/* Scenario Modal */}
+            <FacebookAccountScenarioModal
+                isOpen={scenarioModalOpen}
+                onClose={() => setScenarioModalOpen(false)}
+                account={selectedAccount}
+                onDataChange={() => router.refresh()}
+            />
+
+            {/* Delete Confirmation Modal */}
+            <Dialog
+                isOpen={deleteModalOpen}
+                onClose={() => setDeleteModalOpen(false)}
+                onRequestClose={() => setDeleteModalOpen(false)}
+                width={500}
+                className="z-[70]"
+            >
+                <div className="p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-full">
+                            <TbTrash className="w-6 h-6 text-red-600 dark:text-red-400" />
+                        </div>
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                            Xác nhận xóa tài khoản
+                        </h3>
+                    </div>
+
+                    <div className="mb-6">
+                        <p className="text-gray-700 dark:text-gray-300 mb-4">
+                            Bạn có chắc chắn muốn xóa tài khoản Facebook <strong>"{deletingAccount?.username}"</strong>?
+                        </p>
+                        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+                            <div className="flex items-start gap-3">
+                                <TbTrash className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5" />
+                                <div>
+                                    <h4 className="font-semibold text-red-800 dark:text-red-200 mb-2">Cảnh báo</h4>
+                                    <ul className="text-sm text-red-700 dark:text-red-300 space-y-1">
+                                        <li>• Tất cả tasks đang chạy sẽ bị dừng</li>
+                                        <li>• Tất cả dữ liệu liên quan sẽ bị xóa vĩnh viễn</li>
+                                        <li>• Hành động này không thể hoàn tác</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex justify-end gap-3">
+                        <Button
+                            variant="outline"
+                            onClick={() => {
+                                setDeleteModalOpen(false)
+                                setDeletingAccount(null)
+                            }}
+                            disabled={isDeleting}
+                        >
+                            Hủy
+                        </Button>
+                        <Button
+                            variant="solid"
+                            className="bg-red-600 hover:bg-red-700 text-white"
+                            onClick={handleDeleteAccount}
+                            loading={isDeleting}
+                            disabled={isDeleting}
+                        >
+                            {isDeleting ? 'Đang xóa...' : 'Xóa tài khoản'}
+                        </Button>
+                    </div>
+                </div>
+            </Dialog>
         </>
     )
 }
@@ -210,7 +373,7 @@ export default FacebookAccountListTable
 const ConnectionCell = ({ account, proxies = [], loading = false }) => {
     const [saving, setSaving] = useState(false)
     const [currentType, setCurrentType] = useState(account?.connection_type || 'wifi')
-    const currentProxyId = account?.proxy?.id ? String(account.proxy.id) : ''
+    const [currentProxyId, setCurrentProxyId] = useState(account?.proxy?.id ? String(account.proxy.id) : '')
 
     const onChangeProxy = async (val) => {
         if (saving) return
@@ -218,7 +381,8 @@ const ConnectionCell = ({ account, proxies = [], loading = false }) => {
         setSaving(true)
         try {
             const res = await updateFacebookAccountProxy(account.id, val)
-            if (res?.success) {
+            if (res?.success || (res?.id && res?.username)) {
+                setCurrentProxyId(String(val))
                 toast.push(<Notification title="Thành công" type="success">Đã cập nhật proxy</Notification>)
             } else {
                 toast.push(<Notification title="Lỗi" type="danger">{res?.message || 'Không thể cập nhật proxy'}</Notification>)

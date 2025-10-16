@@ -13,18 +13,13 @@ import deleteProxy from '@/server/actions/proxy/deleteProxy'
 import testProxyConnection from '@/server/actions/proxy/testProxyConnection'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
-import { useTranslations } from 'next-intl'
 import Badge from '@/components/ui/Badge'
 import { PiCheckCircleDuotone, PiWarningCircleDuotone, PiXCircleDuotone } from 'react-icons/pi'
 
 const ActionColumn = ({ onEdit, onDelete, onTest }) => {
-    const t = useTranslations('proxy-management')
-    const t_delete = useTranslations('proxy-management')
-    const t_test = useTranslations('proxy-management')
-    
     return (
         <div className="flex items-center justify-end gap-2 min-w-[140px]">
-            <Tooltip title={t_test('test.title')}>
+            <Tooltip title={'Kiểm tra kết nối'}>
                 <button
                     className={`text-xl cursor-pointer select-none font-semibold text-blue-500 hover:text-blue-600 transition-colors p-1 rounded hover:bg-blue-50`}
                     onClick={onTest}
@@ -32,7 +27,7 @@ const ActionColumn = ({ onEdit, onDelete, onTest }) => {
                     <TbPlayerPlay />
                 </button>
             </Tooltip>
-            <Tooltip title={t('table.edit')}>
+            <Tooltip title={'Chỉnh sửa'}>
                 <button
                     className={`text-xl cursor-pointer select-none font-semibold hover:text-gray-600 transition-colors p-1 rounded hover:bg-gray-50`}
                     onClick={onEdit}
@@ -40,7 +35,7 @@ const ActionColumn = ({ onEdit, onDelete, onTest }) => {
                     <TbPencil />
                 </button>
             </Tooltip>
-            <Tooltip title={t('table.delete')}>
+            <Tooltip title={'Xóa'}>
                 <button
                     className={`text-xl cursor-pointer select-none font-semibold text-red-500 hover:text-red-600 transition-colors p-1 rounded hover:bg-red-50`}
                     onClick={onDelete}
@@ -58,14 +53,14 @@ const ProxyListTable = ({
     per_page = 10,
 }) => {
     const router = useRouter()
-    const t = useTranslations('proxy-management.table')
-    const tStatus = useTranslations('proxy-management.status')
+    const t = { name: 'Tên', host: 'Host', status: 'Trạng thái', lastUsed: 'Lần cuối sử dụng' }
+    const tStatus = (key) => ({ active: 'Hoạt động', inactive: 'Không hoạt động', error: 'Lỗi' }[key] || key)
     const [deleteConfirm, setDeleteConfirm] = useState(null)
     const allColumns = [
-        { header: t('name'), accessorKey: 'name' },
-        { header: t('host'), accessorKey: 'host' },
-        { header: t('status'), accessorKey: 'status' },
-        { header: t('lastUsed'), accessorKey: 'last_used_at' },
+        { header: t.name, accessorKey: 'name' },
+        { header: t.host, accessorKey: 'host' },
+        { header: t.status, accessorKey: 'status' },
+        { header: t.lastUsed, accessorKey: 'last_used_at' },
     ]
     const [visibleColumns, setVisibleColumns] = useState(allColumns.map(c => c.accessorKey))
     const proxyList = useProxyListStore((state) => state.proxyList)
@@ -86,7 +81,7 @@ const ProxyListTable = ({
 
     const confirmDelete = async () => {
         if (!deleteConfirm) return
-        
+
         const result = await deleteProxy(deleteConfirm.id)
         if (result.success) {
             toast.push(
@@ -110,21 +105,21 @@ const ProxyListTable = ({
         if (result.success) {
             if (result.data.success) {
                 toast.push(
-                    <Notification title="Success" type="success" closable>
-                        {t('test.success')}
+                    <Notification title="Thành công" type="success" closable>
+                        Kiểm tra kết nối thành công
                     </Notification>
                 )
             } else {
                 toast.push(
-                    <Notification title="Error" type="danger" closable>
-                        {t('test.error')}
+                    <Notification title="Lỗi" type="danger" closable>
+                        Kiểm tra kết nối thất bại
                     </Notification>
                 )
             }
             router.refresh()
         } else {
             toast.push(
-                <Notification title="Error" type="danger" closable>
+                <Notification title="Lỗi" type="danger" closable>
                     {result.message}
                 </Notification>
             )
@@ -138,13 +133,13 @@ const ProxyListTable = ({
             setVisibleColumns([...visibleColumns, accessorKey])
         }
     }
-    
+
     const columns = useMemo(
         () => {
             const baseColumns = [
-                { header: t('name'), accessorKey: 'name' },
-                { 
-                    header: t('host'), 
+                { header: t.name, accessorKey: 'name' },
+                {
+                    header: t.host,
                     accessorKey: 'host',
                     cell: (props) => (
                         <div>
@@ -154,7 +149,7 @@ const ProxyListTable = ({
                     )
                 },
                 {
-                    header: t('status'),
+                    header: t.status,
                     accessorKey: 'status',
                     cell: (props) => {
                         const status = props.row.original.status
@@ -165,20 +160,20 @@ const ProxyListTable = ({
                         }
                         const config = statusConfig[status] || statusConfig.inactive
                         return (
-                            <Badge 
-                                color={config.color} 
+                            <Badge
+                                color={config.color}
                                 content={
                                     <span className="flex items-center gap-1">
                                         {config.icon}
                                         {tStatus(status)}
                                     </span>
-                                } 
+                                }
                             />
                         )
                     }
                 },
                 {
-                    header: t('lastUsed'),
+                    header: t.lastUsed,
                     accessorKey: 'last_used_at',
                     cell: (props) => {
                         const date = props.row.original.last_used_at
@@ -186,7 +181,7 @@ const ProxyListTable = ({
                     }
                 },
             ]
-            
+
             const actionColumn = {
                 header: '',
                 id: 'action',
@@ -202,7 +197,7 @@ const ProxyListTable = ({
             }
 
             return [...baseColumns.filter(col => visibleColumns.includes(col.accessorKey)), actionColumn]
-        }, 
+        },
         [visibleColumns],
     )
 
@@ -255,7 +250,7 @@ const ProxyListTable = ({
                 onIndeterminateCheckBoxChange={handleAllRowSelect}
                 className="proxy-table"
             />
-            
+
             {/* Delete Confirmation Dialog */}
             <ConfirmDialog
                 isOpen={!!deleteConfirm}

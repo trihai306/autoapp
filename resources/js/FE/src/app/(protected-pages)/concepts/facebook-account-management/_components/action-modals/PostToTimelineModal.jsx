@@ -103,12 +103,11 @@ const PostToTimelineModal = ({ isOpen, onClose, action, onSave }) => {
     const handleSave = () => {
         const type = inferType()
         const config = {
-            type: 'post_to_timeline',
-            name: form.actionName || 'Đăng bài lên tường',
             FacebookPostWorkflow: {
                 Config: {
                     type,
                     content: form.content || null,
+                    url: null,
                     imagePaths: type === 'IMAGE' ? form.images.map(i=>i.path) : null,
                     videoPath: type === 'VIDEO' ? form.video?.path || null : null,
                 },

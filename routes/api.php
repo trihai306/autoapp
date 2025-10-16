@@ -130,10 +130,19 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('facebook-accounts/{facebookAccount}/connection-type', [\App\Http\Controllers\Api\FacebookAccountController::class, 'updateConnectionType']);
     Route::get('facebook-accounts/{facebookAccount}/activities', [\App\Http\Controllers\Api\FacebookAccountController::class, 'activityHistory']);
     Route::post('facebook-accounts/connection-type/bulk', [\App\Http\Controllers\Api\FacebookAccountController::class, 'bulkUpdateConnectionType']);
-    Route::post('facebook-accounts/{facebookAccount}/run-scenario', [\App\Http\Controllers\Api\FacebookAccountController::class, 'runScenario']);
-    Route::post('facebook-accounts/{facebookAccount}/stop-tasks', [\App\Http\Controllers\Api\FacebookAccountController::class, 'stopTasks']);
+    Route::post('facebook-accounts/{facebookAccount}/run-scenario', [\App\Http\Controllers\Api\FacebookAccountController::class, 'runScenario'])->whereNumber('facebookAccount');
+    Route::post('facebook-accounts/{facebookAccount}/stop-tasks', [\App\Http\Controllers\Api\FacebookAccountController::class, 'stopTasks'])->whereNumber('facebookAccount');
+    Route::post('facebook-accounts/{facebookAccount}/assign-scenario', [\App\Http\Controllers\Api\FacebookAccountController::class, 'assignScenario'])->whereNumber('facebookAccount');
+    Route::post('facebook-accounts/{facebookAccount}/stop-scenario', [\App\Http\Controllers\Api\FacebookAccountController::class, 'stopScenario'])->whereNumber('facebookAccount');
     Route::post('facebook-accounts/run-scenario/bulk', [\App\Http\Controllers\Api\FacebookAccountController::class, 'bulkRunScenario']);
     Route::post('facebook-accounts/stop-tasks/bulk', [\App\Http\Controllers\Api\FacebookAccountController::class, 'bulkStopTasks']);
+    Route::post('facebook-accounts/bulk-run', [\App\Http\Controllers\Api\FacebookAccountController::class, 'bulkRun']);
+    // New bulk endpoints per plan
+    Route::post('facebook-accounts/bulk/delete', [\App\Http\Controllers\Api\FacebookAccountController::class, 'bulkDelete']);
+    Route::post('facebook-accounts/bulk/run', [\App\Http\Controllers\Api\FacebookAccountController::class, 'bulkRunV2']);
+    Route::post('facebook-accounts/bulk/stop-scenario', [\App\Http\Controllers\Api\FacebookAccountController::class, 'bulkStopScenario']);
+    Route::post('facebook-accounts/bulk/assign-scenario', [\App\Http\Controllers\Api\FacebookAccountController::class, 'bulkAssignScenario']);
+    Route::post('facebook-accounts/bulk/assign-device', [\App\Http\Controllers\Api\FacebookAccountController::class, 'bulkAssignDevice']);
         Route::get('facebook-accounts/{facebookAccount}/tasks', [\App\Http\Controllers\Api\FacebookAccountController::class, 'getAccountTasks']);
         Route::get('facebook-accounts/{facebookAccount}/status', [\App\Http\Controllers\Api\FacebookAccountController::class, 'getAccountStatus']);
         Route::get('facebook-accounts/tasks/all', [\App\Http\Controllers\Api\FacebookAccountController::class, 'getAllTasks']);
