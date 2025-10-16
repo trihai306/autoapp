@@ -21,7 +21,7 @@ const NotificationModal = ({ isOpen, onClose, action, onSave }) => {
         say_hi_from: 1,
         say_hi_to: 3
     }
-    
+
     const [config, setConfig] = useState(initialConfig)
     const [isLoading, setIsLoading] = useState(false)
 
@@ -29,7 +29,7 @@ const NotificationModal = ({ isOpen, onClose, action, onSave }) => {
         setConfig(prev => ({
             ...prev,
             [field]: field.includes('_from') || field.includes('_to')
-                ? parseInt(value) || 0 
+                ? parseInt(value) || 0
                 : value
         }))
     }
@@ -129,7 +129,7 @@ const NotificationModal = ({ isOpen, onClose, action, onSave }) => {
                         Thiết lập các thông số cho việc đọc thông báo tự động
                     </p>
                 </div>
-                
+
                 {/* Content */}
                 <div className="p-4 flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900 min-h-0 max-h-[calc(85vh-120px)]">
                     {/* Cấu hình cơ bản */}
@@ -138,7 +138,7 @@ const NotificationModal = ({ isOpen, onClose, action, onSave }) => {
                             <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
                             Cấu hình cơ bản
                         </h6>
-                        
+
                         <div className="grid grid-cols-2 gap-6">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
@@ -153,7 +153,7 @@ const NotificationModal = ({ isOpen, onClose, action, onSave }) => {
                                     Tên để nhận biết hành động này trong kịch bản.
                                 </p>
                             </div>
-                            
+
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                                     Số lượng thông báo đọc
@@ -188,7 +188,7 @@ const NotificationModal = ({ isOpen, onClose, action, onSave }) => {
                             <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
                             Thời gian chờ
                         </h6>
-                        
+
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                                 Khoảng cách giữa các lần đọc (giây)
@@ -222,7 +222,7 @@ const NotificationModal = ({ isOpen, onClose, action, onSave }) => {
                             <span className="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
                             Hành động tùy chọn
                         </h6>
-                        
+
                         <div className="space-y-6">
                             {/* Theo dõi lại */}
                             <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-4">
@@ -240,7 +240,7 @@ const NotificationModal = ({ isOpen, onClose, action, onSave }) => {
                                         onChange={(checked) => handleSwitchChange('count_follow', checked)}
                                     />
                                 </div>
-                                
+
                                 {config.count_follow && (
                                     <div className="border-t border-gray-200 dark:border-gray-600 pt-3">
                                         <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
@@ -283,7 +283,7 @@ const NotificationModal = ({ isOpen, onClose, action, onSave }) => {
                                         onChange={(checked) => handleSwitchChange('count_say_hi', checked)}
                                     />
                                 </div>
-                                
+
                                 {config.count_say_hi && (
                                     <div className="border-t border-gray-200 dark:border-gray-600 pt-3">
                                         <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">

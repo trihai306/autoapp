@@ -15,9 +15,10 @@ const UpdateAvatarModal = ({ isOpen, onClose, action, onSave, accountId }) => {
         uploaded_files: [],
         delete_used_images: false
     }
-    
+
     const [config, setConfig] = useState(initialConfig)
     const [isLoading, setIsLoading] = useState(false)
+    const [currentImageUrls, setCurrentImageUrls] = useState([])
 
     const handleInputChange = (field, value) => {
         setConfig(prev => ({
@@ -55,6 +56,12 @@ const UpdateAvatarModal = ({ isOpen, onClose, action, onSave, accountId }) => {
                             ...prev,
                             ...scriptData.parameters
                         }))
+                        // Lưu lại ảnh hiện tại (nếu có) để hiển thị preview khi edit
+                        if (Array.isArray(scriptData.parameters.image_urls)) {
+                            setCurrentImageUrls(scriptData.parameters.image_urls.filter(Boolean))
+                        } else if (scriptData.parameters.image_url) {
+                            setCurrentImageUrls([scriptData.parameters.image_url])
+                        }
                     }
                 }
             } catch (error) {
@@ -65,10 +72,10 @@ const UpdateAvatarModal = ({ isOpen, onClose, action, onSave, accountId }) => {
 
     const handleFileUpload = (event) => {
         const files = Array.from(event.target.files)
-        
+
         // Chỉ chấp nhận file ảnh
         const imageFiles = files.filter(file => file.type.startsWith('image/'))
-        
+
         if (imageFiles.length > 0) {
             setConfig(prev => ({
                 ...prev,
@@ -85,65 +92,95 @@ const UpdateAvatarModal = ({ isOpen, onClose, action, onSave, accountId }) => {
     }
 
     const handleSave = async () => {
-        if (!accountId) {
-            toast.push(
-                <Notification type="danger" title="Lỗi">Vui lòng chọn tài khoản TikTok</Notification>
-            )
-            return
-        }
-
-        if (config.uploaded_files.length === 0) {
-            toast.push(
-                <Notification type="danger" title="Lỗi">Vui lòng chọn ảnh đại diện</Notification>
-            )
-            return
-        }
-
-        setIsLoading(true)
-        try {
-            // Tạo FormData để upload file
-            const formData = new FormData()
-            formData.append('avatar', config.uploaded_files[0])
-            formData.append('description', config.name)
-
-            // Gọi API upload avatar
-            const response = await apiUpdateAvatar(accountId, formData)
-            
-            if (response.success) {
+        // Trường hợp có file mới: upload rồi lưu script với URL mới
+        if (Array.isArray(config.uploaded_files) && config.uploaded_files.length > 0) {
+            if (!accountId) {
                 toast.push(
-                    <Notification type="success" title="Thành công">Ảnh đại diện đã được cập nhật</Notification>
+                    <Notification type="danger" title="Lỗi">Vui lòng chọn tài khoản TikTok</Notification>
                 )
+                return
+            }
 
-                // Nếu có onSave callback (cho scenario script), vẫn gọi nó
-                if (onSave) {
-                    const saveData = {
-                        name: config.name,
-                        type: action?.type || 'update_avatar',
-                        parameters: {
+            setIsLoading(true)
+            try {
+                const formData = new FormData()
+                formData.append('avatar', config.uploaded_files[0])
+                formData.append('description', config.name)
+
+                const response = await apiUpdateAvatar(accountId, formData)
+
+                if (response.success) {
+                    toast.push(
+                        <Notification type="success" title="Thành công">Ảnh đại diện đã được cập nhật</Notification>
+                    )
+
+                    if (onSave) {
+                        const saveData = {
                             name: config.name,
-                            description: config.name,
-                            image_urls: response.data?.avatar_url ? [response.data.avatar_url] : [],
-                            delete_used_images: config.delete_used_images
+                            type: action?.type || 'update_avatar',
+                            parameters: {
+                                name: config.name,
+                                description: config.name,
+                                image_urls: response.data?.avatar_url ? [response.data.avatar_url] : [],
+                                delete_used_images: config.delete_used_images
+                            }
                         }
+                        await onSave(action, saveData)
                     }
-                    await onSave(action, saveData)
-                }
 
+                    resetForm()
+                    onClose()
+                } else {
+                    toast.push(
+                        <Notification type="danger" title="Lỗi">{response.message || 'Không thể cập nhật ảnh đại diện'}</Notification>
+                    )
+                }
+            } catch (error) {
+                console.error('Error updating avatar:', error)
+                toast.push(
+                    <Notification type="danger" title="Lỗi">Không thể cập nhật ảnh đại diện</Notification>
+                )
+            } finally {
+                setIsLoading(false)
+            }
+            return
+        }
+
+        // Trường hợp không có file mới nhưng đang edit: lưu lại script với image_urls hiện có
+        if (onSave && currentImageUrls.length > 0) {
+            setIsLoading(true)
+            try {
+                const saveData = {
+                    name: config.name,
+                    type: action?.type || 'update_avatar',
+                    parameters: {
+                        name: config.name,
+                        description: config.name,
+                        image_urls: currentImageUrls,
+                        delete_used_images: config.delete_used_images
+                    }
+                }
+                await onSave(action, saveData)
+                toast.push(
+                    <Notification type="success" title="Thành công">Đã lưu cấu hình ảnh hiện tại</Notification>
+                )
                 resetForm()
                 onClose()
-            } else {
+            } catch (error) {
+                console.error('Error saving avatar config:', error)
                 toast.push(
-                    <Notification type="danger" title="Lỗi">{response.message || 'Không thể cập nhật ảnh đại diện'}</Notification>
+                    <Notification type="danger" title="Lỗi">Không thể lưu cấu hình ảnh</Notification>
                 )
+            } finally {
+                setIsLoading(false)
             }
-        } catch (error) {
-            console.error('Error updating avatar:', error)
-            toast.push(
-                <Notification type="danger" title="Lỗi">Không thể cập nhật ảnh đại diện</Notification>
-            )
-        } finally {
-            setIsLoading(false)
+            return
         }
+
+        // Nếu không có file mới và không có ảnh hiện có
+        toast.push(
+            <Notification type="danger" title="Lỗi">Vui lòng chọn ảnh đại diện</Notification>
+        )
     }
 
     const handleClose = () => {
@@ -167,7 +204,7 @@ const UpdateAvatarModal = ({ isOpen, onClose, action, onSave, accountId }) => {
                 <div className="p-4 border-b border-gray-200 dark:border-gray-600 flex-shrink-0">
                     <h5 className="font-bold text-lg">Cập nhật Ảnh đại diện</h5>
                 </div>
-                
+
                 {/* Content */}
                 <div className="p-4 space-y-4">
                     {/* Tên hành động */}
@@ -181,7 +218,7 @@ const UpdateAvatarModal = ({ isOpen, onClose, action, onSave, accountId }) => {
                             className="border-gray-300 dark:border-gray-600"
                         />
                     </div>
-                    
+
                     {/* Upload Ảnh đại diện */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
@@ -210,7 +247,33 @@ const UpdateAvatarModal = ({ isOpen, onClose, action, onSave, accountId }) => {
                                     </div>
                                 </label>
                             </div>
-                            
+
+                            {/* Hiển thị ảnh hiện tại (khi edit, chưa chọn file mới) */}
+                            {config.uploaded_files.length === 0 && currentImageUrls.length > 0 && (
+                                <div className="space-y-2">
+                                    <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        Ảnh hiện tại:
+                                    </h4>
+                                    <div className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <img src={currentImageUrls[0]} alt="current avatar" className="w-12 h-12 rounded-lg object-cover" />
+                                                <div className="text-xs text-gray-500 truncate max-w-[220px]">{currentImageUrls[0]}</div>
+                                            </div>
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={()=>setCurrentImageUrls([])}
+                                                className="text-red-500 hover:text-red-700 px-2 py-1"
+                                            >
+                                                Gỡ ảnh
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
                             {/* Hiển thị ảnh đã chọn */}
                             {config.uploaded_files.length > 0 && (
                                 <div className="space-y-2">
@@ -245,7 +308,7 @@ const UpdateAvatarModal = ({ isOpen, onClose, action, onSave, accountId }) => {
                                     </div>
                                 </div>
                             )}
-                            
+
                             <div>
                                 <Checkbox
                                     checked={config.delete_used_images}

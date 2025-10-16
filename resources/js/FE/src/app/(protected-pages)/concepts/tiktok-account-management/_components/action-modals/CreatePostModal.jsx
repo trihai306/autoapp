@@ -26,15 +26,16 @@ const CreatePostModal = ({ isOpen, onClose, action, onSave, accountId }) => {
         image_urls: [], // Bổ sung theo tài liệu
         enable_tiktok_shop: false // Bổ sung theo tài liệu
     }
-    
+
     const [config, setConfig] = useState(initialConfig)
     const [isLoading, setIsLoading] = useState(false)
+    const [currentFileUrls, setCurrentFileUrls] = useState([])
 
     const handleInputChange = (field, value) => {
         setConfig(prev => ({
             ...prev,
             [field]: field.includes('_from') || field.includes('_to')
-                ? parseInt(value) || 0 
+                ? parseInt(value) || 0
                 : value
         }))
     }
@@ -68,6 +69,12 @@ const CreatePostModal = ({ isOpen, onClose, action, onSave, accountId }) => {
                             ...prev,
                             ...scriptData.parameters
                         }))
+                        // Nạp sẵn media hiện tại để hiển thị khi edit
+                        if (Array.isArray(scriptData.parameters.image_urls)) {
+                            setCurrentFileUrls(scriptData.parameters.image_urls.filter(Boolean))
+                        } else if (typeof scriptData.parameters.image_url === 'string') {
+                            setCurrentFileUrls([scriptData.parameters.image_url])
+                        }
                     }
                 }
             } catch (error) {
@@ -78,11 +85,11 @@ const CreatePostModal = ({ isOpen, onClose, action, onSave, accountId }) => {
 
     const handleFileUpload = (event) => {
         const files = Array.from(event.target.files)
-        
+
         // Phân loại file theo loại
         const imageFiles = files.filter(file => file.type.startsWith('image/'))
         const videoFiles = files.filter(file => file.type.startsWith('video/'))
-        
+
         // Nếu có video, chỉ lấy video đầu tiên
         if (videoFiles.length > 0) {
             setConfig(prev => ({
@@ -113,99 +120,142 @@ const CreatePostModal = ({ isOpen, onClose, action, onSave, accountId }) => {
     }
 
     const handleSave = async () => {
-        if (!accountId) {
-            toast.push(
-                <Notification type="danger" title="Lỗi">Vui lòng chọn tài khoản TikTok</Notification>
-            )
-            return
-        }
-
-        if (config.uploaded_files.length === 0) {
-            toast.push(
-                <Notification type="danger" title="Lỗi">Vui lòng chọn file để đăng</Notification>
-            )
-            return
-        }
-
-        setIsLoading(true)
-        try {
-            // Tạo FormData để upload files và data
-            const formData = new FormData()
-            
-            // Thêm files
-            config.uploaded_files.forEach((file, index) => {
-                formData.append(`files[${index}]`, file)
-            })
-            
-            // Thêm các thông tin khác
-            formData.append('title', config.title)
-            formData.append('content', config.content)
-            formData.append('auto_cut', config.auto_cut)
-            formData.append('filter_type', config.filter_type)
-            formData.append('add_trending_music', config.add_trending_music)
-            formData.append('enable_tiktok_shop', config.enable_tiktok_shop)
-            
-            if (config.custom_filters) {
-                formData.append('custom_filters', config.custom_filters)
+        // Nếu có file mới: upload và lưu scenario
+        if (Array.isArray(config.uploaded_files) && config.uploaded_files.length > 0) {
+            if (!accountId) {
+                toast.push(
+                    <Notification type="danger" title="Lỗi">Vui lòng chọn tài khoản TikTok</Notification>
+                )
+                return
             }
 
-            // Gọi API create post
-            const response = await apiCreatePost(accountId, formData)
-            
-            if (response.success) {
-                toast.push(
-                    <Notification type="success" title="Thành công">Bài viết đã được tạo và đưa vào hàng đợi</Notification>
-                )
-
-                // Nếu có onSave callback (cho scenario script), vẫn gọi nó
-                if (onSave) {
-                    const apiFiles = Array.isArray(response.data?.files) ? response.data.files : []
-                    const fileUrls = apiFiles.map(f => f.url).filter(Boolean)
-
-                    const saveData = {
-                        name: config.name,
-                        type: action?.type || 'create_post',
-                        parameters: {
-                            name: config.name,
-                            description: config.name,
-                            load_time_from: config.load_time_from,
-                            load_time_to: config.load_time_to,
-                            post_by_filename: config.post_by_filename,
-                            title: config.title,
-                            content: config.content,
-                            // Theo tài liệu: dùng image_urls thay vì files/file_urls
-                            image_urls: fileUrls.length ? fileUrls : config.image_urls,
-                            delete_used_images: config.delete_used_images,
-                            auto_cut: config.auto_cut,
-                            filter_type: config.filter_type,
-                            custom_filters: Array.isArray(config.custom_filters)
-                                ? config.custom_filters
-                                : (typeof config.custom_filters === 'string' && config.custom_filters.trim().length
-                                    ? config.custom_filters.split('\n').map(s => s.trim()).filter(Boolean)
-                                    : []),
-                            add_trending_music: config.add_trending_music,
-                            enable_tiktok_shop: config.enable_tiktok_shop,
-                            multiple_images: Array.isArray(config.uploaded_files) && config.uploaded_files.every(f => f.type?.startsWith('image/')) && config.uploaded_files.length > 1
-                        }
-                    }
-                    await onSave(action, saveData)
+            setIsLoading(true)
+            try {
+                const formData = new FormData()
+                config.uploaded_files.forEach((file, index) => {
+                    formData.append(`files[${index}]`, file)
+                })
+                formData.append('title', config.title)
+                formData.append('content', config.content)
+                formData.append('auto_cut', config.auto_cut ? '1' : '0')
+                formData.append('filter_type', config.filter_type)
+                formData.append('add_trending_music', config.add_trending_music ? '1' : '0')
+                formData.append('enable_tiktok_shop', config.enable_tiktok_shop ? '1' : '0')
+                if (config.custom_filters) {
+                    const filters = Array.isArray(config.custom_filters)
+                        ? config.custom_filters
+                        : (typeof config.custom_filters === 'string' && config.custom_filters.trim().length
+                            ? config.custom_filters.split('\n').map(s => s.trim()).filter(Boolean)
+                            : [])
+                    filters.forEach((f) => formData.append('custom_filters[]', f))
                 }
 
+                const response = await apiCreatePost(accountId, formData)
+
+                if (response.success) {
+                    toast.push(
+                        <Notification type="success" title="Thành công">Bài viết đã được tạo và đưa vào hàng đợi</Notification>
+                    )
+
+                    if (onSave) {
+                        const apiFiles = Array.isArray(response.data?.files) ? response.data.files : []
+                        const fileUrls = apiFiles.map(f => f.url).filter(Boolean)
+
+                        const saveData = {
+                            name: config.name,
+                            type: action?.type || 'create_post',
+                            parameters: {
+                                name: config.name,
+                                description: config.name,
+                                load_time_from: config.load_time_from,
+                                load_time_to: config.load_time_to,
+                                post_by_filename: config.post_by_filename,
+                                title: config.title,
+                                content: config.content,
+                                image_urls: fileUrls.length ? fileUrls : config.image_urls,
+                                delete_used_images: config.delete_used_images,
+                                auto_cut: config.auto_cut,
+                                filter_type: config.filter_type,
+                                custom_filters: Array.isArray(config.custom_filters)
+                                    ? config.custom_filters
+                                    : (typeof config.custom_filters === 'string' && config.custom_filters.trim().length
+                                        ? config.custom_filters.split('\n').map(s => s.trim()).filter(Boolean)
+                                        : []),
+                                add_trending_music: config.add_trending_music,
+                                enable_tiktok_shop: config.enable_tiktok_shop,
+                                multiple_images: Array.isArray(config.uploaded_files) && config.uploaded_files.every(f => f.type?.startsWith('image/')) && config.uploaded_files.length > 1
+                            }
+                        }
+                        await onSave(action, saveData)
+                    }
+
+                    resetForm()
+                    onClose()
+                } else {
+                    toast.push(
+                        <Notification type="danger" title="Lỗi">{response.message || 'Không thể tạo bài viết'}</Notification>
+                    )
+                }
+            } catch (error) {
+                console.error('Error creating post:', error)
+                toast.push(
+                    <Notification type="danger" title="Lỗi">Không thể tạo bài viết</Notification>
+                )
+            } finally {
+                setIsLoading(false)
+            }
+            return
+        }
+
+        // Nếu không có file mới nhưng đang edit: lưu lại script giữ nguyên image_urls cũ
+        if (onSave && currentFileUrls.length > 0) {
+            setIsLoading(true)
+            try {
+                const saveData = {
+                    name: config.name,
+                    type: action?.type || 'create_post',
+                    parameters: {
+                        name: config.name,
+                        description: config.name,
+                        load_time_from: config.load_time_from,
+                        load_time_to: config.load_time_to,
+                        post_by_filename: config.post_by_filename,
+                        title: config.title,
+                        content: config.content,
+                        image_urls: currentFileUrls,
+                        delete_used_images: config.delete_used_images,
+                        auto_cut: config.auto_cut,
+                        filter_type: config.filter_type,
+                        custom_filters: Array.isArray(config.custom_filters)
+                            ? config.custom_filters
+                            : (typeof config.custom_filters === 'string' && config.custom_filters.trim().length
+                                ? config.custom_filters.split('\n').map(s => s.trim()).filter(Boolean)
+                                : []),
+                        add_trending_music: config.add_trending_music,
+                        enable_tiktok_shop: config.enable_tiktok_shop,
+                        multiple_images: false
+                    }
+                }
+                await onSave(action, saveData)
+                toast.push(
+                    <Notification type="success" title="Thành công">Đã lưu cấu hình bài viết hiện tại</Notification>
+                )
                 resetForm()
                 onClose()
-            } else {
+            } catch (error) {
+                console.error('Error saving post config:', error)
                 toast.push(
-                    <Notification type="danger" title="Lỗi">{response.message || 'Không thể tạo bài viết'}</Notification>
+                    <Notification type="danger" title="Lỗi">Không thể lưu cấu hình bài viết</Notification>
                 )
+            } finally {
+                setIsLoading(false)
             }
-        } catch (error) {
-            console.error('Error creating post:', error)
-            toast.push(
-                <Notification type="danger" title="Lỗi">Không thể tạo bài viết</Notification>
-            )
-        } finally {
-            setIsLoading(false)
+            return
         }
+
+        toast.push(
+            <Notification type="danger" title="Lỗi">Vui lòng chọn file để đăng</Notification>
+        )
     }
 
     const handleClose = () => {
@@ -229,7 +279,7 @@ const CreatePostModal = ({ isOpen, onClose, action, onSave, accountId }) => {
                 <div className="p-4 border-b border-gray-200 dark:border-gray-600 flex-shrink-0">
                     <h5 className="font-bold text-lg">Thêm Tạo bài viết</h5>
                 </div>
-                
+
                 {/* Content */}
                 <div className="p-6 flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900 min-h-0">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -246,7 +296,7 @@ const CreatePostModal = ({ isOpen, onClose, action, onSave, accountId }) => {
                                     className="border-gray-300 dark:border-gray-600"
                                 />
                             </div>
-                            
+
                             {/* Thời gian chờ load video */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -271,7 +321,7 @@ const CreatePostModal = ({ isOpen, onClose, action, onSave, accountId }) => {
                                     <span className="text-sm text-gray-500">giây</span>
                                 </div>
                             </div>
-                            
+
                             {/* Đăng video theo tên file */}
                             <div>
                                 <Checkbox
@@ -281,7 +331,7 @@ const CreatePostModal = ({ isOpen, onClose, action, onSave, accountId }) => {
                                     Đăng video theo tên file
                                 </Checkbox>
                             </div>
-                            
+
                             {/* Tiêu đề */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -294,7 +344,7 @@ const CreatePostModal = ({ isOpen, onClose, action, onSave, accountId }) => {
                                     className="border-gray-300 dark:border-gray-600"
                                 />
                             </div>
-                            
+
                             {/* Nội dung */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -341,7 +391,7 @@ const CreatePostModal = ({ isOpen, onClose, action, onSave, accountId }) => {
                                 </p>
                             </div>
                         </div>
-                        
+
                         {/* Cột phải */}
                         <div className="space-y-6">
                             {/* Upload File */}
@@ -373,7 +423,7 @@ const CreatePostModal = ({ isOpen, onClose, action, onSave, accountId }) => {
                                             </div>
                                         </label>
                                     </div>
-                                    
+
                                     {/* Hiển thị file đã chọn */}
                                     {config.uploaded_files.length > 0 && (
                                         <div className="space-y-2">
@@ -408,7 +458,7 @@ const CreatePostModal = ({ isOpen, onClose, action, onSave, accountId }) => {
                                             </div>
                                         </div>
                                     )}
-                                    
+
                                     <div className="space-y-2">
                                         <Checkbox
                                             checked={config.delete_used_images}
@@ -416,7 +466,7 @@ const CreatePostModal = ({ isOpen, onClose, action, onSave, accountId }) => {
                                         >
                                             Xóa file đã sử dụng
                                         </Checkbox>
-                                        
+
                                         <div className="flex items-center gap-2">
                                             <Checkbox
                                                 checked={config.auto_cut}
@@ -429,7 +479,7 @@ const CreatePostModal = ({ isOpen, onClose, action, onSave, accountId }) => {
                                     </div>
                                 </div>
                             </div>
-                            
+
                             {/* Chỉnh sửa Filter */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
@@ -448,7 +498,7 @@ const CreatePostModal = ({ isOpen, onClose, action, onSave, accountId }) => {
                                             />
                                             <span className="text-sm text-gray-700 dark:text-gray-300">Random</span>
                                         </label>
-                                        
+
                                         <div className="flex items-center gap-2">
                                             <input
                                                 type="radio"
@@ -462,7 +512,7 @@ const CreatePostModal = ({ isOpen, onClose, action, onSave, accountId }) => {
                                             <span className="text-yellow-500 text-sm">ⓘ</span>
                                         </div>
                                     </div>
-                                    
+
                                     <div className="mt-3">
                                         <Checkbox
                                             checked={config.add_trending_music}

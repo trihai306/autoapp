@@ -586,13 +586,13 @@ const InteractionConfigModal = ({ isOpen, onClose, accountId }) => {
 
                 const result = await createScenarioScript(scriptData)
 
-                if (result.success) {
+                if (result?.success || result?.data?.id || result?.id) {
                     // Reload scenario details to get updated scripts
                     await loadScenarioDetails(selectedScenario.id)
 
             toast.push(
                 <Notification title="Thành công" type="success" closable>
-                    {t('toast.actionAdded')}
+                    {t('toast.actionAdded') || 'Đã thêm hành động'}
                 </Notification>
             )
         } else {
@@ -611,7 +611,7 @@ const InteractionConfigModal = ({ isOpen, onClose, accountId }) => {
 
                 const result = await updateScenarioScript(action.id, scriptData)
 
-                if (result.success) {
+                if (result?.success || result?.data?.id || result?.id) {
                     // Update local state
             setActions(prev => prev.map(a =>
                 a.id === action.id
@@ -621,7 +621,7 @@ const InteractionConfigModal = ({ isOpen, onClose, accountId }) => {
 
             toast.push(
                 <Notification title="Thành công" type="success" closable>
-                    Đã lưu cấu hình hành động
+                    {t('toast.actionUpdated') || 'Đã lưu cấu hình hành động'}
                 </Notification>
             )
         } else {
