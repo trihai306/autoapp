@@ -180,3 +180,31 @@ export async function apiBulkAssignDeviceToFacebookAccounts(ids = [], device_id)
     })
 }
 
+// Join Group Interaction
+export async function runFacebookJoinGroupService(payload) {
+    return ApiService.fetchDataWithAxios({
+        url: '/facebook-accounts/interactions/run',
+        method: 'post',
+        data: {
+            interaction_type: 'join_group',
+            account_id: payload.accountId,
+            groups: payload.groups,
+            config: payload.config
+        },
+    })
+}
+
+// Leave Group Interaction
+export async function runFacebookLeaveGroupService(payload) {
+    return ApiService.fetchDataWithAxios({
+        url: '/facebook-accounts/interactions/run',
+        method: 'post',
+        data: {
+            interaction_type: 'leave_group',
+            account_id: payload.accountId,
+            groups: payload.groups,
+            config: payload.config
+        },
+    })
+}
+

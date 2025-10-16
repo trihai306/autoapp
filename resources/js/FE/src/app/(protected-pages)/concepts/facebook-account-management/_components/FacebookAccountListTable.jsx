@@ -11,12 +11,14 @@ import Button from '@/components/ui/Button'
 import Dialog from '@/components/ui/Dialog'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
-import { TbEye, TbEdit, TbTrash, TbPlayerPlay, TbPlayerStop, TbList, TbSettings, TbDeviceMobile } from 'react-icons/tb'
+import { TbEye, TbEdit, TbTrash, TbPlayerPlay, TbPlayerStop, TbList, TbSettings, TbDeviceMobile, TbUsers, TbLogout } from 'react-icons/tb'
 import FacebookAccountViewModal from './FacebookAccountViewModal'
 import FacebookAccountEditModal from './FacebookAccountEditModal'
 import FacebookAccountTasksModal from './FacebookAccountTasksModal'
 import FacebookAccountScenarioModal from './FacebookAccountScenarioModal'
 import FacebookAccountStatusToggle from './FacebookAccountStatusToggle'
+import FacebookJoinGroupModal from './FacebookJoinGroupModal'
+import FacebookLeaveGroupModal from './FacebookLeaveGroupModal'
 import FacebookAccountStatusDisplayOptimized from './FacebookAccountStatusDisplayOptimized'
 import deleteFacebookAccount from '@/server/actions/facebook-account/deleteFacebookAccount'
 import FacebookAccountBulkActionBar from './FacebookAccountBulkActionBar'
@@ -31,6 +33,8 @@ const FacebookAccountListTable = ({ list = [], total = 0, page = 1, per_page = 1
     const [editModalOpen, setEditModalOpen] = useState(false)
     const [tasksModalOpen, setTasksModalOpen] = useState(false)
     const [scenarioModalOpen, setScenarioModalOpen] = useState(false)
+    const [joinGroupModalOpen, setJoinGroupModalOpen] = useState(false)
+    const [leaveGroupModalOpen, setLeaveGroupModalOpen] = useState(false)
     const [deleteModalOpen, setDeleteModalOpen] = useState(false)
     const [deletingAccount, setDeletingAccount] = useState(null)
     const [isDeleting, setIsDeleting] = useState(false)
@@ -193,6 +197,14 @@ const FacebookAccountListTable = ({ list = [], total = 0, page = 1, per_page = 1
                     setSelectedAccount(account)
                     setScenarioModalOpen(true)
                 }
+                const onJoinGroup = () => {
+                    setSelectedAccount(account)
+                    setJoinGroupModalOpen(true)
+                }
+                const onLeaveGroup = () => {
+                    setSelectedAccount(account)
+                    setLeaveGroupModalOpen(true)
+                }
                 const handleStatusChange = () => {
                     router.refresh()
                 }
@@ -203,23 +215,29 @@ const FacebookAccountListTable = ({ list = [], total = 0, page = 1, per_page = 1
 
                 return (
                     <div className="flex items-center gap-2">
-                        <Button variant="outline" size="sm" className="p-1" onClick={onView}>
+                        <Button variant="outline" size="sm" className="p-1" onClick={onView} title="Xem chi tiết">
                             <TbEye className="w-4 h-4" />
                         </Button>
-                        <Button variant="outline" size="sm" className="p-1" onClick={onEdit}>
+                        <Button variant="outline" size="sm" className="p-1" onClick={onEdit} title="Chỉnh sửa">
                             <TbEdit className="w-4 h-4" />
                         </Button>
-                        <Button variant="outline" size="sm" className="p-1" onClick={onTasks}>
+                        <Button variant="outline" size="sm" className="p-1" onClick={onTasks} title="Xem tasks">
                             <TbList className="w-4 h-4" />
                         </Button>
-                        <Button variant="outline" size="sm" className="p-1" onClick={onScenario}>
+                        <Button variant="outline" size="sm" className="p-1" onClick={onScenario} title="Kịch bản">
                             <TbSettings className="w-4 h-4" />
+                        </Button>
+                        <Button variant="outline" size="sm" className="p-1 text-blue-600 hover:text-blue-700" onClick={onJoinGroup} title="Tham gia nhóm">
+                            <TbUsers className="w-4 h-4" />
+                        </Button>
+                        <Button variant="outline" size="sm" className="p-1 text-orange-600 hover:text-orange-700" onClick={onLeaveGroup} title="Rời nhóm">
+                            <TbLogout className="w-4 h-4" />
                         </Button>
                         <FacebookAccountStatusToggle
                             account={account}
                             onStatusChange={handleStatusChange}
                         />
-                        <Button variant="outline" size="sm" className="p-1" onClick={onDelete}>
+                        <Button variant="outline" size="sm" className="p-1" onClick={onDelete} title="Xóa">
                             <TbTrash className="w-4 h-4" />
                         </Button>
                     </div>
@@ -302,6 +320,22 @@ const FacebookAccountListTable = ({ list = [], total = 0, page = 1, per_page = 1
                 onClose={() => setScenarioModalOpen(false)}
                 account={selectedAccount}
                 onDataChange={() => router.refresh()}
+            />
+
+            {/* Join Group Modal */}
+            <FacebookJoinGroupModal
+                isOpen={joinGroupModalOpen}
+                onClose={() => setJoinGroupModalOpen(false)}
+                accountId={selectedAccount?.id}
+                accountUsername={selectedAccount?.username}
+            />
+
+            {/* Leave Group Modal */}
+            <FacebookLeaveGroupModal
+                isOpen={leaveGroupModalOpen}
+                onClose={() => setLeaveGroupModalOpen(false)}
+                accountId={selectedAccount?.id}
+                accountUsername={selectedAccount?.username}
             />
 
             {/* Delete Confirmation Modal */}

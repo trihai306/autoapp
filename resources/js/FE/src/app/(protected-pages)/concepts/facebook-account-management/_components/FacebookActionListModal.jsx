@@ -40,7 +40,8 @@ const actionCategories = [
             { id: 'specific_post_interaction', name: 'Tương tác bài viết chỉ định', icon: <TbArticle />, available: true, description: 'Thực hiện like/comment/share một bài viết cụ thể' },
             { id: 'interact_reel_specific', name: 'Tương tác reel chỉ định', icon: <TbSparkles />, comingSoon: true, description: 'Xem và tương tác reel cụ thể' },
             { id: 'group_interaction', name: 'Tương tác nhóm', icon: <TbUsersGroup />, available: true, description: 'Tương tác các bài trong nhóm' },
-            { id: 'leave_group', name: 'Rời nhóm', icon: <TbLogout />, comingSoon: true, description: 'Rời khỏi các nhóm được chỉ định' },
+            { id: 'join_group', name: 'Tham gia nhóm', icon: <TbUsers />, available: true, description: 'Tham gia các nhóm Facebook bằng link' },
+            { id: 'leave_group', name: 'Rời nhóm', icon: <TbLogout />, available: true, description: 'Rời khỏi các nhóm được chỉ định' },
         ]
     },
     {

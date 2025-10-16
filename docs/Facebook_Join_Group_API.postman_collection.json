@@ -1,0 +1,488 @@
+{
+  "info": {
+    "name": "Facebook Join Group API",
+    "description": "API endpoints cho Facebook Join Group Workflow Config",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": ["{{base_url}}"],
+              "path": ["login"]
+            },
+            "description": "Login để lấy Bearer token"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Config Endpoints",
+      "item": [
+        {
+          "name": "Get Default Config",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/app/facebook/join-group/config/default",
+              "host": ["{{base_url}}"],
+              "path": ["app", "facebook", "join-group", "config", "default"]
+            },
+            "description": "Lấy config mặc định cho Facebook Join Group Workflow"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has success field\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('success');",
+                  "    pm.expect(jsonData.success).to.be.true;",
+                  "});",
+                  "",
+                  "pm.test(\"Config has all required fields\", function () {",
+                  "    var config = pm.response.json().data;",
+                  "    pm.expect(config).to.have.property('groupLinks');",
+                  "    pm.expect(config).to.have.property('maxGroups');",
+                  "    pm.expect(config).to.have.property('delayBetweenJoinsMs');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Join by Links Config",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"groupLinks\": [\n    \"https://facebook.com/groups/123456789\",\n    \"https://facebook.com/groups/987654321\"\n  ],\n  \"maxGroups\": 10,\n  \"maxDurationMinutes\": 20\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/app/facebook/join-group/config/join-by-links",
+              "host": ["{{base_url}}"],
+              "path": ["app", "facebook", "join-group", "config", "join-by-links"]
+            },
+            "description": "Tạo config để join nhóm qua danh sách links"
+          },
+          "response": []
+        },
+        {
+          "name": "Join by Search Config",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"groupNames\": [\n    \"React Developers Vietnam\",\n    \"Laravel Vietnam Community\"\n  ],\n  \"maxGroups\": 8,\n  \"maxDurationMinutes\": 25\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/app/facebook/join-group/config/join-by-search",
+              "host": ["{{base_url}}"],
+              "path": ["app", "facebook", "join-group", "config", "join-by-search"]
+            },
+            "description": "Tạo config để join nhóm qua tìm kiếm tên nhóm"
+          },
+          "response": []
+        },
+        {
+          "name": "Fast Join Config",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"groupLinks\": [\n    \"https://facebook.com/groups/quickjoin123\"\n  ],\n  \"maxGroups\": 5\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/app/facebook/join-group/config/fast-join",
+              "host": ["{{base_url}}"],
+              "path": ["app", "facebook", "join-group", "config", "fast-join"]
+            },
+            "description": "Tạo config tối ưu cho join nhanh (delay ngắn hơn)"
+          },
+          "response": []
+        },
+        {
+          "name": "Single Join Config (Link)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"groupLinkOrName\": \"https://facebook.com/groups/singlejoin123\",\n  \"isLink\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/app/facebook/join-group/config/single-join",
+              "host": ["{{base_url}}"],
+              "path": ["app", "facebook", "join-group", "config", "single-join"]
+            },
+            "description": "Tạo config để join một nhóm đơn lẻ qua link"
+          },
+          "response": []
+        },
+        {
+          "name": "Single Join Config (Name)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"groupLinkOrName\": \"React Developers Vietnam\",\n  \"isLink\": false\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/app/facebook/join-group/config/single-join",
+              "host": ["{{base_url}}"],
+              "path": ["app", "facebook", "join-group", "config", "single-join"]
+            },
+            "description": "Tạo config để join một nhóm đơn lẻ qua tên"
+          },
+          "response": []
+        },
+        {
+          "name": "Custom Config",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"groupLinks\": [\"https://facebook.com/groups/custom1\"],\n  \"groupNames\": [\"Custom Group 2\"],\n  \"maxGroups\": 15,\n  \"maxDurationMinutes\": 40,\n  \"delayBetweenJoinsMs\": 2000,\n  \"searchDelayMs\": 1000,\n  \"pageLoadDelayMs\": 2500,\n  \"skipJoinedGroups\": false,\n  \"joinPrivateGroups\": true,\n  \"scrollToFindJoinButton\": false,\n  \"maxScrollAttempts\": 8\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/app/facebook/join-group/config/custom",
+              "host": ["{{base_url}}"],
+              "path": ["app", "facebook", "join-group", "config", "custom"]
+            },
+            "description": "Tạo config tùy chỉnh hoàn toàn với tất cả tham số"
+          },
+          "response": []
+        },
+        {
+          "name": "Validate Config (Valid)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"config\": {\n    \"groupLinks\": [\"https://facebook.com/groups/123\"],\n    \"maxGroups\": 10,\n    \"maxDurationMinutes\": 20,\n    \"delayBetweenJoinsMs\": 3000\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/app/facebook/join-group/config/validate",
+              "host": ["{{base_url}}"],
+              "path": ["app", "facebook", "join-group", "config", "validate"]
+            },
+            "description": "Validate config hợp lệ"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Config is valid\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.valid).to.be.true;",
+                  "    pm.expect(jsonData.errors).to.be.an('array').that.is.empty;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validate Config (Invalid - No Links)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"config\": {\n    \"maxGroups\": 10,\n    \"delayBetweenJoinsMs\": 3000\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/app/facebook/join-group/config/validate",
+              "host": ["{{base_url}}"],
+              "path": ["app", "facebook", "join-group", "config", "validate"]
+            },
+            "description": "Validate config không hợp lệ (thiếu groupLinks/groupNames)"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Config is invalid\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.valid).to.be.false;",
+                  "    pm.expect(jsonData.errors).to.be.an('array').that.is.not.empty;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Error Cases",
+      "item": [
+        {
+          "name": "401 - No Token",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/app/facebook/join-group/config/default",
+              "host": ["{{base_url}}"],
+              "path": ["app", "facebook", "join-group", "config", "default"]
+            },
+            "description": "Test without authentication token (expect 401)"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 401\", function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "422 - Invalid URL in groupLinks",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"groupLinks\": [\"not-a-valid-url\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/app/facebook/join-group/config/join-by-links",
+              "host": ["{{base_url}}"],
+              "path": ["app", "facebook", "join-group", "config", "join-by-links"]
+            },
+            "description": "Test với URL không hợp lệ (expect 422)"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 422\", function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "422 - Exceed Max Groups Limit",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"groupLinks\": [\"https://facebook.com/groups/123\"],\n  \"maxGroups\": 200\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/app/facebook/join-group/config/custom",
+              "host": ["{{base_url}}"],
+              "path": ["app", "facebook", "join-group", "config", "custom"]
+            },
+            "description": "Test với maxGroups vượt quá limit (expect 422)"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 422\", function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});",
+                  "",
+                  "pm.test(\"Has validation errors\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('errors');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "YOUR_ACCESS_TOKEN",
+      "type": "string"
+    }
+  ]
+}
+
+
+

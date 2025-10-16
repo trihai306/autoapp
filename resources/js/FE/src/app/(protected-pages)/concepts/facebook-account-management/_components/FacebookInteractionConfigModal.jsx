@@ -14,6 +14,8 @@ import GroupInteractionModal from './action-modals/GroupInteractionModal'
 import GroupPostCreateModal from './action-modals/GroupPostCreateModal'
 import SpecificPostCreateModal from './action-modals/SpecificPostCreateModal'
 import PostToTimelineModal from './action-modals/PostToTimelineModal'
+import JoinGroupActionModal from './action-modals/JoinGroupActionModal'
+import LeaveGroupActionModal from './action-modals/LeaveGroupActionModal'
 import getInteractionScenarios from '@/server/actions/interaction-scenario/getInteractionScenarios'
 import createInteractionScenario from '@/server/actions/interaction-scenario/createInteractionScenario'
 import updateInteractionScenario from '@/server/actions/interaction-scenario/updateInteractionScenario'
@@ -71,6 +73,8 @@ const FacebookInteractionConfigModal = ({ isOpen, onClose, accountId }) => {
     const [showFbGroupPostCreateModal, setShowFbGroupPostCreateModal] = useState(false)
     const [showFbSpecificPostCreateModal, setShowFbSpecificPostCreateModal] = useState(false)
     const [showFbPostToTimelineModal, setShowFbPostToTimelineModal] = useState(false)
+    const [showFbJoinGroupModal, setShowFbJoinGroupModal] = useState(false)
+    const [showFbLeaveGroupModal, setShowFbLeaveGroupModal] = useState(false)
     const [showFollowUserModal, setShowFollowUserModal] = useState(false)
     const [showFollowUserListModal, setShowFollowUserListModal] = useState(false)
     const [showFollowBackModal, setShowFollowBackModal] = useState(false)
@@ -425,6 +429,8 @@ const FacebookInteractionConfigModal = ({ isOpen, onClose, accountId }) => {
         else if (actionData.id === 'group_post_create') setShowFbGroupPostCreateModal(true)
         else if (actionData.id === 'post_to_timeline') setShowFbPostToTimelineModal(true)
         else if (actionData.id === 'specific_post_create') setShowFbSpecificPostCreateModal(true)
+        else if (actionData.id === 'join_group') setShowFbJoinGroupModal(true)
+        else if (actionData.id === 'leave_group') setShowFbLeaveGroupModal(true)
         else setShowActionConfigModal(true)
     }
 
@@ -446,6 +452,8 @@ const FacebookInteractionConfigModal = ({ isOpen, onClose, accountId }) => {
         else if (actionType === 'group_post_create') setShowFbGroupPostCreateModal(true)
         else if (actionType === 'post_to_timeline') setShowFbPostToTimelineModal(true)
         else if (actionType === 'specific_post_create') setShowFbSpecificPostCreateModal(true)
+        else if (actionType === 'join_group') setShowFbJoinGroupModal(true)
+        else if (actionType === 'leave_group') setShowFbLeaveGroupModal(true)
         else setShowActionConfigModal(true)
     }
 
@@ -854,6 +862,10 @@ const FacebookInteractionConfigModal = ({ isOpen, onClose, accountId }) => {
             <GroupPostCreateModal isOpen={showFbGroupPostCreateModal} onClose={()=>{ setShowFbGroupPostCreateModal(false); setConfiguringAction(null) }} action={configuringAction} onSave={handleFbGroupPostCreateSave} />
 
             <PostToTimelineModal isOpen={showFbPostToTimelineModal} onClose={()=>{ setShowFbPostToTimelineModal(false); setConfiguringAction(null) }} action={configuringAction} onSave={handleFbPostToTimelineSave} />
+
+            <JoinGroupActionModal isOpen={showFbJoinGroupModal} onClose={()=>{ setShowFbJoinGroupModal(false); setConfiguringAction(null) }} actionData={configuringAction} onSave={(scriptData) => saveActionConfig(configuringAction, scriptData, setShowFbJoinGroupModal)} />
+
+            <LeaveGroupActionModal isOpen={showFbLeaveGroupModal} onClose={()=>{ setShowFbLeaveGroupModal(false); setConfiguringAction(null) }} actionData={configuringAction} onSave={(scriptData) => saveActionConfig(configuringAction, scriptData, setShowFbLeaveGroupModal)} />
 
             <SpecificPostCreateModal isOpen={showFbSpecificPostCreateModal} onClose={()=>{ setShowFbSpecificPostCreateModal(false); setConfiguringAction(null) }} action={configuringAction} onSave={handleFbSpecificPostCreateSave} />
 
