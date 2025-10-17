@@ -15,6 +15,19 @@ class TaskDispatchedToDevice implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
+     * Handle a job failure.
+     */
+    public function failed(\Throwable $exception): void
+    {
+        Log::error('❌ TaskDispatchedToDevice: Event failed in queue', [
+            'device_id' => $this->deviceKey,
+            'error' => $exception->getMessage(),
+            'trace' => $exception->getTraceAsString(),
+            'timestamp' => now()->format('Y-m-d H:i:s.u')
+        ]);
+    }
+
+    /**
      * Khóa kênh broadcast (device_id - chuỗi)
      */
     public string $deviceKey;
