@@ -7,6 +7,28 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
+// Channel cho user notifications và private channels
+Broadcast::channel('private-user.{id}', function ($user, $id) {
+    \Log::info('Channel authorization debug', [
+        'user_id' => $user->id,
+        'channel_id' => $id,
+        'user_id_type' => gettype($user->id),
+        'channel_id_type' => gettype($id),
+        'comparison' => (int) $user->id === (int) $id,
+        'channel_name' => 'private-user.' . $id
+    ]);
+    return (int) $user->id === (int) $id;
+});
+
+// Channel authorization đơn giản cho testing
+Broadcast::channel('test-channel', function ($user) {
+    \Log::info('Test channel authorization', [
+        'user_id' => $user->id,
+        'channel' => 'test-channel'
+    ]);
+    return true; // Allow all authenticated users
+});
+
   /*
     |--------------------------------------------------------------------------
     | Device Channels

@@ -32,6 +32,11 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
+// Broadcasting authentication for API
+Route::post('/broadcasting/auth', function (Request $request) {
+    return app(\Illuminate\Broadcasting\BroadcastController::class)->authenticate($request);
+})->middleware('auth:sanctum');
+
 // Token-based authentication routes
 Route::post('/generate-login-token', [AuthController::class, 'generateLoginToken']);
 Route::post('/login-with-token', [AuthController::class, 'loginWithToken']);

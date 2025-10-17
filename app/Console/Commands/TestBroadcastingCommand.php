@@ -54,22 +54,23 @@ class TestBroadcastingCommand extends Command
             $queueDriver = config('queue.default');
             $this->info("Queue driver: {$queueDriver}");
 
-            // Test 4: Check if Reverb server is running
-            $this->info("🔍 Test 4: Checking Reverb server...");
-            $reverbHost = config('broadcasting.connections.reverb.options.host');
-            $reverbPort = config('broadcasting.connections.reverb.options.port');
+            // Test 4: Check if Soketi server is running
+            $this->info("🔍 Test 4: Checking Soketi server...");
+            $pusherHost = config('broadcasting.connections.pusher.options.host');
+            $pusherPort = config('broadcasting.connections.pusher.options.port');
 
-            if ($reverbHost && $reverbPort) {
-                $connection = @fsockopen($reverbHost, $reverbPort, $errno, $errstr, 5);
+            if ($pusherHost && $pusherPort) {
+                $connection = @fsockopen($pusherHost, $pusherPort, $errno, $errstr, 5);
                 if ($connection) {
-                    $this->info("✅ Reverb server is reachable at {$reverbHost}:{$reverbPort}");
+                    $this->info("✅ Soketi server is reachable at {$pusherHost}:{$pusherPort}");
                     fclose($connection);
                 } else {
-                    $this->error("❌ Cannot connect to Reverb server at {$reverbHost}:{$reverbPort}");
+                    $this->error("❌ Cannot connect to Soketi server at {$pusherHost}:{$pusherPort}");
                     $this->error("Error: {$errstr} ({$errno})");
+                    $this->warn("💡 Make sure to run: ./start-soketi.sh");
                 }
             } else {
-                $this->warn("⚠️ Reverb configuration incomplete");
+                $this->warn("⚠️ Soketi configuration incomplete");
             }
 
             $this->info("🎉 Broadcasting test completed!");
