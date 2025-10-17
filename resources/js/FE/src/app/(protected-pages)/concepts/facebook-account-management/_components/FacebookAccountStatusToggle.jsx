@@ -24,7 +24,8 @@ const FacebookAccountStatusToggle = ({ account, onStatusChange }) => {
     const openDevicePickerIfNeeded = async () => {
         const hasActiveTask = status?.current_activity && status.current_activity.task_type
 
-        if (status?.status === 'idle' || (status?.status === 'pending' && !hasActiveTask)) {
+        // Chỉ mở device picker khi không có current_activity
+        if (!hasActiveTask) {
             // Chọn thiết bị trước khi chạy
             if (!selectedDeviceId) {
                 try {
@@ -76,17 +77,17 @@ const FacebookAccountStatusToggle = ({ account, onStatusChange }) => {
             let result
             const hasActiveTask = status?.current_activity && status.current_activity.task_type
 
-            if (status?.status === 'idle' || (status?.status === 'pending' && !hasActiveTask)) {
-                // Start scenario with optional device
+            if (hasActiveTask) {
+                // Stop tasks nếu có current_activity
+                result = await stopFacebookAccountTasks(account.id)
+            } else {
+                // Start scenario với optional device nếu không có current_activity
                 const needPicker = await openDevicePickerIfNeeded()
                 if (needPicker) {
                     setActionLoading(false)
                     return
                 }
                 result = await runFacebookAccountScenario(account.id, selectedDeviceId ? { device_id: Number(selectedDeviceId) } : {})
-            } else {
-                // Stop tasks (khi có task đang chạy hoặc status là running)
-                result = await stopFacebookAccountTasks(account.id)
             }
 
             if (result.success) {
@@ -146,34 +147,23 @@ const FacebookAccountStatusToggle = ({ account, onStatusChange }) => {
     const getButtonConfig = () => {
         if (!status) return { icon: <TbRefresh className="w-4 h-4" />, variant: 'outline' }
 
-        // Nếu có current_activity (đang có task chạy) thì hiển thị nút Stop
-        const hasActiveTask = status.current_activity && status.current_activity.task_type
+        // Kiểm tra xem có đang làm gì không (current_activity)
+        const hasCurrentActivity = status.current_activity && status.current_activity.task_type
 
-        switch (status.status) {
-            case 'idle':
-                return {
-                    icon: <TbPlayerPlay className="w-4 h-4" />,
-                    variant: 'solid',
-                    className: 'bg-green-600 hover:bg-green-700 text-white'
-                }
-            case 'pending':
-            case 'running':
-                // Nếu có task đang chạy hoặc đang pending thì hiển thị nút Stop
-                if (hasActiveTask || status.status === 'running') {
-                    return {
-                        icon: <TbPlayerStop className="w-4 h-4" />,
-                        variant: 'solid',
-                        className: 'bg-red-600 hover:bg-red-700 text-white'
-                    }
-                } else {
-                    return {
-                        icon: <TbPlayerPlay className="w-4 h-4" />,
-                        variant: 'solid',
-                        className: 'bg-green-600 hover:bg-green-700 text-white'
-                    }
-                }
-            default:
-                return { icon: <TbRefresh className="w-4 h-4" />, variant: 'outline' }
+        // Nếu có current_activity (đang có task chạy) thì hiển thị nút Stop
+        if (hasCurrentActivity) {
+            return {
+                icon: <TbPlayerStop className="w-4 h-4" />,
+                variant: 'solid',
+                className: 'bg-red-600 hover:bg-red-700 text-white'
+            }
+        }
+
+        // Nếu không có current_activity thì hiển thị nút Play
+        return {
+            icon: <TbPlayerPlay className="w-4 h-4" />,
+            variant: 'solid',
+            className: 'bg-green-600 hover:bg-green-700 text-white'
         }
     }
 

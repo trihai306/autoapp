@@ -56,11 +56,15 @@ return [
                 'host' => env('PUSHER_HOST', '127.0.0.1'),
                 'port' => env('PUSHER_PORT', 6001),
                 'scheme' => env('PUSHER_SCHEME', 'http'),
-                'encrypted' => false,
+                // Với soketi: dùng useTLS/encrypted theo scheme
+                'encrypted' => env('PUSHER_SCHEME', 'http') === 'https',
                 'useTLS' => env('PUSHER_SCHEME', 'http') === 'https',
             ],
             'client_options' => [
+                // Cho phép điều chỉnh verify SSL khi dùng self-signed cert trên VPS
                 // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
+                'verify' => env('PUSHER_VERIFY_SSL', true),
+                'timeout' => env('PUSHER_TIMEOUT', 5),
             ],
         ],
 

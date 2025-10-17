@@ -125,14 +125,15 @@ class FacebookAccountService
                 if (($data['format'] ?? 'new') === 'new') {
                     $uid = trim($parts[0]);
                     $password = trim($parts[1]);
-                    $email = isset($parts[3]) ? trim($parts[3]) : ($uid.'@facebook.com');
+                    // Email nếu không có thì để null (không tự sinh)
+                    $email = isset($parts[3]) ? trim($parts[3]) : null;
                     if (strlen($uid) < 3 || strlen($password) < 6) {
                         throw new \InvalidArgumentException('UID hoặc Password không hợp lệ');
                     }
                     $payload = [
                         'user_id' => $data['user_id'] ?? null,
                         'username' => $uid,
-                        'email' => $email,
+                        'email' => $email !== '' ? $email : null,
                         'password' => $password,
                         'status' => ($data['enableRunningStatus'] ?? true) ? 'active' : 'inactive',
                         'device_id' => $data['deviceId'] ?? null,
@@ -148,7 +149,8 @@ class FacebookAccountService
                     $payload = [
                         'user_id' => $data['user_id'] ?? null,
                         'username' => trim($parts[0]),
-                        'email' => trim($parts[1]),
+                        // Email rỗng thì để null
+                        'email' => (trim($parts[1]) !== '') ? trim($parts[1]) : null,
                         'password' => trim($parts[2]),
                         'phone_number' => isset($parts[3]) ? trim($parts[3]) : null,
                         'status' => ($data['enableRunningStatus'] ?? true) ? 'active' : 'inactive',

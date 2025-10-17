@@ -1,20 +1,34 @@
 {
-  "debug": true,
-  "port": 6001,
-  "appManager.array.apps": [
-    {
-      "id": "app-id",
-      "key": "app-key",
-      "secret": "app-secret",
-      "maxConnections": 100000,
-      "enableClientMessages": true,
-      "enabled": true
+    "debug": true,
+    "server": {
+      "port": 6001,
+      "host": "0.0.0.0"
+    },
+    "appManager": {
+      "driver": "array",
+      "apps": [
+        {
+          "id": "app-id",
+          "key": "app-key",
+          "secret": "app-secret",
+          "maxConnections": 100000,
+          "enableClientMessages": true,
+          "enabled": true
+        }
+      ]
+    },
+    "adapter": {
+      "driver": "redis",
+      "redis": {
+        "host": "127.0.0.1",
+        "port": 6379
+      }
+    },
+    "queue": {
+      "driver": "redis",
+      "redis": {
+        "host": "127.0.0.1",
+        "port": 6379
+      }
     }
-  ],
-  "adapter.driver": "redis",
-  "adapter.redis.host": "127.0.0.1",
-  "adapter.redis.port": 6379,
-  "queue.driver": "redis",
-  "queue.redis.host": "127.0.0.1",
-  "queue.redis.port": 6379
-}
+  }
