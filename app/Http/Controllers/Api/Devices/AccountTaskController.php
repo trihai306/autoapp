@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Devices;
 
 use App\Events\TiktokAccountTableReload;
+use App\Events\FacebookAccountTableReload;
 use App\Http\Controllers\Controller;
 use App\Models\AccountTask;
 use App\Models\Device;
@@ -22,7 +23,7 @@ class AccountTaskController extends Controller
         $tasks = AccountTask::where('device_id', $device->id)
             ->pending()
             ->scheduled()
-            ->with(['tiktokAccount.proxy'])
+            ->with(['tiktokAccount.proxy', 'facebookAccount.proxy'])
             ->orderBy('priority', 'desc')
             ->orderBy('id')
             ->get();
@@ -62,14 +63,26 @@ class AccountTaskController extends Controller
 
         // Chỉ broadcast khi task chuyển sang trạng thái kết thúc (completed/failed)
         if ($originalStatus !== 'completed' && $originalStatus !== 'failed' && in_array($task->status, ['completed', 'failed'])) {
-            $task->load('tiktokAccount.user'); // Eager load the user through the account
+            $task->load(['tiktokAccount.user', 'facebookAccount.user']); // Eager load the user through the account
+
+            // Broadcast cho TikTok account
             if ($task->tiktokAccount && $task->tiktokAccount->user) {
                 $userId = $task->tiktokAccount->user->id;
-                $message = "Tác vụ cho tài khoản {$task->tiktokAccount->username} đã {$task->status}.";
+                $message = "Tác vụ cho tài khoản TikTok {$task->tiktokAccount->username} đã {$task->status}.";
                 $type = $task->status === 'completed' ? 'success' : 'error';
 
                 // Gửi sự kiện để làm mới bảng tài khoản TikTok
                 event(new TiktokAccountTableReload($message, $userId));
+            }
+
+            // Broadcast cho Facebook account
+            if ($task->facebookAccount && $task->facebookAccount->user) {
+                $userId = $task->facebookAccount->user->id;
+                $message = "Tác vụ cho tài khoản Facebook {$task->facebookAccount->username} đã {$task->status}.";
+                $type = $task->status === 'completed' ? 'success' : 'error';
+
+                // Gửi sự kiện để làm mới bảng tài khoản Facebook
+                event(new FacebookAccountTableReload($message, $userId));
             }
         }
 
@@ -78,4 +91,4 @@ class AccountTaskController extends Controller
             'task'    => $task->fresh(),
         ]);
     }
-} 
+}
