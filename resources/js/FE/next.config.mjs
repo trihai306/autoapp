@@ -15,7 +15,6 @@ let nextConfig = {
   outputFileTracingRoot: __dirname,
 
   // Giảm tải build tối đa cho máy RAM thấp
-  swcMinify: false,                     // tắt minify để giảm tiêu thụ RAM
   productionBrowserSourceMaps: false,   // tắt sourcemaps production
 
   // Bỏ kiểm tra type & eslint trong bước build (giảm RAM và thời gian)
