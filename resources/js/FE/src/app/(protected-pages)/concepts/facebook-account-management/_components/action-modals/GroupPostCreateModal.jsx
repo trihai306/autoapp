@@ -50,6 +50,9 @@ const GroupPostCreateModal = ({ isOpen, onClose, action, onSave }) => {
     const handleSave = () => {
         const type = inferType()
         const config = {
+            type: 'group_post_create',
+            name: form.actionName || 'Đăng bài lên nhóm',
+            description: 'Đăng bài viết lên các nhóm Facebook',
             FacebookGroupPostWorkflow: {
                 Config: {
                     groupQueries: (form.groupQueries || []).map(s=>s.trim()).filter(Boolean),

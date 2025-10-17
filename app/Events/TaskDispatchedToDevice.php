@@ -8,6 +8,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class TaskDispatchedToDevice implements ShouldBroadcast
 {
@@ -24,6 +25,13 @@ class TaskDispatchedToDevice implements ShouldBroadcast
     public function __construct(string $deviceId)
     {
         $this->deviceKey = $deviceId;
+
+        // Log khi tạo event
+        Log::info('🚀 TaskDispatchedToDevice: Event created', [
+            'device_id' => $deviceId,
+            'device_key' => $this->deviceKey,
+            'timestamp' => now()->format('Y-m-d H:i:s.u')
+        ]);
     }
 
     /**
@@ -39,7 +47,16 @@ class TaskDispatchedToDevice implements ShouldBroadcast
      */
     public function broadcastOn(): Channel
     {
-        return new PrivateChannel('device.' . $this->deviceKey);
+        $channelName = 'device.' . $this->deviceKey;
+
+        // Log channel information
+        Log::info('📡 TaskDispatchedToDevice: Broadcasting to channel', [
+            'device_id' => $this->deviceKey,
+            'channel_name' => $channelName,
+            'timestamp' => now()->format('Y-m-d H:i:s.u')
+        ]);
+
+        return new PrivateChannel($channelName);
     }
 
     /**
@@ -47,10 +64,19 @@ class TaskDispatchedToDevice implements ShouldBroadcast
      */
     public function broadcastWith(): array
     {
-        return [
+        $payload = [
             'message' => 'New task has been dispatched to device',
             'device_id' => $this->deviceKey,
             'timestamp' => now()->format('Y-m-d H:i:s'),
         ];
+
+        // Log payload information
+        Log::info('📦 TaskDispatchedToDevice: Broadcasting payload', [
+            'device_id' => $this->deviceKey,
+            'payload' => $payload,
+            'timestamp' => now()->format('Y-m-d H:i:s.u')
+        ]);
+
+        return $payload;
     }
-} 
+}

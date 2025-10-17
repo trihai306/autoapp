@@ -93,6 +93,9 @@ const GroupInteractionModal = ({ isOpen, onClose, action, onSave }) => {
         }
 
         const config = {
+            type: 'group_interaction',
+            name: form.actionName || 'Tương tác nhóm',
+            description: 'Tương tác với các bài viết trong nhóm Facebook',
             FacebookGroupInteractionWorkflow: {
                 Config: {
                     groupUrls: (form.groupUrls || []).map(s=>s.trim()).filter(Boolean),

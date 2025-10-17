@@ -103,6 +103,9 @@ const PostToTimelineModal = ({ isOpen, onClose, action, onSave }) => {
     const handleSave = () => {
         const type = inferType()
         const config = {
+            type: 'post_to_timeline',
+            name: form.actionName || 'Đăng bài lên tường',
+            description: 'Đăng bài viết lên tường cá nhân Facebook',
             FacebookPostWorkflow: {
                 Config: {
                     type,

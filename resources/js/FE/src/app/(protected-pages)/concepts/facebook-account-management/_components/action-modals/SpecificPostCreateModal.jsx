@@ -16,6 +16,7 @@ const SpecificPostCreateModal = ({ isOpen, onClose, action, onSave }) => {
         const config = {
             type: 'specific_post_create',
             name: 'Đăng bài chỉ định',
+            description: 'Đăng bài viết lên trang cá nhân, fanpage hoặc nhóm Facebook cụ thể',
             parameters: form,
         }
         onSave?.(action, config)

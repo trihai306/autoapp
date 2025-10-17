@@ -28,9 +28,6 @@ const SpecificPostInteractionModal = ({ isOpen, onClose, action, onSave }) => {
         doLike: true,
         doComment: true,
         doShare: false,
-        likeRatio: 0.6,
-        commentRatio: 0.3,
-        shareRatio: 0.1,
         actionName: 'Tương tác bài viết chỉ định',
     })
     const [saving, setSaving] = useState(false)
@@ -95,6 +92,9 @@ const SpecificPostInteractionModal = ({ isOpen, onClose, action, onSave }) => {
             .filter(Boolean)
 
         const config = {
+            type: 'specific_post_interaction',
+            name: form.actionName || 'Tương tác bài viết chỉ định',
+            description: 'Tương tác với bài viết Facebook cụ thể',
             FacebookSpecificPostWorkflow: {
                 Config: {
                     postQuery: form.postQuery || '',
@@ -115,7 +115,7 @@ const SpecificPostInteractionModal = ({ isOpen, onClose, action, onSave }) => {
             <div className="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
                 <div>
                     <h5 className="font-bold text-lg">Tương tác bài viết chỉ định (Facebook)</h5>
-                    <p className="text-sm text-gray-500 mt-1">Điền link bài viết hoặc truy vấn hợp lệ. Chọn các hành động cần thực hiện.</p>
+                    <p className="text-sm text-gray-500 mt-1">Điền link bài viết và chọn các hành động cần thực hiện (Like, Comment, Share).</p>
                 </div>
 
                 {/* Cấu hình cơ bản */}
@@ -131,25 +131,29 @@ const SpecificPostInteractionModal = ({ isOpen, onClose, action, onSave }) => {
 
                 {/* Tùy chọn hành động */}
                 <div className="rounded-xl border border-gray-200 dark:border-gray-700 p-4 space-y-3">
-                    <div className="text-sm font-semibold">Tùy chọn hành động</div>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <Checkbox checked={form.doLike} onChange={(c)=>setForm(p=>({ ...p, doLike: c }))}>Like</Checkbox>
-                        <Checkbox checked={form.doComment} onChange={(c)=>setForm(p=>({ ...p, doComment: c }))}>Comment</Checkbox>
-                        <Checkbox checked={form.doShare} onChange={(c)=>setForm(p=>({ ...p, doShare: c }))}>Share</Checkbox>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Tỉ lệ Like</label>
-                            <Input type="number" step="0.1" value={form.likeRatio} onChange={(e)=>setForm(p=>({ ...p, likeRatio: Number(e.target.value)||0 }))} />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Tỉ lệ Comment</label>
-                            <Input type="number" step="0.1" value={form.commentRatio} onChange={(e)=>setForm(p=>({ ...p, commentRatio: Number(e.target.value)||0 }))} />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Tỉ lệ Share</label>
-                            <Input type="number" step="0.1" value={form.shareRatio} onChange={(e)=>setForm(p=>({ ...p, shareRatio: Number(e.target.value)||0 }))} />
-                        </div>
+                    <div className="text-sm font-semibold">Chọn hành động cần thực hiện</div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <label className="flex items-center space-x-3 p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
+                            <Checkbox checked={form.doLike} onChange={(c)=>setForm(p=>({ ...p, doLike: c }))} />
+                            <div>
+                                <div className="font-medium text-gray-900 dark:text-gray-100">Like</div>
+                                <div className="text-sm text-gray-500 dark:text-gray-400">Thích bài viết</div>
+                            </div>
+                        </label>
+                        <label className="flex items-center space-x-3 p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
+                            <Checkbox checked={form.doComment} onChange={(c)=>setForm(p=>({ ...p, doComment: c }))} />
+                            <div>
+                                <div className="font-medium text-gray-900 dark:text-gray-100">Comment</div>
+                                <div className="text-sm text-gray-500 dark:text-gray-400">Bình luận bài viết</div>
+                            </div>
+                        </label>
+                        <label className="flex items-center space-x-3 p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
+                            <Checkbox checked={form.doShare} onChange={(c)=>setForm(p=>({ ...p, doShare: c }))} />
+                            <div>
+                                <div className="font-medium text-gray-900 dark:text-gray-100">Share</div>
+                                <div className="text-sm text-gray-500 dark:text-gray-400">Chia sẻ bài viết</div>
+                            </div>
+                        </label>
                     </div>
                 </div>
 

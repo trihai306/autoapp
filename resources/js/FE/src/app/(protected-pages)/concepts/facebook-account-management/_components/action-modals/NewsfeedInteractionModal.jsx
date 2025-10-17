@@ -92,6 +92,9 @@ const NewsfeedInteractionModal = ({ isOpen, onClose, action, onSave }) => {
         }
 
         const config = {
+            type: 'newsfeed_interaction',
+            name: form.actionName || 'Tương tác Newsfeed',
+            description: 'Tương tác với các bài viết trên Newsfeed Facebook',
             FacebookNewsFeedWorkflow: {
                 Config: {
                     postsToProcess: Number(form.maxPosts) || 0,
