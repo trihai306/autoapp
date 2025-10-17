@@ -4,6 +4,7 @@
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 import axios from 'axios';
+import appConfig from '@/configs/app.config';
 
 // Bắt buộc cho Echo khi dùng Pusher/Reverb
 if (typeof window !== 'undefined') {

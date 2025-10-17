@@ -5,6 +5,7 @@ import authRoute from './authRoute'
 import authDemoRoute from './authDemoRoute'
 import guideRoute from './guideRoute'
 import proxyManagementRoute from './proxyManagementRoute'
+import otherRoute from './otherRoute'
 
 export const protectedRoutes = {
     ...dashboardsRoute,
@@ -17,16 +18,13 @@ export const protectedRoutes = {
 export const publicRoutes = {
     ...authRoute,
     ...authDemoRoute,
+    ...otherRoute,
     '/': {
         key: 'home',
         authority: [],
     },
     '/landing': {
         key: 'landing',
-        authority: [],
-    },
-    '/access-denied': {
-        key: 'accessDenied',
         authority: [],
     },
 }
