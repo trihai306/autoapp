@@ -21,7 +21,7 @@ class AccountTaskService
 
     public function getAll(Request $request): LengthAwarePaginator
     {
-        \Log::info('🔍 AccountTaskService::getAll - Request params:', $request->all());
+        Log::info('🔍 AccountTaskService::getAll - Request params:', $request->all());
 
         $query = $this->accountTaskRepository->getModel()->query()
             ->with(['tiktokAccount' => function($q) {
@@ -32,20 +32,20 @@ class AccountTaskService
         // Áp dụng filter trực tiếp thay vì dùng BaseQuery.handle()
         if ($request->has('status') && !empty($request->input('status'))) {
             $query->where('status', $request->input('status'));
-            \Log::info('🔍 AccountTaskService::getAll - Applied status filter:', ['status' => $request->input('status')]);
+            Log::info('🔍 AccountTaskService::getAll - Applied status filter:', ['status' => $request->input('status')]);
         }
 
         if ($request->has('user_id') && !empty($request->input('user_id'))) {
             $query->whereHas('tiktokAccount', function($q) use ($request) {
                 $q->where('user_id', $request->input('user_id'));
             });
-            \Log::info('🔍 AccountTaskService::getAll - Applied user_id filter:', ['user_id' => $request->input('user_id')]);
+            Log::info('🔍 AccountTaskService::getAll - Applied user_id filter:', ['user_id' => $request->input('user_id')]);
         }
 
         $perPage = $request->input('per_page', 20);
         $result = $query->paginate($perPage);
 
-        \Log::info('📊 AccountTaskService::getAll - Query result:', [
+        Log::info('📊 AccountTaskService::getAll - Query result:', [
             'total' => $result->total(),
             'per_page' => $perPage,
             'current_page' => $result->currentPage(),
@@ -58,7 +58,7 @@ class AccountTaskService
         // Log chi tiết task đầu tiên nếu có
         if ($result->first()) {
             $firstTask = $result->first();
-            \Log::info('🔍 AccountTaskService::getAll - First task details:', [
+            Log::info('🔍 AccountTaskService::getAll - First task details:', [
                 'task_id' => $firstTask->id,
                 'task_type' => $firstTask->task_type,
                 'status' => $firstTask->status,
@@ -114,6 +114,11 @@ class AccountTaskService
                 'success' => false,
                 'message' => 'Kịch bản không có kịch bản.',
             ];
+        }
+
+        // Fallback: nếu không truyền deviceId, lấy từ account
+        if (!$deviceId) {
+            $deviceId = $account->device_id;
         }
 
         // Không tạo thêm task nếu thiết bị đang có task chạy

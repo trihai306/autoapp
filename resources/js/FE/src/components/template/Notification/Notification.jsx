@@ -22,6 +22,7 @@ import { useRouter } from 'next/navigation'
 import { HiOutlineMailOpen } from 'react-icons/hi'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import ClientOnly from '@/components/shared/ClientOnly'
 import { useNotifications } from '@/utils/hooks/useRealtime'
 import { toast } from 'react-hot-toast'
 
@@ -52,10 +53,10 @@ const _Notification = ({ className }) => {
     const router = useRouter()
 
     // Real-time notifications hook
-    const { 
-        listenToGeneralNotifications, 
-        listenToUserNotifications, 
-        stopListeningToNotifications 
+    const {
+        listenToGeneralNotifications,
+        listenToUserNotifications,
+        stopListeningToNotifications
     } = useNotifications(session?.user?.id)
 
     // Fetch only when authenticated
@@ -93,7 +94,7 @@ const _Notification = ({ className }) => {
             // Listen to general notifications (public channel)
             const generalListener = await listenToGeneralNotifications((notification) => {
                 // console.log('📢 General notification received in header:', notification)
-                
+
                 // Add to real-time notifications list
                 const newNotification = {
                     id: `realtime-${notification.id}`,
@@ -106,9 +107,9 @@ const _Notification = ({ className }) => {
                     read_at: null,
                     isRealtime: true,
                 }
-                
+
                 setRealtimeNotifications(prev => [newNotification, ...prev.slice(0, 9)])
-                
+
                 // Show toast notification
                 toast.success(notification.message, {
                     duration: 4000,
@@ -120,7 +121,7 @@ const _Notification = ({ className }) => {
             const userListener = session?.user?.id
                 ? await listenToUserNotifications((notification) => {
                 // console.log('👤 User notification received in header:', notification)
-                
+
                 // Add to real-time notifications list
                 const newNotification = {
                     id: `realtime-user-${notification.id}`,
@@ -133,9 +134,9 @@ const _Notification = ({ className }) => {
                     read_at: null,
                     isRealtime: true,
                 }
-                
+
                 setRealtimeNotifications(prev => [newNotification, ...prev.slice(0, 9)])
-                
+
                 // Show toast notification with different style for user-specific
                 toast.success(notification.message, {
                     duration: 5000,
@@ -174,14 +175,14 @@ const _Notification = ({ className }) => {
 
     const onMarkAsRead = async (id) => {
         if (!session) return
-        
+
         // Check if it's a real-time notification
         if (id.startsWith('realtime-')) {
             // Remove from real-time notifications
             setRealtimeNotifications(prev => prev.filter(notif => notif.id !== id))
             return
         }
-        
+
         try {
             await apiMarkNotificationAsRead(id, session.accessToken)
             mutateNotifications()
@@ -255,7 +256,7 @@ const _Notification = ({ className }) => {
                                             {item.data.title}
                                         </div>
                                     )}
-                                    <div 
+                                    <div
                                         className={item.isRealtime ? 'text-sm' : ''}
                                         dangerouslySetInnerHTML={{ __html: item.data.message }}
                                     />
@@ -312,6 +313,18 @@ const _Notification = ({ className }) => {
     )
 }
 
-const Notification = withHeaderItem(_Notification)
+const Notification = withHeaderItem(({ className }) => (
+    <ClientOnly
+        fallback={
+            <div className={className}>
+                <div className="relative">
+                    <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse" />
+                </div>
+            </div>
+        }
+    >
+        <_Notification className={className} />
+    </ClientOnly>
+))
 
 export default Notification

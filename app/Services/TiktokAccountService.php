@@ -28,7 +28,7 @@ class TiktokAccountService
     public function getAll(Request $request)
     {
         $query = $this->repository->getModel()->newQuery();
-        
+
         // Chỉ đếm pending tasks
         $query->withCount([
             'pendingTasks as pending_tasks_count'
@@ -50,14 +50,14 @@ class TiktokAccountService
         $this->applyTaskFilters($query, $request);
 
         $result = (new BaseQuery($query, $request))->paginate();
-        
+
         // Thêm thông tin phân tích task cho mỗi account
         if ($result->items()) {
             $result->getCollection()->transform(function ($account) {
                 return $this->addTaskAnalysis($account);
             });
         }
-        
+
         return $result;
     }
 
@@ -113,28 +113,28 @@ class TiktokAccountService
         // Filter theo proxy_status
         if ($request->has('filter.proxy_status')) {
             $proxyStatus = $request->input('filter.proxy_status');
-            
+
             switch ($proxyStatus) {
                 case 'has_proxy':
                     $query->whereHas('proxy');
                     break;
-                    
+
                 case 'no_proxy':
                     $query->whereDoesntHave('proxy');
                     break;
-                    
+
                 case 'active_proxy':
                     $query->whereHas('proxy', function($q) {
                         $q->where('status', 'active');
                     });
                     break;
-                    
+
                 case 'error_proxy':
                     $query->whereHas('proxy', function($q) {
                         $q->where('status', 'error');
                     });
                     break;
-                    
+
                 case 'inactive_proxy':
                     $query->whereHas('proxy', function($q) {
                         $q->where('status', 'inactive');
@@ -146,12 +146,12 @@ class TiktokAccountService
         // Filter theo task_status (chỉ pending hoặc no_pending)
         if ($request->has('filter.task_status')) {
             $taskStatus = $request->input('filter.task_status');
-            
+
             switch ($taskStatus) {
                 case 'pending':
                     $query->whereHas('pendingTasks');
                     break;
-                    
+
                 case 'no_pending':
                     $query->whereDoesntHave('pendingTasks');
                     break;
@@ -182,8 +182,107 @@ class TiktokAccountService
         // Filter data to only include fields that exist in the model's fillable array
         $fillableFields = $tiktokAccount->getFillable();
         $filteredData = array_intersect_key($data, array_flip($fillableFields));
-        
+
         return $this->repository->update($tiktokAccount, $filteredData);
+    }
+
+    /**
+     * Update proxy for a TikTok account
+     *
+     * @param TiktokAccount $tiktokAccount
+     * @param int|null $proxyId
+     * @return TiktokAccount
+     */
+    public function updateProxy(TiktokAccount $tiktokAccount, ?int $proxyId = null): TiktokAccount
+    {
+        return $this->updateTiktokAccount($tiktokAccount, [
+            'proxy_id' => $proxyId,
+        ]);
+    }
+
+    /**
+     * Update connection type for a TikTok account
+     *
+     * @param TiktokAccount $tiktokAccount
+     * @param string $connectionType
+     * @return TiktokAccount
+     */
+    public function updateConnectionType(TiktokAccount $tiktokAccount, string $connectionType): TiktokAccount
+    {
+        return $this->updateTiktokAccount($tiktokAccount, [
+            'connection_type' => $connectionType,
+        ]);
+    }
+
+    /**
+     * Bulk update connection type for multiple TikTok accounts
+     *
+     * @param User $user
+     * @param array $accountIds
+     * @param string $connectionType
+     * @return array
+     */
+    public function bulkUpdateConnectionType($user, array $accountIds, string $connectionType): array
+    {
+        $updatedCount = 0;
+        $failedCount = 0;
+
+        foreach ($accountIds as $accountId) {
+            try {
+                $account = TiktokAccount::find($accountId);
+                if (!$account) {
+                    $failedCount++;
+                    continue;
+                }
+
+                // Check authorization
+                if (!$user->hasRole('admin') && $account->user_id !== $user->id) {
+                    $failedCount++;
+                    continue;
+                }
+
+                $this->updateConnectionType($account, $connectionType);
+                $updatedCount++;
+            } catch (\Exception $e) {
+                $failedCount++;
+            }
+        }
+
+        return [
+            'updated_count' => $updatedCount,
+            'failed_count' => $failedCount,
+        ];
+    }
+
+    /**
+     * Get connection type statistics for TikTok accounts
+     *
+     * @param User $user
+     * @return array
+     */
+    public function getConnectionTypeStatistics($user): array
+    {
+        $query = TiktokAccount::query();
+
+        // If not admin, filter by user's accounts
+        if (!$user->hasRole('admin')) {
+            $query->where('user_id', $user->id);
+        }
+
+        $stats = $query->selectRaw('
+            connection_type,
+            COUNT(*) as count
+        ')
+        ->groupBy('connection_type')
+        ->get()
+        ->pluck('count', 'connection_type')
+        ->toArray();
+
+        return [
+            'wifi' => $stats['wifi'] ?? 0,
+            '4g' => $stats['4g'] ?? 0,
+            'total' => array_sum($stats),
+        ];
     }
 
     /**
@@ -250,7 +349,7 @@ class TiktokAccountService
         }
 
         $query->orderByRaw("
-            CASE 
+            CASE
                 WHEN completed_at IS NOT NULL THEN completed_at
                 WHEN started_at IS NOT NULL THEN started_at
                 WHEN scheduled_at IS NOT NULL THEN scheduled_at
@@ -591,7 +690,7 @@ class TiktokAccountService
 
             try {
                 $parsedData = $this->parseAccountLine($line, $format, $index + 1);
-                
+
                 if (!$parsedData['success']) {
                     $errors[] = $parsedData['error'];
                     $failedCount++;
@@ -672,8 +771,8 @@ class TiktokAccountService
 
                 $createdAccount = $this->repository->create($accountData);
                 $importedCount++;
-                
-                
+
+
                 $importedAccounts[] = [
                     'id' => $createdAccount->id,
                     'username' => $createdAccount->username,
@@ -686,7 +785,7 @@ class TiktokAccountService
 
             } catch (\Exception $e) {
                 $error = $e->getMessage();
-                
+
                 $errors[] = "Dòng " . ($index + 1) . ": " . $error;
                 $failedCount++;
                 $failedAccounts[] = [
@@ -874,7 +973,7 @@ class TiktokAccountService
     public function getStatistics($user)
     {
         $query = TiktokAccount::query();
-        
+
         // Nếu không phải admin, chỉ lấy tài khoản của user hiện tại
         if (!$user->hasRole('admin')) {
             $query->where('user_id', $user->id);
@@ -894,7 +993,7 @@ class TiktokAccountService
         $lastMonth = now()->subMonth();
         $lastMonthQuery = TiktokAccount::query()
             ->where('created_at', '<=', $lastMonth->endOfMonth());
-            
+
         if (!$user->hasRole('admin')) {
             $lastMonthQuery->where('user_id', $user->id);
         }
@@ -916,7 +1015,7 @@ class TiktokAccountService
             'inactiveAccounts' => $inactiveAccounts,
             'suspendedAccounts' => $suspendedAccounts,
             'runningTasks' => $runningTasks,
-            
+
             // Change data
             'totalAccountsChange' => $totalChange['percentage'],
             'totalAccountsChangeType' => $totalChange['type'],
@@ -1029,7 +1128,7 @@ class TiktokAccountService
         // Thông tin chi tiết về pending tasks
         $pendingTasksInfo = [];
         $linkedDevices = [];
-        
+
         foreach ($pendingTasks as $task) {
             $pendingTasksInfo[] = [
                 'id' => $task->id,
@@ -1083,15 +1182,15 @@ class TiktokAccountService
         if ($account->running_tasks_count > 0) {
             return 'running';
         }
-        
+
         if ($account->pending_tasks_count > 0) {
             return 'pending';
         }
-        
+
         if ($account->total_tasks_count == 0) {
             return 'no_tasks';
         }
-        
+
         // Kiểm tra task gần nhất
         $latestTask = $account->accountTasks->first();
         if ($latestTask) {
@@ -1106,7 +1205,7 @@ class TiktokAccountService
                     return 'idle';
             }
         }
-        
+
         return 'idle';
     }
 
@@ -1119,7 +1218,7 @@ class TiktokAccountService
     private function getActionDescription($task)
     {
         $scenarioName = $task->interactionScenario->name ?? 'Kịch bản';
-        
+
         switch ($task->status) {
             case 'pending':
                 return "Chờ thực hiện {$scenarioName}";
@@ -1193,27 +1292,27 @@ class TiktokAccountService
     public function getTaskAnalysis($user)
     {
         $accountQuery = TiktokAccount::query();
-        
+
         // Nếu không phải admin, chỉ lấy tài khoản của user hiện tại
         if (!$user->hasRole('admin')) {
             $accountQuery->where('user_id', $user->id);
         }
 
         $accountIds = $accountQuery->pluck('id');
-        
+
         // Task overview - thống kê accounts theo trạng thái task
         $totalAccounts = $accountQuery->count();
-        
+
         $accountsWithPendingTasks = $accountQuery->whereHas('accountTasks', function($q) {
             $q->where('status', 'pending');
         })->count();
-        
+
         $accountsWithRunningTasks = $accountQuery->whereHas('accountTasks', function($q) {
             $q->where('status', 'running');
         })->count();
-        
+
         $accountsWithNoTasks = $accountQuery->whereDoesntHave('accountTasks')->count();
-        
+
         $idleAccounts = $accountQuery->whereHas('accountTasks')
             ->whereDoesntHave('accountTasks', function($q) {
                 $q->whereIn('status', ['running', 'pending']);
@@ -1221,14 +1320,14 @@ class TiktokAccountService
 
         // Task statistics - thống kê chi tiết về tasks
         $taskQuery = AccountTask::whereIn('tiktok_account_id', $accountIds);
-        
+
         $totalPendingTasks = (clone $taskQuery)->where('status', 'pending')->count();
         $totalRunningTasks = (clone $taskQuery)->where('status', 'running')->count();
         $totalCompletedTasks = (clone $taskQuery)->where('status', 'completed')->count();
         $totalFailedTasks = (clone $taskQuery)->where('status', 'failed')->count();
-        
+
         $totalFinishedTasks = $totalCompletedTasks + $totalFailedTasks;
-        $averageSuccessRate = $totalFinishedTasks > 0 
+        $averageSuccessRate = $totalFinishedTasks > 0
             ? round(($totalCompletedTasks / $totalFinishedTasks) * 100, 1)
             : 0;
 
@@ -1241,7 +1340,7 @@ class TiktokAccountService
             ->map(function($item) use ($taskQuery) {
                 $totalTasks = $taskQuery->count();
                 $percentage = $totalTasks > 0 ? round(($item->count / $totalTasks) * 100, 1) : 0;
-                
+
                 return [
                     'task_type' => $item->task_type,
                     'count' => $item->count,
@@ -1257,7 +1356,7 @@ class TiktokAccountService
             ->map(function($item) use ($taskQuery) {
                 $totalTasks = $taskQuery->count();
                 $percentage = $totalTasks > 0 ? round(($item->count / $totalTasks) * 100, 1) : 0;
-                
+
                 return [
                     'priority' => $item->priority,
                     'count' => $item->count,
@@ -1272,7 +1371,7 @@ class TiktokAccountService
             $dayTasks = (clone $taskQuery)
                 ->whereDate('created_at', $date->toDateString())
                 ->count();
-                
+
             $recentTrends[] = [
                 'date' => $date->format('Y-m-d'),
                 'day_name' => $date->format('l'),

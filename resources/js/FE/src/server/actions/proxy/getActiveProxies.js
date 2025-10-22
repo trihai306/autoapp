@@ -7,10 +7,10 @@ export default async function getActiveProxies() {
     return withAuthCheck(async () => {
         try {
             const response = await apiGetActiveProxiesForSelect()
-            
+
             return {
                 success: true,
-                data: response,
+                data: response, // response is already the array from API service
                 message: 'Active proxies for select retrieved successfully'
             }
         } catch (error) {

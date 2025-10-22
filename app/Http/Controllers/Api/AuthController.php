@@ -196,7 +196,7 @@ class AuthController extends Controller
 
         try {
             $result = $this->authService->generateLoginToken($validated['login']);
-            
+
             // Login token retrieved or generated successfully.
             return response()->json([
                 'message' => 'Login token retrieved successfully.',
@@ -228,7 +228,7 @@ class AuthController extends Controller
 
         try {
             $result = $this->authService->loginWithToken($validated['token']);
-            
+
             // User logged in successfully with token.
             return response()->json([
                 'message' => 'User logged in successfully.',
@@ -251,7 +251,7 @@ class AuthController extends Controller
     public function getUserPermissions()
     {
         $permissions = PermissionHelper::getFormattedUserPermissions();
-        
+
         return response()->json([
             'user' => auth()->user()->only(['id', 'name', 'email', 'first_name', 'last_name']),
             'permissions' => $permissions

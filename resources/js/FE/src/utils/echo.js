@@ -41,7 +41,6 @@ const ensureCsrfCookie = async (apiBaseUrl) => {
     });
     return getCsrfTokenFromCookie();
   } catch (e) {
-    console.warn('[Echo] Could not initialize CSRF cookie:', e);
     return null;
   }
 };
@@ -89,18 +88,11 @@ export const initializeEcho = async (manualToken = null) => {
   const useTLS = (process.env.NEXT_PUBLIC_PUSHER_SCHEME ?? 'http') === 'https';
   // Hardcode API base URL cho local development
   const apiBaseUrl = appConfig.API_BASE_URL;
-  console.log('[Echo] API Base URL:', apiBaseUrl);
-
   // Lấy token từ NextAuth session hoặc sử dụng token thủ công
   const authToken = manualToken || await getAuthToken();
 
-  // Debug logging
-  console.log('[Echo] Auth token:', authToken ? 'Present' : 'Missing');
-  console.log('[Echo] Manual token:', manualToken ? 'Present' : 'Missing');
-
   // Đảm bảo có CSRF cookie và lấy XSRF token
   const xsrfToken = await ensureCsrfCookie(apiBaseUrl);
-  console.log('[Echo] XSRF token:', xsrfToken ? 'Present' : 'Missing');
 
   try {
 
@@ -128,19 +120,14 @@ export const initializeEcho = async (manualToken = null) => {
         return {
           authorize: async (socketId, callback) => {
             try {
-              console.log(`[Echo] Authorizing channel: ${channel.name}`);
-              console.log(`[Echo] Socket ID: ${socketId}`);
-
               // Nếu không có auth token, chỉ cho phép public channels
               if (!authToken && channel.name.startsWith('private-')) {
-                console.warn('[Echo] No auth token for private channel, denying access');
                 callback(true, new Error('Authentication required for private channels'));
                 return;
               }
 
               // Lấy CSRF token mới
               const currentXsrfToken = await ensureCsrfCookie(apiBaseUrl);
-              console.log('[Echo] Current XSRF token:', currentXsrfToken ? 'Present' : 'Missing');
 
               const headers = {
                 'Accept': 'application/json',
@@ -148,8 +135,6 @@ export const initializeEcho = async (manualToken = null) => {
                 ...(authToken ? { 'Authorization': `Bearer ${authToken}` } : {}),
                 ...(currentXsrfToken ? { 'X-XSRF-TOKEN': currentXsrfToken } : {}),
               };
-
-              console.log('[Echo] Request headers:', Object.keys(headers));
 
               const { data } = await axios.post(
                 `${apiBaseUrl}/api/broadcasting/auth`,
@@ -160,10 +145,8 @@ export const initializeEcho = async (manualToken = null) => {
                 }
               );
 
-              console.log('[Echo] Authorization successful');
               callback(false, data);
             } catch (error) {
-              console.error('[Echo] Authorization failed:', error.response?.status, error.response?.data);
               callback(true, error);
             }
           },
@@ -187,7 +170,6 @@ export const initializeEcho = async (manualToken = null) => {
     isInitializing = false;
     return echoInstance;
   } catch (error) {
-    console.error('[Echo] Error initializing Echo:', error);
     echoInstance = null;
     isInitializing = false;
     throw error;
@@ -217,18 +199,10 @@ const setupDebugListeners = () => {
   });
 
   connection.bind('error', (err) => {
-    console.error('❌ [Echo] Connection error:', err);
+    // Connection error occurred
   });
 
   connection.bind('connection_failed', () => {
-    console.error('❌ [Echo] Connection failed to WebSocket server');
-
-    // Log chi tiết khi connection failed
-    console.error('🔍 [Echo] Connection failed analysis:');
-    console.error('   - Connection state:', connection?.state);
-    console.error('   - Error details:', connection?.error);
-    console.error('   - Connection URL:', connection?.url);
-
     // Retry logic
     setTimeout(() => {
       if (echoInstance && connection.state === 'failed') {
@@ -272,14 +246,11 @@ async function getAuthToken() {
 
     return null;
   } catch (error) {
-    console.warn('[Echo] Could not get auth token from NextAuth:', error);
-
     // Fallback: thử lấy từ localStorage
     try {
       const storedToken = localStorage.getItem('auth_token') || localStorage.getItem('access_token');
       return storedToken;
     } catch (localError) {
-      console.warn('[Echo] Could not get auth token from localStorage:', localError);
       return null;
     }
   }
@@ -294,7 +265,7 @@ export const disconnectEcho = () => {
     try {
       echoInstance.disconnect();
     } catch (error) {
-      console.warn('[Echo] Error during disconnect:', error);
+      // Ignore disconnect errors
     }
     echoInstance = null;
     isInitializing = false;
@@ -369,7 +340,7 @@ export const whisperToChannel = (channelName, eventName, data) => {
       channel.whisper(eventName, data);
     }
   } catch (error) {
-    console.error('[Echo] Error sending whisper:', error);
+    // Ignore whisper errors
   }
 };
 
@@ -383,7 +354,7 @@ export const listenForWhisper = (channelName, eventName, callback) => {
       return channel.listenForWhisper(eventName, callback);
     }
   } catch (error) {
-    console.error('[Echo] Error listening for whisper:', error);
+    // Ignore whisper listen errors
   }
   return null;
 };
@@ -398,7 +369,7 @@ export const listenToNotification = (userId, callback) => {
       return channel.notification(callback);
     }
   } catch (error) {
-    console.error('[Echo] Error listening to notification:', error);
+    // Ignore notification errors
   }
   return null;
 };
@@ -412,7 +383,7 @@ export const listenToPrivateUser = (userId, eventName, callback) => {
     const channel = echoInstance.private(`private-user.${userId}`);
     return channel.listen(eventName, callback);
   } catch (error) {
-    console.error('[Echo] Error listening to private-user channel:', error);
+    // Ignore private-user channel errors
   }
   return null;
 };

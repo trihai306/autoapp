@@ -20,7 +20,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         strategy: 'jwt',
         maxAge: 24 * 60 * 60, // 24 hours
     },
-    debug: process.env.NODE_ENV === 'development',
+    debug: false,
     providers: authConfig.providers,
     callbacks: authConfig.callbacks,
     events: authConfig.events,
@@ -32,9 +32,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             console.warn('NextAuth Warning:', code, ...message)
         },
         debug(code, ...message) {
-            if (process.env.NODE_ENV === 'development') {
-                console.log('NextAuth Debug:', code, ...message)
-            }
+            // Debug logs disabled
         },
     },
 })

@@ -6,6 +6,7 @@ import { withAuthCheck } from '@/utils/withAuthCheck'
 export default async function runTiktokAccountScenario(accountId, data = {}) {
     return withAuthCheck(async () => {
         try {
+            // BE sẽ tự sử dụng device_id/scenario_id từ DB nếu FE không truyền override
             const resp = await apiRunAccountScenario(accountId, data)
             if (resp?.success === false) {
                 return {

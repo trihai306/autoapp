@@ -4,7 +4,7 @@ import { Switcher } from '@/components/ui/Switcher'
 import { TbWifi, TbSignal4G } from 'react-icons/tb'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
-import { apiUpdateTiktokAccountConnectionType } from '@/services/tiktokAccount/TiktokAccountService'
+import updateTiktokAccountConnectionType from '@/server/actions/tiktok-account/updateTiktokAccountConnectionType'
 
 const ConnectionTypeToggle = ({ account, onUpdate }) => {
     const [isUpdating, setIsUpdating] = useState(false)
@@ -17,22 +17,27 @@ const ConnectionTypeToggle = ({ account, onUpdate }) => {
         setIsUpdating(true)
 
         try {
-            await apiUpdateTiktokAccountConnectionType(account.id, newType)
-            setCurrentType(newType)
-            
-            // Callback để cập nhật UI
-            if (onUpdate) {
-                onUpdate(account.id, newType)
-            }
+            const result = await updateTiktokAccountConnectionType(account.id, newType)
 
-            toast.push(
-                <Notification
-                    title="Thành công"
-                    type="success"
-                >
-                    Đã chuyển {account.username} sang {newType === 'wifi' ? 'WiFi' : '4G'}
-                </Notification>
-            )
+            if (result.success) {
+                setCurrentType(newType)
+
+                // Callback để cập nhật UI
+                if (onUpdate) {
+                    onUpdate(account.id, newType)
+                }
+
+                toast.push(
+                    <Notification
+                        title="Thành công"
+                        type="success"
+                    >
+                        Đã chuyển {account.username} sang {newType === 'wifi' ? 'WiFi' : '4G'}
+                    </Notification>
+                )
+            } else {
+                throw new Error(result.message || 'Failed to update connection type')
+            }
         } catch (error) {
             console.error('Error updating connection type:', error)
             toast.push(

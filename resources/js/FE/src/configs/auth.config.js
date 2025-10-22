@@ -13,35 +13,14 @@ export default {
             },
             async authorize(credentials, req) {
                 try {
-                    console.log('🔐 NextAuth authorize called with:', {
-                        login: credentials?.login,
-                        hasPassword: !!credentials?.password
-                    })
-
                     if (!credentials?.login || !credentials?.password) {
-                        console.error('❌ Missing credentials')
                         return null
                     }
 
                     const user = await validateCredential(credentials)
-
-                    if (user) {
-                        console.log('✅ User authorized successfully:', {
-                            id: user.id,
-                            email: user.email,
-                            balance: user.balance
-                        })
-                        return user
-                    }
-
-                    console.log('❌ User authorization failed')
-                    return null
+                    return user || null
 
                 } catch (error) {
-                    console.error('❌ NextAuth authorize error:', error)
-
-                    // Thay vì throw error, return null để NextAuth xử lý
-                    // và trả về lỗi cụ thể cho client
                     return null
                 }
             },
@@ -50,28 +29,12 @@ export default {
     callbacks: {
         async jwt({ token, user, account }) {
             if (user && account) {
-                // Initial sign-in
-                console.log('🔄 JWT callback - Initial sign-in:', {
-                    userId: user.id,
-                    email: user.email,
-                    balance: user.balance
-                })
-
+                // Initial sign-in - only store essential data
                 token.id = user.id
                 token.name = user.full_name || user.name
                 token.email = user.email
-                token.avatar = user.avatar
                 token.accessToken = user.token
-                token.first_name = user.first_name
-                token.last_name = user.last_name
-                token.roles = user.roles || []
-                token.login_token = user.login_token
                 token.balance = user.balance || 0
-                token.permissions = user.permissions || {
-                    roles: [],
-                    permissions: [],
-                    permission_groups: {}
-                }
                 token.accessTokenExpires = Date.now() + 24 * 60 * 60 * 1000 // 24 hours
             }
 
@@ -81,7 +44,6 @@ export default {
             }
 
             // Token expired
-            console.log('⏰ JWT token expired')
             return null
         },
         async session({ session, token }) {

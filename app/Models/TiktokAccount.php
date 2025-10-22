@@ -58,6 +58,7 @@ class TiktokAccount extends Model
         'username',
         'email',
         'phone_number',
+        'connection_type',
     ];
 
     public $sortable = [
@@ -69,6 +70,7 @@ class TiktokAccount extends Model
         'heart_count',
         'video_count',
         'status',
+        'connection_type',
         'created_at',
         'updated_at',
     ];

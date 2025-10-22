@@ -22,10 +22,16 @@ import deleteFacebookAccount from '@/server/actions/facebook-account/deleteFaceb
 import FacebookAccountBulkActionBar from './FacebookAccountBulkActionBar'
 import { useFacebookAccountListStore } from '../_store'
 
-const FacebookAccountListTable = ({ list = [], total = 0, page = 1, per_page = 10 }) => {
+const FacebookAccountListTable = ({
+    list = [],
+    total = 0,
+    page = 1,
+    per_page = 10,
+    proxyOptions = [{ value: '', label: 'Không sử dụng proxy' }],
+    loadingProxies = false
+}) => {
     const router = useRouter()
     const searchParams = useSearchParams()
-    const { getProxyOptions } = useFacebookAccountData()
     const [selectedAccount, setSelectedAccount] = useState(null)
     const [viewModalOpen, setViewModalOpen] = useState(false)
     const [editModalOpen, setEditModalOpen] = useState(false)
@@ -35,7 +41,7 @@ const FacebookAccountListTable = ({ list = [], total = 0, page = 1, per_page = 1
     const [deletingAccount, setDeletingAccount] = useState(null)
     const [isDeleting, setIsDeleting] = useState(false)
 
-    const proxyOptions = getProxyOptions()
+    // Proxy options are now passed from parent component
 
     const dataTableRef = useRef(null)
 
@@ -160,7 +166,7 @@ const FacebookAccountListTable = ({ list = [], total = 0, page = 1, per_page = 1
             enableSorting: false,
             cell: ({ row }) => {
                 const account = row.original
-                return <ConnectionCell account={account} proxies={proxyOptions} loading={false} />
+                return <ConnectionCell account={account} proxies={proxyOptions} loading={loadingProxies} />
             },
         },
         {
@@ -376,6 +382,9 @@ const ConnectionCell = ({ account, proxies = [], loading = false }) => {
     const [currentType, setCurrentType] = useState(account?.connection_type || 'wifi')
     const [currentProxyId, setCurrentProxyId] = useState(account?.proxy?.id ? String(account.proxy.id) : '')
 
+    // ConnectionCell component for managing account connection settings
+    console.log('🔍 ConnectionCell received proxies:', proxies.length, proxies)
+
     const onChangeProxy = async (val) => {
         if (saving) return
         if (String(val) === currentProxyId) return
@@ -400,6 +409,7 @@ const ConnectionCell = ({ account, proxies = [], loading = false }) => {
             <FacebookConnectionTypeToggle account={account} onUpdate={(_, type)=>setCurrentType(type)} />
             {currentType !== '4g' && (
                 <div className="w-56">
+                    {console.log('🔍 Select props:', { loading, proxiesCount: proxies.length, currentProxyId })}
                     <Select
                         size="sm"
                         placeholder="Chọn proxy"

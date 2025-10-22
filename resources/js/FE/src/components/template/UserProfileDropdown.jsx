@@ -1,4 +1,5 @@
 'use client'
+import { useState, useEffect } from 'react'
 import Avatar from '@/components/ui/Avatar'
 import Dropdown from '@/components/ui/Dropdown'
 import withHeaderItem from '@/utils/hoc/withHeaderItem'
@@ -7,6 +8,7 @@ import signOut from '@/server/actions/auth/handleSignOut'
 import { disconnectEcho } from '@/utils/echo'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import ClientOnly from '@/components/shared/ClientOnly'
 import {
     PiUserDuotone,
     PiGearDuotone,
@@ -35,16 +37,16 @@ const dropdownItemList = [
 const _UserDropdown = () => {
     const { data: session, status } = useSession()
     const router = useRouter()
-    
+
     const handleSignOut = async () => {
         try {
             // Disconnect Echo trước khi logout
             if (typeof window !== 'undefined') {
                 disconnectEcho()
             }
-            
+
             const result = await signOut()
-            
+
             // Nếu logout thành công, redirect về trang sign-in
             if (result?.success) {
                 // Sử dụng Next.js router để navigation tối ưu
@@ -117,6 +119,16 @@ const _UserDropdown = () => {
     )
 }
 
-const UserDropdown = withHeaderItem(_UserDropdown)
+const UserDropdown = withHeaderItem(() => (
+    <ClientOnly
+        fallback={
+            <div className="flex items-center">
+                <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse" />
+            </div>
+        }
+    >
+        <_UserDropdown />
+    </ClientOnly>
+))
 
 export default UserDropdown

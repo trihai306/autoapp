@@ -20,16 +20,54 @@ import { useTiktokAccountTableReload } from '@/utils/hooks/useRealtime'
 import { useSession } from 'next-auth/react'
 
 const TiktokAccountManagementClient = ({ data, params }) => {
-    
+
     const t = useTranslations('tiktokAccountManagement')
     const router = useRouter()
     const { data: session } = useSession()
     const [isLoading, setIsLoading] = useState(false)
     const [showInteractionConfigModal, setShowInteractionConfigModal] = useState(false)
 
-    
+    // Proxy options state - load once for all accounts
+    const [proxyOptions, setProxyOptions] = useState([{ value: '', label: 'Không sử dụng proxy' }])
+    const [loadingProxies, setLoadingProxies] = useState(false)
+
+
     // Get selected accounts from store
     const selectedAccounts = useTiktokAccountListStore((state) => state.selectedTiktokAccount)
+
+    // Load proxy options once for all accounts
+    const loadProxyOptions = useCallback(async () => {
+        if (loadingProxies) return // Prevent multiple calls
+
+        setLoadingProxies(true)
+        try {
+            const { default: getActiveProxies } = await import('@/server/actions/proxy/getActiveProxies')
+            const response = await getActiveProxies()
+
+            console.log('🔍 Proxy API response:', response)
+
+            if (response.success && response.data && response.data.length > 0) {
+                const proxyOptions = response.data.map(proxy => ({
+                    value: String(proxy.value),
+                    label: `${proxy.data.host}:${proxy.data.port} (${proxy.data.type})`,
+                    subLabel: proxy.label,
+                    data: proxy.data,
+                    status: proxy.data.status
+                }))
+                console.log('🔍 Mapped proxy options:', proxyOptions)
+                const finalOptions = [{ value: '', label: 'Không sử dụng proxy' }, ...proxyOptions]
+                console.log('🔍 Final proxy options:', finalOptions)
+                setProxyOptions(finalOptions)
+            } else {
+                setProxyOptions([{ value: '', label: 'Không sử dụng proxy' }])
+            }
+        } catch (error) {
+            console.error('❌ Error loading proxy options:', error)
+            setProxyOptions([{ value: '', label: 'Không sử dụng proxy' }])
+        } finally {
+            setLoadingProxies(false)
+        }
+    }, [])
 
     const handleRefresh = useCallback(async () => {
         setIsLoading(true)
@@ -37,7 +75,7 @@ const TiktokAccountManagementClient = ({ data, params }) => {
             // Use router.refresh() to trigger server component re-render
             // This will re-fetch data from getTiktokAccounts() without full page reload
             router.refresh()
-            
+
             // Set loading to false after a short delay to show refresh feedback
             setTimeout(() => {
                 setIsLoading(false)
@@ -50,26 +88,26 @@ const TiktokAccountManagementClient = ({ data, params }) => {
 
     // Realtime: reload table on broadcast event (private channel cho user hiện tại)
     const { listenToTableReload, stopListeningToTableReload } = useTiktokAccountTableReload(session?.user?.id)
-    
+
     // Chỉ log khi reload table được kích hoạt
     useEffect(() => {
         // Chỉ setup khi có session
         if (!session?.user?.id) {
             return;
         }
-        
+
         // Quiet logs; chỉ log khi nhận event
-        
+
         let cleanup = null
         let retryInterval = null
         let retryCount = 0
         const maxRetries = 10 // Tối đa 10 lần retry (20 giây)
-        
+
         const setup = async () => {
             const result = await listenToTableReload(() => {
                 handleRefresh()
             })
-            
+
             if (result && typeof result === 'object' && result.isRetry && typeof result.retry === 'function') {
                 // silent
                 retryInterval = setInterval(async () => {
@@ -79,7 +117,7 @@ const TiktokAccountManagementClient = ({ data, params }) => {
                         retryInterval = null
                         return
                     }
-                    
+
                     const r = await result.retry()
                     if (r && typeof r === 'function') {
                         // Đã subscribe thành công, lưu cleanup và dừng retry
@@ -95,7 +133,7 @@ const TiktokAccountManagementClient = ({ data, params }) => {
             }
         }
         setup()
-        
+
         return () => {
             if (retryInterval) {
                 clearInterval(retryInterval)
@@ -106,6 +144,11 @@ const TiktokAccountManagementClient = ({ data, params }) => {
             try { stopListeningToTableReload() } catch (_) {}
         }
     }, [session?.user?.id, listenToTableReload, stopListeningToTableReload, handleRefresh])
+
+    // Load proxy options once when component mounts
+    useEffect(() => {
+        loadProxyOptions()
+    }, [loadProxyOptions])
 
     const handleSettings = useCallback(() => {
         // Open interaction config modal
@@ -147,16 +190,18 @@ const TiktokAccountManagementClient = ({ data, params }) => {
                                         </div>
                                         <TiktokAccountListActionTools />
                                     </div>
-                                    
+
                                     <TiktokAccountListTable
                                         tiktokAccountListTotal={data?.total || 0}
                                         page={parseInt(params.page) || 1}
                                         per_page={parseInt(params.per_page) || 10}
                                         onRefresh={handleRefresh}
+                                        proxyOptions={proxyOptions}
+                                        loadingProxies={loadingProxies}
                                     />
                                 </div>
                             </AdaptiveCard>
-                            
+
                             {/* Pagination - Outside the card */}
                             <TiktokAccountListPagination
                                 tiktokAccountListTotal={data?.total || 0}

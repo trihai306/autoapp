@@ -13,6 +13,7 @@ class FacebookAccount extends Model
 
     protected $fillable = [
         'username',
+        'name',
         'email',
         'password',
         'status',
@@ -44,6 +45,7 @@ class FacebookAccount extends Model
 
     protected $searchable = [
         'username',
+        'name',
         'email',
     ];
 
@@ -59,6 +61,7 @@ class FacebookAccount extends Model
     protected $sortable = [
         'id',
         'username',
+        'name',
         'email',
         'status',
         'created_at',

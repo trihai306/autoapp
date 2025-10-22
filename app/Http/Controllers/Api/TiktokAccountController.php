@@ -8,6 +8,7 @@ use App\Services\TiktokAccountService;
 use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 /**
  * APIs for managing Tiktok Accounts.
@@ -49,12 +50,12 @@ class TiktokAccountController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        
+
         // Nếu không phải admin, tự động filter theo user hiện tại
         if (!$user->hasRole('admin')) {
             $request->merge(['user_id' => $user->id]);
         }
-        
+
         $result = $this->tiktokAccountService->getAll($request);
         return response()->json($result);
     }
@@ -235,6 +236,51 @@ class TiktokAccountController extends Controller
     }
 
     /**
+     * Update proxy for a TikTok account
+     *
+     * Updates the proxy for a specific TikTok account.
+     * @param Request $request
+     * @param TiktokAccount $tiktokAccount The tiktok account to update proxy for.
+     */
+    public function updateProxy(Request $request, TiktokAccount $tiktokAccount)
+    {
+        $user = $request->user();
+        if (!$user->hasRole('admin') && $tiktokAccount->user_id !== $user->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $validated = $request->validate([
+            /**
+             * The proxy ID to assign to the account.
+             * @example 123
+             */
+            'proxy_id' => 'sometimes|nullable|integer|exists:proxies,id',
+        ]);
+
+        try {
+            $updatedAccount = $this->tiktokAccountService->updateProxy($tiktokAccount, $validated['proxy_id'] ?? null);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Proxy updated successfully',
+                'data' => [
+                    'id' => $updatedAccount->id,
+                    'username' => $updatedAccount->username,
+                    'proxy_id' => $updatedAccount->proxy_id,
+                    'updated_at' => $updatedAccount->updated_at,
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error updating proxy for TikTok account: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update proxy: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Delete a tiktok account
      *
      * Deletes a specific tiktok account.
@@ -294,7 +340,7 @@ class TiktokAccountController extends Controller
      * Supports two formats:
      * - Legacy: username|email|password|phone_number (phone_number optional)
      * - New: UID|PASS|2FA|MAIL
-     * 
+     *
      * @bodyParam accountList string required The list of accounts in the specified format.
      * @bodyParam enableRunningStatus boolean Set accounts to active status after import.
      * @bodyParam autoAssign boolean Auto-assign device and scenario to accounts.
@@ -302,7 +348,7 @@ class TiktokAccountController extends Controller
      * @bodyParam scenarioId string The scenario ID to assign to imported accounts.
      * @bodyParam proxyId string The proxy ID to assign to imported accounts.
      * @bodyParam format string The format of the account list: 'legacy' or 'new'. Default: 'legacy'
-     * 
+     *
      * @response {
      *   "success": true,
      *   "message": "Successfully imported 5 accounts",
@@ -385,9 +431,9 @@ class TiktokAccountController extends Controller
     /**
      * Get TikTok account statistics
      *
-     * Retrieves statistical data about TikTok accounts including totals, 
+     * Retrieves statistical data about TikTok accounts including totals,
      * active/inactive counts, running tasks, and percentage changes.
-     * 
+     *
      * @response {
      *   "data": {
      *     "totalAccounts": 156,
@@ -408,9 +454,9 @@ class TiktokAccountController extends Controller
     public function stats(Request $request)
     {
         $user = $request->user();
-        
+
         $stats = $this->tiktokAccountService->getStatistics($user);
-        
+
         return response()->json([
             'data' => $stats
         ]);
@@ -419,9 +465,9 @@ class TiktokAccountController extends Controller
     /**
      * Get TikTok account task analysis
      *
-     * Retrieves detailed task analysis for TikTok accounts including 
+     * Retrieves detailed task analysis for TikTok accounts including
      * pending tasks, running tasks, and task distribution statistics.
-     * 
+     *
      * @response {
      *   "data": {
      *     "task_overview": {
@@ -448,9 +494,9 @@ class TiktokAccountController extends Controller
     public function taskAnalysis(Request $request)
     {
         $user = $request->user();
-        
+
         $analysis = $this->tiktokAccountService->getTaskAnalysis($user);
-        
+
         return response()->json([
             'data' => $analysis
         ]);
@@ -461,17 +507,17 @@ class TiktokAccountController extends Controller
      */
     public function runScenario(Request $request, TiktokAccount $tiktokAccount)
     {
-        \Log::info('runScenario called for account:', ['id' => $tiktokAccount->id, 'username' => $tiktokAccount->username]);
-        
+        Log::info('runScenario called for account:', ['id' => $tiktokAccount->id, 'username' => $tiktokAccount->username]);
+
         $user = $request->user();
         if (!$user->hasRole('admin') && $tiktokAccount->user_id !== $user->id) {
-            \Log::warning('Unauthorized access attempt:', ['user_id' => $user->id, 'account_user_id' => $tiktokAccount->user_id]);
+            Log::warning('Unauthorized access attempt:', ['user_id' => $user->id, 'account_user_id' => $tiktokAccount->user_id]);
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         // Validate that account has scenario and device assigned
         if (!$tiktokAccount->scenario_id) {
-            \Log::warning('Account has no linked scenario:', ['account_id' => $tiktokAccount->id]);
+            Log::warning('Account has no linked scenario:', ['account_id' => $tiktokAccount->id]);
             return response()->json(['message' => 'Account has no linked scenario.'], 422);
         }
 
@@ -479,6 +525,7 @@ class TiktokAccountController extends Controller
         $validated = $request->validate([
             'device_id' => 'sometimes|exists:devices,id',
         ]);
+        // Fallback BE: nếu FE không truyền device_id, dùng device gán cho account
         $deviceId = $validated['device_id'] ?? $tiktokAccount->device_id;
 
         // Chặn tạo thêm nếu thiết bị đang có task chạy (đã xử lý ở service, có thể bỏ nếu muốn chỉ giữ logic tại service)
@@ -493,8 +540,8 @@ class TiktokAccountController extends Controller
                 ], 409);
             }
         }
-        
-        \Log::info('Running scenario for account:', [
+
+        Log::info('Running scenario for account:', [
             'account_id' => $tiktokAccount->id,
             'scenario_id' => $tiktokAccount->scenario_id,
             'device_id' => $deviceId,
@@ -503,7 +550,7 @@ class TiktokAccountController extends Controller
 
         $result = $this->tiktokAccountService->runScenarioForAccount($tiktokAccount, $deviceId, $user->id);
 
-        \Log::info('runScenario result:', $result);
+        Log::info('runScenario result:', $result);
         return response()->json($result);
     }
 
@@ -512,7 +559,7 @@ class TiktokAccountController extends Controller
      *
      * Retrieves the activity history for a specific TikTok account including
      * completed, failed, running, and pending tasks with pagination support.
-     * 
+     *
      * @param  TiktokAccount  $tiktokAccount The tiktok account model instance.
      * @response {
      *   "data": {
@@ -570,7 +617,7 @@ class TiktokAccountController extends Controller
     public function recentActivities(Request $request)
     {
         $user = $request->user();
-        
+
         // Sử dụng service để lấy hoạt động gần đây cho user (admin sẽ thấy tất cả)
         $activities = $this->tiktokAccountService->getRecentActivities($user);
         return response()->json($activities);
@@ -758,7 +805,7 @@ class TiktokAccountController extends Controller
             }
             return response()->json($result);
         } catch (\Exception $e) {
-            \Log::error('Error deleting pending tasks: ' . $e->getMessage());
+            Log::error('Error deleting pending tasks: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Có lỗi xảy ra khi xóa pending tasks'
@@ -771,7 +818,7 @@ class TiktokAccountController extends Controller
      *
      * Uploads a file (image/video) for use with TikTok account operations.
      * Files are stored in the public storage disk.
-     * 
+     *
      * @param Request $request
      * @param TiktokAccount $tiktokAccount
      * @return \Illuminate\Http\JsonResponse
@@ -822,7 +869,7 @@ class TiktokAccountController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Error uploading file for TikTok account: ' . $e->getMessage());
+            Log::error('Error uploading file for TikTok account: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to upload file: ' . $e->getMessage()
@@ -835,7 +882,7 @@ class TiktokAccountController extends Controller
      *
      * Creates a new post with uploaded content for the specified TikTok account.
      * This endpoint handles the post creation process including file uploads.
-     * 
+     *
      * @param Request $request
      * @param TiktokAccount $tiktokAccount
      * @return \Illuminate\Http\JsonResponse
@@ -915,7 +962,7 @@ class TiktokAccountController extends Controller
             }
             return response()->json($result);
         } catch (\Exception $e) {
-            \Log::error('Error creating post for TikTok account: ' . $e->getMessage());
+            Log::error('Error creating post for TikTok account: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to create post: ' . $e->getMessage()
@@ -927,7 +974,7 @@ class TiktokAccountController extends Controller
      * Update avatar for TikTok account
      *
      * Updates the avatar/profile picture for the specified TikTok account.
-     * 
+     *
      * @param Request $request
      * @param TiktokAccount $tiktokAccount
      * @return \Illuminate\Http\JsonResponse
@@ -962,7 +1009,7 @@ class TiktokAccountController extends Controller
             }
             return response()->json($result);
         } catch (\Exception $e) {
-            \Log::error('Error updating avatar for TikTok account: ' . $e->getMessage());
+            Log::error('Error updating avatar for TikTok account: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to update avatar: ' . $e->getMessage()
@@ -975,7 +1022,7 @@ class TiktokAccountController extends Controller
      *
      * Updates the connection type (WiFi/4G) for the specified TikTok account.
      * This is useful for managing network connectivity preferences.
-     * 
+     *
      * @param Request $request
      * @param TiktokAccount $tiktokAccount
      * @return \Illuminate\Http\JsonResponse
@@ -1010,7 +1057,7 @@ class TiktokAccountController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Error updating connection type for TikTok account: ' . $e->getMessage());
+            Log::error('Error updating connection type for TikTok account: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to update connection type: ' . $e->getMessage()
@@ -1023,7 +1070,7 @@ class TiktokAccountController extends Controller
      *
      * Updates the connection type (WiFi/4G) for multiple TikTok accounts at once.
      * This is useful for batch operations on multiple accounts.
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
@@ -1049,7 +1096,7 @@ class TiktokAccountController extends Controller
 
         try {
             $result = $this->tiktokAccountService->bulkUpdateConnectionType($user, $accountIds, $connectionType);
-            
+
             return response()->json([
                 'success' => true,
                 'message' => "Successfully updated connection type to {$connectionType} for {$result['updated_count']} accounts",
@@ -1062,7 +1109,7 @@ class TiktokAccountController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Error bulk updating connection type: ' . $e->getMessage());
+            Log::error('Error bulk updating connection type: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to bulk update connection type: ' . $e->getMessage()
@@ -1075,24 +1122,24 @@ class TiktokAccountController extends Controller
      *
      * Retrieves statistics about connection types across all TikTok accounts.
      * Shows count of accounts using WiFi vs 4G.
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function getConnectionTypeStats(Request $request)
     {
         $user = $request->user();
-        
+
         try {
             $stats = $this->tiktokAccountService->getConnectionTypeStatistics($user);
-            
+
             return response()->json([
                 'success' => true,
                 'data' => $stats
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Error getting connection type statistics: ' . $e->getMessage());
+            Log::error('Error getting connection type statistics: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to get connection type statistics: ' . $e->getMessage()

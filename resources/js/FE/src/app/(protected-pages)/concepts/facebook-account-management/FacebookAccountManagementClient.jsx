@@ -16,6 +16,10 @@ const FacebookAccountManagementClient = ({ data, params }) => {
     const [list, setList] = useState(data?.list || [])
     const [total, setTotal] = useState(data?.total || 0)
 
+    // Proxy options state - load once for all accounts
+    const [proxyOptions, setProxyOptions] = useState([{ value: '', label: 'Không sử dụng proxy' }])
+    const [loadingProxies, setLoadingProxies] = useState(false)
+
     // Đồng bộ lại dữ liệu khi props data thay đổi (sau router.refresh)
     useEffect(() => {
         setList(data?.list || [])
@@ -43,6 +47,45 @@ const FacebookAccountManagementClient = ({ data, params }) => {
         }
     }, [params])
 
+    // Load proxy options once for all accounts
+    const loadProxyOptions = useCallback(async () => {
+        if (loadingProxies) return // Prevent multiple calls
+
+        setLoadingProxies(true)
+        try {
+            const { default: getActiveProxies } = await import('@/server/actions/proxy/getActiveProxies')
+            const response = await getActiveProxies()
+
+            console.log('🔍 Proxy API response:', response)
+
+            if (response.success && response.data && response.data.length > 0) {
+                const proxyOptions = response.data.map(proxy => ({
+                    value: String(proxy.value),
+                    label: `${proxy.data.host}:${proxy.data.port} (${proxy.data.type})`,
+                    subLabel: proxy.label,
+                    data: proxy.data,
+                    status: proxy.data.status
+                }))
+                console.log('🔍 Mapped proxy options:', proxyOptions)
+                const finalOptions = [{ value: '', label: 'Không sử dụng proxy' }, ...proxyOptions]
+                console.log('🔍 Final proxy options:', finalOptions)
+                setProxyOptions(finalOptions)
+            } else {
+                setProxyOptions([{ value: '', label: 'Không sử dụng proxy' }])
+            }
+        } catch (error) {
+            console.error('❌ Error loading proxy options:', error)
+            setProxyOptions([{ value: '', label: 'Không sử dụng proxy' }])
+        } finally {
+            setLoadingProxies(false)
+        }
+    }, [])
+
+    // Load proxy options once when component mounts
+    useEffect(() => {
+        loadProxyOptions()
+    }, [loadProxyOptions])
+
     return (
         <FacebookAccountDataProvider>
             <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -61,7 +104,11 @@ const FacebookAccountManagementClient = ({ data, params }) => {
                                 <div className="mb-4">
                                     <FacebookAccountListActionTools onRefresh={handleRefresh} />
                                 </div>
-                                <FacebookAccountListTable list={list} />
+                                <FacebookAccountListTable
+                                    list={list}
+                                    proxyOptions={proxyOptions}
+                                    loadingProxies={loadingProxies}
+                                />
                             </div>
                         </AdaptiveCard>
                         <FacebookAccountListPagination total={total} page={parseInt(params.page) || 1} per_page={parseInt(params.per_page) || 10} />

@@ -5,7 +5,7 @@ import { UnauthorizedError } from '@/errors'
 const ApiService = {
     async fetchDataWithAxios(param) {
         let token = null;
-        
+
         // Try to get token from NextAuth session
         if (typeof window === 'undefined') {
             // Server-side: use auth() function
@@ -26,18 +26,18 @@ const ApiService = {
                 console.warn('Could not get client session:', error);
             }
         }
-        
+
         // Merge headers - param headers take precedence
         const headers = {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
             ...param.headers
         };
-        
+
         if (token) {
             headers['Authorization'] = `Bearer ${token}`;
         }
-        
+
         // Xử lý baseURL
         let finalUrl = param.url;
         if (param.baseURL) {
@@ -45,7 +45,7 @@ const ApiService = {
         } else {
             finalUrl = `${appConfig.API_BASE_URL}/api${param.url}`;
         }
-        
+
         // Luôn tắt verify SSL phía Node (server-side ONLY)
         let extraConfig = {}
         if (typeof window === 'undefined') {
@@ -57,7 +57,7 @@ const ApiService = {
                 // ignore
             }
         }
-        
+
         const finalParam = {
             ...param,
             url: finalUrl,
@@ -66,16 +66,8 @@ const ApiService = {
         }
 
         return new Promise((resolve, reject) => {
-            console.log('📡 Making API request:', {
-                method: finalParam.method?.toUpperCase(),
-                url: finalParam.url,
-                hasToken: !!token,
-                headers: finalParam.headers
-            });
-            
             AxiosBase(finalParam)
                 .then((response) => {
-                    console.log(`✅ API ${finalParam.method?.toUpperCase()} ${finalParam.url} successful:`, response.data)
                     resolve(response.data)
                 })
                 .catch((error) => {
@@ -85,10 +77,9 @@ const ApiService = {
                         data: error.response?.data,
                         message: error.message,
                         code: error.code,
-                        url: finalParam.url,
-                        headers: finalParam.headers
+                        url: finalParam.url
                     })
-                    
+
                     reject(error)
                 })
         })

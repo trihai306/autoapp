@@ -26,11 +26,11 @@ use App\Http\Controllers\Api\ServicePackagePaymentController;
 use App\Http\Controllers\RealtimeTestController;
 use App\Http\Controllers\Api\PrivateUserController;
 use Illuminate\Support\Facades\Broadcast;
-// Auth routes
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
-Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+// Auth routes with rate limiting
+Route::post('/register', [AuthController::class, 'register'])->middleware('rate.limit:5,15'); // 5 attempts per 15 minutes
+Route::post('/login', [AuthController::class, 'login'])->middleware('rate.limit:10,5'); // 10 attempts per 5 minutes
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->middleware('rate.limit:3,60'); // 3 attempts per hour
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->middleware('rate.limit:5,15'); // 5 attempts per 15 minutes
 
 // Broadcasting authentication for API
 Route::post('/broadcasting/auth', function (Request $request) {
@@ -44,8 +44,8 @@ Route::post('/login-with-token', [AuthController::class, 'loginWithToken']);
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
-    // Facebook interactions unified endpoint
-    Route::post('facebook-accounts/interactions/run', [\App\Http\Controllers\Api\FacebookAccountController::class, 'runInteractions']);
+    // Auth routes
+    Route::post('/refresh-token', [AuthController::class, 'refreshToken']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/profile', [AuthController::class, 'getProfile']);
     Route::get('/profile/permissions', [AuthController::class, 'getUserPermissions']);
@@ -167,6 +167,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('tiktok-accounts/{tiktokAccount}/upload-file', [\App\Http\Controllers\Api\TiktokAccountController::class, 'uploadFile']);
     Route::post('tiktok-accounts/{tiktokAccount}/create-post', [\App\Http\Controllers\Api\TiktokAccountController::class, 'createPost']);
     Route::post('tiktok-accounts/{tiktokAccount}/update-avatar', [\App\Http\Controllers\Api\TiktokAccountController::class, 'updateAvatar']);
+    Route::patch('tiktok-accounts/{tiktokAccount}/update-proxy', [\App\Http\Controllers\Api\TiktokAccountController::class, 'updateProxy']);
+    Route::patch('tiktok-accounts/{tiktokAccount}/connection-type', [\App\Http\Controllers\Api\TiktokAccountController::class, 'updateConnectionType']);
     Route::apiResource('tiktok-accounts', \App\Http\Controllers\Api\TiktokAccountController::class);
     // Run linked scenario for a TikTok account -> create account tasks from scenario scripts
     Route::post('tiktok-accounts/{tiktokAccount}/run-scenario', [\App\Http\Controllers\Api\TiktokAccountController::class, 'runScenario']);

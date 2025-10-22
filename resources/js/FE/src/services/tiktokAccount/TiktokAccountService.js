@@ -103,7 +103,7 @@ export async function apiGetTiktokAccountActivityHistory(id, params = {}) {
 export async function apiUpdateTiktokAccountConnectionType(id, connectionType) {
     return ApiService.fetchDataWithAxios({
         url: `/tiktok-accounts/${id}/connection-type`,
-        method: 'put',
+        method: 'patch',
         data: { connection_type: connectionType },
     })
 }
@@ -113,9 +113,9 @@ export async function apiBulkUpdateTiktokAccountConnectionType(accountIds, conne
     return ApiService.fetchDataWithAxios({
         url: '/tiktok-accounts/bulk-update-connection-type',
         method: 'post',
-        data: { 
-            account_ids: accountIds, 
-            connection_type: connectionType 
+        data: {
+            account_ids: accountIds,
+            connection_type: connectionType
         },
     })
 }

@@ -10,7 +10,7 @@ import Tabs from '@/components/ui/Tabs'
 // Import service action
 import getActiveProxies from '@/server/actions/proxy/getActiveProxies'
 // Removed API imports - now handled by parent component
-import { 
+import {
     HiOutlineUser as User,
     HiOutlineMail as Mail,
     HiOutlinePhone as Phone,
@@ -23,10 +23,10 @@ import {
     HiOutlineTemplate as Scenario
 } from 'react-icons/hi'
 
-const EditAccountModal = ({ 
-    isOpen, 
-    onClose, 
-    account, 
+const EditAccountModal = ({
+    isOpen,
+    onClose,
+    account,
     onSave,
     devices = [],
     scenarios = [],
@@ -53,7 +53,7 @@ const EditAccountModal = ({
         scenario_id: '',
         tags: []
     })
-    
+
     const [isLoading, setIsLoading] = useState(false)
     const [activeTab, setActiveTab] = useState('account')
     const [errors, setErrors] = useState({})
@@ -75,8 +75,8 @@ const EditAccountModal = ({
                 status: account.status || 'inactive',
                 two_factor_enabled: account.two_factor_enabled || false,
                 // Convert array of backup codes to a single string for display
-                two_factor_backup_codes: Array.isArray(account.two_factor_backup_codes) 
-                    ? account.two_factor_backup_codes.join(', ') 
+                two_factor_backup_codes: Array.isArray(account.two_factor_backup_codes)
+                    ? account.two_factor_backup_codes.join(', ')
                     : '',
                 notes: account.notes || '',
                 proxy_id: account.proxy_id !== undefined && account.proxy_id !== null ? String(account.proxy_id) : '',
@@ -87,7 +87,7 @@ const EditAccountModal = ({
             })
             setErrors({})
         }
-        console.log('Account data loaded:', formData)
+        // Account data loaded successfully
     }, [account])
 
     // Load devices and scenarios when component mounts
@@ -104,7 +104,7 @@ const EditAccountModal = ({
         try {
             setLoadingProxies(true)
             const response = await getActiveProxies()
-            
+
             if (response.success) {
                 setProxies(response.data)
                 setProxiesLoaded(true) // Set proxiesLoaded to true after successful load
@@ -123,7 +123,7 @@ const EditAccountModal = ({
             ...prev,
             [field]: value
         }))
-        
+
         // Clear error when user starts typing
         if (errors[field]) {
             setErrors(prev => ({
@@ -151,7 +151,7 @@ const EditAccountModal = ({
 
     const validateForm = () => {
         const newErrors = {}
-        
+
         // Validate theo tab hiện tại
         if (activeTab === 'account') {
             if (!formData.username.trim()) {
@@ -171,7 +171,7 @@ const EditAccountModal = ({
                 newErrors.proxy_port = t('validation.portInvalid')
             }
         }
-        
+
         setErrors(newErrors)
         return Object.keys(newErrors).length === 0
     }
@@ -180,7 +180,7 @@ const EditAccountModal = ({
         if (!validateForm()) {
             return
         }
-        
+
         if (onSave && !isLoading) {
             setIsLoading(true)
             try {
@@ -299,8 +299,8 @@ const EditAccountModal = ({
                     <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
                         {t('title')}
                     </h2>
-                    <Button 
-                        variant="outline" 
+                    <Button
+                        variant="outline"
                         size="sm"
                         onClick={handleClose}
                         className="p-2"
@@ -547,7 +547,7 @@ const EditAccountModal = ({
                                                 {t('hints.twoFactorHint')}
                                             </p>
                                         </div>
-                                        
+
                                         {formData.two_factor_enabled && (
                                             <div>
                                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -555,8 +555,8 @@ const EditAccountModal = ({
                                                 </label>
                                                 <Input
                                                     type="text"
-                                                    value={Array.isArray(formData.two_factor_backup_codes) 
-                                                        ? formData.two_factor_backup_codes.join(', ') 
+                                                    value={Array.isArray(formData.two_factor_backup_codes)
+                                                        ? formData.two_factor_backup_codes.join(', ')
                                                         : formData.two_factor_backup_codes || ''}
                                                     onChange={(e) => handleTwoFactorBackupCodesChange(e.target.value)}
                                                     placeholder={t('placeholders.twoFactorBackupCodes')}
