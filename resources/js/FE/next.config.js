@@ -60,9 +60,10 @@ const nextConfig = {
     },
 
     // Enable experimental features for better performance
-    experimental: {
-        serverComponentsExternalPackages: ['@prisma/client'],
-    },
+    experimental: {},
+
+    // Next.js 15: serverComponentsExternalPackages moved to serverExternalPackages
+    serverExternalPackages: ['@prisma/client'],
 
     // Security: Disable X-Powered-By header
     poweredByHeader: false,
