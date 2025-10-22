@@ -8,7 +8,6 @@ import ProxyListTableTools from './ProxyListTableTools'
 import Tooltip from '@/components/ui/Tooltip'
 import { TbPencil, TbTrash, TbPlayerPlay } from 'react-icons/tb'
 import { useRouter } from 'next/navigation'
-import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import deleteProxy from '@/server/actions/proxy/deleteProxy'
 import testProxyConnection from '@/server/actions/proxy/testProxyConnection'
 import toast from '@/components/ui/toast'
@@ -55,7 +54,6 @@ const ProxyListTable = ({
     const router = useRouter()
     const t = { name: 'Tên', host: 'Host', status: 'Trạng thái', lastUsed: 'Lần cuối sử dụng' }
     const tStatus = (key) => ({ active: 'Hoạt động', inactive: 'Không hoạt động', error: 'Lỗi' }[key] || key)
-    const [deleteConfirm, setDeleteConfirm] = useState(null)
     const allColumns = [
         { header: t.name, accessorKey: 'name' },
         { header: t.host, accessorKey: 'host' },
@@ -76,28 +74,13 @@ const ProxyListTable = ({
     }
 
     const handleDelete = async (proxy) => {
-        setDeleteConfirm(proxy)
+        // Mở dialog xóa trực tiếp với proxy được chọn
+        const event = new CustomEvent('openSingleDeleteDialog', { detail: proxy })
+        window.dispatchEvent(event)
     }
 
     const confirmDelete = async () => {
-        if (!deleteConfirm) return
-
-        const result = await deleteProxy(deleteConfirm.id)
-        if (result.success) {
-            toast.push(
-                <Notification title="Success" type="success" closable>
-                    {result.message}
-                </Notification>
-            )
-            router.refresh()
-        } else {
-            toast.push(
-                <Notification title="Error" type="danger" closable>
-                    {result.message}
-                </Notification>
-            )
-        }
-        setDeleteConfirm(null)
+        // Function này không còn cần thiết vì đã chuyển sang bulk delete
     }
 
     const handleTest = async (proxy) => {
@@ -251,25 +234,6 @@ const ProxyListTable = ({
                 className="proxy-table"
             />
 
-            {/* Delete Confirmation Dialog */}
-            <ConfirmDialog
-                isOpen={!!deleteConfirm}
-                type="danger"
-                title="Xác nhận xóa"
-                onClose={() => setDeleteConfirm(null)}
-                onRequestClose={() => setDeleteConfirm(null)}
-                onCancel={() => setDeleteConfirm(null)}
-                onConfirm={confirmDelete}
-                cancelText="Hủy"
-                confirmText="Xóa"
-                confirmButtonProps={{
-                    color: 'red-600'
-                }}
-            >
-                <p className="text-gray-600">
-                    Bạn có chắc chắn muốn xóa proxy "{deleteConfirm?.name}" không? Hành động này không thể hoàn tác.
-                </p>
-            </ConfirmDialog>
         </div>
     )
 }
