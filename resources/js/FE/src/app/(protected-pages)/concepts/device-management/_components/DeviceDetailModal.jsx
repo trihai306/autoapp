@@ -4,9 +4,9 @@ import Dialog from '@/components/ui/Dialog'
 import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
 import Tooltip from '@/components/ui/Tooltip'
-import { apiGetDeviceConnectedAccounts, apiGetDeviceTasks } from '@/services/device/DeviceService'
+import { apiGetDeviceTasks, apiGetDeviceConnectedAccounts } from '@/services/device/DeviceService'
 import toast from '@/components/ui/toast'
-import { 
+import {
     HiOutlineDesktopComputer as Desktop,
     HiOutlineDeviceMobile as Mobile,
     HiOutlineCalendar as Calendar,
@@ -32,35 +32,73 @@ const DeviceDetailModal = ({ isOpen, onClose, device, onDelete }) => {
     const [loadingAccounts, setLoadingAccounts] = useState(false)
     const [deviceTasks, setDeviceTasks] = useState([])
     const [loadingTasks, setLoadingTasks] = useState(false)
+    const [accountStats, setAccountStats] = useState({
+        facebook: { total: 0, active: 0, totalFollowers: 0, totalVideos: 0 },
+        tiktok: { total: 0, active: 0, totalFollowers: 0, totalVideos: 0 }
+    })
+    const [taskStats, setTaskStats] = useState({
+        total: 0,
+        pending: 0,
+        running: 0,
+        completed: 0,
+        failed: 0,
+        thisMonth: 0
+    })
 
     useEffect(() => {
         if (isOpen && device?.id) {
-            loadConnectedAccounts()
-            loadDeviceTasks()
+            loadAllData()
         }
     }, [isOpen, device?.id])
 
+    const loadAllData = async () => {
+        await Promise.all([
+            loadConnectedAccounts(),
+            loadDeviceTasks()
+        ])
+    }
+
     const loadConnectedAccounts = async () => {
-        if (!device?.id) {
-            console.log('No device ID found') // Debug log
-            return
-        }
-        
-        console.log('Loading accounts for device ID:', device.id) // Debug log
+        if (!device?.id) return
+
         setLoadingAccounts(true)
         try {
-            const response = await apiGetDeviceConnectedAccounts(device.id)
-            console.log('API Response:', response) // Debug log
-            
-            // Kiểm tra response structure - sử dụng API tiktok-accounts
-            if (response && response.data) {
-                setConnectedAccounts(response.data)
-            } else if (response && response.accounts) {
-                setConnectedAccounts(response.accounts)
-            } else {
-                console.log('No accounts found in response') // Debug log
-                setConnectedAccounts([])
+            // Lấy cả Facebook và TikTok accounts
+            const [fbResponse, tiktokResponse] = await Promise.all([
+                // Facebook accounts từ quan hệ có sẵn
+                Promise.resolve({ data: device?.facebook_accounts || device?.facebookAccounts || [] }),
+                // TikTok accounts từ API
+                apiGetDeviceConnectedAccounts(device.id)
+            ])
+
+            const fbAccounts = Array.isArray(fbResponse.data) ? fbResponse.data : []
+            const tiktokAccounts = Array.isArray(tiktokResponse.data) ? tiktokResponse.data : []
+
+            // Kết hợp cả hai loại tài khoản
+            const allAccounts = [
+                ...fbAccounts.map(acc => ({ ...acc, platform: 'Facebook', type: 'facebook' })),
+                ...tiktokAccounts.map(acc => ({ ...acc, platform: 'TikTok', type: 'tiktok' }))
+            ]
+
+            setConnectedAccounts(allAccounts)
+
+            // Tính toán thống kê
+            const stats = {
+                facebook: {
+                    total: fbAccounts.length,
+                    active: fbAccounts.filter(acc => acc.status === 'active').length,
+                    totalFollowers: fbAccounts.reduce((sum, acc) => sum + (acc.follower_count || 0), 0),
+                    totalVideos: fbAccounts.reduce((sum, acc) => sum + (acc.video_count || 0), 0)
+                },
+                tiktok: {
+                    total: tiktokAccounts.length,
+                    active: tiktokAccounts.filter(acc => acc.status === 'active').length,
+                    totalFollowers: tiktokAccounts.reduce((sum, acc) => sum + (acc.follower_count || 0), 0),
+                    totalVideos: tiktokAccounts.reduce((sum, acc) => sum + (acc.video_count || 0), 0)
+                }
             }
+            setAccountStats(stats)
+
         } catch (error) {
             console.error('Error loading connected accounts:', error)
             setConnectedAccounts([])
@@ -74,27 +112,35 @@ const DeviceDetailModal = ({ isOpen, onClose, device, onDelete }) => {
         }
     }
 
+    // Bỏ gọi API, dùng dữ liệu quan hệ đã có ở thiết bị
+
     const loadDeviceTasks = async () => {
-        if (!device?.id) {
-            console.log('No device ID found for tasks') // Debug log
-            return
-        }
-        
-        console.log('Loading tasks for device ID:', device.id) // Debug log
+        if (!device?.id) return
+
         setLoadingTasks(true)
         try {
             const response = await apiGetDeviceTasks(device.id)
-            console.log('Tasks API Response:', response) // Debug log
-            
-            // Kiểm tra response structure
-            if (response && response.data) {
-                setDeviceTasks(response.data)
-            } else if (response && response.tasks) {
-                setDeviceTasks(response.tasks)
-            } else {
-                console.log('No tasks found in response') // Debug log
-                setDeviceTasks([])
+
+            const tasks = response?.data || response?.tasks || []
+            setDeviceTasks(tasks)
+
+            // Tính toán thống kê task
+            const now = new Date()
+            const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+
+            const stats = {
+                total: tasks.length,
+                pending: tasks.filter(task => task.status === 'pending').length,
+                running: tasks.filter(task => task.status === 'running').length,
+                completed: tasks.filter(task => task.status === 'completed').length,
+                failed: tasks.filter(task => task.status === 'failed').length,
+                thisMonth: tasks.filter(task => {
+                    const taskDate = new Date(task.created_at)
+                    return taskDate >= thisMonth
+                }).length
             }
+            setTaskStats(stats)
+
         } catch (error) {
             console.error('Error loading device tasks:', error)
             setDeviceTasks([])
@@ -349,7 +395,7 @@ const DeviceDetailModal = ({ isOpen, onClose, device, onDelete }) => {
                         </Button>
                     </Tooltip>
                 </div>
-                
+
                 {loadingAccounts ? (
                     <div className="flex items-center justify-center py-8">
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -361,50 +407,37 @@ const DeviceDetailModal = ({ isOpen, onClose, device, onDelete }) => {
                         <div key={account.id} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
-                                        {account.avatar_url ? (
-                                            <img 
-                                                src={account.avatar_url} 
-                                                alt={account.username}
-                                                className="w-8 h-8 rounded-full object-cover"
-                                            />
-                                        ) : (
-                                    <User className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                                        )}
+                                        <User className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                                 </div>
                                 <div>
                                     <p className="font-medium text-gray-900 dark:text-gray-100">
                                         {account.platform}
                                     </p>
                                     <p className="text-sm text-gray-500 dark:text-gray-400">
-                                        {account.username}
+                                        {account.username || account.name}
                                     </p>
-                                        {account.nickname && (
-                                            <p className="text-xs text-gray-400 dark:text-gray-500">
-                                                {account.nickname}
-                                            </p>
-                                        )}
-                                        {account.email && (
-                                            <p className="text-xs text-gray-400 dark:text-gray-500">
-                                                {account.email}
-                                            </p>
-                                        )}
+                                    {account.email && (
+                                        <p className="text-xs text-gray-400 dark:text-gray-500">
+                                            {account.email}
+                                        </p>
+                                    )}
                                 </div>
                             </div>
                             <div className="text-right">
-                                    <Badge className={account.isActive 
-                                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                                    : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
-                                }>
-                                        {account.isActive ? 'Hoạt động' : 'Không hoạt động'}
-                                </Badge>
+                                    <Badge className={(account.status === 'active')
+                                        ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                        : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
+                                    }>
+                                        {(account.status === 'active') ? 'Hoạt động' : 'Không hoạt động'}
+                                    </Badge>
                                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                    {account.lastLogin}
+                                    {account.last_activity || ''}
                                 </p>
-                                    {account.follower_count && (
-                                        <p className="text-xs text-gray-400 dark:text-gray-500">
-                                            {account.follower_count.toLocaleString()} followers
-                                        </p>
-                                    )}
+                                {typeof account.follower_count === 'number' && (
+                                    <p className="text-xs text-gray-400 dark:text-gray-500">
+                                        {account.follower_count.toLocaleString()} followers
+                                    </p>
+                                )}
                             </div>
                         </div>
                     ))}
@@ -430,27 +463,27 @@ const DeviceDetailModal = ({ isOpen, onClose, device, onDelete }) => {
                                 </p>
                             </div>
                             <div>
-                                <p className="text-gray-600 dark:text-gray-400">Đang hoạt động</p>
-                                <p className="font-semibold text-green-600 dark:text-green-400">
-                                    {connectedAccounts.filter(acc => acc.isActive).length}
+                                <p className="text-gray-600 dark:text-gray-400">Facebook ({accountStats.facebook.total})</p>
+                                <p className="font-semibold text-blue-600 dark:text-blue-400">
+                                    {accountStats.facebook.active} hoạt động
                                 </p>
                             </div>
                             <div>
-                                <p className="text-gray-600 dark:text-gray-400">Tổng followers</p>
-                                <p className="font-semibold text-gray-900 dark:text-gray-100">
-                                    {connectedAccounts.reduce((sum, acc) => sum + (acc.follower_count || 0), 0).toLocaleString()}
+                                <p className="text-gray-600 dark:text-gray-400">TikTok ({accountStats.tiktok.total})</p>
+                                <p className="font-semibold text-pink-600 dark:text-pink-400">
+                                    {accountStats.tiktok.active} hoạt động
                                 </p>
                             </div>
                             <div>
-                                <p className="text-gray-600 dark:text-gray-400">Tổng videos</p>
+                                <p className="text-gray-600 dark:text-gray-400">Tổng task đã làm</p>
                                 <p className="font-semibold text-gray-900 dark:text-gray-100">
-                                    {connectedAccounts.reduce((sum, acc) => sum + (acc.video_count || 0), 0).toLocaleString()}
+                                    {taskStats.total}
                                 </p>
                             </div>
                         </div>
                     </div>
                 )}
-                
+
                 {/* Device Status */}
                 <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
                     <div className="flex items-center gap-3">
@@ -460,7 +493,7 @@ const DeviceDetailModal = ({ isOpen, onClose, device, onDelete }) => {
                                 Trạng thái máy: {device?.is_online ? 'Đang chạy' : 'Đã dừng'}
                             </p>
                             <p className="text-sm text-gray-500 dark:text-gray-400">
-                                {device?.is_online 
+                                {device?.is_online
                                     ? 'Thiết bị đang hoạt động và có thể thực hiện các tác vụ'
                                     : 'Thiết bị đã ngừng hoạt động hoặc mất kết nối'
                                 }
@@ -499,7 +532,7 @@ const DeviceDetailModal = ({ isOpen, onClose, device, onDelete }) => {
                         </Button>
                     </Tooltip>
                 </div>
-                
+
                 {loadingTasks ? (
                     <div className="flex items-center justify-center py-8">
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -556,35 +589,41 @@ const DeviceDetailModal = ({ isOpen, onClose, device, onDelete }) => {
                         <h5 className="font-medium text-gray-900 dark:text-gray-100 mb-3">
                             Thống kê Task
                         </h5>
-                        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
+                        <div className="grid grid-cols-2 md:grid-cols-6 gap-4 text-sm">
                             <div>
                                 <p className="text-gray-600 dark:text-gray-400">Tổng số task</p>
                                 <p className="font-semibold text-gray-900 dark:text-gray-100">
-                                    {deviceTasks.length}
+                                    {taskStats.total}
                                 </p>
                             </div>
                             <div>
                                 <p className="text-gray-600 dark:text-gray-400">Chờ xử lý</p>
                                 <p className="font-semibold text-yellow-600 dark:text-yellow-400">
-                                    {deviceTasks.filter(task => task.status === 'pending').length}
+                                    {taskStats.pending}
                                 </p>
                             </div>
                             <div>
                                 <p className="text-gray-600 dark:text-gray-400">Đang chạy</p>
                                 <p className="font-semibold text-blue-600 dark:text-blue-400">
-                                    {deviceTasks.filter(task => task.status === 'running').length}
+                                    {taskStats.running}
                                 </p>
                             </div>
                             <div>
                                 <p className="text-gray-600 dark:text-gray-400">Hoàn thành</p>
                                 <p className="font-semibold text-green-600 dark:text-green-400">
-                                    {deviceTasks.filter(task => task.status === 'completed').length}
+                                    {taskStats.completed}
                                 </p>
                             </div>
                             <div>
                                 <p className="text-gray-600 dark:text-gray-400">Thất bại</p>
                                 <p className="font-semibold text-red-600 dark:text-red-400">
-                                    {deviceTasks.filter(task => task.status === 'failed').length}
+                                    {taskStats.failed}
+                                </p>
+                            </div>
+                            <div>
+                                <p className="text-gray-600 dark:text-gray-400">Trong tháng này</p>
+                                <p className="font-semibold text-purple-600 dark:text-purple-400">
+                                    {taskStats.thisMonth}
                                 </p>
                             </div>
                         </div>
@@ -634,8 +673,8 @@ const DeviceDetailModal = ({ isOpen, onClose, device, onDelete }) => {
                         </Tooltip>
                         {onDelete && (
                             <Tooltip title="Xóa">
-                                <Button 
-                                    variant="outline" 
+                                <Button
+                                    variant="outline"
                                     size="sm"
                                     className="text-red-600 hover:text-red-700 hover:border-red-300 !px-2"
                                     onClick={() => {

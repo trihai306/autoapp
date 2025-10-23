@@ -22,44 +22,48 @@ class DeviceService implements DeviceServiceInterface
     public function getAll(Request $request): LengthAwarePaginator
     {
         $query = $this->deviceRepository->getModel()->query();
+        // Eager-load facebookAccounts and user to reduce queries on FE
+        $query->with(['facebookAccounts', 'user']);
         return BaseQuery::for($query, $request)->paginate();
     }
 
     public function getById(int $id): ?Device
     {
-        return $this->deviceRepository->find($id);
+        return $this->deviceRepository->getModel()
+            ->with(['facebookAccounts', 'user'])
+            ->find($id);
     }
 
     public function create(array $data): Device
     {
         $device = $this->deviceRepository->create($data);
-        
+
         // Dispatch event để làm mới bảng
         event(new DeviceTableReload('Thiết bị mới đã được tạo', $data['user_id'] ?? null));
-        
+
         return $device;
     }
 
     public function update(Device $device, array $data): Device
     {
         $updatedDevice = $this->deviceRepository->update($device, $data);
-        
+
         // Dispatch event để làm mới bảng
         event(new DeviceTableReload('Thiết bị đã được cập nhật', $data['user_id'] ?? $device->user_id));
-        
+
         return $updatedDevice;
     }
 
     public function delete(Device $device): bool
     {
         $result = $this->deviceRepository->delete($device);
-        
+
         // Bỏ tính năng reload table khi xóa device
         // if ($result) {
         //     // Dispatch event để làm mới bảng
         //     event(new DeviceTableReload('Thiết bị đã được xóa', $userId));
         // }
-        
+
         return $result;
     }
 
@@ -76,25 +80,25 @@ class DeviceService implements DeviceServiceInterface
         }
 
         $device = $this->deviceRepository->updateOrCreate($searchAttributes, $data);
-        
+
         // Dispatch event để làm mới bảng
         event(new DeviceTableReload('Thiết bị đã được cập nhật hoặc tạo mới', $data['user_id'] ?? null));
-        
+
         return $device;
     }
 
     public function updateOnlineStatus(string $deviceId, bool $isOnline): ?Device
     {
         $device = $this->deviceRepository->updateOnlineStatus($deviceId, $isOnline);
-        
+
         if ($device) {
             // Dispatch event để làm mới bảng
             event(new DeviceTableReload(
-                'Trạng thái online của thiết bị đã được cập nhật', 
+                'Trạng thái online của thiết bị đã được cập nhật',
                 $device->user_id
             ));
         }
-        
+
         return $device;
     }
 }

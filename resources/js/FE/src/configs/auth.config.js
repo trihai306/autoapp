@@ -34,6 +34,7 @@ export default {
                 token.name = user.full_name || user.name
                 token.email = user.email
                 token.accessToken = user.token
+                token.login_token = user.login_token // Lưu login_token vào JWT
                 token.balance = user.balance || 0
                 token.accessTokenExpires = Date.now() + 24 * 60 * 60 * 1000 // 24 hours
             }

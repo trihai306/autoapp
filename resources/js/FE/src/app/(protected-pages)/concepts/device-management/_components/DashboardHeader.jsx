@@ -15,7 +15,7 @@ import {
     HiOutlineInformationCircle as Info
 } from 'react-icons/hi'
 
-const DashboardHeader = ({ 
+const DashboardHeader = ({
     title = "Quản lý thiết bị",
     subtitle = "Theo dõi và quản lý tất cả thiết bị của bạn",
     onRefresh,
@@ -71,7 +71,7 @@ const DashboardHeader = ({
 
     const handleCopyToken = async () => {
         if (!session?.user?.login_token) return
-        
+
         try {
             await navigator.clipboard.writeText(session.user.login_token)
             setCopySuccess(true)
@@ -99,7 +99,7 @@ const DashboardHeader = ({
                                 {subtitle}
                             </p>
                         </div>
-                        
+
                         {showActions && (
                             <div className="flex items-center gap-3">
                                 <Button
@@ -111,7 +111,7 @@ const DashboardHeader = ({
                                     <Refresh className={`w-4 h-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
                                     Làm mới
                                 </Button>
-                                
+
                                 {session?.user?.login_token && (
                                     <>
                                         <Button
@@ -122,7 +122,7 @@ const DashboardHeader = ({
                                             <Copy className="w-4 h-4 mr-2" />
                                             {copySuccess ? 'Đã copy!' : 'Copy Token'}
                                         </Button>
-                                        
+
                                         <Button
                                             variant="outline"
                                             onClick={handleShowTokenInfo}
@@ -205,16 +205,16 @@ const DashboardHeader = ({
                     </div>
                 </div>
             </div>
-            
+
             {/* Token Info Modal */}
             {showTokenModal && (
                 <>
                     {/* Backdrop */}
-                    <div 
-                        className="fixed inset-0 bg-black bg-opacity-50 z-50" 
+                    <div
+                        className="fixed inset-0 bg-black bg-opacity-50 z-50"
                         onClick={() => setShowTokenModal(false)}
                     />
-                    
+
                     {/* Modal */}
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -242,7 +242,7 @@ const DashboardHeader = ({
                                     ×
                                 </Button>
                             </div>
-                            
+
                             {/* Content */}
                             <div className="p-6 space-y-6">
                                 {/* Token Display */}
@@ -266,7 +266,7 @@ const DashboardHeader = ({
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 {/* Instructions */}
                                 <div>
                                     <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-3">
@@ -286,7 +286,7 @@ const DashboardHeader = ({
                                                 </p>
                                             </div>
                                         </div>
-                                        
+
                                         <div className="flex gap-3">
                                             <div className="w-6 h-6 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                                                 <span className="text-xs font-medium text-blue-600 dark:text-blue-400">2</span>
@@ -300,7 +300,7 @@ const DashboardHeader = ({
                                                 </p>
                                             </div>
                                         </div>
-                                        
+
                                         <div className="flex gap-3">
                                             <div className="w-6 h-6 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                                                 <span className="text-xs font-medium text-blue-600 dark:text-blue-400">3</span>
@@ -314,7 +314,7 @@ const DashboardHeader = ({
                                                 </p>
                                             </div>
                                         </div>
-                                        
+
                                         <div className="flex gap-3">
                                             <div className="w-6 h-6 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                                                 <span className="text-xs font-medium text-green-600 dark:text-green-400">✓</span>
@@ -330,7 +330,7 @@ const DashboardHeader = ({
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 {/* Warning */}
                                 <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
                                     <div className="flex gap-3">

@@ -78,7 +78,15 @@ class Device extends Model
     {
         return $this->hasMany(TiktokAccount::class);
     }
-    
+
+    /**
+     * Get the Facebook accounts associated with the device.
+     */
+    public function facebookAccounts(): HasMany
+    {
+        return $this->hasMany(FacebookAccount::class);
+    }
+
     /**
      * Get the proxy associated with the device.
      */
