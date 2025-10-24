@@ -161,8 +161,7 @@ function DataTable(props) {
                             }
                             disabled={!row.getCanSelect()}
                             indeterminate={row.getIsSomeSelected()}
-                            onChange={row.getToggleSelectedHandler()}
-                            onCheckBoxChange={(e) =>
+                            onChange={(e) =>
                                 handleCheckBoxChange(
                                     e.target.checked,
                                     row.original,
