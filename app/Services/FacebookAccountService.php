@@ -125,6 +125,8 @@ class FacebookAccountService
                 if (($data['format'] ?? 'new') === 'new') {
                     $uid = trim($parts[0]);
                     $password = trim($parts[1]);
+                    // 2FA code từ parts[2]
+                    $twoFa = isset($parts[2]) ? trim($parts[2]) : '';
                     // Email nếu không có thì để null (không tự sinh)
                     $email = isset($parts[3]) ? trim($parts[3]) : null;
                     if (strlen($uid) < 3 || strlen($password) < 6) {
@@ -141,6 +143,18 @@ class FacebookAccountService
                         'proxy_id' => $data['proxyId'] ?? null,
                         'connection_type' => $data['connectionType'] ?? 'wifi',
                     ];
+
+                    // Lưu trạng thái 2FA và mã dự phòng nếu có
+                    if (!empty($twoFa)) {
+                        $backupCodes = $this->parseBackupCodes($twoFa);
+                        if (!empty($backupCodes)) {
+                            $payload['two_factor_enabled'] = true;
+                            $payload['two_factor_backup_codes'] = $backupCodes;
+                        } else {
+                            // Nếu không parse được mã dự phòng vẫn bật cờ 2FA
+                            $payload['two_factor_enabled'] = true;
+                        }
+                    }
                 } else {
                     // Legacy: username|email|password|phone
                     if (count($parts) < 3) {
@@ -236,6 +250,31 @@ class FacebookAccountService
             'total_count' => count($accountIds),
             'errors' => $errors
         ];
+    }
+
+    /**
+     * Parse backup codes helper
+     */
+    private function parseBackupCodes($input)
+    {
+        if (is_array($input)) {
+            return array_values(array_filter(array_map('strval', $input)));
+        }
+        $str = trim((string) $input);
+        if ($str === '') {
+            return [];
+        }
+        // JSON array input
+        if ($str[0] === '[') {
+            $decoded = json_decode($str, true);
+            if (is_array($decoded)) {
+                return array_values(array_filter(array_map('strval', $decoded)));
+            }
+        }
+        // Normalize common separators to commas, then split
+        $normalized = preg_replace('/[\s;|]+/', ',', $str);
+        $parts = array_filter(array_map('trim', explode(',', $normalized)));
+        return array_values($parts);
     }
 }
 

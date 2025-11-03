@@ -96,7 +96,7 @@ const DeviceListTable = ({
 }) => {
     const router = useRouter()
     const searchParams = useSearchParams()
-    
+
     // Store state
     const {
         deviceList,
@@ -105,9 +105,9 @@ const DeviceListTable = ({
         selectAllDevices,
         clearSelectedDevice
     } = useDeviceListStore()
-    
 
-    
+
+
     // Local state
     const [selectedDetailDevice, setSelectedDetailDevice] = useState(null)
     const [showDetailModal, setShowDetailModal] = useState(false)
@@ -147,7 +147,7 @@ const DeviceListTable = ({
         setIsDeleting(true)
         try {
             const result = await deleteDevice(selectedDeleteDevice.id)
-            
+
             if (result.success) {
                 // Show success toast
                 toast.push(
@@ -159,16 +159,16 @@ const DeviceListTable = ({
                         Thiết bị "{selectedDeleteDevice.device_name}" đã được xóa khỏi hệ thống.
                     </Notification>
                 )
-                
+
                 // Remove device from store
                 const removeDeviceFromList = useDeviceListStore.getState().removeDeviceFromList
                 removeDeviceFromList(selectedDeleteDevice.id)
-                
+
                 // Refresh page to get latest data
                 router.refresh()
             } else {
                 console.error('Failed to delete device:', result.message)
-                
+
                 // Show error toast
                 toast.push(
                     <Notification
@@ -182,7 +182,7 @@ const DeviceListTable = ({
             }
         } catch (error) {
             console.error('Error deleting device:', error)
-            
+
             // Show error toast
             toast.push(
                 <Notification
@@ -201,7 +201,7 @@ const DeviceListTable = ({
     }
 
     const onColumnToggle = (accessorKey) => {
-        setVisibleColumns(prev => 
+        setVisibleColumns(prev =>
             prev.includes(accessorKey)
                 ? prev.filter(col => col !== accessorKey)
                 : [...prev, accessorKey]
@@ -214,8 +214,8 @@ const DeviceListTable = ({
             accessorKey: 'device_name',
             header: 'Thiết bị',
             cell: ({ row }) => (
-                <DeviceNameColumn 
-                    row={row.original} 
+                <DeviceNameColumn
+                    row={row.original}
                     onViewDetail={handleViewDetails}
                 />
             ),
@@ -251,7 +251,7 @@ const DeviceListTable = ({
                             return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
                     }
                 }
-                
+
                 const getStatusText = (status) => {
                     switch (status) {
                         case 'active':
@@ -318,7 +318,7 @@ const DeviceListTable = ({
             header: 'Hoạt động cuối',
             cell: ({ row }) => (
                 <span className="text-sm text-gray-500 dark:text-gray-400">
-                    {row.original.last_active_at 
+                    {row.original.last_active_at
                         ? new Date(row.original.last_active_at).toLocaleString('vi-VN')
                         : 'Chưa có'
                     }
@@ -351,11 +351,11 @@ const DeviceListTable = ({
     ], [])
 
     // Filter visible columns
-    const visibleColumnsData = columns.filter(column => 
+    const visibleColumnsData = columns.filter(column =>
         visibleColumns.includes(column.accessorKey)
     )
 
-    const selectableColumns = columns.filter(column => 
+    const selectableColumns = columns.filter(column =>
         column.accessorKey !== 'actions'
     )
 
@@ -380,7 +380,18 @@ const DeviceListTable = ({
     }
 
     const handleRowSelect = (checked, row) => {
-        toggleDeviceSelection(row.original)
+        const device = row.original
+        const { addSelectedDevice, removeSelectedDevice, isDeviceSelected } = useDeviceListStore.getState()
+
+        if (checked) {
+            // Add to selection (only if not already selected to avoid duplicates)
+            if (!isDeviceSelected(device.id)) {
+                addSelectedDevice(device)
+            }
+        } else {
+            // Remove from selection
+            removeSelectedDevice(device.id)
+        }
     }
 
     const handleAllRowSelect = (checked, rows) => {
@@ -433,7 +444,7 @@ const DeviceListTable = ({
                                     Chưa có thiết bị nào
                                 </h3>
                                 <p className="text-gray-500 dark:text-gray-400 max-w-md">
-                                    Hiện tại chưa có thiết bị nào được kết nối với hệ thống. 
+                                    Hiện tại chưa có thiết bị nào được kết nối với hệ thống.
                                     Hãy sử dụng token để kết nối thiết bị của bạn.
                                 </p>
                             </div>
