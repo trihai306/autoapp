@@ -25,7 +25,7 @@ class FacebookDeviceController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'follower_count' => 'required|integer|min:0',
-            'username' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -76,7 +76,7 @@ class FacebookDeviceController extends Controller
             // Cập nhật chỉ follower_count và username
             $facebookAccount->update([
                 'follower_count' => $data['follower_count'],
-                'username' => $data['username'],
+                'name' => $data['name'],
                 'last_activity' => now(),
             ]);
 
