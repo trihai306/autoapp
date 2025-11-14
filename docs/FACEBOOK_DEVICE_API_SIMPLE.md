@@ -7,24 +7,28 @@ API này chỉ cho phép cập nhật `follower_count` và `name` của tài kho
 
 **URL đã thay đổi:**
 - **Cũ**: `/api/app/devices/{deviceId}/facebook-accounts/{facebookAccountId}` (PUT)
-- **Mới**: `/api/device/{deviceId}/facebook-accounts/{facebookAccountId}` (POST)
+- **Mới**: `/api/device/facebook-accounts` (POST)
 
-**Lý do thay đổi:** Tránh conflict với location `/app/` trong Nginx đang proxy đến Soketi (WebSocket).
+**Lý do thay đổi:** 
+- Tránh conflict với location `/app/` trong Nginx đang proxy đến Soketi (WebSocket)
+- Tất cả thông tin được truyền qua POST body thay vì URL params
 
 **Cần cập nhật:**
-- Android app: Đổi URL từ `/api/app/devices/...` sang `/api/device/...`
+- Android app: Đổi URL từ `/api/app/devices/{deviceId}/facebook-accounts/{facebookAccountId}` sang `/api/device/facebook-accounts`
 - Method: Đổi từ PUT sang POST
-- Request body: Đổi từ `username` sang `name`
+- Request body: Thêm `device_id` và `facebook_account_id`, đổi từ `username` sang `name`
 
 ## Endpoint
 
 ### Cập nhật follower_count và name của tài khoản Facebook
 
-**POST** `/api/device/{deviceId}/facebook-accounts/{facebookAccountId}`
+**POST** `/api/device/facebook-accounts`
 
 #### Request Body:
 ```json
 {
+    "device_id": "string (required) - Device ID của thiết bị",
+    "facebook_account_id": "integer (required) - ID của tài khoản Facebook",
     "follower_count": "integer (required) - Số lượng người theo dõi",
     "name": "string (required) - Tên hiển thị của tài khoản Facebook"
 }
@@ -54,6 +58,8 @@ API này chỉ cho phép cập nhật `follower_count` và `name` của tài kho
 ```
 
 #### Validation Rules:
+- `device_id`: Bắt buộc, string
+- `facebook_account_id`: Bắt buộc, số nguyên
 - `follower_count`: Bắt buộc, số nguyên >= 0
 - `name`: Bắt buộc, tối đa 255 ký tự
 
@@ -81,6 +87,8 @@ API này chỉ cho phép cập nhật `follower_count` và `name` của tài kho
     "success": false,
     "message": "Dữ liệu không hợp lệ",
     "errors": {
+        "device_id": ["Trường device_id là bắt buộc"],
+        "facebook_account_id": ["Trường facebook_account_id là bắt buộc"],
         "follower_count": ["Trường follower_count là bắt buộc"],
         "name": ["Trường name là bắt buộc"]
     }
@@ -91,10 +99,12 @@ API này chỉ cho phép cập nhật `follower_count` và `name` của tài kho
 
 ### Cập nhật follower_count và name:
 ```bash
-curl -X POST "https://your-domain.com/api/device/device123/facebook-accounts/1" \
+curl -X POST "https://your-domain.com/api/device/facebook-accounts" \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
+    "device_id": "7bbd1a865afc0778",
+    "facebook_account_id": 84,
     "follower_count": 1500,
     "name": "Tên Facebook Account"
   }'

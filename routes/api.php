@@ -249,5 +249,5 @@ Route::prefix('mobile')->group(function () {
 
 Route::prefix('device')->group(function () {
     // Facebook accounts for devices - only update
-    Route::post('/{deviceId}/facebook-accounts/{facebookAccountId}', [\App\Http\Controllers\Api\Devices\FacebookDeviceController::class, 'updateFacebookAccount']);
+    Route::post('/facebook-accounts', [\App\Http\Controllers\Api\Devices\FacebookDeviceController::class, 'updateFacebookAccount']);
 })->middleware('auth:sanctum');

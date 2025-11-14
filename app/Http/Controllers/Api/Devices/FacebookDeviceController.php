@@ -14,16 +14,16 @@ use Exception;
 class FacebookDeviceController extends Controller
 {
     /**
-     * Cập nhật follower_count và username của tài khoản Facebook
+     * Cập nhật follower_count và name của tài khoản Facebook
      *
      * @param Request $request
-     * @param string $deviceId
-     * @param int $facebookAccountId
      * @return JsonResponse
      */
-    public function updateFacebookAccount(Request $request, string $deviceId, int $facebookAccountId): JsonResponse
+    public function updateFacebookAccount(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
+            'device_id' => 'required|string',
+            'facebook_account_id' => 'required|integer',
             'follower_count' => 'required|integer|min:0',
             'name' => 'required|string|max:255',
         ]);
@@ -40,8 +40,10 @@ class FacebookDeviceController extends Controller
             // Lấy user đang đăng nhập
             $user = $request->user();
 
+            $data = $validator->validated();
+
             // Tìm device theo device_id
-            $device = Device::where('device_id', $deviceId)->first();
+            $device = Device::where('device_id', $data['device_id'])->first();
 
             if (!$device) {
                 return response()->json([
@@ -59,7 +61,7 @@ class FacebookDeviceController extends Controller
             }
 
             // Tìm tài khoản Facebook thuộc về user và device
-            $facebookAccount = FacebookAccount::where('id', $facebookAccountId)
+            $facebookAccount = FacebookAccount::where('id', $data['facebook_account_id'])
                 ->where('device_id', $device->id)
                 ->where('user_id', $user->id)
                 ->first();
@@ -70,8 +72,6 @@ class FacebookDeviceController extends Controller
                     'message' => 'Tài khoản Facebook không tồn tại hoặc không thuộc về bạn',
                 ], 404);
             }
-
-            $data = $validator->validated();
 
             // Cập nhật chỉ follower_count và username
             $facebookAccount->update([
