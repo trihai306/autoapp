@@ -239,7 +239,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 });
 
-Route::prefix('app')->group(function () {
+Route::prefix('mobile')->group(function () {
     Route::post('/devices', [\App\Http\Controllers\Api\Devices\DeviceController::class, 'store']);
 
     // Account tasks for devices
