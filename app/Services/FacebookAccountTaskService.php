@@ -8,6 +8,7 @@ use App\Models\InteractionScenario;
 use App\Models\Device;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Events\StopTaskOnDevice;
 
 class FacebookAccountTaskService
 {
@@ -133,6 +134,9 @@ class FacebookAccountTaskService
     public function stopAllTasks(FacebookAccount $account): array
     {
         try {
+            // Load device relationship
+            $account->load('device');
+            
             $pendingTasks = $account->pendingTasks();
             $runningTasks = $account->runningTasks();
 
@@ -147,6 +151,15 @@ class FacebookAccountTaskService
                 'status' => 'cancelled',
                 'completed_at' => now()
             ]);
+
+            // Bắn socket event để thông báo device dừng tasks
+            if (($pendingCount > 0 || $runningCount > 0) && $account->device) {
+                event(new StopTaskOnDevice($account->device));
+                Log::info("Fired StopTaskOnDevice event for Facebook account device", [
+                    'account_id' => $account->id,
+                    'device_id' => $account->device->device_id
+                ]);
+            }
 
             return [
                 'success' => true,

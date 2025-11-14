@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Models\AccountTask;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Events\StopTaskOnDevice;
 
 #[Group('Facebook Account Management')]
 class FacebookAccountController extends Controller
@@ -208,6 +209,9 @@ class FacebookAccountController extends Controller
         }
 
         try {
+            // Load device relationship
+            $facebookAccount->load('device');
+
             $pendingTasks = $facebookAccount->pendingTasks();
             $runningTasks = $facebookAccount->runningTasks();
 
@@ -222,6 +226,15 @@ class FacebookAccountController extends Controller
                 'status' => 'cancelled',
                 'completed_at' => now()
             ]);
+
+            // Bắn socket event để thông báo device dừng tasks
+            if (($pendingCount > 0 || $runningCount > 0) && $facebookAccount->device) {
+                event(new StopTaskOnDevice($facebookAccount->device));
+                Log::info("Fired StopTaskOnDevice event for Facebook account device", [
+                    'account_id' => $facebookAccount->id,
+                    'device_id' => $facebookAccount->device->device_id
+                ]);
+            }
 
             return response()->json([
                 'success' => true,
@@ -344,9 +357,16 @@ class FacebookAccountController extends Controller
         $results = [];
         $successCount = 0;
         $errorCount = 0;
+        $devicesNotified = [];
+
+        // Load accounts with device relationship
+        $accounts = FacebookAccount::whereIn('id', $accountIds)
+            ->with('device')
+            ->get()
+            ->keyBy('id');
 
         foreach ($accountIds as $accountId) {
-            $account = FacebookAccount::find($accountId);
+            $account = $accounts->get($accountId);
             if (!$account) {
                 $results[] = [
                     'account_id' => $accountId,
@@ -373,6 +393,16 @@ class FacebookAccountController extends Controller
                     'completed_at' => now()
                 ]);
 
+                // Bắn socket event để thông báo device dừng tasks
+                if (($pendingCount > 0 || $runningCount > 0) && $account->device && !in_array($account->device->id, $devicesNotified)) {
+                    event(new StopTaskOnDevice($account->device));
+                    $devicesNotified[] = $account->device->id;
+                    Log::info("Fired StopTaskOnDevice event for Facebook account device", [
+                        'account_id' => $account->id,
+                        'device_id' => $account->device->device_id
+                    ]);
+                }
+
                 $results[] = [
                     'account_id' => $accountId,
                     'username' => $account->username,
@@ -393,7 +423,7 @@ class FacebookAccountController extends Controller
 
                 $results[] = [
                     'account_id' => $accountId,
-                    'username' => $account->username,
+                    'username' => $account->username ?? 'N/A',
                     'success' => false,
                     'message' => 'Lỗi khi dừng tasks: ' . $e->getMessage()
                 ];
