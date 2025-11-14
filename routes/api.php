@@ -245,7 +245,9 @@ Route::prefix('mobile')->group(function () {
     // Account tasks for devices
     Route::get('/devices/{device}/tasks', [\App\Http\Controllers\Api\Devices\AccountTaskController::class, 'pendingForDevice']);
     Route::post('/tasks/{task}/status', [\App\Http\Controllers\Api\Devices\AccountTaskController::class, 'updateStatus']);
+})->middleware('auth:sanctum');
 
+Route::prefix('device')->group(function () {
     // Facebook accounts for devices - only update
-    Route::post('/devices/{deviceId}/facebook-accounts/{facebookAccountId}', [\App\Http\Controllers\Api\Devices\FacebookDeviceController::class, 'updateFacebookAccount']);
+    Route::post('/{deviceId}/facebook-accounts/{facebookAccountId}', [\App\Http\Controllers\Api\Devices\FacebookDeviceController::class, 'updateFacebookAccount']);
 })->middleware('auth:sanctum');

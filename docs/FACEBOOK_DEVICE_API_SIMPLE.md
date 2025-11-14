@@ -1,19 +1,32 @@
 # API Facebook Device Management - Chỉ cập nhật
 
 ## Tổng quan
-API này chỉ cho phép cập nhật `follower_count` và `username` của tài khoản Facebook cho các thiết bị. Yêu cầu xác thực bằng Sanctum token và tự động validate quyền sở hữu dựa trên user đang đăng nhập.
+API này chỉ cho phép cập nhật `follower_count` và `name` của tài khoản Facebook cho các thiết bị. Yêu cầu xác thực bằng Sanctum token và tự động validate quyền sở hữu dựa trên user đang đăng nhập.
+
+## ⚠️ Breaking Change
+
+**URL đã thay đổi:**
+- **Cũ**: `/api/app/devices/{deviceId}/facebook-accounts/{facebookAccountId}` (PUT)
+- **Mới**: `/api/device/{deviceId}/facebook-accounts/{facebookAccountId}` (POST)
+
+**Lý do thay đổi:** Tránh conflict với location `/app/` trong Nginx đang proxy đến Soketi (WebSocket).
+
+**Cần cập nhật:**
+- Android app: Đổi URL từ `/api/app/devices/...` sang `/api/device/...`
+- Method: Đổi từ PUT sang POST
+- Request body: Đổi từ `username` sang `name`
 
 ## Endpoint
 
-### Cập nhật follower_count và username của tài khoản Facebook
+### Cập nhật follower_count và name của tài khoản Facebook
 
-**PUT** `/api/app/devices/{deviceId}/facebook-accounts/{facebookAccountId}`
+**POST** `/api/device/{deviceId}/facebook-accounts/{facebookAccountId}`
 
 #### Request Body:
 ```json
 {
     "follower_count": "integer (required) - Số lượng người theo dõi",
-    "username": "string (required) - Username của tài khoản"
+    "name": "string (required) - Tên hiển thị của tài khoản Facebook"
 }
 ```
 
@@ -42,7 +55,7 @@ API này chỉ cho phép cập nhật `follower_count` và `username` của tài
 
 #### Validation Rules:
 - `follower_count`: Bắt buộc, số nguyên >= 0
-- `username`: Bắt buộc, tối đa 255 ký tự
+- `name`: Bắt buộc, tối đa 255 ký tự
 
 ## Xử lý lỗi
 
@@ -69,21 +82,21 @@ API này chỉ cho phép cập nhật `follower_count` và `username` của tài
     "message": "Dữ liệu không hợp lệ",
     "errors": {
         "follower_count": ["Trường follower_count là bắt buộc"],
-        "username": ["Trường username là bắt buộc"]
+        "name": ["Trường name là bắt buộc"]
     }
 }
 ```
 
 ## Ví dụ sử dụng
 
-### Cập nhật follower_count và username:
+### Cập nhật follower_count và name:
 ```bash
-curl -X PUT "https://your-domain.com/api/app/devices/device123/facebook-accounts/1" \
+curl -X POST "https://your-domain.com/api/device/device123/facebook-accounts/1" \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
     "follower_count": 1500,
-    "username": "new_username"
+    "name": "Tên Facebook Account"
   }'
 ```
 
@@ -92,7 +105,7 @@ curl -X PUT "https://your-domain.com/api/app/devices/device123/facebook-accounts
 1. **Xác thực**: API yêu cầu Sanctum token
 2. **Quyền sở hữu**: Tự động kiểm tra user đăng nhập có phải là chủ sở hữu của device không
 3. **Bảo mật**: Không cần truyền user_id trong request, API tự động lấy từ token
-4. **Đơn giản**: Chỉ cập nhật 2 trường: `follower_count` và `username`
+4. **Đơn giản**: Chỉ cập nhật 2 trường: `follower_count` và `name`
 5. **Event**: Khi cập nhật thành công, sẽ bắn event để refresh bảng tài khoản Facebook
 6. **Device ID**: Sử dụng `device_id` (string) thay vì `id` (integer) để tìm device
 7. **Phân quyền**: Chỉ cho phép cập nhật tài khoản Facebook thuộc về user đăng nhập
